@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server"
+import { createServerClient } from "@supabase/ssr"
+import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 
 // Sanitize string input to prevent XSS and SQL injection
@@ -48,44 +49,87 @@ function validateRedirectPath(input: string): string {
   return input
 }
 
+// Get the correct origin for redirects, handling Vercel's forwarded host
+function getOrigin(request: Request): string {
+  const { origin } = new URL(request.url)
+  const forwardedHost = request.headers.get("x-forwarded-host")
+  const forwardedProto = request.headers.get("x-forwarded-proto") || "https"
+
+  if (forwardedHost) {
+    return `${forwardedProto}://${forwardedHost}`
+  }
+  return origin
+}
+
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams } = new URL(request.url)
   const code = searchParams.get("code")
   const redirectParam = searchParams.get("redirect") || "/dashboard"
   const redirect = validateRedirectPath(redirectParam)
+  const origin = getOrigin(request)
 
   if (code) {
-    const supabase = await createClient()
+    const cookieStore = await cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          },
+        },
+      }
+    )
+
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
-    if (!error && data.user) {
-      // Check if user profile exists, create if not
-      const { data: existingProfile } = await supabase
-        .from("users")
-        .select("id")
-        .eq("id", data.user.id)
-        .maybeSingle()
-
-      if (!existingProfile) {
-        // Sanitize user metadata before inserting
-        const fullName = sanitizeString(
-          data.user.user_metadata.full_name || data.user.user_metadata.name
-        )
-        const avatarUrl = sanitizeAvatarUrl(data.user.user_metadata.avatar_url)
-
-        await supabase.from("users").insert({
-          id: data.user.id,
-          email: data.user.email!,
-          full_name: fullName,
-          avatar_url: avatarUrl,
-          user_type: "renter",
-        })
-      }
-
-      return NextResponse.redirect(`${origin}${redirect}`)
+    if (error) {
+      console.error("Auth callback: code exchange failed:", error.message)
+      return NextResponse.redirect(`${origin}/login?error=auth`)
     }
+
+    if (!data.user) {
+      console.error("Auth callback: no user returned after code exchange")
+      return NextResponse.redirect(`${origin}/login?error=auth`)
+    }
+
+    // Check if user profile exists, create if not
+    const { data: existingProfile } = await supabase
+      .from("users")
+      .select("id")
+      .eq("id", data.user.id)
+      .maybeSingle()
+
+    if (!existingProfile) {
+      // Sanitize user metadata before inserting
+      const fullName = sanitizeString(
+        data.user.user_metadata.full_name || data.user.user_metadata.name
+      )
+      const avatarUrl = sanitizeAvatarUrl(data.user.user_metadata.avatar_url)
+
+      const { error: profileError } = await supabase.from("users").insert({
+        id: data.user.id,
+        email: data.user.email!,
+        full_name: fullName,
+        avatar_url: avatarUrl,
+        user_type: "renter",
+      })
+
+      if (profileError) {
+        console.error("Auth callback: profile creation failed:", profileError.message)
+      }
+    }
+
+    return NextResponse.redirect(`${origin}${redirect}`)
   }
 
+  console.error("Auth callback: no code parameter in URL")
   // Return the user to an error page with instructions
   return NextResponse.redirect(`${origin}/login?error=auth`)
 }
