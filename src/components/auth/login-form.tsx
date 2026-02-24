@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
@@ -15,7 +15,16 @@ export function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get("redirect") || "/dashboard"
+  const authError = searchParams.get("error")
   const supabase = createClient()
+
+  useEffect(() => {
+    if (authError === "auth") {
+      toast.error("Inloggen mislukt", {
+        description: "Er ging iets mis met de authenticatie. Probeer het opnieuw.",
+      })
+    }
+  }, [authError])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
