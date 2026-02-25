@@ -3,7 +3,7 @@ import { CategoriesSection } from "@/components/home/categories-section"
 import { FeaturedStudios } from "@/components/home/featured-studios"
 import { WhyLcntships } from "@/components/home/why-lcntships"
 import { PortfolioSection } from "@/components/home/portfolio-section"
-import { CitiesSection } from "@/components/home/cities-section"
+
 import { BecomeHostSection } from "@/components/home/become-host-section"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -42,10 +42,7 @@ export default function HomePage() {
       <Suspense>
         <PortfolioSection />
       </Suspense>
-      <Suspense>
-        <CitiesSection />
-      </Suspense>
-      <BecomeHostSection />
+<BecomeHostSection />
     </>
   )
 }

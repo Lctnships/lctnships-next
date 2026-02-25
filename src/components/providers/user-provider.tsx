@@ -72,13 +72,12 @@ export function UserProvider({
   const signOut = async () => {
     setUser(null)
     setProfile(null)
-    // Clear client-side session (localStorage)
-    await supabase.auth.signOut()
-    // Clear server-side session (cookies) via API route
-    await fetch('/api/auth/signout', { method: 'POST' })
-    // Reset the singleton client so next page load starts fresh
+    // Clear client (localStorage) and server (cookies) sessions in parallel
+    await Promise.all([
+      supabase.auth.signOut().catch(() => {}),
+      fetch('/api/auth/signout', { method: 'POST' }).catch(() => {}),
+    ])
     resetClient()
-    // Hard redirect to fully clear in-memory state
     window.location.href = "/"
   }
 
