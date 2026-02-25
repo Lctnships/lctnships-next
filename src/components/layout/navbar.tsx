@@ -57,7 +57,9 @@ export function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-6">
-          {user ? (
+          {isLoading ? (
+            <div className="h-10 w-10 rounded-full bg-gray-100 animate-pulse" />
+          ) : user ? (
             <>
               {/* Profile dropdown */}
               <DropdownMenu>
@@ -114,13 +116,11 @@ export function Navbar() {
               </DropdownMenu>
             </>
           ) : (
-            <>
-              <Link href="/login">
-                <Button className="bg-primary text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-gray-800 transition-all">
-                  Inloggen
-                </Button>
-              </Link>
-            </>
+            <Link href="/login">
+              <Button className="bg-primary text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-gray-800 transition-all">
+                Inloggen
+              </Button>
+            </Link>
           )}
 
           {/* Mobile menu */}
