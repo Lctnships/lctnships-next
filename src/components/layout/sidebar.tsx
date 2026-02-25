@@ -1,8 +1,10 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { useUser } from "@/hooks/use-user"
 import {
   LayoutDashboard,
   Calendar,
@@ -12,15 +14,17 @@ import {
   Bell,
   User,
   Settings,
-  Home,
-  Building2,
-  DollarSign,
-  Star,
+  PanelLeft,
+  ArrowRightLeft,
+  LogOut,
 } from "lucide-react"
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip"
 
-interface SidebarProps {
-  variant?: "user" | "host"
-}
+const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed"
 
 const userNavItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -33,70 +37,140 @@ const userNavItems = [
   { href: "/settings", label: "Instellingen", icon: Settings },
 ]
 
-const hostNavItems = [
-  { href: "/host/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/host/studios", label: "Mijn Studios", icon: Building2 },
-  { href: "/host/bookings", label: "Boekingen", icon: Calendar },
-  { href: "/host/reviews", label: "Reviews", icon: Star },
-  { href: "/host/payouts", label: "Inkomsten", icon: DollarSign },
-]
-
-export function Sidebar({ variant = "user" }: SidebarProps) {
+export function Sidebar() {
   const pathname = usePathname()
-  const navItems = variant === "host" ? hostNavItems : userNavItems
+  const router = useRouter()
+  const { user, profile, signOut } = useUser()
+  const [collapsed, setCollapsed] = useState(false)
+
+  const isHost = profile?.user_type === "host" || profile?.user_type === "both"
+  const isInHostMode = pathname.startsWith("/host")
+
+  useEffect(() => {
+    const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY)
+    if (stored === "true") setCollapsed(true)
+  }, [])
+
+  const toggleCollapsed = () => {
+    const next = !collapsed
+    setCollapsed(next)
+    localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(next))
+  }
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r bg-background">
-      <div className="p-6">
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="text-xl font-bold">LCNTSHIPS</span>
+    <aside
+      className={cn(
+        "hidden lg:flex flex-col border-r bg-background transition-all duration-300 ease-in-out",
+        collapsed ? "w-[68px]" : "w-64"
+      )}
+    >
+      {/* Logo - icon only, no brand text */}
+      <div className={cn("flex items-center h-20 border-b", collapsed ? "justify-center px-2" : "px-6")}>
+        <Link href="/" className="flex items-center text-primary">
+          <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 4L44 24L24 44L4 24L24 4Z" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M24 14V34" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/>
+          </svg>
         </Link>
       </div>
 
-      <nav className="flex-1 px-4 space-y-1">
-        {variant === "host" && (
-          <div className="mb-4">
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-            >
-              <Home className="h-4 w-4" />
-              Terug naar User
-            </Link>
-          </div>
-        )}
-
-        {navItems.map((item) => {
+      {/* Navigation */}
+      <nav className="flex-1 px-2 py-4 space-y-1">
+        {userNavItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
-          return (
+          const linkContent = (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                "flex items-center rounded-lg py-2.5 text-sm transition-colors",
+                collapsed ? "justify-center px-2" : "gap-3 px-3",
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent"
               )}
             >
-              <item.icon className="h-4 w-4" />
-              {item.label}
+              <item.icon className="h-[18px] w-[18px] shrink-0" />
+              {!collapsed && (
+                <span className="truncate">{item.label}</span>
+              )}
             </Link>
           )
+
+          if (collapsed) {
+            return (
+              <Tooltip key={item.href}>
+                <TooltipTrigger asChild>
+                  {linkContent}
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  {item.label}
+                </TooltipContent>
+              </Tooltip>
+            )
+          }
+
+          return linkContent
         })}
       </nav>
 
-      {variant === "user" && (
-        <div className="p-4 border-t">
-          <Link
-            href="/host/dashboard"
-            className="flex items-center justify-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-sm font-medium text-primary hover:bg-primary/20 transition-colors"
+      {/* Bottom section: Switch + Uitloggen + Toggle */}
+      {user && (
+        <div className={cn("border-t px-2 pt-2 space-y-1", collapsed ? "items-center" : "")}>
+          {/* Switch naar Host / Huurder */}
+          {!isInHostMode ? (
+            <button
+              onClick={() => router.push(isHost ? "/host/dashboard" : "/host/onboarding")}
+              className={cn(
+                "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-primary hover:bg-primary/10 w-full",
+                collapsed ? "justify-center px-2" : "gap-3 px-3"
+              )}
+            >
+              <ArrowRightLeft className="h-[18px] w-[18px] shrink-0" />
+              {!collapsed && <span className="truncate">{isHost ? "Switch naar Host" : "Word Host"}</span>}
+            </button>
+          ) : (
+            <button
+              onClick={() => router.push("/dashboard")}
+              className={cn(
+                "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-primary hover:bg-primary/10 w-full",
+                collapsed ? "justify-center px-2" : "gap-3 px-3"
+              )}
+            >
+              <ArrowRightLeft className="h-[18px] w-[18px] shrink-0" />
+              {!collapsed && <span className="truncate">Terug naar huren</span>}
+            </button>
+          )}
+
+          {/* Uitloggen */}
+          <button
+            onClick={() => signOut()}
+            className={cn(
+              "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-rose-500 hover:bg-rose-50 w-full",
+              collapsed ? "justify-center px-2" : "gap-3 px-3"
+            )}
           >
-            <Building2 className="h-4 w-4" />
-            Switch naar Host
-          </Link>
+            <LogOut className="h-[18px] w-[18px] shrink-0" />
+            {!collapsed && <span className="truncate">Uitloggen</span>}
+          </button>
         </div>
       )}
+
+      {/* Toggle button */}
+      <div className={cn("border-t p-2 mt-1", collapsed ? "flex justify-center" : "flex justify-end px-4")}>
+        <button
+          onClick={toggleCollapsed}
+          className="flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          aria-label={collapsed ? "Sidebar uitklappen" : "Sidebar inklappen"}
+        >
+          <PanelLeft
+            className={cn(
+              "h-[18px] w-[18px] transition-transform duration-300",
+              collapsed && "rotate-180"
+            )}
+          />
+        </button>
+      </div>
     </aside>
   )
 }

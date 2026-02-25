@@ -26,12 +26,8 @@ export default async function EditProfilePage() {
     avatar_url: profile?.avatar_url || "",
     bio: profile?.bio || "",
     location: profile?.location || "",
-    professional_title: profile?.professional_title || "",
     phone: profile?.phone || "",
     user_type: profile?.user_type || "renter",
-    is_verified: profile?.is_verified || false,
-    response_rate: profile?.response_rate || 98,
-    response_time: profile?.response_time || "< 1hr",
   }
 
   return <EditProfileClient profile={profileData} />

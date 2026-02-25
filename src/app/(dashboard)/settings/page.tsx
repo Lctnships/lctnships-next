@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import { SignOutButton } from "./sign-out-button"
 
 export const metadata = {
   title: "Account Settings",
@@ -16,20 +17,20 @@ export default async function SettingsPage() {
     {
       href: "/profile/edit",
       icon: "person",
-      title: "Profile",
-      description: "Update your personal information and profile photo",
+      title: "Profiel",
+      description: "Pas je persoonlijke informatie en profielfoto aan",
     },
     {
       href: "/settings/privacy",
       icon: "shield_lock",
-      title: "Privacy & Notifications",
-      description: "Control visibility and notification preferences",
+      title: "Privacy & Notificaties",
+      description: "Beheer zichtbaarheid en notificatievoorkeuren",
     },
     {
       href: "/settings/security",
       icon: "verified_user",
-      title: "Security",
-      description: "Manage passwords, 2FA, and logged-in devices",
+      title: "Beveiliging",
+      description: "Beheer wachtwoorden, 2FA en ingelogde apparaten",
     },
   ]
 
@@ -37,9 +38,9 @@ export default async function SettingsPage() {
     <div className="flex flex-col gap-8">
       {/* Page Heading */}
       <div className="flex flex-col gap-2">
-        <h2 className="text-4xl font-black tracking-tight">Account Settings</h2>
+        <h2 className="text-4xl font-black tracking-tight">Accountinstellingen</h2>
         <p className="text-gray-500 text-lg">
-          Manage your account preferences and security settings.
+          Beheer je accountvoorkeuren en beveiligingsinstellingen.
         </p>
       </div>
 
@@ -64,27 +65,30 @@ export default async function SettingsPage() {
       <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
         <div className="flex items-center gap-3 mb-4">
           <span className="material-symbols-outlined text-primary">email</span>
-          <h3 className="text-lg font-bold">Account Email</h3>
+          <h3 className="text-lg font-bold">Account e-mail</h3>
         </div>
         <div className="flex items-center justify-between">
           <p className="text-gray-600">{user.email}</p>
           <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
-            Verified
+            Geverifieerd
           </span>
         </div>
       </div>
+
+      {/* Sign Out */}
+      <SignOutButton />
 
       {/* Danger Zone */}
       <div className="border border-red-200 rounded-2xl p-6 bg-red-50/50">
         <div className="flex items-center gap-3 mb-4">
           <span className="material-symbols-outlined text-red-500">warning</span>
-          <h3 className="text-lg font-bold text-red-700">Danger Zone</h3>
+          <h3 className="text-lg font-bold text-red-700">Gevarenzone</h3>
         </div>
         <p className="text-sm text-red-600 mb-4">
-          Once you delete your account, there is no going back. Please be certain.
+          Zodra je je account verwijdert, is er geen weg terug. Wees hier zeker van.
         </p>
         <button className="px-6 py-2 border-2 border-red-300 text-red-600 rounded-full font-bold text-sm hover:bg-red-100 transition-colors">
-          Delete Account
+          Account verwijderen
         </button>
       </div>
     </div>

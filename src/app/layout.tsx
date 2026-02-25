@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { Plus_Jakarta_Sans, Newsreader } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/sonner"
+import { UserProvider } from "@/components/providers/user-provider"
+import { createClient } from "@/lib/supabase/server"
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
@@ -25,11 +27,24 @@ export const metadata: Metadata = {
   keywords: ["studio rental", "creative space", "photography studio", "video studio", "podcast studio", "Netherlands"],
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  let profile = null
+  if (user) {
+    const { data } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", user.id)
+      .maybeSingle()
+    profile = data
+  }
+
   return (
     <html lang="nl" suppressHydrationWarning>
       <head>
@@ -39,7 +54,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${plusJakarta.variable} ${newsreader.variable} font-sans antialiased selection:bg-sky-200/30`}>
-        {children}
+        <UserProvider initialUser={user} initialProfile={profile}>
+          {children}
+        </UserProvider>
         <Toaster position="bottom-right" />
       </body>
     </html>

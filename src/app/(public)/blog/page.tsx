@@ -1,7 +1,6 @@
 import Link from "next/link"
-import Image from "next/image"
-import { ArrowRight, Search } from "lucide-react"
-import { blogArticles, blogCategories, getFeaturedArticle } from "@/data/blog-articles"
+import { ArrowRight } from "lucide-react"
+import { getBlogArticles, getBlogCategories, getFeaturedArticle } from "@/lib/supabase/blog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
@@ -10,9 +9,17 @@ export const metadata = {
   description: "Stories, insights, and inspiration for creative professionals. Discover studio tips, interviews, and production guides.",
 }
 
-export default function BlogPage() {
-  const featuredArticle = getFeaturedArticle()
-  const otherArticles = blogArticles.filter(a => !a.featured)
+// Revalidate every 5 minutes
+export const revalidate = 300
+
+export default async function BlogPage() {
+  const [featuredArticle, articles, categories] = await Promise.all([
+    getFeaturedArticle(),
+    getBlogArticles(),
+    getBlogCategories()
+  ])
+
+  const otherArticles = articles.filter(a => !a.is_featured)
 
   return (
     <div className="min-h-screen">
@@ -24,7 +31,7 @@ export default function BlogPage() {
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                 style={{
-                  backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%), url("${featuredArticle.coverImage}")`
+                  backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%), url("${featuredArticle.cover_image}")`
                 }}
               />
               <div className="relative p-8 lg:p-16 w-full flex flex-col lg:flex-row lg:items-end justify-between gap-8">
@@ -52,7 +59,7 @@ export default function BlogPage() {
       {/* Filters */}
       <section className="max-w-[1400px] mx-auto px-6 lg:px-20 mb-12 border-y border-gray-100 py-6">
         <div className="flex flex-wrap items-center justify-center gap-3">
-          {blogCategories.map((category, index) => (
+          {categories.map((category, index) => (
             <Button
               key={category.slug}
               variant={index === 0 ? "default" : "secondary"}
@@ -92,7 +99,7 @@ export default function BlogPage() {
                   <div className="overflow-hidden rounded-[24px] mb-4 bg-gray-100">
                     <div
                       className={`${aspectRatio} bg-cover bg-center transition-transform duration-500 group-hover:scale-105`}
-                      style={{ backgroundImage: `url("${article.coverImage}")` }}
+                      style={{ backgroundImage: `url("${article.cover_image}")` }}
                     />
                   </div>
                   <div>
@@ -106,9 +113,9 @@ export default function BlogPage() {
                       {article.excerpt}
                     </p>
                     <div className="flex items-center gap-3 text-gray-500 text-xs font-medium uppercase tracking-wider">
-                      <span>{article.readTime}</span>
+                      <span>{article.read_time}</span>
                       <span className="w-1 h-1 bg-gray-400 rounded-full" />
-                      <span>{article.tags[0]?.replace('#', '')}</span>
+                      <span>{article.tags[0]?.replace('#', '') || article.category_slug}</span>
                     </div>
                   </div>
                 </article>
