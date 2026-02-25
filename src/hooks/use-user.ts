@@ -4,13 +4,25 @@ import { useEffect, useState, useCallback, useRef } from "react"
 import { User } from "@supabase/supabase-js"
 import { createClient } from "@/lib/supabase/client"
 import { Tables } from "@/types/database.types"
+import { useUserContext } from "@/components/providers/user-provider"
 
 type Profile = Tables<"users">
 
+/**
+ * Primary hook for accessing authenticated user data.
+ *
+ * Inside dashboard pages (wrapped by UserProvider): reads from server-fetched context.
+ * No client-side API calls needed → no AbortError possible.
+ *
+ * Outside dashboard (no provider): falls back to client-side onAuthStateChange.
+ */
 export function useUser() {
+  const ctx = useUserContext()
+
+  // All hooks must always be called (React rules), even if ctx is available.
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(!ctx) // Immediately done if context exists
   const supabase = createClient()
   const mountedRef = useRef(true)
 
@@ -22,9 +34,7 @@ export function useUser() {
         .eq("id", userId)
         .maybeSingle()
 
-      if (error) {
-        return null
-      }
+      if (error) return null
       return data
     } catch {
       return null
@@ -32,11 +42,11 @@ export function useUser() {
   }, [supabase])
 
   useEffect(() => {
+    // Skip client-side auth entirely when UserProvider is present
+    if (ctx) return
+
     mountedRef.current = true
 
-    // Use onAuthStateChange as the single source of truth.
-    // INITIAL_SESSION fires immediately with the current session from cookies
-    // — no network request needed, so it won't get aborted.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mountedRef.current) return
@@ -59,8 +69,12 @@ export function useUser() {
       mountedRef.current = false
       subscription.unsubscribe()
     }
-  }, [supabase, fetchProfile])
+  }, [ctx, supabase, fetchProfile])
 
+  // When UserProvider is available, use server-fetched data
+  if (ctx) return ctx
+
+  // Fallback: client-side data
   const signOut = async () => {
     await supabase.auth.signOut()
     setUser(null)
@@ -69,7 +83,7 @@ export function useUser() {
   }
 
   const updateProfile = async (updates: Partial<Profile>) => {
-    if (!user) return { error: new Error("Not authenticated") }
+    if (!user) return { data: null, error: new Error("Not authenticated") }
 
     const { data, error } = await supabase
       .from("users")
@@ -78,10 +92,7 @@ export function useUser() {
       .select()
       .single()
 
-    if (data) {
-      setProfile(data)
-    }
-
+    if (data) setProfile(data)
     return { data, error }
   }
 

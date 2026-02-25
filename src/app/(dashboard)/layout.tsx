@@ -1,18 +1,38 @@
 import { Sidebar } from "@/components/layout/sidebar"
 import { Navbar } from "@/components/layout/navbar"
+import { UserProvider } from "@/components/providers/user-provider"
+import { createClient } from "@/lib/supabase/server"
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createClient()
+
+  // Fetch user server-side — the middleware already validated & refreshed the session,
+  // so this is guaranteed to succeed for authenticated users.
+  const { data: { user } } = await supabase.auth.getUser()
+
+  let profile = null
+  if (user) {
+    const { data } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", user.id)
+      .maybeSingle()
+    profile = data
+  }
+
   return (
-    <div className="min-h-screen flex">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="flex-1 p-6 bg-muted/30">{children}</main>
+    <UserProvider initialUser={user} initialProfile={profile}>
+      <div className="min-h-screen flex">
+        <Sidebar />
+        <div className="flex-1 flex flex-col">
+          <Navbar />
+          <main className="flex-1 p-6 bg-muted/30">{children}</main>
+        </div>
       </div>
-    </div>
+    </UserProvider>
   )
 }
