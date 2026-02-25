@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { useUser } from "@/hooks/use-user"
 import {
   LayoutDashboard,
   Calendar,
@@ -14,6 +15,7 @@ import {
   User,
   Settings,
   PanelLeft,
+  ArrowRightLeft,
 } from "lucide-react"
 import {
   Tooltip,
@@ -36,7 +38,12 @@ const userNavItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const { profile } = useUser()
   const [collapsed, setCollapsed] = useState(false)
+
+  const isHost = profile?.user_type === "host" || profile?.user_type === "both"
+  const isInHostMode = pathname.startsWith("/host")
 
   useEffect(() => {
     const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY)
@@ -105,6 +112,36 @@ export function Sidebar() {
           return linkContent
         })}
       </nav>
+
+      {/* Switch naar Host / Huurder button */}
+      {profile && (
+        <div className={cn("px-2 pb-2", collapsed ? "flex justify-center" : "")}>
+          {isHost && !isInHostMode && (
+            <button
+              onClick={() => router.push("/host/dashboard")}
+              className={cn(
+                "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-primary hover:bg-primary/10 w-full",
+                collapsed ? "justify-center px-2" : "gap-3 px-3"
+              )}
+            >
+              <ArrowRightLeft className="h-[18px] w-[18px] shrink-0" />
+              {!collapsed && <span className="truncate">Switch naar Host</span>}
+            </button>
+          )}
+          {isInHostMode && (
+            <button
+              onClick={() => router.push("/dashboard")}
+              className={cn(
+                "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-primary hover:bg-primary/10 w-full",
+                collapsed ? "justify-center px-2" : "gap-3 px-3"
+              )}
+            >
+              <ArrowRightLeft className="h-[18px] w-[18px] shrink-0" />
+              {!collapsed && <span className="truncate">Switch naar Huurder</span>}
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Toggle button */}
       <div className={cn("border-t p-2", collapsed ? "flex justify-center" : "flex justify-end px-4")}>
