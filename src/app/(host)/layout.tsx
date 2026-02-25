@@ -8,7 +8,7 @@ export default function HostLayout({
 }) {
   return (
     <div className="min-h-screen flex">
-      <Sidebar variant="host" />
+      <Sidebar />
       <div className="flex-1 flex flex-col">
         <Navbar />
         <main className="flex-1 p-6 bg-muted/30">{children}</main>
