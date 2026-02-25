@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { User } from "@supabase/supabase-js"
 import { createClient } from "@/lib/supabase/client"
 import { Tables } from "@/types/database.types"
@@ -12,6 +12,7 @@ export function useUser() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const supabase = createClient()
+  const mountedRef = useRef(true)
 
   const fetchProfile = useCallback(async (userId: string): Promise<Profile | null> => {
     try {
@@ -31,51 +32,33 @@ export function useUser() {
   }, [supabase])
 
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const { data: { user }, error } = await supabase.auth.getUser()
+    mountedRef.current = true
 
-        if (error || !user) {
-          setUser(null)
-          setProfile(null)
-          setIsLoading(false)
-          return
-        }
-
-        setUser(user)
-        const profileData = await fetchProfile(user.id)
-        setProfile(profileData)
-      } catch {
-        setUser(null)
-        setProfile(null)
-      }
-      setIsLoading(false)
-    }
-
-    getUser()
-
+    // Use onAuthStateChange as the single source of truth.
+    // INITIAL_SESSION fires immediately with the current session from cookies
+    // — no network request needed, so it won't get aborted.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        // Skip INITIAL_SESSION - it may contain an expired access token that
-        // hasn't been refreshed yet. The getUser() call above handles initial
-        // load properly by validating and refreshing the token first.
-        if (event === 'INITIAL_SESSION') return
+        if (!mountedRef.current) return
 
         const currentUser = session?.user ?? null
         setUser(currentUser)
 
         if (currentUser) {
           const profileData = await fetchProfile(currentUser.id)
-          setProfile(profileData)
+          if (mountedRef.current) setProfile(profileData)
         } else {
           setProfile(null)
         }
 
-        setIsLoading(false)
+        if (mountedRef.current) setIsLoading(false)
       }
     )
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mountedRef.current = false
+      subscription.unsubscribe()
+    }
   }, [supabase, fetchProfile])
 
   const signOut = async () => {
