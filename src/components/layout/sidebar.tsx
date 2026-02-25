@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { useUser } from "@/hooks/use-user"
 import {
   LayoutDashboard,
   Calendar,
@@ -14,6 +15,8 @@ import {
   User,
   Settings,
   PanelLeft,
+  ArrowRightLeft,
+  LogOut,
 } from "lucide-react"
 import {
   Tooltip,
@@ -36,7 +39,12 @@ const userNavItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const { profile, signOut } = useUser()
   const [collapsed, setCollapsed] = useState(false)
+
+  const isHost = profile?.user_type === "host" || profile?.user_type === "both"
+  const isInHostMode = pathname.startsWith("/host")
 
   useEffect(() => {
     const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY)
@@ -106,8 +114,50 @@ export function Sidebar() {
         })}
       </nav>
 
+      {/* Bottom section: Switch + Uitloggen + Toggle */}
+      {profile && (
+        <div className={cn("border-t px-2 pt-2 space-y-1", collapsed ? "items-center" : "")}>
+          {/* Switch naar Host / Huurder */}
+          {!isInHostMode ? (
+            <button
+              onClick={() => router.push(isHost ? "/host/dashboard" : "/host/onboarding")}
+              className={cn(
+                "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-primary hover:bg-primary/10 w-full",
+                collapsed ? "justify-center px-2" : "gap-3 px-3"
+              )}
+            >
+              <ArrowRightLeft className="h-[18px] w-[18px] shrink-0" />
+              {!collapsed && <span className="truncate">{isHost ? "Switch naar Host" : "Word Host"}</span>}
+            </button>
+          ) : (
+            <button
+              onClick={() => router.push("/dashboard")}
+              className={cn(
+                "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-primary hover:bg-primary/10 w-full",
+                collapsed ? "justify-center px-2" : "gap-3 px-3"
+              )}
+            >
+              <ArrowRightLeft className="h-[18px] w-[18px] shrink-0" />
+              {!collapsed && <span className="truncate">Terug naar huren</span>}
+            </button>
+          )}
+
+          {/* Uitloggen */}
+          <button
+            onClick={() => signOut()}
+            className={cn(
+              "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-rose-500 hover:bg-rose-50 w-full",
+              collapsed ? "justify-center px-2" : "gap-3 px-3"
+            )}
+          >
+            <LogOut className="h-[18px] w-[18px] shrink-0" />
+            {!collapsed && <span className="truncate">Uitloggen</span>}
+          </button>
+        </div>
+      )}
+
       {/* Toggle button */}
-      <div className={cn("border-t p-2", collapsed ? "flex justify-center" : "flex justify-end px-4")}>
+      <div className={cn("border-t p-2 mt-1", collapsed ? "flex justify-center" : "flex justify-end px-4")}>
         <button
           onClick={toggleCollapsed}
           className="flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"

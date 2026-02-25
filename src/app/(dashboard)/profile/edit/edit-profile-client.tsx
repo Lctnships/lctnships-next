@@ -136,10 +136,12 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
     }
   }
 
+  const isHost = profile.user_type === "host" || profile.user_type === "both"
+
   const tabs = [
     { id: "profile" as const, label: "Openbaar profiel", icon: "person" },
     { id: "account" as const, label: "Account", icon: "settings" },
-    { id: "payouts" as const, label: "Uitbetalingen", icon: "payments" },
+    ...(isHost ? [{ id: "payouts" as const, label: "Uitbetalingen", icon: "payments" }] : []),
     { id: "security" as const, label: "Beveiliging", icon: "security" },
   ]
 
@@ -328,7 +330,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
             </section>
           )}
 
-          {activeTab === "payouts" && (
+          {activeTab === "payouts" && isHost && (
             <section className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm">
               <h1 className="text-3xl font-bold mb-8">Uitbetalingen</h1>
               <div className="text-center py-12">
@@ -401,25 +403,27 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                 )}
               </div>
               <h4 className="text-xl font-bold">{formData.full_name || "Je naam"}</h4>
-              {profile.user_type === "host" && (
+              {isHost && (
                 <p className="text-xs font-medium text-primary uppercase tracking-widest mt-1">Superhost</p>
               )}
               <p className="text-sm text-gray-500 mt-3 line-clamp-2 italic">
                 &ldquo;{formData.bio?.slice(0, 80) || "Je bio verschijnt hier..."}&rdquo;
               </p>
-              <div className="w-full mt-6 pt-6 border-t border-gray-100 space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">Reactietijd</span>
-                  <span className="font-bold">{profile.response_time || "< 1 uur"}</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">Beoordeling</span>
-                  <div className="flex items-center gap-1 font-bold">
-                    <span className="material-symbols-outlined text-primary text-[14px]">star</span>
-                    5.0
+              {isHost && (
+                <div className="w-full mt-6 pt-6 border-t border-gray-100 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-500">Reactietijd</span>
+                    <span className="font-bold">{profile.response_time || "< 1 uur"}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-500">Beoordeling</span>
+                    <div className="flex items-center gap-1 font-bold">
+                      <span className="material-symbols-outlined text-primary text-[14px]">star</span>
+                      5.0
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
               <button className="w-full mt-6 py-3 rounded-full bg-gray-100 text-xs font-bold pointer-events-none">
                 Bekijk openbaar profiel
               </button>
@@ -428,7 +432,9 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
 
           <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10">
             <p className="text-xs text-primary font-bold leading-relaxed">
-              Je profiel is zichtbaar voor alle leden van de lcntships community. Houd het up-to-date om vertrouwen op te bouwen met potentiële huurders.
+              {isHost
+                ? "Je profiel is zichtbaar voor alle leden van de lcntships community. Houd het up-to-date om vertrouwen op te bouwen met potentiële huurders."
+                : "Je profiel is zichtbaar voor studio eigenaren wanneer je een boeking maakt."}
             </p>
           </div>
         </aside>
