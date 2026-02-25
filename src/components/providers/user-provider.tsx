@@ -70,14 +70,12 @@ export function UserProvider({
   }, [supabase])
 
   const signOut = async () => {
-    try {
-      await supabase.auth.signOut()
-    } catch {
-      // Ignore errors — always redirect to clear state
-    }
+    // Redirect immediately for instant UX — don't wait for API call
     setUser(null)
     setProfile(null)
     window.location.href = "/"
+    // Fire and forget — server will clear expired session on next request
+    supabase.auth.signOut().catch(() => {})
   }
 
   const updateProfile = async (updates: Partial<Profile>) => {

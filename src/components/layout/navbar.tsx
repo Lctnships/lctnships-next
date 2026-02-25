@@ -116,11 +116,18 @@ export function Navbar() {
               </DropdownMenu>
             </>
           ) : (
-            <Link href="/login">
-              <Button className="bg-primary text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-gray-800 transition-all">
-                Inloggen
-              </Button>
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/host/onboarding">
+                <Button variant="ghost" className="text-sm font-semibold text-gray-600 hover:text-black">
+                  List your Studio
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button className="bg-primary text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-gray-800 transition-all">
+                  Inloggen
+                </Button>
+              </Link>
+            </div>
           )}
 
           {/* Mobile menu */}

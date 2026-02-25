@@ -40,7 +40,7 @@ const userNavItems = [
 export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
-  const { profile, signOut } = useUser()
+  const { user, profile, signOut } = useUser()
   const [collapsed, setCollapsed] = useState(false)
 
   const isHost = profile?.user_type === "host" || profile?.user_type === "both"
@@ -115,7 +115,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom section: Switch + Uitloggen + Toggle */}
-      {profile && (
+      {user && (
         <div className={cn("border-t px-2 pt-2 space-y-1", collapsed ? "items-center" : "")}>
           {/* Switch naar Host / Huurder */}
           {!isInHostMode ? (
