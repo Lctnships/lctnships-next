@@ -15,11 +15,9 @@ export async function FeaturedStudios() {
   if (!studios || studios.length === 0) {
     return (
       <section className="max-w-[1440px] mx-auto px-8 mt-20">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="text-3xl font-extrabold tracking-tight">Featured Studios</h2>
-            <p className="text-gray-500 mt-2">Curated premium spaces for your next project</p>
-          </div>
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-extrabold tracking-tight">Featured Studios</h2>
+          <p className="text-gray-500 mt-2">Curated premium spaces for your next project</p>
         </div>
         <div className="text-center py-16">
           <span className="material-symbols-outlined text-5xl text-gray-300 mb-4 block">photo_camera</span>
@@ -31,14 +29,12 @@ export async function FeaturedStudios() {
 
   return (
     <section className="max-w-[1440px] mx-auto px-8 mt-20">
-      <div className="flex items-end justify-between mb-10">
-        <div>
-          <h2 className="text-3xl font-extrabold tracking-tight">Featured Studios</h2>
-          <p className="text-gray-500 mt-2">Curated premium spaces for your next project</p>
-        </div>
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-extrabold tracking-tight">Featured Studios</h2>
+        <p className="text-gray-500 mt-2">Curated premium spaces for your next project</p>
         <Link
           href="/studios"
-          className="text-sm font-bold flex items-center gap-2 group underline-offset-4 hover:underline"
+          className="inline-flex items-center gap-2 text-sm font-bold mt-4 group underline-offset-4 hover:underline"
         >
           Explore all studios{" "}
           <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">

@@ -30,7 +30,7 @@ export async function PortfolioSection() {
 
   return (
     <section className="max-w-[1440px] mx-auto px-8 mt-32">
-      <div className="mb-10">
+      <div className="text-center mb-10">
         <h2 className="text-3xl font-extrabold tracking-tight">Made with lcntships</h2>
         <p className="text-gray-500 mt-2">Work created by our community in our partner studios</p>
       </div>
