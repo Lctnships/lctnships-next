@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-import { getArticleBySlug, getRelatedArticles, getAllArticleSlugs } from "@/lib/supabase/blog"
+import { getArticleBySlug, getRelatedArticles } from "@/lib/supabase/blog"
 import { Button } from "@/components/ui/button"
 import { BlogProgressBar } from "./blog-progress-bar"
 
@@ -9,13 +9,8 @@ interface BlogArticlePageProps {
   params: Promise<{ slug: string }>
 }
 
-// Revalidate every 5 minutes
+// Revalidate every 5 minutes (ISR - caches on first request)
 export const revalidate = 300
-
-export async function generateStaticParams() {
-  const slugs = await getAllArticleSlugs()
-  return slugs.map((slug) => ({ slug }))
-}
 
 export async function generateMetadata({ params }: BlogArticlePageProps) {
   const { slug } = await params
