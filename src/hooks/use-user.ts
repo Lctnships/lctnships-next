@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { User } from "@supabase/supabase-js"
-import { createClient } from "@/lib/supabase/client"
+import { createClient, resetClient } from "@/lib/supabase/client"
 import { Tables } from "@/types/database.types"
 
 type Profile = Tables<"users">
@@ -79,9 +79,15 @@ export function useUser() {
   }, [supabase, fetchProfile])
 
   const signOut = async () => {
+    // Clear client-side session (localStorage)
     await supabase.auth.signOut()
+    // Clear server-side session (cookies) via API route
+    await fetch('/api/auth/signout', { method: 'POST' })
     setUser(null)
     setProfile(null)
+    // Reset the singleton client so next page load starts fresh
+    resetClient()
+    // Hard redirect to fully clear in-memory state
     window.location.href = "/"
   }
 
