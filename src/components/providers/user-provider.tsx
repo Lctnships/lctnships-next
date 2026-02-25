@@ -70,7 +70,11 @@ export function UserProvider({
   }, [supabase])
 
   const signOut = async () => {
-    await supabase.auth.signOut()
+    try {
+      await supabase.auth.signOut()
+    } catch {
+      // Ignore errors — always redirect to clear state
+    }
     setUser(null)
     setProfile(null)
     window.location.href = "/"

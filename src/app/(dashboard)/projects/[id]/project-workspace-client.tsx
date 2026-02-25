@@ -591,10 +591,6 @@ export function ProjectWorkspaceClient({
         </aside>
       </div>
 
-      {/* FAB */}
-      <button className="fixed bottom-8 right-8 size-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-50">
-        <span className="material-symbols-outlined text-3xl">add</span>
-      </button>
     </div>
   )
 }
