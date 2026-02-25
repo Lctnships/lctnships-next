@@ -19,8 +19,6 @@ export function Navbar() {
   const pathname = usePathname()
   const { user, profile, signOut, isLoading } = useUser()
 
-  const isHost = profile?.user_type === 'host' || profile?.user_type === 'both'
-
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
       <div className="max-w-[1440px] mx-auto px-8 h-20 flex items-center justify-between">
@@ -61,13 +59,6 @@ export function Navbar() {
         <div className="flex items-center gap-6">
           {user ? (
             <>
-              {/* Host CTA */}
-              {isHost && (
-                <Link href="/host/studios/new" className="hidden md:block">
-                  <span className="text-sm font-bold text-gray-900">List your studio</span>
-                </Link>
-              )}
-
               {/* Profile dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -94,50 +85,39 @@ export function Navbar() {
                     <Link href="/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/bookings">My Bookings</Link>
+                    <Link href="/bookings">Mijn Boekingen</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/projects">My Projects</Link>
+                    <Link href="/projects">Mijn Projecten</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/favorites">Favorites</Link>
+                    <Link href="/favorites">Favorieten</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/messages">Messages</Link>
+                    <Link href="/messages">Berichten</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/credits">Strippenkaart</Link>
                   </DropdownMenuItem>
-                  {isHost && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href="/host/dashboard">Host Dashboard</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/host/studios">My Studios</Link>
-                      </DropdownMenuItem>
-                    </>
-                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/profile">Profile</Link>
+                    <Link href="/profile">Profiel</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings">Instellingen</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => signOut()}>
-                    Sign out
+                    Uitloggen
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
           ) : (
             <>
-              <Link href="/host/onboarding" className="text-sm font-bold text-gray-900 hidden md:block">
-                List your studio
-              </Link>
               <Link href="/login">
                 <Button className="bg-primary text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-gray-800 transition-all">
-                  Login
+                  Inloggen
                 </Button>
               </Link>
             </>
@@ -161,11 +141,6 @@ export function Navbar() {
                 <Link href="/blog" className="text-lg font-semibold">
                   Blog
                 </Link>
-                {!user && (
-                  <Link href="/host/onboarding" className="text-lg font-semibold">
-                    List your studio
-                  </Link>
-                )}
               </nav>
             </SheetContent>
           </Sheet>

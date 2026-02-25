@@ -665,12 +665,8 @@ export default async function CountryPage({ params }: PageProps) {
               >
                 Explore Marketplace
               </Link>
-              <Link
-                href="/host/onboarding"
-                className="inline-flex items-center justify-center bg-white/10 hover:bg-white/20 text-white border border-white/20 h-14 px-10 rounded-xl font-bold text-lg transition-all"
-              >
-                List Your Studio
-              </Link>
+
+
             </div>
           </div>
         </section>

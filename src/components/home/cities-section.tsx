@@ -1,16 +1,38 @@
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
+import { createClient } from "@/lib/supabase/server"
 
-const cities = [
-  { name: "Amsterdam", studios: 45, slug: "amsterdam" },
-  { name: "Rotterdam", studios: 32, slug: "rotterdam" },
-  { name: "Utrecht", studios: 28, slug: "utrecht" },
-  { name: "Den Haag", studios: 24, slug: "den-haag" },
-  { name: "Eindhoven", studios: 18, slug: "eindhoven" },
-  { name: "Groningen", studios: 12, slug: "groningen" },
-]
+export async function CitiesSection() {
+  const supabase = await createClient()
 
-export function CitiesSection() {
+  const { data: studios } = await supabase
+    .from("studios")
+    .select("city")
+    .eq("status", "active")
+
+  const cityCounts = new Map<string, number>()
+  if (studios) {
+    for (const studio of studios) {
+      if (studio.city) {
+        const city = studio.city
+        cityCounts.set(city, (cityCounts.get(city) || 0) + 1)
+      }
+    }
+  }
+
+  const cities = Array.from(cityCounts.entries())
+    .map(([name, count]) => ({
+      name,
+      studios: count,
+      slug: name.toLowerCase().replace(/\s+/g, "-"),
+    }))
+    .sort((a, b) => b.studios - a.studios)
+    .slice(0, 6)
+
+  if (cities.length === 0) {
+    return null
+  }
+
   return (
     <section className="py-16">
       <div className="container">

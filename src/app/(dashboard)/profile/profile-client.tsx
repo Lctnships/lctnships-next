@@ -202,19 +202,8 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
                 </Link>
               ))}
 
-              {/* Add Listing Placeholder */}
-              {isOwnProfile && (
-                <Link
-                  href="/host/onboarding"
-                  className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl aspect-[4/3] hover:bg-gray-50 transition-all cursor-pointer group"
-                >
-                  <div className="size-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-3xl">add</span>
-                  </div>
-                  <p className="font-bold">List a new studio</p>
-                  <p className="text-sm text-gray-500">Reach 20k+ monthly creatives</p>
-                </Link>
-              )}
+
+
             </div>
           )}
 

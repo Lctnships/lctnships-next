@@ -18,9 +18,9 @@ const categories = [
   },
   {
     icon: "storefront",
-    title: "For Hosts",
-    description: "Tips and tools for studio owners to maximize visibility and bookings.",
-    href: "/help/hosts",
+    title: "Studio Informatie",
+    description: "Alles over studio's, faciliteiten en wat je kunt verwachten.",
+    href: "/help/studios",
   },
   {
     icon: "settings",
@@ -44,9 +44,9 @@ const categories = [
 
 const faqs = [
   {
-    question: "How do I list my creative studio?",
+    question: "Hoe boek ik een studio?",
     answer:
-      'To list your studio, click on the "Host" button in the navigation bar and follow the step-by-step verification process. You\'ll need high-quality photos and equipment details.',
+      'Zoek een studio via "Find a Studio", kies een datum en tijd, en volg het boekingsproces. Na bevestiging ontvang je een bevestigingsmail.',
   },
   {
     question: "What is the standard cancellation policy?",
