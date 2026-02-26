@@ -6,6 +6,17 @@ export const metadata = {
   title: "Inspiratie | lcntships",
 }
 
+const fallbackItems = [
+  { id: "fallback-1", title: "Editorial Shoot", image: "/DSC01072.jpg", location: "Amsterdam" },
+  { id: "fallback-2", title: "Blackkstarr Editorial", image: "/473152595_1246501043249763_3246981115478679962_n.jpg", location: "Amsterdam" },
+  { id: "fallback-3", title: "Portrait Session", image: "/DSC02737-bewerkt.jpg", location: "Amsterdam" },
+  { id: "fallback-4", title: "Crown Series", image: "/473273964_1246500853249782_1939085566303266140_n.jpg", location: "Amsterdam" },
+  { id: "fallback-5", title: "Couple Shoot", image: "/DSC05289.jpg", location: "Amsterdam" },
+  { id: "fallback-6", title: "Portrait Photography", image: "/DSC02741.jpg", location: "Amsterdam" },
+  { id: "fallback-7", title: "Headshot Session", image: "/IMG_4694.jpg", location: "Amsterdam" },
+  { id: "fallback-8", title: "Creative Portrait", image: "/497357232_18056287139337039_1118796353651795177_n.jpg", location: "Amsterdam" },
+]
+
 export default async function InspirationPage() {
   const supabase = await createClient()
 
@@ -35,23 +46,8 @@ export default async function InspirationPage() {
     }
   }
 
-  if (inspirationItems.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center py-20">
-          <span className="material-symbols-outlined text-6xl text-gray-300 mb-4 block">photo_library</span>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">Nog geen inspiratie beschikbaar</h3>
-          <p className="text-gray-500 mb-6">Zodra er studio&apos;s worden toegevoegd, verschijnen ze hier.</p>
-          <Link
-            href="/studios"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-bold hover:bg-primary/90 transition-colors"
-          >
-            Bekijk studio&apos;s
-          </Link>
-        </div>
-      </div>
-    )
-  }
+  // Include local images alongside database images
+  const items = [...fallbackItems, ...inspirationItems]
 
   return (
     <div className="min-h-screen">
@@ -64,7 +60,7 @@ export default async function InspirationPage() {
       {/* Masonry Grid */}
       <div className="px-4 lg:px-8">
         <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5 gap-5 max-w-[2000px] mx-auto pb-24">
-          {inspirationItems.map((item) => (
+          {items.map((item) => (
             <div
               key={item.id}
               className="break-inside-avoid mb-5 group relative rounded-[24px] overflow-hidden"

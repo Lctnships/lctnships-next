@@ -134,22 +134,22 @@ export function BookingsClient({ bookings, favorites, totalHours }: BookingsClie
   return (
     <div className="min-h-screen bg-[#f6f6f8]">
       {/* Page Header */}
-      <div className="max-w-[1440px] mx-auto px-10 py-10">
-        <div className="flex justify-between items-end mb-8">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-10 py-6 md:py-10">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-[#0d121b]">My Bookings</h1>
-            <p className="text-[#4c669a] mt-1 font-medium">Manage and track your studio sessions</p>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#0d121b]">My Bookings</h1>
+            <p className="text-[#4c669a] mt-1 font-medium text-sm md:text-base">Manage and track your studio sessions</p>
           </div>
           <Link
             href="/studios"
-            className="bg-[#2b6cee] hover:bg-[#2b6cee]/90 text-white rounded-full px-8 py-3 text-sm font-bold flex items-center gap-2 shadow-lg shadow-[#2b6cee]/20 transition-all"
+            className="bg-[#2b6cee] hover:bg-[#2b6cee]/90 text-white rounded-full px-6 md:px-8 py-3 text-sm font-bold flex items-center gap-2 shadow-lg shadow-[#2b6cee]/20 transition-all w-fit"
           >
             <span className="material-symbols-outlined text-lg">add</span>
             Book a Studio
           </Link>
         </div>
 
-        <div className="flex gap-10">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
           {/* Main Content */}
           <div className="flex-1">
             {/* Search Bar */}
@@ -169,7 +169,7 @@ export function BookingsClient({ bookings, favorites, totalHours }: BookingsClie
 
             {/* Tabs */}
             <div className="mb-8">
-              <div className="flex border-b border-[#cfd7e7] gap-12">
+              <div className="flex border-b border-[#cfd7e7] gap-6 md:gap-12 overflow-x-auto">
                 <button
                   onClick={() => setActiveTab("upcoming")}
                   className={`flex items-center gap-2 border-b-[3px] pb-4 px-2 font-bold text-sm tracking-wide transition-colors ${
@@ -249,7 +249,7 @@ export function BookingsClient({ bookings, favorites, totalHours }: BookingsClie
           </div>
 
           {/* Sidebar */}
-          <aside className="w-80 flex flex-col gap-8">
+          <aside className="hidden lg:flex w-80 flex-col gap-8">
             {/* Stats Card */}
             <div className="bg-white rounded-xl p-8 border border-[#e7ebf3] shadow-sm text-center">
               <div className="inline-flex items-center justify-center size-16 bg-[#2b6cee]/10 rounded-full mb-4">
@@ -371,8 +371,8 @@ function BookingCard({
 
   return (
     <div className="bg-white rounded-xl border border-[#e7ebf3] shadow-sm overflow-hidden group">
-      <div className="flex gap-6 p-6">
-        <div className="w-64 h-44 rounded-xl overflow-hidden shrink-0 relative">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
+        <div className="w-full md:w-64 h-44 rounded-xl overflow-hidden shrink-0 relative">
           {coverImage ? (
             <Image
               src={coverImage.image_url}
@@ -395,7 +395,7 @@ function BookingCard({
               </div>
               {getStatusBadge(booking.status)}
             </div>
-            <div className="flex gap-6 mt-6">
+            <div className="flex flex-wrap gap-4 md:gap-6 mt-4 md:mt-6">
               <div className="flex items-center gap-3">
                 <div className="bg-[#f0f2f5] p-2 rounded-lg">
                   <span className="material-symbols-outlined text-[#2b6cee]">calendar_today</span>
@@ -416,8 +416,8 @@ function BookingCard({
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between mt-6">
-            <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4 md:mt-6 gap-3">
+            <div className="flex flex-wrap gap-2 md:gap-3">
               {isPast ? (
                 <>
                   {!booking.has_review ? (

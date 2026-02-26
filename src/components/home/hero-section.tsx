@@ -168,7 +168,7 @@ export function HeroSection() {
         <div
           className="relative min-h-[640px] rounded-[32px] overflow-hidden flex flex-col items-center justify-center p-8 bg-cover bg-center"
           style={{
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2940&auto=format&fit=crop')`,
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.4)), url('/hero-photo-studio.jpeg')`,
           }}
         >
           <div className="relative z-10 w-full max-w-4xl text-center">
@@ -177,11 +177,11 @@ export function HeroSection() {
             </h1>
 
             {/* Search Bar */}
-            <div className="bg-white p-2 rounded-full shadow-2xl flex flex-col md:flex-row items-stretch max-w-3xl mx-auto border border-white/20">
+            <div className="bg-white p-4 md:p-2 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-stretch max-w-3xl mx-auto border border-white/20">
               {/* Activity */}
               <button
                 onClick={() => setShowActivityModal(true)}
-                className="flex-1 flex items-center px-4 md:px-6 py-3 md:py-0 md:border-r border-gray-100 hover:bg-gray-50 transition-colors rounded-full md:rounded-l-full md:rounded-r-none text-left"
+                className="flex-1 flex items-center px-4 md:px-6 py-3 md:py-0 border-b md:border-b-0 md:border-r border-gray-100 hover:bg-gray-50 transition-colors rounded-xl md:rounded-l-full md:rounded-r-none text-left"
               >
                 <span className="material-symbols-outlined text-gray-400 mr-3">search</span>
                 <div className="flex flex-col">
@@ -199,7 +199,7 @@ export function HeroSection() {
                     setShowLocationDropdown(!showLocationDropdown)
                     setShowDatePicker(false)
                   }}
-                  className="w-full flex items-center px-4 md:px-6 py-3 md:py-0 md:border-r border-gray-100 hover:bg-gray-50 transition-colors h-full text-left"
+                  className="w-full flex items-center px-4 md:px-6 py-3 md:py-0 border-b md:border-b-0 md:border-r border-gray-100 hover:bg-gray-50 transition-colors h-full text-left"
                 >
                   <span className="material-symbols-outlined text-gray-400 mr-3">location_on</span>
                   <div className="flex flex-col">
@@ -265,7 +265,7 @@ export function HeroSection() {
 
                 {/* Date Picker Dropdown */}
                 {showDatePicker && (
-                  <div className="absolute top-full right-0 mt-2 w-[600px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-6 z-50">
+                  <div className="absolute top-full right-0 md:right-0 left-0 md:left-auto mt-2 w-full md:w-[600px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-4 md:p-6 z-50">
                     <div className="flex gap-2 mb-4">
                       <button className="text-xs font-bold uppercase text-gray-400 px-3 py-1">Popular Cities</button>
                       <button className="text-xs font-bold uppercase text-primary px-3 py-1 border-b-2 border-primary">Select Dates</button>
@@ -288,7 +288,7 @@ export function HeroSection() {
                     </div>
 
                     {/* Two Month Calendar */}
-                    <div className="grid grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {[currentMonth, nextMonth].map((month, monthIndex) => (
                         <div key={monthIndex}>
                           <h4 className="text-center font-bold mb-4">
@@ -347,9 +347,10 @@ export function HeroSection() {
               {/* Search button */}
               <button
                 onClick={handleSearch}
-                className="bg-primary text-white size-12 md:size-14 rounded-full flex items-center justify-center hover:scale-105 transition-transform shrink-0 mt-2 md:mt-0 mx-auto md:mx-0"
+                className="bg-primary text-white h-12 md:size-14 rounded-full flex items-center justify-center hover:scale-105 transition-transform shrink-0 mt-2 md:mt-0 w-full md:w-14 gap-2 md:gap-0"
               >
                 <span className="material-symbols-outlined">search</span>
+                <span className="md:hidden text-sm font-bold">Search Studios</span>
               </button>
             </div>
           </div>

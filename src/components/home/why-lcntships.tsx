@@ -18,9 +18,9 @@ const features = [
 
 export function WhyLcntships() {
   return (
-    <section className="max-w-[1440px] mx-auto px-8 mt-32 py-20 bg-[#f8f9fa] rounded-[32px]">
-      <h2 className="text-center text-3xl font-extrabold tracking-tight mb-16">Built for Creators</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-16 px-10">
+    <section className="max-w-[1440px] mx-auto px-4 md:px-8 mt-16 md:mt-32 py-12 md:py-20 bg-[#f8f9fa] rounded-[24px] md:rounded-[32px]">
+      <h2 className="text-center text-2xl md:text-3xl font-extrabold tracking-tight mb-8 md:mb-16">Built for Creators</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 px-2 md:px-10">
         {features.map((feature) => (
           <div key={feature.title} className="text-center flex flex-col items-center">
             <div className="size-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-6">
