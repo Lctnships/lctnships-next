@@ -11,13 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Menu } from "lucide-react"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Menu, Search, Sparkles, BookOpen, Home, Calendar, FolderOpen, Heart, MessageSquare, User, Settings, LogOut } from "lucide-react"
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { useUser } from "@/hooks/use-user"
+import { useState } from "react"
 
 export function Navbar() {
   const pathname = usePathname()
   const { user, profile, signOut, isLoading } = useUser()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
@@ -116,7 +118,7 @@ export function Navbar() {
               </DropdownMenu>
             </>
           ) : (
-            <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-3">
               <Link href="/host/onboarding">
                 <Button variant="ghost" className="text-sm font-semibold text-gray-600 hover:text-black">
                   List your Studio
@@ -131,55 +133,107 @@ export function Navbar() {
           )}
 
           {/* Mobile menu */}
-          <Sheet>
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild className="lg:hidden">
               <Button variant="ghost" size="icon">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right">
-              <nav className="flex flex-col space-y-4 mt-8">
-                <Link href="/studios" className="text-lg font-semibold">
-                  Find a Studio
+            <SheetContent side="right" className="w-full sm:max-w-sm p-0 flex flex-col" showCloseButton={false}>
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                <Link href="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+                  <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 4L44 24L24 44L4 24L24 4Z" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M24 14V34" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/>
+                  </svg>
+                  <span className="text-lg font-extrabold tracking-tight">lcntships</span>
                 </Link>
-                <Link href="/inspiration" className="text-lg font-semibold">
-                  Inspiration
-                </Link>
-                <Link href="/blog" className="text-lg font-semibold">
-                  Blog
-                </Link>
-                {user && (
+                <SheetClose asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <span className="material-symbols-outlined text-xl">close</span>
+                  </Button>
+                </SheetClose>
+              </div>
+
+              {/* Navigation */}
+              <div className="flex-1 overflow-y-auto px-6 py-6">
+                <div className="space-y-1">
+                  {[
+                    { href: "/studios", icon: Search, label: "Find a Studio" },
+                    { href: "/inspiration", icon: Sparkles, label: "Inspiration" },
+                    { href: "/blog", icon: BookOpen, label: "Blog" },
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-semibold transition-colors ${
+                        pathname === item.href
+                          ? "bg-gray-100 text-black"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-black"
+                      }`}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+
+                {user ? (
                   <>
-                    <div className="border-t border-gray-100 pt-4 mt-4">
-                      <p className="text-xs font-bold uppercase text-gray-400 mb-3">Account</p>
-                      <div className="flex flex-col space-y-3">
-                        <Link href="/dashboard" className="text-base font-semibold text-gray-700">Dashboard</Link>
-                        <Link href="/bookings" className="text-base font-semibold text-gray-700">Mijn Boekingen</Link>
-                        <Link href="/projects" className="text-base font-semibold text-gray-700">Mijn Projecten</Link>
-                        <Link href="/favorites" className="text-base font-semibold text-gray-700">Favorieten</Link>
-                        <Link href="/messages" className="text-base font-semibold text-gray-700">Berichten</Link>
-                        <Link href="/profile" className="text-base font-semibold text-gray-700">Profiel</Link>
-                        <Link href="/settings" className="text-base font-semibold text-gray-700">Instellingen</Link>
-                      </div>
-                    </div>
-                    <div className="border-t border-gray-100 pt-4">
-                      <button onClick={() => signOut()} className="text-base font-semibold text-rose-500">
-                        Uitloggen
-                      </button>
-                    </div>
+                    {[
+                      { href: "/dashboard", icon: Home, label: "Dashboard" },
+                      { href: "/bookings", icon: Calendar, label: "Mijn Boekingen" },
+                      { href: "/projects", icon: FolderOpen, label: "Mijn Projecten" },
+                      { href: "/favorites", icon: Heart, label: "Favorieten" },
+                      { href: "/messages", icon: MessageSquare, label: "Berichten" },
+                      { href: "/profile", icon: User, label: "Profiel" },
+                      { href: "/settings", icon: Settings, label: "Instellingen" },
+                    ].map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-semibold transition-colors ${
+                          pathname === item.href
+                            ? "bg-gray-100 text-black"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-black"
+                        }`}
+                      >
+                        <item.icon className="h-5 w-5" />
+                        {item.label}
+                      </Link>
+                    ))}
+                    <button
+                      onClick={() => { signOut(); setMobileMenuOpen(false) }}
+                      className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-semibold text-rose-500 hover:bg-rose-50 transition-colors w-full"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      Uitloggen
+                    </button>
                   </>
-                )}
-                {!user && (
-                  <div className="border-t border-gray-100 pt-4 mt-4 flex flex-col space-y-3">
-                    <Link href="/host/onboarding" className="text-base font-semibold text-gray-700">
+                ) : (
+                  <>
+                    <Link
+                      href="/host/onboarding"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-black transition-colors"
+                    >
+                      <Home className="h-5 w-5" />
                       List your Studio
                     </Link>
-                    <Link href="/login" className="text-base font-semibold text-primary">
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-black transition-colors"
+                    >
+                      <User className="h-5 w-5" />
                       Inloggen
                     </Link>
-                  </div>
+                  </>
                 )}
-              </nav>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
