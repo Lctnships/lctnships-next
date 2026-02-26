@@ -8,7 +8,8 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
           {/* Logo & Description */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="inline-block mb-6">
+            <Link href="/" className="inline-flex items-center gap-2 mb-6">
+              <Image src="/icon logo.png" alt="" width={28} height={28} className="h-7 w-7 opacity-80" />
               <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-8 w-auto" />
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
