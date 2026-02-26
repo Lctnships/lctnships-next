@@ -75,6 +75,8 @@ export default async function InspirationPage() {
                     src={item.image}
                     alt={item.title}
                     fill
+                    loading="lazy"
+                    quality={75}
                     className="object-cover object-top"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
                   />

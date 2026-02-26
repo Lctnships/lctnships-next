@@ -61,6 +61,8 @@ export async function PortfolioSection() {
                   src={img.src}
                   alt={img.alt}
                   fill
+                  loading="lazy"
+                  quality={75}
                   className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                   sizes="(max-width: 768px) 50vw, 25vw"
                 />

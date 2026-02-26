@@ -142,3 +142,40 @@
 .material-symbols-outlined.filled {
   font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
 }
+
+/* Sailboat loader animations */
+@keyframes sailboat {
+  0%, 100% {
+    transform: rotate(-3deg) translateY(0px);
+  }
+  25% {
+    transform: rotate(2deg) translateY(-6px);
+  }
+  50% {
+    transform: rotate(-2deg) translateY(-2px);
+  }
+  75% {
+    transform: rotate(3deg) translateY(-8px);
+  }
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-sailboat {
+  animation: sailboat 3s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.animate-wave {
+  animation: wave 2s ease-in-out infinite;
+}
