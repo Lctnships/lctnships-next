@@ -6,16 +6,19 @@ export const metadata = {
   title: "Inspiratie | lcntships",
 }
 
+// Pinterest-style: varied aspect ratios for masonry effect
 const fallbackItems = [
-  { id: "fallback-1", title: "Editorial Shoot", image: "/DSC01072.jpg", location: "Amsterdam" },
-  { id: "fallback-2", title: "Blackkstarr Editorial", image: "/473152595_1246501043249763_3246981115478679962_n.jpg", location: "Amsterdam" },
-  { id: "fallback-3", title: "Portrait Session", image: "/DSC02737-bewerkt.jpg", location: "Amsterdam" },
-  { id: "fallback-4", title: "Crown Series", image: "/473273964_1246500853249782_1939085566303266140_n.jpg", location: "Amsterdam" },
-  { id: "fallback-5", title: "Couple Shoot", image: "/DSC05289.jpg", location: "Amsterdam" },
-  { id: "fallback-6", title: "Portrait Photography", image: "/DSC02741.jpg", location: "Amsterdam" },
-  { id: "fallback-7", title: "Headshot Session", image: "/IMG_4694.jpg", location: "Amsterdam" },
-  { id: "fallback-8", title: "Creative Portrait", image: "/497357232_18056287139337039_1118796353651795177_n.jpg", location: "Amsterdam" },
+  { id: "fallback-1", title: "Editorial Shoot", image: "/DSC01072.jpg", location: "Amsterdam", aspect: "aspect-[3/4]" },
+  { id: "fallback-2", title: "Blackkstarr Editorial", image: "/473152595_1246501043249763_3246981115478679962_n.jpg", location: "Amsterdam", aspect: "aspect-[4/5]" },
+  { id: "fallback-3", title: "Portrait Session", image: "/DSC02737-bewerkt.jpg", location: "Amsterdam", aspect: "aspect-[2/3]" },
+  { id: "fallback-4", title: "Crown Series", image: "/473273964_1246500853249782_1939085566303266140_n.jpg", location: "Amsterdam", aspect: "aspect-[4/5]" },
+  { id: "fallback-5", title: "Couple Shoot", image: "/DSC05289.jpg", location: "Amsterdam", aspect: "aspect-[3/4]" },
+  { id: "fallback-6", title: "Portrait Photography", image: "/DSC02741.jpg", location: "Amsterdam", aspect: "aspect-[2/3]" },
+  { id: "fallback-7", title: "Headshot Session", image: "/IMG_4694.jpg", location: "Amsterdam", aspect: "aspect-[4/5]" },
+  { id: "fallback-8", title: "Creative Portrait", image: "/497357232_18056287139337039_1118796353651795177_n.jpg", location: "Amsterdam", aspect: "aspect-[3/4]" },
 ]
+
+const aspectRatios = ["aspect-[3/4]", "aspect-[4/5]", "aspect-[2/3]", "aspect-[4/5]", "aspect-[3/4]", "aspect-[2/3]"]
 
 export default async function InspirationPage() {
   const supabase = await createClient()
@@ -28,7 +31,7 @@ export default async function InspirationPage() {
     .order("created_at", { ascending: false })
     .limit(20)
 
-  const inspirationItems: { id: string; title: string; image: string; location: string }[] = []
+  const inspirationItems: { id: string; title: string; image: string; location: string; aspect?: string }[] = []
   if (studios) {
     for (const studio of studios) {
       if (studio.images && Array.isArray(studio.images)) {
@@ -57,31 +60,34 @@ export default async function InspirationPage() {
         <p className="text-gray-500">Ontdek creatieve ruimtes van onze community</p>
       </div>
 
-      {/* Masonry Grid */}
-      <div className="px-4 lg:px-8">
-        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5 gap-5 max-w-[2000px] mx-auto pb-24">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className="break-inside-avoid mb-5 group relative rounded-[24px] overflow-hidden"
-            >
-              <div className="aspect-[3/4] w-full relative">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
-                />
+      {/* Pinterest Masonry Grid */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pb-24">
+        <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-4">
+          {items.map((item, index) => {
+            const aspect = item.aspect || aspectRatios[index % aspectRatios.length]
+            return (
+              <div
+                key={item.id}
+                className="break-inside-avoid mb-4 group relative rounded-2xl overflow-hidden cursor-pointer"
+              >
+                <div className={`${aspect} w-full relative`}>
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                  <p className="text-white text-sm font-bold truncate">{item.title}</p>
+                  {item.location && (
+                    <p className="text-white/70 text-xs mt-0.5">{item.location}</p>
+                  )}
+                </div>
               </div>
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                <p className="text-white text-sm font-bold truncate">{item.title}</p>
-                {item.location && (
-                  <p className="text-white/80 text-xs">{item.location}</p>
-                )}
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>

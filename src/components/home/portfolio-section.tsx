@@ -1,16 +1,19 @@
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/server"
 
+// Bento-style: varied aspect ratios for dynamic layout
 const fallbackImages = [
-  { src: "/DSC01072.jpg", alt: "Editorial Shoot" },
-  { src: "/473152595_1246501043249763_3246981115478679962_n.jpg", alt: "Blackkstarr Editorial" },
-  { src: "/DSC02737-bewerkt.jpg", alt: "Portrait Session" },
-  { src: "/473273964_1246500853249782_1939085566303266140_n.jpg", alt: "Crown Series" },
-  { src: "/DSC05289.jpg", alt: "Couple Shoot" },
-  { src: "/DSC02741.jpg", alt: "Portrait Photography" },
-  { src: "/IMG_4694.jpg", alt: "Headshot Session" },
-  { src: "/497357232_18056287139337039_1118796353651795177_n.jpg", alt: "Creative Portrait" },
+  { src: "/DSC01072.jpg", alt: "Editorial Shoot", aspect: "aspect-[3/4]" },
+  { src: "/473152595_1246501043249763_3246981115478679962_n.jpg", alt: "Blackkstarr Editorial", aspect: "aspect-[4/5]" },
+  { src: "/DSC02737-bewerkt.jpg", alt: "Portrait Session", aspect: "aspect-[2/3]" },
+  { src: "/473273964_1246500853249782_1939085566303266140_n.jpg", alt: "Crown Series", aspect: "aspect-[3/4]" },
+  { src: "/DSC05289.jpg", alt: "Couple Shoot", aspect: "aspect-[4/5]" },
+  { src: "/DSC02741.jpg", alt: "Portrait Photography", aspect: "aspect-[3/4]" },
+  { src: "/IMG_4694.jpg", alt: "Headshot Session", aspect: "aspect-[2/3]" },
+  { src: "/497357232_18056287139337039_1118796353651795177_n.jpg", alt: "Creative Portrait", aspect: "aspect-[4/5]" },
 ]
+
+const defaultAspects = ["aspect-[3/4]", "aspect-[4/5]", "aspect-[2/3]", "aspect-[3/4]", "aspect-[4/5]", "aspect-[3/4]", "aspect-[2/3]", "aspect-[4/5]"]
 
 export async function PortfolioSection() {
   const supabase = await createClient()
@@ -45,26 +48,29 @@ export async function PortfolioSection() {
         <p className="text-gray-500 mt-2">Work created by our community in our partner studios</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl mx-auto">
-        {images.map((img, index) => (
-          <div
-            key={index}
-            className={`relative w-full rounded-[32px] overflow-hidden ${
-              index % 2 === 0 ? "h-72 sm:h-96" : "h-80 sm:h-[28rem]"
-            }`}
-          >
-            <Image
-              src={img.src}
-              alt={img.alt}
-              fill
-              className="object-cover hover:scale-105 transition-transform duration-500"
-              sizes="(max-width: 640px) 100vw, 50vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-              <p className="text-white font-bold text-lg">{img.alt}</p>
+      <div className="columns-2 md:columns-4 gap-3 md:gap-4">
+        {images.map((img, index) => {
+          const aspect = (img as any).aspect || defaultAspects[index % defaultAspects.length]
+          return (
+            <div
+              key={index}
+              className="break-inside-avoid mb-3 md:mb-4 group relative rounded-2xl md:rounded-3xl overflow-hidden"
+            >
+              <div className={`${aspect} w-full relative`}>
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                <p className="text-white font-bold text-sm md:text-base">{img.alt}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </section>
   )
