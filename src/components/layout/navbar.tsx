@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -25,14 +26,8 @@ export function Navbar() {
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="text-primary">
-            <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M24 4L44 24L24 44L4 24L24 4Z" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M24 14V34" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/>
-            </svg>
-          </div>
-          <span className="text-xl font-extrabold tracking-tight">lcntships</span>
+        <Link href="/">
+          <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-8 md:h-9 w-auto" priority />
         </Link>
 
         {/* Desktop Navigation */}
@@ -142,12 +137,8 @@ export function Navbar() {
             <SheetContent side="right" className="w-full sm:max-w-sm p-0 flex flex-col" showCloseButton={false}>
               {/* Header */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-                <Link href="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
-                  <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M24 4L44 24L24 44L4 24L24 4Z" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M24 14V34" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/>
-                  </svg>
-                  <span className="text-lg font-extrabold tracking-tight">lcntships</span>
+                <Link href="/" onClick={() => setMobileMenuOpen(false)}>
+                  <Image src="/Lctnships-cropped.png" alt="lcntships" width={120} height={53} className="h-7 w-auto" />
                 </Link>
                 <SheetClose asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
