@@ -265,7 +265,7 @@ export function HeroSection() {
 
                 {/* Date Picker Dropdown */}
                 {showDatePicker && (
-                  <div className="absolute top-full right-0 mt-2 w-[600px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-6 z-50">
+                  <div className="absolute top-full right-0 md:right-0 left-0 md:left-auto mt-2 w-full md:w-[600px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-4 md:p-6 z-50">
                     <div className="flex gap-2 mb-4">
                       <button className="text-xs font-bold uppercase text-gray-400 px-3 py-1">Popular Cities</button>
                       <button className="text-xs font-bold uppercase text-primary px-3 py-1 border-b-2 border-primary">Select Dates</button>
@@ -288,7 +288,7 @@ export function HeroSection() {
                     </div>
 
                     {/* Two Month Calendar */}
-                    <div className="grid grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {[currentMonth, nextMonth].map((month, monthIndex) => (
                         <div key={monthIndex}>
                           <h4 className="text-center font-bold mb-4">

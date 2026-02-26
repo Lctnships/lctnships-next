@@ -21,7 +21,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
-      <div className="max-w-[1440px] mx-auto px-8 h-20 flex items-center justify-between">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="text-primary">
@@ -148,6 +148,37 @@ export function Navbar() {
                 <Link href="/blog" className="text-lg font-semibold">
                   Blog
                 </Link>
+                {user && (
+                  <>
+                    <div className="border-t border-gray-100 pt-4 mt-4">
+                      <p className="text-xs font-bold uppercase text-gray-400 mb-3">Account</p>
+                      <div className="flex flex-col space-y-3">
+                        <Link href="/dashboard" className="text-base font-semibold text-gray-700">Dashboard</Link>
+                        <Link href="/bookings" className="text-base font-semibold text-gray-700">Mijn Boekingen</Link>
+                        <Link href="/projects" className="text-base font-semibold text-gray-700">Mijn Projecten</Link>
+                        <Link href="/favorites" className="text-base font-semibold text-gray-700">Favorieten</Link>
+                        <Link href="/messages" className="text-base font-semibold text-gray-700">Berichten</Link>
+                        <Link href="/profile" className="text-base font-semibold text-gray-700">Profiel</Link>
+                        <Link href="/settings" className="text-base font-semibold text-gray-700">Instellingen</Link>
+                      </div>
+                    </div>
+                    <div className="border-t border-gray-100 pt-4">
+                      <button onClick={() => signOut()} className="text-base font-semibold text-rose-500">
+                        Uitloggen
+                      </button>
+                    </div>
+                  </>
+                )}
+                {!user && (
+                  <div className="border-t border-gray-100 pt-4 mt-4 flex flex-col space-y-3">
+                    <Link href="/host/onboarding" className="text-base font-semibold text-gray-700">
+                      List your Studio
+                    </Link>
+                    <Link href="/login" className="text-base font-semibold text-primary">
+                      Inloggen
+                    </Link>
+                  </div>
+                )}
               </nav>
             </SheetContent>
           </Sheet>

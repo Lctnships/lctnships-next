@@ -29,13 +29,13 @@ export async function PortfolioSection() {
   }
 
   return (
-    <section className="max-w-[1440px] mx-auto px-8 mt-32">
+    <section className="max-w-[1440px] mx-auto px-4 md:px-8 mt-16 md:mt-32">
       <div className="text-center mb-10">
         <h2 className="text-3xl font-extrabold tracking-tight">Made with lcntships</h2>
         <p className="text-gray-500 mt-2">Work created by our community in our partner studios</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {portfolioImages.length >= 2 && (
           <div className="grid gap-4">
             <div className="relative w-full h-64 rounded-[32px] overflow-hidden">

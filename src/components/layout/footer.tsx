@@ -2,11 +2,11 @@ import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-100 pt-20 pb-12">
-      <div className="max-w-[1440px] mx-auto px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+    <footer className="bg-white border-t border-gray-100 pt-12 md:pt-20 pb-8 md:pb-12">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
           {/* Logo & Description */}
-          <div className="col-span-1 md:col-span-1">
+          <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-6">
               <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M24 4L44 24L24 44L4 24L24 4Z" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -106,7 +106,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-gray-50 text-xs font-bold text-gray-400">
           <p>&copy; {new Date().getFullYear()} lcntships Creative Studio Rental. All rights reserved.</p>
-          <div className="flex gap-8 mt-4 md:mt-0">
+          <div className="flex gap-4 md:gap-8 mt-4 md:mt-0">
             <Link href="/privacy" className="hover:text-black transition-colors">
               Privacy Policy
             </Link>
