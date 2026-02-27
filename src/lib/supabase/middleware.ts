@@ -37,7 +37,9 @@ export async function updateSession(request: NextRequest) {
 
   // Protected routes - all require authentication
   const protectedPaths = ['/dashboard', '/bookings', '/projects', '/messages', '/profile', '/settings', '/host', '/book']
-  const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
+  const publicHostPaths = ['/host/onboarding']
+  const isPublicHostPath = publicHostPaths.some(path => request.nextUrl.pathname.startsWith(path))
+  const isProtectedPath = !isPublicHostPath && protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
 
   if (isProtectedPath && !user) {
     const url = request.nextUrl.clone()
