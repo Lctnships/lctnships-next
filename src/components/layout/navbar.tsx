@@ -30,8 +30,8 @@ export function Navbar() {
           <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-8 md:h-9 w-auto" priority />
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-8">
+        {/* Desktop Navigation - Absolutely centered */}
+        <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           <Link
             href="/studios"
             className="text-sm font-semibold text-gray-600 hover:text-black transition-colors"
