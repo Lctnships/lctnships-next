@@ -23,18 +23,53 @@ const popularCities = [
   { name: "Antwerpen", country: "Belgium" },
 ]
 
+const WEEKDAYS = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"]
+
+function getDaysInMonth(year: number, month: number) {
+  const firstDay = new Date(year, month, 1)
+  const lastDay = new Date(year, month + 1, 0)
+  const days: (Date | null)[] = []
+
+  // Monday-based week: getDay() returns 0=Sun, we want 0=Mon
+  const startDay = (firstDay.getDay() + 6) % 7
+  for (let i = 0; i < startDay; i++) {
+    days.push(null)
+  }
+  for (let i = 1; i <= lastDay.getDate(); i++) {
+    days.push(new Date(year, month, i))
+  }
+  return days
+}
+
+function isSameDay(a: Date, b: Date) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
+}
+
+function formatDisplayDate(date: Date) {
+  return date.toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" })
+}
+
 export function HeroSection() {
   const router = useRouter()
   const [activity, setActivity] = useState("")
   const [location, setLocation] = useState("")
-  const [date, setDate] = useState("")
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   const [showActivityDropdown, setShowActivityDropdown] = useState(false)
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false)
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const now = new Date()
+    return { year: now.getFullYear(), month: now.getMonth() }
+  })
 
   const activityRef = useRef<HTMLDivElement>(null)
   const locationRef = useRef<HTMLDivElement>(null)
+  const dateRef = useRef<HTMLDivElement>(null)
   const locationInputRef = useRef<HTMLInputElement>(null)
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   // Filter cities based on typed input
   const filteredCities = location.trim()
@@ -45,6 +80,31 @@ export function HeroSection() {
       )
     : popularCities
 
+  // Calendar days for current view
+  const calendarDays = getDaysInMonth(calendarMonth.year, calendarMonth.month)
+  const monthLabel = new Date(calendarMonth.year, calendarMonth.month).toLocaleDateString("nl-NL", {
+    month: "long",
+    year: "numeric",
+  })
+
+  // Can't go before current month
+  const canGoPrev = calendarMonth.year > today.getFullYear() || (calendarMonth.year === today.getFullYear() && calendarMonth.month > today.getMonth())
+
+  const goToPrevMonth = () => {
+    if (!canGoPrev) return
+    setCalendarMonth((prev) => {
+      const d = new Date(prev.year, prev.month - 1, 1)
+      return { year: d.getFullYear(), month: d.getMonth() }
+    })
+  }
+
+  const goToNextMonth = () => {
+    setCalendarMonth((prev) => {
+      const d = new Date(prev.year, prev.month + 1, 1)
+      return { year: d.getFullYear(), month: d.getMonth() }
+    })
+  }
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -53,6 +113,9 @@ export function HeroSection() {
       }
       if (locationRef.current && !locationRef.current.contains(event.target as Node)) {
         setShowLocationSuggestions(false)
+      }
+      if (dateRef.current && !dateRef.current.contains(event.target as Node)) {
+        setShowDatePicker(false)
       }
     }
     document.addEventListener("mousedown", handleClickOutside)
@@ -63,21 +126,21 @@ export function HeroSection() {
     const params = new URLSearchParams()
     if (activity) params.set("q", activity)
     if (location) params.set("city", location)
-    if (date) params.set("date", date)
+    if (selectedDate) params.set("date", selectedDate.toISOString().split("T")[0])
     router.push(`/studios?${params.toString()}`)
   }
 
-  // Get today's date in YYYY-MM-DD format for min attribute
-  const today = new Date().toISOString().split("T")[0]
-
   return (
     <section className="px-6 py-4">
-      <div
-        className="relative min-h-[640px] rounded-[32px] overflow-hidden flex flex-col items-center justify-center p-8 bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.4)), url('/hero-photo-studio.jpeg')`,
-        }}
-      >
+      <div className="relative min-h-[640px] rounded-[32px] flex flex-col items-center justify-center p-8">
+        {/* Background image layer with overflow-hidden so it respects rounded corners */}
+        <div
+          className="absolute inset-0 rounded-[32px] overflow-hidden bg-cover bg-center"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.4)), url('/hero-photo-studio.jpeg')`,
+          }}
+        />
+
         <div className="relative z-10 w-full max-w-4xl text-center">
           <h1 className="text-white text-5xl md:text-7xl font-extrabold tracking-tight mb-8 drop-shadow-sm">
             Your next masterpiece <br /> starts here
@@ -91,6 +154,7 @@ export function HeroSection() {
                 onClick={() => {
                   setShowActivityDropdown(!showActivityDropdown)
                   setShowLocationSuggestions(false)
+                  setShowDatePicker(false)
                 }}
                 className="w-full flex items-center px-4 md:px-6 py-3 md:py-0 border-b md:border-b-0 md:border-r border-gray-100 hover:bg-gray-50 transition-colors rounded-xl md:rounded-l-full md:rounded-r-none h-full text-left"
               >
@@ -155,7 +219,11 @@ export function HeroSection() {
                       setLocation(e.target.value)
                       setShowLocationSuggestions(true)
                     }}
-                    onFocus={() => setShowLocationSuggestions(true)}
+                    onFocus={() => {
+                      setShowLocationSuggestions(true)
+                      setShowActivityDropdown(false)
+                      setShowDatePicker(false)
+                    }}
                     placeholder="Type a city..."
                     className="text-sm font-semibold text-gray-900 placeholder:text-gray-300 outline-none bg-transparent w-full"
                   />
@@ -205,30 +273,112 @@ export function HeroSection() {
               )}
             </div>
 
-            {/* Date - Simple Date Input */}
-            <div className="relative flex-1">
-              <div className="flex items-center px-4 md:px-6 py-3 md:py-0 hover:bg-gray-50 transition-colors h-full">
+            {/* Date - Custom Calendar Picker */}
+            <div ref={dateRef} className="relative flex-1">
+              <button
+                onClick={() => {
+                  setShowDatePicker(!showDatePicker)
+                  setShowActivityDropdown(false)
+                  setShowLocationSuggestions(false)
+                }}
+                className="w-full flex items-center px-4 md:px-6 py-3 md:py-0 hover:bg-gray-50 transition-colors h-full text-left"
+              >
                 <span className="material-symbols-outlined text-gray-400 mr-3">calendar_today</span>
-                <div className="flex flex-col flex-1 min-w-0">
+                <div className="flex flex-col">
                   <span className="text-[10px] font-bold uppercase text-gray-400">Date</span>
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    min={today}
-                    className="text-sm font-semibold text-gray-900 outline-none bg-transparent w-full [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-                    style={{ colorScheme: "light" }}
-                  />
+                  <span className={`text-sm font-semibold ${selectedDate ? "text-gray-900" : "text-gray-300"}`}>
+                    {selectedDate ? formatDisplayDate(selectedDate) : "Pick a date"}
+                  </span>
                 </div>
-                {date && (
+                {selectedDate && (
                   <button
-                    onClick={() => setDate("")}
-                    className="text-gray-300 hover:text-gray-500 transition-colors ml-1"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedDate(null)
+                    }}
+                    className="text-gray-300 hover:text-gray-500 transition-colors ml-auto"
                   >
                     <span className="material-symbols-outlined text-lg">close</span>
                   </button>
                 )}
-              </div>
+              </button>
+
+              {/* Calendar Dropdown */}
+              {showDatePicker && (
+                <div className="absolute top-full right-0 mt-2 w-[300px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 z-50">
+                  {/* Month Navigation */}
+                  <div className="flex items-center justify-between mb-4">
+                    <button
+                      onClick={goToPrevMonth}
+                      disabled={!canGoPrev}
+                      className="p-1.5 rounded-full hover:bg-gray-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <span className="material-symbols-outlined text-gray-600 text-xl">chevron_left</span>
+                    </button>
+                    <span className="text-sm font-bold text-gray-900 capitalize">{monthLabel}</span>
+                    <button
+                      onClick={goToNextMonth}
+                      className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-gray-600 text-xl">chevron_right</span>
+                    </button>
+                  </div>
+
+                  {/* Weekday Headers */}
+                  <div className="grid grid-cols-7 mb-1">
+                    {WEEKDAYS.map((day) => (
+                      <div key={day} className="text-center text-[11px] font-bold text-gray-400 py-1.5">
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Calendar Days */}
+                  <div className="grid grid-cols-7 gap-0.5">
+                    {calendarDays.map((date, i) => (
+                      <div key={i} className="aspect-square flex items-center justify-center">
+                        {date && (
+                          <button
+                            onClick={() => {
+                              setSelectedDate(date)
+                              setShowDatePicker(false)
+                            }}
+                            disabled={date < today}
+                            className={`w-9 h-9 rounded-full text-sm font-medium transition-all
+                              ${date < today ? "text-gray-300 cursor-not-allowed" : "hover:bg-primary/10 hover:text-primary"}
+                              ${selectedDate && isSameDay(date, selectedDate) ? "bg-primary text-white hover:bg-primary hover:text-white shadow-sm" : ""}
+                              ${isSameDay(date, today) && !(selectedDate && isSameDay(date, selectedDate)) ? "border border-primary/30 text-primary font-bold" : ""}
+                            `}
+                          >
+                            {date.getDate()}
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Today shortcut */}
+                  <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <button
+                      onClick={() => {
+                        setSelectedDate(today)
+                        setShowDatePicker(false)
+                      }}
+                      className="text-xs font-bold text-primary hover:underline"
+                    >
+                      Vandaag
+                    </button>
+                    {selectedDate && (
+                      <button
+                        onClick={() => setSelectedDate(null)}
+                        className="text-xs font-semibold text-gray-400 hover:text-gray-600"
+                      >
+                        Wissen
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Search Button */}
