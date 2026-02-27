@@ -275,13 +275,13 @@ export function HeroSection() {
 
             {/* Date - Custom Calendar Picker */}
             <div ref={dateRef} className="relative flex-1">
-              <button
+              <div
                 onClick={() => {
                   setShowDatePicker(!showDatePicker)
                   setShowActivityDropdown(false)
                   setShowLocationSuggestions(false)
                 }}
-                className="w-full flex items-center px-4 md:px-6 py-3 md:py-0 hover:bg-gray-50 transition-colors h-full text-left"
+                className="w-full flex items-center px-4 md:px-6 py-3 md:py-0 hover:bg-gray-50 transition-colors h-full text-left cursor-pointer"
               >
                 <span className="material-symbols-outlined text-gray-400 mr-3">calendar_today</span>
                 <div className="flex flex-col">
@@ -301,7 +301,7 @@ export function HeroSection() {
                     <span className="material-symbols-outlined text-lg">close</span>
                   </button>
                 )}
-              </button>
+              </div>
 
               {/* Calendar Dropdown */}
               {showDatePicker && (
