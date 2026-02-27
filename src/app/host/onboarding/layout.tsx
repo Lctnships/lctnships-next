@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 
 const steps = [
@@ -84,15 +85,13 @@ export default function OnboardingLayout({
     <div className="flex min-h-screen bg-[#f6f6f8]">
       {/* Sidebar Navigation */}
       <aside className="w-80 border-r border-gray-200 bg-white flex flex-col p-8 fixed h-full">
-        <Link href="/" className="flex items-center gap-3 mb-12">
-          <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
-            <span className="material-symbols-outlined">rocket_launch</span>
-          </div>
-          <div className="flex flex-col">
-            <h1 className="text-lg font-bold leading-tight tracking-tight">lcntships</h1>
-            <p className="text-xs text-gray-500 font-medium">Host Dashboard</p>
-          </div>
-        </Link>
+        <div className="mb-12">
+          <Link href="/" className="inline-flex items-center gap-2">
+            <Image src="/icon logo.png" alt="" width={28} height={28} className="h-7 w-7" />
+            <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-7 w-auto" />
+          </Link>
+          <p className="text-xs text-gray-500 font-medium mt-1 ml-9">Host Dashboard</p>
+        </div>
 
         <nav className="flex flex-col gap-2 flex-1">
           {steps.map((step) => {
