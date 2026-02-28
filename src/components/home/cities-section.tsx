@@ -1,8 +1,10 @@
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import { Card, CardContent } from "@/components/ui/card"
 import { createClient } from "@/lib/supabase/server"
+import { getTranslations } from "next-intl/server"
 
 export async function CitiesSection() {
+  const t = await getTranslations("Home")
   const supabase = await createClient()
 
   const { data: studios } = await supabase
@@ -37,9 +39,9 @@ export async function CitiesSection() {
     <section className="py-16">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold">Ontdek studio&apos;s bij jou in de buurt</h2>
+          <h2 className="text-3xl font-bold">{t("citiesTitle")}</h2>
           <p className="mt-2 text-muted-foreground">
-            Vind creatieve ruimtes in de grootste steden van Nederland
+            {t("citiesSubtitle")}
           </p>
         </div>
 
@@ -50,7 +52,7 @@ export async function CitiesSection() {
                 <CardContent className="p-6 text-center">
                   <h3 className="font-semibold text-lg">{city.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">
-                    {city.studios} studio&apos;s
+                    {t("studioCount", { count: city.studios })}
                   </p>
                 </CardContent>
               </Card>

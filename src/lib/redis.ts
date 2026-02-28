@@ -93,16 +93,16 @@ export async function invalidateCachePattern(pattern: string): Promise<void> {
 
   try {
     // Use SCAN to find matching keys (safer than KEYS for large datasets)
-    let cursor = 0
+    let cursor: string | number = 0
     do {
-      const result = await client.scan(cursor, { match: pattern, count: 100 })
+      const result = await client.scan(cursor as number, { match: pattern, count: 100 })
       cursor = result[0]
       const keys = result[1]
 
       if (keys.length > 0) {
         await client.del(...keys)
       }
-    } while (cursor !== 0)
+    } while (cursor !== 0 && cursor !== "0")
   } catch (error) {
     console.error("Redis invalidate error:", error)
   }

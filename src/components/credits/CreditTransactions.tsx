@@ -35,7 +35,7 @@ const typeConfig = {
     icon: RotateCcw,
     color: "text-blue-600",
     bgColor: "bg-blue-100",
-    label: "Refund",
+    label: "Terugbetaling",
   },
   expire: {
     icon: Clock,

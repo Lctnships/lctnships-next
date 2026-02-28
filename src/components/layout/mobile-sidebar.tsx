@@ -1,8 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { Link, usePathname, useRouter } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 import { useUser } from "@/hooks/use-user"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"

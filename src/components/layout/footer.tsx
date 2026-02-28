@@ -1,7 +1,14 @@
-import Link from "next/link"
+"use client"
+
 import Image from "next/image"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/routing"
+import { LanguageSwitcher } from "@/components/layout/language-switcher"
 
 export function Footer() {
+  const t = useTranslations("Footer")
+  const tNav = useTranslations("Navigation")
+
   return (
     <footer className="bg-white border-t border-gray-100 pt-12 md:pt-20 pb-8 md:pb-12">
       <div className="max-w-[1440px] mx-auto px-4 md:px-8">
@@ -13,57 +20,57 @@ export function Footer() {
               <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-8 w-auto" />
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
-              The premium platform for creators to find and book unique studio spaces worldwide.
+              {t("description")}
             </p>
           </div>
 
-          {/* Explore */}
+          {/* Ontdekken */}
           <div>
-            <h4 className="font-bold mb-6">Explore</h4>
+            <h4 className="font-bold mb-6">{t("discover")}</h4>
             <ul className="space-y-4 text-sm text-gray-500">
               <li>
                 <Link href="/studios" className="hover:text-black transition-colors">
-                  Find a Studio
+                  {tNav("findStudio")}
                 </Link>
               </li>
               <li>
                 <Link href="/cities" className="hover:text-black transition-colors">
-                  Cities
+                  {t("cities")}
                 </Link>
               </li>
               <li>
                 <Link href="/studio-types" className="hover:text-black transition-colors">
-                  Studio Types
+                  {t("studioTypes")}
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Ondersteuning */}
           <div>
-            <h4 className="font-bold mb-6">Support</h4>
+            <h4 className="font-bold mb-6">{t("support")}</h4>
             <ul className="space-y-4 text-sm text-gray-500">
               <li>
                 <Link href="/help" className="hover:text-black transition-colors">
-                  Help Center
+                  {t("helpCenter")}
                 </Link>
               </li>
               <li>
                 <Link href="/safety" className="hover:text-black transition-colors">
-                  Safety
+                  {t("safety")}
                 </Link>
               </li>
               <li>
                 <Link href="/cancellation" className="hover:text-black transition-colors">
-                  Cancellation
+                  {t("cancellation")}
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Follow Us */}
+          {/* Volg Ons */}
           <div>
-            <h4 className="font-bold mb-6">Follow Us</h4>
+            <h4 className="font-bold mb-6">{t("followUs")}</h4>
             <div className="flex gap-4">
               <a
                 href="https://www.tiktok.com"
@@ -104,16 +111,17 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-gray-50 text-xs font-bold text-gray-400">
-          <p>&copy; {new Date().getFullYear()} lcntships Creative Studio Rental. All rights reserved.</p>
-          <div className="flex gap-4 md:gap-8 mt-4 md:mt-0">
+          <p>&copy; {new Date().getFullYear()} {t("copyright")}</p>
+          <div className="flex items-center gap-4 md:gap-8 mt-4 md:mt-0">
+            <LanguageSwitcher />
             <Link href="/privacy" className="hover:text-black transition-colors">
-              Privacy Policy
+              {t("privacyPolicy")}
             </Link>
             <Link href="/terms" className="hover:text-black transition-colors">
-              Terms of Service
+              {t("termsConditions")}
             </Link>
             <Link href="/cookies" className="hover:text-black transition-colors">
-              Cookies
+              {t("cookies")}
             </Link>
           </div>
         </div>

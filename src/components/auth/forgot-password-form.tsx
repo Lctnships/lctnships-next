@@ -2,14 +2,16 @@
 
 import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
-import Link from "next/link"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/routing"
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const supabase = createClient()
+  const t = useTranslations("Auth")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,7 +22,7 @@ export function ForgotPasswordForm() {
     })
 
     if (error) {
-      toast.error("Error occurred", {
+      toast.error(t("errorOccurred"), {
         description: error.message,
       })
       setIsLoading(false)
@@ -38,12 +40,12 @@ export function ForgotPasswordForm() {
     })
 
     if (error) {
-      toast.error("Error occurred", {
+      toast.error(t("errorOccurred"), {
         description: error.message,
       })
     } else {
-      toast.success("Email sent", {
-        description: "We've sent another reset link to your email",
+      toast.success(t("emailSent"), {
+        description: t("resendEmailDesc"),
       })
     }
     setIsLoading(false)
@@ -75,10 +77,10 @@ export function ForgotPasswordForm() {
             </div>
 
             <h1 className="text-gray-900 text-center tracking-tight text-[32px] font-bold leading-tight pb-3">
-              Check your email
+              {t("checkYourEmail")}
             </h1>
             <p className="text-gray-500 text-center text-base font-normal leading-relaxed max-w-[380px] pb-10">
-              We've sent a password reset link to your email address. Please check your inbox and spam folder.
+              {t("checkEmailDesc")}
             </p>
 
             <div className="w-full space-y-6">
@@ -86,19 +88,19 @@ export function ForgotPasswordForm() {
                 href="mailto:"
                 className="flex w-full cursor-pointer items-center justify-center rounded-full h-14 bg-gray-900 hover:bg-gray-800 active:scale-[0.98] transition-all text-white text-base font-semibold leading-normal tracking-wide shadow-lg shadow-gray-900/10"
               >
-                Open Email App
+                {t("openEmailApp")}
               </a>
             </div>
 
             <div className="mt-10 flex flex-col items-center gap-6">
               <p className="text-sm text-gray-500">
-                Didn't receive the email?
+                {t("noEmailReceived")}
                 <button
                   onClick={handleResendEmail}
                   disabled={isLoading}
                   className="text-primary font-semibold hover:underline underline-offset-4 ml-1 disabled:opacity-50"
                 >
-                  Resend email
+                  {t("resend")}
                 </button>
               </p>
               <Link
@@ -108,7 +110,7 @@ export function ForgotPasswordForm() {
                 <span className="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">
                   arrow_back
                 </span>
-                Back to Login
+                {t("backToLoginLink")}
               </Link>
             </div>
           </div>
@@ -117,7 +119,7 @@ export function ForgotPasswordForm() {
         {/* Footer */}
         <footer className="w-full py-8 text-center">
           <p className="text-gray-400 text-xs font-medium uppercase tracking-widest">
-            © 2024 lcntships creative studio. All rights reserved.
+            &copy; {new Date().getFullYear()} {t("copyright")}. {t("allRightsReserved")}
           </p>
         </footer>
       </div>
@@ -144,10 +146,10 @@ export function ForgotPasswordForm() {
       <main className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-[520px] bg-white rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] p-12 flex flex-col items-center">
           <h1 className="text-gray-900 text-center tracking-tight text-[32px] font-bold leading-tight pt-2 pb-3">
-            Reset your password
+            {t("forgotPasswordFormTitle")}
           </h1>
           <p className="text-gray-500 text-center text-base font-normal leading-relaxed max-w-[360px] pb-10">
-            Enter your email address and we will send you a link to get back into your account
+            {t("forgotPasswordFormSubtitle")}
           </p>
 
           {/* Form */}
@@ -155,7 +157,7 @@ export function ForgotPasswordForm() {
             <div className="flex flex-col gap-2">
               <label className="px-4">
                 <span className="text-gray-900 text-sm font-semibold uppercase tracking-wider">
-                  Email Address
+                  {t("emailLabel")}
                 </span>
               </label>
               <div className="relative">
@@ -179,7 +181,7 @@ export function ForgotPasswordForm() {
                 {isLoading ? (
                   <span className="material-symbols-outlined animate-spin">progress_activity</span>
                 ) : (
-                  <span className="truncate">Send Reset Link</span>
+                  <span className="truncate">{t("sendResetLinkButton")}</span>
                 )}
               </button>
             </div>
@@ -194,7 +196,7 @@ export function ForgotPasswordForm() {
               <span className="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">
                 arrow_back
               </span>
-              Back to Login
+              {t("backToLoginLink")}
             </Link>
           </div>
         </div>
@@ -203,7 +205,7 @@ export function ForgotPasswordForm() {
       {/* Footer */}
       <footer className="w-full py-8 text-center">
         <p className="text-gray-400 text-xs font-medium uppercase tracking-widest">
-          © 2024 lcntships creative studio. All rights reserved.
+          &copy; {new Date().getFullYear()} {t("copyright")}. {t("allRightsReserved")}
         </p>
       </footer>
     </div>

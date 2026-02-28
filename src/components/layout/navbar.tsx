@@ -1,8 +1,6 @@
 "use client"
 
-import Link from "next/link"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -16,11 +14,15 @@ import { Menu, Search, Sparkles, BookOpen, Home, Calendar, FolderOpen, Heart, Me
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { useUser } from "@/hooks/use-user"
 import { useState } from "react"
+import { useTranslations } from "next-intl"
+import { Link, usePathname } from "@/i18n/routing"
+import { LanguageSwitcher } from "@/components/layout/language-switcher"
 
 export function Navbar() {
   const pathname = usePathname()
   const { user, profile, signOut, isLoading } = useUser()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const t = useTranslations("Navigation")
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
@@ -36,24 +38,27 @@ export function Navbar() {
             href="/studios"
             className="text-sm font-semibold text-gray-600 hover:text-black transition-colors"
           >
-            Find a Studio
+            {t("findStudio")}
           </Link>
           <Link
             href="/inspiration"
             className="text-sm font-semibold text-gray-600 hover:text-black transition-colors"
           >
-            Inspiration
+            {t("inspiration")}
           </Link>
           <Link
             href="/blog"
             className="text-sm font-semibold text-gray-600 hover:text-black transition-colors"
           >
-            Blog
+            {t("blog")}
           </Link>
         </nav>
 
         {/* Right side */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
+          <div className="hidden md:block">
+            <LanguageSwitcher />
+          </div>
           {isLoading ? (
             <div className="h-10 w-10 rounded-full bg-gray-100 animate-pulse" />
           ) : user ? (
@@ -81,33 +86,33 @@ export function Navbar() {
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/dashboard">{t("overview")}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/bookings">Mijn Boekingen</Link>
+                    <Link href="/bookings">{t("myBookings")}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/projects">Mijn Projecten</Link>
+                    <Link href="/projects">{t("myProjects")}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/favorites">Favorieten</Link>
+                    <Link href="/favorites">{t("favorites")}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/messages">Berichten</Link>
+                    <Link href="/messages">{t("messages")}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/credits">Strippenkaart</Link>
+                    <Link href="/credits">{t("creditCard")}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/profile">Profiel</Link>
+                    <Link href="/profile">{t("profile")}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/settings">Instellingen</Link>
+                    <Link href="/settings">{t("settings")}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => signOut()}>
-                    Uitloggen
+                    {t("signOut")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -116,12 +121,12 @@ export function Navbar() {
             <div className="hidden md:flex items-center gap-3">
               <Link href="/host/onboarding">
                 <Button variant="ghost" className="text-sm font-semibold text-gray-600 hover:text-black">
-                  List your Studio
+                  {t("rentYourStudio")}
                 </Button>
               </Link>
               <Link href="/login">
                 <Button className="bg-primary text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-gray-800 transition-all">
-                  Inloggen
+                  {t("login")}
                 </Button>
               </Link>
             </div>
@@ -151,9 +156,9 @@ export function Navbar() {
               <div className="flex-1 overflow-y-auto px-6 py-6">
                 <div className="space-y-1">
                   {[
-                    { href: "/studios", icon: Search, label: "Find a Studio" },
-                    { href: "/inspiration", icon: Sparkles, label: "Inspiration" },
-                    { href: "/blog", icon: BookOpen, label: "Blog" },
+                    { href: "/studios" as const, icon: Search, label: t("findStudio") },
+                    { href: "/inspiration" as const, icon: Sparkles, label: t("inspiration") },
+                    { href: "/blog" as const, icon: BookOpen, label: t("blog") },
                   ].map((item) => (
                     <Link
                       key={item.href}
@@ -174,13 +179,13 @@ export function Navbar() {
                 {user ? (
                   <>
                     {[
-                      { href: "/dashboard", icon: Home, label: "Dashboard" },
-                      { href: "/bookings", icon: Calendar, label: "Mijn Boekingen" },
-                      { href: "/projects", icon: FolderOpen, label: "Mijn Projecten" },
-                      { href: "/favorites", icon: Heart, label: "Favorieten" },
-                      { href: "/messages", icon: MessageSquare, label: "Berichten" },
-                      { href: "/profile", icon: User, label: "Profiel" },
-                      { href: "/settings", icon: Settings, label: "Instellingen" },
+                      { href: "/dashboard" as const, icon: Home, label: t("overview") },
+                      { href: "/bookings" as const, icon: Calendar, label: t("myBookings") },
+                      { href: "/projects" as const, icon: FolderOpen, label: t("myProjects") },
+                      { href: "/favorites" as const, icon: Heart, label: t("favorites") },
+                      { href: "/messages" as const, icon: MessageSquare, label: t("messages") },
+                      { href: "/profile" as const, icon: User, label: t("profile") },
+                      { href: "/settings" as const, icon: Settings, label: t("settings") },
                     ].map((item) => (
                       <Link
                         key={item.href}
@@ -201,7 +206,7 @@ export function Navbar() {
                       className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-semibold text-rose-500 hover:bg-rose-50 transition-colors w-full"
                     >
                       <LogOut className="h-5 w-5" />
-                      Uitloggen
+                      {t("signOut")}
                     </button>
                   </>
                 ) : (
@@ -212,7 +217,7 @@ export function Navbar() {
                       className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-black transition-colors"
                     >
                       <Home className="h-5 w-5" />
-                      List your Studio
+                      {t("rentYourStudio")}
                     </Link>
                     <Link
                       href="/login"
@@ -220,10 +225,15 @@ export function Navbar() {
                       className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-black transition-colors"
                     >
                       <User className="h-5 w-5" />
-                      Inloggen
+                      {t("login")}
                     </Link>
                   </>
                 )}
+
+                {/* Mobile language switcher */}
+                <div className="mt-4 pt-4 border-t border-gray-100 px-4">
+                  <LanguageSwitcher />
+                </div>
               </div>
             </SheetContent>
           </Sheet>

@@ -1,29 +1,29 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/i18n/routing"
+import { useTranslations } from "next-intl"
+import { useLocale } from "next-intl"
 
-const activityTypes = [
-  { icon: "photo_camera", title: "Photography" },
-  { icon: "videocam", title: "Film & Video" },
-  { icon: "mic", title: "Podcast & Audio" },
-  { icon: "music_note", title: "Music Production" },
-  { icon: "settings_accessibility", title: "Dance & Movement" },
-  { icon: "palette", title: "Art & Gallery" },
-]
+const activityKeys = [
+  { icon: "photo_camera", key: "activityPhoto" },
+  { icon: "videocam", key: "activityFilm" },
+  { icon: "mic", key: "activityPodcast" },
+  { icon: "music_note", key: "activityMusic" },
+  { icon: "settings_accessibility", key: "activityDance" },
+  { icon: "palette", key: "activityArt" },
+] as const
 
 const popularCities = [
-  { name: "Amsterdam", country: "Nederland" },
-  { name: "Rotterdam", country: "Nederland" },
-  { name: "Den Haag", country: "Nederland" },
-  { name: "Utrecht", country: "Nederland" },
-  { name: "London", country: "United Kingdom" },
-  { name: "Berlin", country: "Germany" },
-  { name: "Paris", country: "France" },
-  { name: "Antwerpen", country: "Belgium" },
-]
-
-const WEEKDAYS = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"]
+  { name: "Amsterdam", countryKey: "countryNetherlands" },
+  { name: "Rotterdam", countryKey: "countryNetherlands" },
+  { name: "Den Haag", countryKey: "countryNetherlands" },
+  { name: "Utrecht", countryKey: "countryNetherlands" },
+  { name: "Londen", countryKey: "countryUK" },
+  { name: "Berlijn", countryKey: "countryGermany" },
+  { name: "Parijs", countryKey: "countryFrance" },
+  { name: "Antwerpen", countryKey: "countryBelgium" },
+] as const
 
 function getDaysInMonth(year: number, month: number) {
   const firstDay = new Date(year, month, 1)
@@ -45,13 +45,31 @@ function isSameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
 }
 
-function formatDisplayDate(date: Date) {
-  return date.toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" })
+function getLocaleCode(locale: string) {
+  const map: Record<string, string> = { nl: "nl-NL", en: "en-GB", es: "es-ES" }
+  return map[locale] || "nl-NL"
+}
+
+function getWeekdays(locale: string) {
+  const localeCode = getLocaleCode(locale)
+  const days: string[] = []
+  // Start from Monday (Jan 5, 2026 is a Monday)
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(2026, 0, 5 + i)
+    days.push(d.toLocaleDateString(localeCode, { weekday: "short" }).slice(0, 2))
+  }
+  return days
 }
 
 export function HeroSection() {
   const router = useRouter()
+  const t = useTranslations("Home")
+  const locale = useLocale()
+  const localeCode = getLocaleCode(locale)
+  const weekdays = getWeekdays(locale)
+
   const [activity, setActivity] = useState("")
+  const [activityLabel, setActivityLabel] = useState("")
   const [location, setLocation] = useState("")
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
@@ -71,18 +89,34 @@ export function HeroSection() {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
+  const formatDisplayDate = (date: Date) => {
+    return date.toLocaleDateString(localeCode, { day: "numeric", month: "short", year: "numeric" })
+  }
+
+  // Build translated activity list
+  const activityTypes = activityKeys.map((a) => ({
+    icon: a.icon,
+    title: t(a.key),
+  }))
+
+  // Build translated cities list
+  const cities = popularCities.map((c) => ({
+    name: c.name,
+    country: t(c.countryKey),
+  }))
+
   // Filter cities based on typed input
   const filteredCities = location.trim()
-    ? popularCities.filter(
+    ? cities.filter(
         (city) =>
           city.name.toLowerCase().includes(location.toLowerCase()) ||
           city.country.toLowerCase().includes(location.toLowerCase())
       )
-    : popularCities
+    : cities
 
   // Calendar days for current view
   const calendarDays = getDaysInMonth(calendarMonth.year, calendarMonth.month)
-  const monthLabel = new Date(calendarMonth.year, calendarMonth.month).toLocaleDateString("nl-NL", {
+  const monthLabel = new Date(calendarMonth.year, calendarMonth.month).toLocaleDateString(localeCode, {
     month: "long",
     year: "numeric",
   })
@@ -143,7 +177,7 @@ export function HeroSection() {
 
         <div className="relative z-10 w-full max-w-4xl text-center">
           <h1 className="text-white text-5xl md:text-7xl font-extrabold tracking-tight mb-8 drop-shadow-sm">
-            Your next masterpiece <br /> starts here
+            {t("heroTitleLine1")} <br /> {t("heroTitleLine2")}
           </h1>
 
           {/* Search Bar */}
@@ -160,9 +194,9 @@ export function HeroSection() {
               >
                 <span className="material-symbols-outlined text-gray-400 mr-3">search</span>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold uppercase text-gray-400">Activity</span>
-                  <span className={`text-sm font-semibold ${activity ? "text-gray-900" : "text-gray-300"}`}>
-                    {activity || "What are you creating?"}
+                  <span className="text-[10px] font-bold uppercase text-gray-400">{t("activityLabel")}</span>
+                  <span className={`text-sm font-semibold ${activityLabel ? "text-gray-900" : "text-gray-300"}`}>
+                    {activityLabel || t("activityPlaceholder")}
                   </span>
                 </div>
                 <span className="material-symbols-outlined text-gray-300 ml-auto text-lg">expand_more</span>
@@ -176,29 +210,31 @@ export function HeroSection() {
                       key={type.title}
                       onClick={() => {
                         setActivity(type.title)
+                        setActivityLabel(type.title)
                         setShowActivityDropdown(false)
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left ${
-                        activity === type.title ? "bg-gray-50" : ""
+                        activityLabel === type.title ? "bg-gray-50" : ""
                       }`}
                     >
                       <span className="material-symbols-outlined text-xl text-primary">{type.icon}</span>
                       <span className="font-semibold text-sm text-gray-900">{type.title}</span>
-                      {activity === type.title && (
+                      {activityLabel === type.title && (
                         <span className="material-symbols-outlined text-primary ml-auto text-lg">check</span>
                       )}
                     </button>
                   ))}
-                  {activity && (
+                  {activityLabel && (
                     <button
                       onClick={() => {
                         setActivity("")
+                        setActivityLabel("")
                         setShowActivityDropdown(false)
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left border-t border-gray-100"
                     >
                       <span className="material-symbols-outlined text-xl text-gray-400">close</span>
-                      <span className="font-semibold text-sm text-gray-500">Clear selection</span>
+                      <span className="font-semibold text-sm text-gray-500">{t("clearSelection")}</span>
                     </button>
                   )}
                 </div>
@@ -210,7 +246,7 @@ export function HeroSection() {
               <div className="flex items-center px-4 md:px-6 py-3 md:py-0 border-b md:border-b-0 md:border-r border-gray-100 h-full">
                 <span className="material-symbols-outlined text-gray-400 mr-3">location_on</span>
                 <div className="flex flex-col flex-1 min-w-0">
-                  <span className="text-[10px] font-bold uppercase text-gray-400">Location</span>
+                  <span className="text-[10px] font-bold uppercase text-gray-400">{t("locationLabel")}</span>
                   <input
                     ref={locationInputRef}
                     type="text"
@@ -224,7 +260,7 @@ export function HeroSection() {
                       setShowActivityDropdown(false)
                       setShowDatePicker(false)
                     }}
-                    placeholder="Type a city..."
+                    placeholder={t("locationPlaceholder")}
                     className="text-sm font-semibold text-gray-900 placeholder:text-gray-300 outline-none bg-transparent w-full"
                   />
                 </div>
@@ -245,7 +281,7 @@ export function HeroSection() {
               {showLocationSuggestions && (
                 <div className="absolute top-full left-0 mt-2 w-full md:w-[300px] bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50">
                   {!location.trim() && (
-                    <p className="text-[10px] font-bold uppercase text-gray-400 px-4 py-2">Popular cities</p>
+                    <p className="text-[10px] font-bold uppercase text-gray-400 px-4 py-2">{t("popularCities")}</p>
                   )}
                   {filteredCities.length > 0 ? (
                     filteredCities.map((city) => (
@@ -266,7 +302,7 @@ export function HeroSection() {
                     ))
                   ) : (
                     <div className="px-4 py-3 text-sm text-gray-500">
-                      No suggestions found. You can still search for &quot;{location}&quot;
+                      {t("noSuggestions", { query: location })}
                     </div>
                   )}
                 </div>
@@ -285,9 +321,9 @@ export function HeroSection() {
               >
                 <span className="material-symbols-outlined text-gray-400 mr-3">calendar_today</span>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold uppercase text-gray-400">Date</span>
+                  <span className="text-[10px] font-bold uppercase text-gray-400">{t("dateLabel")}</span>
                   <span className={`text-sm font-semibold ${selectedDate ? "text-gray-900" : "text-gray-300"}`}>
-                    {selectedDate ? formatDisplayDate(selectedDate) : "Pick a date"}
+                    {selectedDate ? formatDisplayDate(selectedDate) : t("datePlaceholder")}
                   </span>
                 </div>
                 {selectedDate && (
@@ -326,7 +362,7 @@ export function HeroSection() {
 
                   {/* Weekday Headers */}
                   <div className="grid grid-cols-7 mb-1">
-                    {WEEKDAYS.map((day) => (
+                    {weekdays.map((day) => (
                       <div key={day} className="text-center text-[11px] font-bold text-gray-400 py-1.5">
                         {day}
                       </div>
@@ -366,14 +402,14 @@ export function HeroSection() {
                       }}
                       className="text-xs font-bold text-primary hover:underline"
                     >
-                      Vandaag
+                      {t("today")}
                     </button>
                     {selectedDate && (
                       <button
                         onClick={() => setSelectedDate(null)}
                         className="text-xs font-semibold text-gray-400 hover:text-gray-600"
                       >
-                        Wissen
+                        {t("clear")}
                       </button>
                     )}
                   </div>
@@ -387,7 +423,7 @@ export function HeroSection() {
               className="bg-primary text-white h-12 md:size-14 rounded-full flex items-center justify-center hover:scale-105 transition-transform shrink-0 mt-2 md:mt-0 w-full md:w-14 gap-2 md:gap-0"
             >
               <span className="material-symbols-outlined">search</span>
-              <span className="md:hidden text-sm font-bold">Search Studios</span>
+              <span className="md:hidden text-sm font-bold">{t("searchStudios")}</span>
             </button>
           </div>
         </div>

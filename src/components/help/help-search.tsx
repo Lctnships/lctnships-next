@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/i18n/routing"
 
 export function HelpSearch() {
   const [query, setQuery] = useState("")
@@ -27,7 +27,7 @@ export function HelpSearch() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="flex w-full min-w-0 flex-1 resize-none overflow-hidden text-[#0d121b] focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-[#4c669a] px-4 text-lg font-normal leading-normal"
-              placeholder="Search articles, guides, or help topics..."
+              placeholder="Zoek artikelen, gidsen of helponderwerpen..."
             />
             <div className="flex items-center pr-4">
               <span className="bg-[#f0f4ff] text-primary text-xs font-bold px-2 py-1 rounded-md">

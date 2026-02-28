@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
+import { Link, useRouter } from "@/i18n/routing"
 
 export function ResetPasswordForm() {
   const [password, setPassword] = useState("")
@@ -14,20 +14,21 @@ export function ResetPasswordForm() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+  const t = useTranslations("Auth")
 
   // Check if user has a valid session from the reset link
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
-        toast.error("Invalid or expired reset link", {
-          description: "Please request a new password reset link",
+        toast.error(t("invalidResetLink"), {
+          description: t("requestNewLink"),
         })
         router.push("/forgot-password")
       }
     }
     checkSession()
-  }, [supabase, router])
+  }, [supabase, router, t])
 
   const getPasswordStrength = (password: string) => {
     if (!password) return { level: 0, label: "", color: "" }
@@ -38,10 +39,10 @@ export function ResetPasswordForm() {
     if (/[^A-Za-z0-9]/.test(password)) strength++
 
     const levels = [
-      { level: 1, label: "Weak", color: "bg-red-500" },
-      { level: 2, label: "Fair", color: "bg-orange-500" },
-      { level: 3, label: "Medium", color: "bg-yellow-500" },
-      { level: 4, label: "Strong", color: "bg-emerald-500" },
+      { level: 1, label: t("passwordWeak"), color: "bg-red-500" },
+      { level: 2, label: t("passwordFair"), color: "bg-orange-500" },
+      { level: 3, label: t("passwordGood"), color: "bg-yellow-500" },
+      { level: 4, label: t("passwordStrong"), color: "bg-emerald-500" },
     ]
     return levels[strength - 1] || { level: 0, label: "", color: "" }
   }
@@ -52,15 +53,15 @@ export function ResetPasswordForm() {
     e.preventDefault()
 
     if (password !== confirmPassword) {
-      toast.error("Passwords don't match", {
-        description: "Please make sure both passwords are the same",
+      toast.error(t("passwordsDoNotMatch"), {
+        description: t("passwordsDoNotMatchDesc"),
       })
       return
     }
 
     if (password.length < 8) {
-      toast.error("Password too short", {
-        description: "Password must be at least 8 characters",
+      toast.error(t("passwordTooShort"), {
+        description: t("passwordMinChars"),
       })
       return
     }
@@ -72,15 +73,15 @@ export function ResetPasswordForm() {
     })
 
     if (error) {
-      toast.error("Error updating password", {
+      toast.error(t("updatePasswordError"), {
         description: error.message,
       })
       setIsLoading(false)
       return
     }
 
-    toast.success("Password updated", {
-      description: "Your password has been successfully changed",
+    toast.success(t("passwordUpdated"), {
+      description: t("passwordUpdatedDesc"),
     })
 
     // Sign out and redirect to login
@@ -107,10 +108,10 @@ export function ResetPasswordForm() {
       <main className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-[520px] bg-white rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] p-12 flex flex-col items-center">
           <h1 className="text-gray-900 text-center tracking-tight text-[32px] font-bold leading-tight pt-2 pb-3">
-            Set new password
+            {t("newPasswordTitle")}
           </h1>
           <p className="text-gray-500 text-center text-base font-normal leading-relaxed max-w-[360px] pb-10">
-            Choose a secure password for your account
+            {t("newPasswordSubtitle")}
           </p>
 
           {/* Form */}
@@ -119,7 +120,7 @@ export function ResetPasswordForm() {
             <div className="flex flex-col gap-2">
               <label className="px-4">
                 <span className="text-gray-900 text-sm font-semibold uppercase tracking-wider">
-                  New Password
+                  {t("newPasswordLabel")}
                 </span>
               </label>
               <div className="relative">
@@ -146,7 +147,7 @@ export function ResetPasswordForm() {
               {password && (
                 <div className="px-4 mt-2">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-gray-500 text-xs font-medium">Password Strength</span>
+                    <span className="text-gray-500 text-xs font-medium">{t("passwordStrength")}</span>
                     <span
                       className={`text-xs font-bold uppercase tracking-wider ${
                         passwordStrength.level === 4
@@ -179,7 +180,7 @@ export function ResetPasswordForm() {
             <div className="flex flex-col gap-2">
               <label className="px-4">
                 <span className="text-gray-900 text-sm font-semibold uppercase tracking-wider">
-                  Confirm New Password
+                  {t("confirmPasswordLabel")}
                 </span>
               </label>
               <div className="relative">
@@ -206,7 +207,7 @@ export function ResetPasswordForm() {
                 </button>
               </div>
               {confirmPassword && confirmPassword !== password && (
-                <p className="px-4 text-sm text-red-500">Passwords don't match</p>
+                <p className="px-4 text-sm text-red-500">{t("passwordsDoNotMatch")}</p>
               )}
             </div>
 
@@ -219,7 +220,7 @@ export function ResetPasswordForm() {
                 {isLoading ? (
                   <span className="material-symbols-outlined animate-spin">progress_activity</span>
                 ) : (
-                  <span className="truncate">Update Password</span>
+                  <span className="truncate">{t("updatePasswordButton")}</span>
                 )}
               </button>
             </div>
@@ -234,7 +235,7 @@ export function ResetPasswordForm() {
               <span className="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">
                 arrow_back
               </span>
-              Back to Login
+              {t("backToLoginLink")}
             </Link>
           </div>
         </div>
@@ -243,7 +244,7 @@ export function ResetPasswordForm() {
       {/* Footer */}
       <footer className="w-full py-8 text-center">
         <p className="text-gray-400 text-xs font-medium uppercase tracking-widest">
-          © 2024 lcntships creative studio. All rights reserved.
+          &copy; {new Date().getFullYear()} {t("copyright")}. {t("allRightsReserved")}
         </p>
       </footer>
     </div>

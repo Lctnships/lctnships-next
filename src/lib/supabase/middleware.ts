@@ -1,5 +1,22 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { locales } from '@/i18n/config'
+
+/**
+ * Strip locale prefix from pathname for route matching.
+ * e.g. /en/dashboard -> /dashboard, /nl/host/dashboard -> /host/dashboard
+ */
+function stripLocalePrefix(pathname: string): string {
+  for (const locale of locales) {
+    if (pathname.startsWith(`/${locale}/`)) {
+      return pathname.slice(locale.length + 1)
+    }
+    if (pathname === `/${locale}`) {
+      return '/'
+    }
+  }
+  return pathname
+}
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -35,26 +52,32 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  // Strip locale prefix for route matching
+  const strippedPath = stripLocalePrefix(request.nextUrl.pathname)
+
   // Protected routes - all require authentication
   const protectedPaths = ['/dashboard', '/bookings', '/projects', '/messages', '/profile', '/settings', '/host', '/book']
   const publicHostPaths = ['/host/onboarding']
-  const isPublicHostPath = publicHostPaths.some(path => request.nextUrl.pathname.startsWith(path))
-  const isProtectedPath = !isPublicHostPath && protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
+  const isPublicHostPath = publicHostPaths.some(path => strippedPath.startsWith(path))
+  const isProtectedPath = !isPublicHostPath && protectedPaths.some(path => strippedPath.startsWith(path))
 
   if (isProtectedPath && !user) {
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    // Keep the locale prefix in the redirect URL
+    const localePrefix = request.nextUrl.pathname.replace(strippedPath, '').replace(/\/$/, '')
+    url.pathname = `${localePrefix}/login`
     url.searchParams.set('redirect', request.nextUrl.pathname)
     return NextResponse.redirect(url)
   }
 
   // Redirect logged in users away from auth pages
   const authPaths = ['/login', '/signup']
-  const isAuthPath = authPaths.some(path => request.nextUrl.pathname.startsWith(path))
+  const isAuthPath = authPaths.some(path => strippedPath.startsWith(path))
 
   if (isAuthPath && user) {
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    const localePrefix = request.nextUrl.pathname.replace(strippedPath, '').replace(/\/$/, '')
+    url.pathname = `${localePrefix}/dashboard`
     return NextResponse.redirect(url)
   }
 

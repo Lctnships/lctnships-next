@@ -1,12 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import Link from "next/link"
 import Image from "next/image"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { Link, useRouter } from "@/i18n/routing"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
@@ -18,14 +19,15 @@ export function LoginForm() {
   const redirect = searchParams.get("redirect") || "/dashboard"
   const authError = searchParams.get("error")
   const supabase = createClient()
+  const t = useTranslations("Auth")
 
   useEffect(() => {
     if (authError === "auth") {
-      toast.error("Inloggen mislukt", {
-        description: "Er ging iets mis met de authenticatie. Probeer het opnieuw.",
+      toast.error(t("loginFailed"), {
+        description: t("loginFailedAuth"),
       })
     }
-  }, [authError])
+  }, [authError, t])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,18 +41,18 @@ export function LoginForm() {
     if (error) {
       let description = error.message
       if (error.message === "Invalid login credentials") {
-        description = "Het e-mailadres of wachtwoord is onjuist."
+        description = t("invalidCredentials")
       } else if (error.message === "Email not confirmed") {
-        description = "Bevestig je e-mailadres voordat je inlogt. Controleer je inbox."
+        description = t("emailNotConfirmed")
       }
-      toast.error("Inloggen mislukt", {
+      toast.error(t("loginFailed"), {
         description,
       })
       setIsLoading(false)
       return
     }
 
-    toast.success("Welkom terug!")
+    toast.success(t("welcomeBackToast"))
     router.refresh()
     router.push(redirect)
   }
@@ -70,7 +72,7 @@ export function LoginForm() {
 
     if (error) {
       setIsSocialLoading(null)
-      toast.error("Google login mislukt", {
+      toast.error(t("googleLoginFailed"), {
         description: error.message,
       })
     }
@@ -86,8 +88,8 @@ export function LoginForm() {
 
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight mb-2">Welcome back</h1>
-        <p className="text-gray-500">Sign in to continue to your account</p>
+        <h1 className="text-3xl font-extrabold tracking-tight mb-2">{t("welcomeBack")}</h1>
+        <p className="text-gray-500">{t("loginSubtitle")}</p>
       </div>
 
       {/* Form */}
@@ -96,7 +98,7 @@ export function LoginForm() {
           <input
             id="email"
             type="email"
-            placeholder="Email address"
+            placeholder={t("emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -107,7 +109,7 @@ export function LoginForm() {
           <input
             id="password"
             type="password"
-            placeholder="Password"
+            placeholder={t("passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -120,7 +122,7 @@ export function LoginForm() {
             href="/forgot-password"
             className="text-sm text-black hover:underline font-medium"
           >
-            Forgot password?
+            {t("forgotPassword")}
           </Link>
         </div>
 
@@ -130,7 +132,7 @@ export function LoginForm() {
           className="w-full h-14 bg-black text-white rounded-full font-bold text-base hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-          Sign in
+          {t("loginButton")}
         </button>
       </form>
 
@@ -140,7 +142,7 @@ export function LoginForm() {
           <div className="w-full border-t border-gray-200"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-4 text-gray-500">or continue with</span>
+          <span className="bg-white px-4 text-gray-500">{t("orContinueWith")}</span>
         </div>
       </div>
 
@@ -178,9 +180,9 @@ export function LoginForm() {
 
       {/* Sign up link */}
       <p className="text-center mt-8 text-gray-500">
-        Don&apos;t have an account?{" "}
+        {t("noAccount")}{" "}
         <Link href="/signup" className="text-black font-bold hover:underline">
-          Sign up
+          {t("register")}
         </Link>
       </p>
     </div>

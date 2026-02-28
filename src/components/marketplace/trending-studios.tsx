@@ -1,8 +1,10 @@
 import { createClient } from "@/lib/supabase/server"
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import Image from "next/image"
+import { getTranslations } from "next-intl/server"
 
 export async function TrendingStudios() {
+  const t = await getTranslations("Studios")
   const supabase = await createClient()
 
   const { data: studios } = await supabase
@@ -18,14 +20,14 @@ export async function TrendingStudios() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary/60 block mb-2">
-              Curated selection
+              {t("selected")}
             </span>
-            <h2 className="text-3xl font-bold tracking-tight">Trending Studios</h2>
+            <h2 className="text-3xl font-bold tracking-tight">{t("popularStudios")}</h2>
           </div>
         </div>
         <div className="text-center py-16">
           <span className="material-symbols-outlined text-5xl text-gray-300 mb-4 block">trending_up</span>
-          <p className="text-gray-500">Nog geen trending studios beschikbaar</p>
+          <p className="text-gray-500">{t("noPopularStudios")}</p>
         </div>
       </div>
     )
@@ -36,15 +38,15 @@ export async function TrendingStudios() {
       <div className="flex items-end justify-between mb-8">
         <div>
           <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary/60 block mb-2">
-            Curated selection
+            {t("selected")}
           </span>
-          <h2 className="text-3xl font-bold tracking-tight">Trending Studios</h2>
+          <h2 className="text-3xl font-bold tracking-tight">{t("popularStudios")}</h2>
         </div>
         <Link
           href="/studios"
           className="text-sm font-semibold border-b-2 border-primary/10 hover:border-primary transition-colors pb-1"
         >
-          View all trending
+          {t("viewAll")}
         </Link>
       </div>
 

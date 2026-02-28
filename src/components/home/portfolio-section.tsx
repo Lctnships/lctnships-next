@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/server"
+import { getTranslations } from "next-intl/server"
 
 // Bento-style: varied aspect ratios for dynamic layout
 const fallbackImages = [
@@ -16,6 +17,7 @@ const fallbackImages = [
 const defaultAspects = ["aspect-[3/4]", "aspect-[4/5]", "aspect-[2/3]", "aspect-[3/4]", "aspect-[4/5]", "aspect-[3/4]", "aspect-[2/3]", "aspect-[4/5]"]
 
 export async function PortfolioSection() {
+  const t = await getTranslations("Home")
   const supabase = await createClient()
 
   const { data: studios } = await supabase
@@ -44,8 +46,8 @@ export async function PortfolioSection() {
   return (
     <section className="max-w-[1440px] mx-auto px-4 md:px-8 mt-16 md:mt-32">
       <div className="text-center mb-10">
-        <h2 className="text-3xl font-extrabold tracking-tight">Made with lcntships</h2>
-        <p className="text-gray-500 mt-2">Work created by our community in our partner studios</p>
+        <h2 className="text-3xl font-extrabold tracking-tight">{t("portfolioTitle")}</h2>
+        <p className="text-gray-500 mt-2">{t("portfolioSubtitle")}</p>
       </div>
 
       <div className="columns-2 md:columns-4 gap-3 md:gap-4">
