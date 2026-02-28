@@ -77,15 +77,15 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     const startDate = new Date(booking.start_time)
     const endDate = new Date(booking.end_time)
-    const dateTimeStr = `${startDate.toLocaleDateString("en-US", {
+    const dateTimeStr = `${startDate.toLocaleDateString("nl-NL", {
       weekday: "long",
       month: "short",
       day: "numeric",
       year: "numeric",
-    })} • ${startDate.toLocaleTimeString("en-US", {
+    })} • ${startDate.toLocaleTimeString("nl-NL", {
       hour: "numeric",
       minute: "2-digit",
-    })} - ${endDate.toLocaleTimeString("en-US", {
+    })} - ${endDate.toLocaleTimeString("nl-NL", {
       hour: "numeric",
       minute: "2-digit",
     })}`

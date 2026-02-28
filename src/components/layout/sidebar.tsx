@@ -1,8 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useUser } from "@/hooks/use-user"
 import {
@@ -23,25 +21,28 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip"
+import { useTranslations } from "next-intl"
+import { Link, usePathname, useRouter } from "@/i18n/routing"
 
 const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed"
-
-const userNavItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/bookings", label: "Boekingen", icon: Calendar },
-  { href: "/projects", label: "Projecten", icon: FolderOpen },
-  { href: "/favorites", label: "Favorieten", icon: Heart },
-  { href: "/messages", label: "Berichten", icon: MessageSquare },
-  { href: "/notifications", label: "Notificaties", icon: Bell },
-  { href: "/profile", label: "Profiel", icon: User },
-  { href: "/settings", label: "Instellingen", icon: Settings },
-]
 
 export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const { user, profile, signOut } = useUser()
   const [collapsed, setCollapsed] = useState(false)
+  const t = useTranslations("Navigation")
+
+  const userNavItems = [
+    { href: "/dashboard" as const, label: t("dashboard"), icon: LayoutDashboard },
+    { href: "/bookings" as const, label: t("bookings"), icon: Calendar },
+    { href: "/projects" as const, label: t("projects"), icon: FolderOpen },
+    { href: "/favorites" as const, label: t("favorites"), icon: Heart },
+    { href: "/messages" as const, label: t("messages"), icon: MessageSquare },
+    { href: "/notifications" as const, label: t("notifications"), icon: Bell },
+    { href: "/profile" as const, label: t("profile"), icon: User },
+    { href: "/settings" as const, label: t("settings"), icon: Settings },
+  ]
 
   const isHost = profile?.user_type === "host" || profile?.user_type === "both"
   const isInHostMode = pathname.startsWith("/host")
@@ -127,7 +128,7 @@ export function Sidebar() {
               )}
             >
               <ArrowRightLeft className="h-[18px] w-[18px] shrink-0" />
-              {!collapsed && <span className="truncate">{isHost ? "Switch naar Host" : "Word Host"}</span>}
+              {!collapsed && <span className="truncate">{isHost ? t("toHostMode") : t("becomeHost")}</span>}
             </button>
           ) : (
             <button
@@ -138,7 +139,7 @@ export function Sidebar() {
               )}
             >
               <ArrowRightLeft className="h-[18px] w-[18px] shrink-0" />
-              {!collapsed && <span className="truncate">Terug naar huren</span>}
+              {!collapsed && <span className="truncate">{t("backToRenting")}</span>}
             </button>
           )}
 
@@ -151,7 +152,7 @@ export function Sidebar() {
             )}
           >
             <LogOut className="h-[18px] w-[18px] shrink-0" />
-            {!collapsed && <span className="truncate">Uitloggen</span>}
+            {!collapsed && <span className="truncate">{t("signOut")}</span>}
           </button>
         </div>
       )}
@@ -161,7 +162,7 @@ export function Sidebar() {
         <button
           onClick={toggleCollapsed}
           className="flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-          aria-label={collapsed ? "Sidebar uitklappen" : "Sidebar inklappen"}
+          aria-label={collapsed ? t("expandSidebar") : t("collapseSidebar")}
         >
           <PanelLeft
             className={cn(

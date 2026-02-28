@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getStripe, createBookingPayment, PLATFORM_FEE_PERCENT } from "@/lib/stripe"
+import { getStripe, PLATFORM_FEE_PERCENT } from "@/lib/stripe"
 import { createClient } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
@@ -60,16 +60,52 @@ export async function POST(request: NextRequest) {
     const amount = totalAmount || Math.round(pricePerHour * hours * 100) / 100
     const studioOwnerStripeId = (studio.host as any)?.stripe_account_id
 
+    const origin = request.nextUrl.origin
+    const effectiveBookingId = bookingId || `temp_${Date.now()}`
+    const successUrl = `${origin}/book/${studioId}/success?booking=${effectiveBookingId}&session_id={CHECKOUT_SESSION_ID}`
+    const cancelUrl = `${origin}/book/${studioId}/checkout?date=${date || ""}&start=${startTime || ""}&duration=${hours}`
+
     // If studio owner has Stripe Connect, use commission flow
     if (studioOwnerStripeId) {
-      const session = await createBookingPayment({
-        amount,
-        studioOwnerId: studioOwnerStripeId,
-        bookingId: bookingId || `temp_${Date.now()}`,
-        customerEmail: email,
-        studioName: studioName || studio.title,
-        bookingDate: date || new Date().toISOString().split("T")[0],
-        hours,
+      const stripe = getStripe()
+      const amountInCents = Math.round(amount * 100)
+      const applicationFee = Math.round(amountInCents * (PLATFORM_FEE_PERCENT / 100))
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card", "ideal", "sepa_debit", "bancontact"],
+        mode: "payment",
+        customer_email: email,
+        line_items: [
+          {
+            price_data: {
+              currency: "eur",
+              product_data: {
+                name: `Boeking: ${studioName || studio.title}`,
+                description: `${hours} uur${date ? ` op ${date}` : ""}${startTime ? ` om ${startTime}` : ""}`,
+              },
+              unit_amount: amountInCents,
+            },
+            quantity: 1,
+          },
+        ],
+        payment_intent_data: {
+          application_fee_amount: applicationFee,
+          transfer_data: {
+            destination: studioOwnerStripeId,
+          },
+        },
+        metadata: {
+          type: "booking_payment",
+          bookingId: effectiveBookingId,
+          studioId,
+          studioOwnerId: studioOwnerStripeId,
+          platformFee: applicationFee.toString(),
+          hours: hours.toString(),
+          date: date || "",
+          startTime: startTime || "",
+        },
+        success_url: successUrl,
+        cancel_url: cancelUrl,
       })
 
       // Update booking with session ID if booking exists
@@ -101,7 +137,7 @@ export async function POST(request: NextRequest) {
           price_data: {
             currency: "eur",
             product_data: {
-              name: studioName || studio.title,
+              name: `Boeking: ${studioName || studio.title}`,
               description: `${hours} uur${date ? ` op ${date}` : ""}${startTime ? ` om ${startTime}` : ""}`,
             },
             unit_amount: amountInCents,
@@ -111,11 +147,11 @@ export async function POST(request: NextRequest) {
       ],
       mode: "payment",
       customer_email: email,
-      success_url: `${request.nextUrl.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${request.nextUrl.origin}/book/${studioId}/checkout`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: {
         type: "booking_payment",
-        bookingId: bookingId || "",
+        bookingId: effectiveBookingId,
         studioId,
         hours: hours.toString(),
         date: date || "",

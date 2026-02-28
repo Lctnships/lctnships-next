@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import { Tables } from "@/types/database.types"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"

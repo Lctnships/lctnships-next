@@ -30,7 +30,8 @@ const statusConfig = {
 }
 
 export function StatusBadge({ status, variant = "booking" }: StatusBadgeProps) {
-  const config = statusConfig[variant][status as keyof typeof statusConfig[typeof variant]]
+  const variantConfig = statusConfig[variant] as Record<string, { label: string; className: string }>
+  const config = variantConfig[status]
 
   if (!config) return null
 

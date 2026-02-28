@@ -1,18 +1,21 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "@/i18n/routing"
+import { useSearchParams } from "next/navigation"
+import { useTranslations } from "next-intl"
 
-const studioTypes = [
-  { id: "photo", label: "Photo Studio" },
-  { id: "video", label: "Video Production" },
-  { id: "podcast", label: "Podcast Suite" },
-  { id: "music", label: "Music Studio" },
-  { id: "dance", label: "Dance Studio" },
-  { id: "art", label: "Art Gallery" },
+const studioTypeKeys = [
+  { id: "photo", key: "typePhoto" },
+  { id: "video", key: "typeVideo" },
+  { id: "podcast", key: "typePodcast" },
+  { id: "music", key: "typeMusic" },
+  { id: "dance", key: "typeDance" },
+  { id: "art", key: "typeArt" },
 ]
 
 export function MarketplaceSearch() {
+  const t = useTranslations("Studios")
   const router = useRouter()
   const searchParams = useSearchParams()
   const [location, setLocation] = useState(searchParams.get("city") || "")
@@ -21,6 +24,8 @@ export function MarketplaceSearch() {
   const [showLocationDropdown, setShowLocationDropdown] = useState(false)
   const [showDateDropdown, setShowDateDropdown] = useState(false)
   const [showTypeDropdown, setShowTypeDropdown] = useState(false)
+
+  const studioTypes = studioTypeKeys.map((s) => ({ id: s.id, label: t(s.key) }))
 
   const handleSearch = () => {
     const params = new URLSearchParams()
@@ -47,7 +52,7 @@ export function MarketplaceSearch() {
               className="flex items-center gap-2 px-6 py-4 hover:bg-gray-50 rounded-[2.5rem] transition-all group"
             >
               <span className="material-symbols-outlined text-gray-400 group-hover:text-primary">location_on</span>
-              <span className="text-sm font-medium">{location || "Location"}</span>
+              <span className="text-sm font-medium">{location || t("locationLabel")}</span>
             </button>
             {showLocationDropdown && (
               <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 z-50">
@@ -55,10 +60,10 @@ export function MarketplaceSearch() {
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Search city..."
+                  placeholder={t("searchCity")}
                   className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Popular</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("popular")}</p>
                 <div className="flex flex-wrap gap-2">
                   {popularCities.map((city) => (
                     <button
@@ -90,7 +95,7 @@ export function MarketplaceSearch() {
               className="flex items-center gap-2 px-6 py-4 hover:bg-gray-50 rounded-[2.5rem] transition-all group"
             >
               <span className="material-symbols-outlined text-gray-400 group-hover:text-primary">calendar_today</span>
-              <span className="text-sm font-medium">{date || "Dates"}</span>
+              <span className="text-sm font-medium">{date || t("dates")}</span>
             </button>
             {showDateDropdown && (
               <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 z-50">
@@ -109,7 +114,7 @@ export function MarketplaceSearch() {
 
           <div className="h-8 w-px bg-gray-200" />
 
-          {/* Studio Type (instead of Guests) */}
+          {/* Studio Type */}
           <div className="relative">
             <button
               onClick={() => {
@@ -120,7 +125,7 @@ export function MarketplaceSearch() {
               className="flex items-center gap-2 px-6 py-4 hover:bg-gray-50 rounded-[2.5rem] transition-all group"
             >
               <span className="material-symbols-outlined text-gray-400 group-hover:text-primary">category</span>
-              <span className="text-sm font-medium">{studioType ? studioTypes.find(t => t.id === studioType)?.label : "Studio Type"}</span>
+              <span className="text-sm font-medium">{studioType ? studioTypes.find(t => t.id === studioType)?.label : t("studioTypeLabel")}</span>
             </button>
             {showTypeDropdown && (
               <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50">

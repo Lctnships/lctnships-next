@@ -1,8 +1,10 @@
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/server"
+import { getTranslations } from "next-intl/server"
 
 export async function FeaturedStudios() {
+  const t = await getTranslations("Home")
   const supabase = await createClient()
 
   const { data: studios } = await supabase
@@ -16,12 +18,12 @@ export async function FeaturedStudios() {
     return (
       <section className="max-w-[1440px] mx-auto px-4 md:px-8 mt-12 md:mt-20">
         <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">Featured Studios</h2>
-          <p className="text-gray-500 mt-2">Curated premium spaces for your next project</p>
+          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">{t("featuredTitle")}</h2>
+          <p className="text-gray-500 mt-2">{t("featuredSubtitle")}</p>
         </div>
         <div className="text-center py-16">
           <span className="material-symbols-outlined text-5xl text-gray-300 mb-4 block">photo_camera</span>
-          <p className="text-gray-500">Binnenkort beschikbaar</p>
+          <p className="text-gray-500">{t("comingSoon")}</p>
         </div>
       </section>
     )
@@ -30,13 +32,13 @@ export async function FeaturedStudios() {
   return (
     <section className="max-w-[1440px] mx-auto px-4 md:px-8 mt-12 md:mt-20">
       <div className="text-center mb-10">
-        <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">Featured Studios</h2>
-        <p className="text-gray-500 mt-2">Curated premium spaces for your next project</p>
+        <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">{t("featuredTitle")}</h2>
+        <p className="text-gray-500 mt-2">{t("featuredSubtitle")}</p>
         <Link
           href="/studios"
           className="inline-flex items-center gap-2 text-sm font-bold mt-4 group underline-offset-4 hover:underline"
         >
-          Explore all studios{" "}
+          {t("viewAllStudios")}{" "}
           <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">
             arrow_forward
           </span>
@@ -73,7 +75,7 @@ export async function FeaturedStudios() {
                 <span className="text-sm font-bold">{(studio.rating ?? 0).toFixed(1)}</span>
               </div>
             </div>
-            <p className="mt-2 font-bold text-sm">From &euro;{studio.price_per_hour}/h</p>
+            <p className="mt-2 font-bold text-sm">{t("fromPrice")} &euro;{studio.price_per_hour}{t("perHour")}</p>
           </Link>
         ))}
       </div>

@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import Link from "next/link"
 import Image from "next/image"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { Link, useRouter } from "@/i18n/routing"
 
 export function SignupForm() {
   const [fullName, setFullName] = useState("")
@@ -17,12 +17,13 @@ export function SignupForm() {
   const [isSocialLoading, setIsSocialLoading] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
+  const t = useTranslations("Auth")
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!agreedToTerms) {
-      toast.error("Please agree to the terms and conditions")
+      toast.error(t("agreeToTermsError"))
       return
     }
 
@@ -41,9 +42,9 @@ export function SignupForm() {
     if (error) {
       let description = error.message
       if (error.message.includes("already registered")) {
-        description = "Dit e-mailadres is al in gebruik. Probeer in te loggen."
+        description = t("emailAlreadyUsed")
       }
-      toast.error("Registratie mislukt", {
+      toast.error(t("registrationFailed"), {
         description,
       })
       setIsLoading(false)
@@ -60,13 +61,12 @@ export function SignupForm() {
       })
 
       if (profileError) {
-        // Profile creation failed but auth account exists - not blocking
         console.error("Failed to create profile:", profileError.message)
       }
     }
 
-    toast.success("Account aangemaakt!", {
-      description: "Controleer je e-mail om je account te bevestigen.",
+    toast.success(t("accountCreated"), {
+      description: t("checkEmailConfirm"),
     })
     router.refresh()
     router.push("/dashboard")
@@ -87,7 +87,7 @@ export function SignupForm() {
 
     if (error) {
       setIsSocialLoading(null)
-      toast.error("Google registratie mislukt", {
+      toast.error(t("googleSignupFailed"), {
         description: error.message,
       })
     }
@@ -103,8 +103,8 @@ export function SignupForm() {
 
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight mb-2">Create an account</h1>
-        <p className="text-gray-500">Start booking creative studios today</p>
+        <h1 className="text-3xl font-extrabold tracking-tight mb-2">{t("createAccount")}</h1>
+        <p className="text-gray-500">{t("signupSubtitle")}</p>
       </div>
 
       {/* Form */}
@@ -113,7 +113,7 @@ export function SignupForm() {
           <input
             id="fullName"
             type="text"
-            placeholder="Full name"
+            placeholder={t("fullNamePlaceholder")}
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             required
@@ -124,7 +124,7 @@ export function SignupForm() {
           <input
             id="email"
             type="email"
-            placeholder="Email address"
+            placeholder={t("emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -135,7 +135,7 @@ export function SignupForm() {
           <input
             id="password"
             type="password"
-            placeholder="Password (min. 8 characters)"
+            placeholder={t("passwordMinLength")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             minLength={8}
@@ -153,13 +153,13 @@ export function SignupForm() {
             className="mt-1 size-5 rounded border-gray-300 text-black focus:ring-black"
           />
           <span className="text-sm text-gray-500">
-            I agree to the{" "}
+            {t("agreeToTerms")}{" "}
             <Link href="/terms" className="text-black hover:underline font-medium">
-              Terms of Service
+              {t("termsAndConditions")}
             </Link>{" "}
-            and{" "}
+            {t("and")}{" "}
             <Link href="/privacy" className="text-black hover:underline font-medium">
-              Privacy Policy
+              {t("privacyPolicy")}
             </Link>
           </span>
         </label>
@@ -170,7 +170,7 @@ export function SignupForm() {
           className="w-full h-14 bg-black text-white rounded-full font-bold text-base hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-          Create account
+          {t("createAccount")}
         </button>
       </form>
 
@@ -180,7 +180,7 @@ export function SignupForm() {
           <div className="w-full border-t border-gray-200"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-4 text-gray-500">or continue with</span>
+          <span className="bg-white px-4 text-gray-500">{t("orContinueWith")}</span>
         </div>
       </div>
 
@@ -218,9 +218,9 @@ export function SignupForm() {
 
       {/* Sign in link */}
       <p className="text-center mt-8 text-gray-500">
-        Already have an account?{" "}
+        {t("alreadyAccount")}{" "}
         <Link href="/login" className="text-black font-bold hover:underline">
-          Sign in
+          {t("loginButton")}
         </Link>
       </p>
     </div>

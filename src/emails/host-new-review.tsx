@@ -35,7 +35,7 @@ export default function HostNewReviewEmail({
     <Html>
       <Head />
       <Preview>
-        {renterName} left a {rating}-star review for {studioName}
+        {`${renterName} left a ${rating}-star review for ${studioName}`}
       </Preview>
       <Body style={main}>
         <Container style={container}>

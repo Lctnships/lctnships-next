@@ -1,5 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import createMiddleware from 'next-intl/middleware'
+import { routing } from '@/i18n/routing'
 import { updateSession } from '@/lib/supabase/middleware'
+
+// Create the next-intl middleware
+const intlMiddleware = createMiddleware(routing)
 
 // In-memory rate limit fallback (used when Redis is not available)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
@@ -13,18 +18,14 @@ const rateLimits = {
 }
 
 function getClientIP(request: NextRequest): string {
-  // For Vercel/trusted proxies, X-Forwarded-For is reliable
-  // For other deployments, consider configuring trusted proxies
   const forwarded = request.headers.get('x-forwarded-for')
   const realIp = request.headers.get('x-real-ip')
-  const cfConnectingIp = request.headers.get('cf-connecting-ip') // Cloudflare
+  const cfConnectingIp = request.headers.get('cf-connecting-ip')
 
-  // Prefer Cloudflare's header if available (most reliable when using CF)
   if (cfConnectingIp) {
     return cfConnectingIp.trim()
   }
 
-  // Use X-Forwarded-For (first IP is the original client)
   if (forwarded) {
     const firstIp = forwarded.split(',')[0]?.trim()
     if (firstIp && isValidIP(firstIp)) {
@@ -32,34 +33,27 @@ function getClientIP(request: NextRequest): string {
     }
   }
 
-  // Fallback to X-Real-IP
   if (realIp && isValidIP(realIp.trim())) {
     return realIp.trim()
   }
 
-  // If no valid IP found, use a hash of user-agent + accept-language as fingerprint
-  // This prevents attackers from bypassing rate limits by not sending IP headers
   const userAgent = request.headers.get('user-agent') || ''
   const acceptLang = request.headers.get('accept-language') || ''
   return `fingerprint:${simpleHash(userAgent + acceptLang)}`
 }
 
-// Basic IP validation
 function isValidIP(ip: string): boolean {
-  // IPv4
   const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/
-  // IPv6 (simplified)
   const ipv6Regex = /^[a-fA-F0-9:]+$/
   return ipv4Regex.test(ip) || ipv6Regex.test(ip)
 }
 
-// Simple hash function for fingerprinting
 function simpleHash(str: string): string {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i)
     hash = ((hash << 5) - hash) + char
-    hash = hash & hash // Convert to 32bit integer
+    hash = hash & hash
   }
   return Math.abs(hash).toString(36)
 }
@@ -115,18 +109,16 @@ if (typeof setInterval !== 'undefined') {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Apply rate limiting to API routes only
+  // API routes: rate limiting + session update only (no locale handling)
   if (pathname.startsWith('/api')) {
     const clientIP = getClientIP(request)
     const config = getRateLimitConfig(pathname)
     const key = `${clientIP}:${pathname.split('/').slice(0, 3).join('/')}`
 
-    // Try Redis rate limiting first, fall back to memory
     let rateLimitResult: { allowed: boolean; remaining: number; reset: number }
 
     if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
       try {
-        // Dynamic import to avoid issues during build
         const { checkRateLimit, getRateLimitType } = await import('@/lib/rate-limit-redis')
         const type = getRateLimitType(pathname)
         const result = await checkRateLimit(clientIP, type)
@@ -136,7 +128,6 @@ export async function middleware(request: NextRequest) {
           reset: result.reset,
         }
       } catch {
-        // Fall back to memory rate limiting
         rateLimitResult = checkMemoryRateLimit(key, config)
       }
     } else {
@@ -159,23 +150,18 @@ export async function middleware(request: NextRequest) {
       )
     }
 
-    // Continue with session update and add rate limit headers to response
     const response = await updateSession(request)
 
     response.headers.set('X-RateLimit-Limit', config.limit.toString())
     response.headers.set('X-RateLimit-Remaining', rateLimitResult.remaining.toString())
     response.headers.set('X-RateLimit-Reset', Math.ceil(rateLimitResult.reset / 1000).toString())
 
-    // Add cache control headers for GET requests
     if (request.method === 'GET') {
-      // Public caching for studio listings
       if (pathname === '/api/studios') {
         response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300')
-      }
-      // Private caching for user-specific data
-      else if (pathname.startsWith('/api/bookings') ||
-               pathname.startsWith('/api/favorites') ||
-               pathname.startsWith('/api/notifications')) {
+      } else if (pathname.startsWith('/api/bookings') ||
+                 pathname.startsWith('/api/favorites') ||
+                 pathname.startsWith('/api/notifications')) {
         response.headers.set('Cache-Control', 'private, max-age=30, stale-while-revalidate=60')
       }
     }
@@ -183,8 +169,22 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  // For non-API routes, just update session
-  return await updateSession(request)
+  // For non-API routes: handle locale detection + session update
+  // First, let next-intl handle locale detection and redirects
+  const intlResponse = intlMiddleware(request)
+
+  // Then update the Supabase session on the response
+  // We need to update cookies on the intl response
+  const sessionResponse = await updateSession(request)
+
+  // Copy session cookies from the session response to the intl response
+  sessionResponse.cookies.getAll().forEach((cookie) => {
+    intlResponse.cookies.set(cookie.name, cookie.value, {
+      ...cookie,
+    })
+  })
+
+  return intlResponse
 }
 
 export const config = {

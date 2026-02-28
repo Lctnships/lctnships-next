@@ -1,8 +1,9 @@
 "use client"
 
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import Image from "next/image"
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 
 interface Studio {
   id: string
@@ -19,6 +20,7 @@ interface StudioCardProps {
 }
 
 export function StudioCard({ studio }: StudioCardProps) {
+  const t = useTranslations("Studios")
   const [isFavorite, setIsFavorite] = useState(false)
 
   return (
@@ -62,7 +64,7 @@ export function StudioCard({ studio }: StudioCardProps) {
         </div>
         <div className="text-right">
           <p className="font-bold text-lg">€{studio.price_per_hour}</p>
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Per Hour</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">{t("perHourLabel")}</p>
         </div>
       </div>
     </Link>

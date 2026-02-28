@@ -38,7 +38,7 @@ export function StudioReviews({ reviews, avgRating, totalReviews }: StudioReview
         <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
         <span className="text-xl font-semibold">{avgRating.toFixed(1)}</span>
         <span className="text-muted-foreground">
-          ({totalReviews} {totalReviews === 1 ? "review" : "reviews"})
+          ({totalReviews} {totalReviews === 1 ? "beoordeling" : "beoordelingen"})
         </span>
       </div>
 
