@@ -1,8 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/routing"
+import { Link, useRouter } from "@/i18n/routing"
+import { createClient } from "@/lib/supabase/client"
+import { toast } from "sonner"
 
 interface Project {
   id: string
@@ -238,9 +240,14 @@ export function ProjectsClient({ projects }: ProjectsClientProps) {
 
 function NewProjectModal({ onClose }: { onClose: () => void }) {
   const t = useTranslations("Projects")
+  const router = useRouter()
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [title, setTitle] = useState("")
   const [projectType, setProjectType] = useState("photoshoot")
   const [description, setDescription] = useState("")
+  const [coverUrl, setCoverUrl] = useState("")
+  const [isUploading, setIsUploading] = useState(false)
+  const [isCreating, setIsCreating] = useState(false)
 
   const projectTypes = [
     { id: "photoshoot", label: t("modalPhotoshoot"), icon: "photo_camera" },
@@ -248,6 +255,55 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
     { id: "podcast", label: t("modalPodcast"), icon: "mic" },
     { id: "film", label: t("modalFilmProduction"), icon: "movie" },
   ]
+
+  const handleFileUpload = async (file: File) => {
+    setIsUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("folder", "projects")
+
+      const res = await fetch("/api/upload", { method: "POST", body: formData })
+      if (!res.ok) throw new Error("Upload failed")
+      const { url } = await res.json()
+      setCoverUrl(url)
+    } catch {
+      toast.error("Upload mislukt")
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleCreate = async () => {
+    if (!title.trim()) {
+      toast.error("Vul een projectnaam in")
+      return
+    }
+    setIsCreating(true)
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error("Not authenticated")
+
+      const { error } = await supabase.from("projects").insert({
+        title: title.trim(),
+        project_type: projectType,
+        description: description.trim() || null,
+        cover_image_url: coverUrl || null,
+        owner_id: user.id,
+        status: "active",
+      })
+
+      if (error) throw error
+      toast.success("Project aangemaakt!")
+      onClose()
+      router.refresh()
+    } catch (err: any) {
+      toast.error(err.message || "Project aanmaken mislukt")
+    } finally {
+      setIsCreating(false)
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-xl p-4">
@@ -314,21 +370,65 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
             {/* Upload Zone */}
             <div className="flex flex-col gap-3">
               <p className="text-base font-semibold">{t("modalCoverImage")}</p>
-              <div className="w-full aspect-square flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors group p-8 text-center border-2 border-dashed border-gray-300 rounded-3xl">
-                <div className="size-16 rounded-full bg-white shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <span className="material-symbols-outlined text-black text-3xl">upload_file</span>
-                </div>
-                <p className="text-sm font-bold">{t("modalClickOrDragUpload")}</p>
-                <p className="text-xs text-gray-500 mt-1">{t("modalUploadRecommendation")}</p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) handleFileUpload(file)
+                }}
+              />
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full aspect-square flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-primary/5 transition-colors group p-8 text-center border-2 border-dashed border-gray-300 rounded-3xl overflow-hidden relative"
+              >
+                {coverUrl ? (
+                  <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: `url("${coverUrl}")` }}
+                  >
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                      <span className="material-symbols-outlined text-white text-3xl">edit</span>
+                    </div>
+                  </div>
+                ) : isUploading ? (
+                  <>
+                    <span className="material-symbols-outlined text-primary text-3xl animate-spin">progress_activity</span>
+                    <p className="text-sm font-bold mt-4">Uploaden...</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="size-16 rounded-full bg-white shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <span className="material-symbols-outlined text-primary text-3xl">upload_file</span>
+                    </div>
+                    <p className="text-sm font-bold">{t("modalClickOrDragUpload")}</p>
+                    <p className="text-xs text-gray-500 mt-1">{t("modalUploadRecommendation")}</p>
+                  </>
+                )}
               </div>
             </div>
           </div>
 
           {/* Create Button */}
           <div className="flex justify-center pt-4">
-            <button className="bg-black hover:bg-gray-800 text-white px-12 py-5 rounded-full font-bold text-lg transition-all shadow-xl shadow-black/10 flex items-center gap-3">
-              <span>{t("modalCreateButton")}</span>
-              <span className="material-symbols-outlined">arrow_forward</span>
+            <button
+              onClick={handleCreate}
+              disabled={isCreating || !title.trim()}
+              className="bg-primary hover:bg-primary/90 text-white px-12 py-5 rounded-full font-bold text-lg transition-all shadow-xl shadow-primary/30 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isCreating ? (
+                <>
+                  <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                  <span>Aanmaken...</span>
+                </>
+              ) : (
+                <>
+                  <span>{t("modalCreateButton")}</span>
+                  <span className="material-symbols-outlined">arrow_forward</span>
+                </>
+              )}
             </button>
           </div>
         </div>

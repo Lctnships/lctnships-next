@@ -1,8 +1,8 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { useTranslations } from "next-intl"
-import { Link, useRouter } from "@/i18n/routing"
+import { useTranslations, useLocale } from "next-intl"
+import { Link, useRouter, usePathname } from "@/i18n/routing"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
@@ -89,14 +89,16 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
 
       const { url } = await res.json()
 
-      // Update avatar_url in database
-      const supabase = createClient()
-      const { error } = await supabase
-        .from("users")
-        .update({ avatar_url: url })
-        .eq("id", profile.id)
-
-      if (error) throw error
+      // Update avatar_url via API route (bypasses RLS)
+      const res2 = await fetch("/api/users/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatar_url: url }),
+      })
+      if (!res2.ok) {
+        const errData = await res2.json()
+        throw new Error(errData.error || "Failed to update avatar")
+      }
 
       setAvatarUrl(url)
       toast.success(t("successAvatarUpdated"))
@@ -113,18 +115,20 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
   const handleSave = async () => {
     setIsSaving(true)
     try {
-      const supabase = createClient()
-      const { error } = await supabase
-        .from("users")
-        .update({
+      const res = await fetch("/api/users/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           full_name: formData.full_name,
           location: formData.location,
           bio: formData.bio,
           phone: formData.phone,
-        })
-        .eq("id", profile.id)
-
-      if (error) throw error
+        }),
+      })
+      if (!res.ok) {
+        const errData = await res.json()
+        throw new Error(errData.error || "Save failed")
+      }
 
       toast.success(t("successProfileSaved"))
       router.push("/profile")
@@ -137,7 +141,30 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
     }
   }
 
+  const locale = useLocale()
+  const pathname = usePathname()
   const isHost = profile.user_type === "host" || profile.user_type === "both"
+
+  const handleChangeLanguage = () => {
+    const locales = ["nl", "en", "es"]
+    const labels: Record<string, string> = { nl: "Nederlands", en: "English", es: "Espanol" }
+    const currentIdx = locales.indexOf(locale)
+    const nextLocale = locales[(currentIdx + 1) % locales.length] as "nl" | "en" | "es"
+    router.replace(pathname, { locale: nextLocale })
+    toast.success(`Taal gewijzigd naar ${labels[nextLocale]}`)
+  }
+
+  const handleDeleteAccount = async () => {
+    if (!confirm(t("accountDeleteConfirm") || "Weet je zeker dat je je account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.")) return
+    try {
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      router.push("/")
+      toast.success("Account uitgelogd. Neem contact op met support om je account permanent te verwijderen.")
+    } catch {
+      toast.error("Er ging iets mis")
+    }
+  }
 
   const tabs = [
     { id: "profile" as const, label: t("tabPublicProfile"), icon: "person" },
@@ -296,16 +323,22 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     <p className="font-bold">{t("accountEmail")}</p>
                     <p className="text-sm text-gray-500">{profile.email}</p>
                   </div>
-                  <button className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all">
+                  <button
+                    onClick={() => toast.info("E-mailadres wijzigen is momenteel niet beschikbaar. Neem contact op met support.")}
+                    className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all"
+                  >
                     {t("accountChange")}
                   </button>
                 </div>
                 <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl">
                   <div>
                     <p className="font-bold">{t("accountLanguage")}</p>
-                    <p className="text-sm text-gray-500">{t("accountDutch")}</p>
+                    <p className="text-sm text-gray-500">{{ nl: "Nederlands", en: "English", es: "Espanol" }[locale] || locale}</p>
                   </div>
-                  <button className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all">
+                  <button
+                    onClick={handleChangeLanguage}
+                    className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all"
+                  >
                     {t("accountChange")}
                   </button>
                 </div>
@@ -314,7 +347,10 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     <p className="font-bold">{t("accountCurrency")}</p>
                     <p className="text-sm text-gray-500">EUR (€)</p>
                   </div>
-                  <button className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all">
+                  <button
+                    onClick={() => toast.info("Valuta wijzigen komt binnenkort beschikbaar.")}
+                    className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all"
+                  >
                     {t("accountChange")}
                   </button>
                 </div>
@@ -323,7 +359,10 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     <p className="font-bold text-red-600">{t("accountDeleteAccount")}</p>
                     <p className="text-sm text-red-500">{t("accountDeleteDesc")}</p>
                   </div>
-                  <button className="px-6 py-2 bg-red-100 text-red-600 rounded-full text-sm font-bold hover:bg-red-200 transition-all">
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="px-6 py-2 bg-red-100 text-red-600 rounded-full text-sm font-bold hover:bg-red-200 transition-all"
+                  >
                     {t("accountDelete")}
                   </button>
                 </div>
@@ -425,9 +464,12 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                   </div>
                 </div>
               )}
-              <button className="w-full mt-6 py-3 rounded-full bg-gray-100 text-xs font-bold pointer-events-none">
+              <Link
+                href="/profile"
+                className="w-full mt-6 py-3 rounded-full bg-gray-100 text-xs font-bold text-center block hover:bg-gray-200 transition-all"
+              >
                 {t("previewViewPublicProfile")}
-              </button>
+              </Link>
             </div>
           </div>
 
