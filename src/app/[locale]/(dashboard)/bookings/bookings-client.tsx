@@ -221,15 +221,6 @@ export function BookingsClient({ bookings, favorites, totalHours }: BookingsClie
                       ? t("emptyPast")
                       : t("emptyCancelled")}
                   </p>
-                  {activeTab === "upcoming" && (
-                    <Link
-                      href="/studios"
-                      className="inline-flex items-center gap-2 mt-6 bg-black text-white rounded-full px-6 py-3 text-sm font-bold hover:bg-gray-800 transition-colors"
-                    >
-                      <span className="material-symbols-outlined">search</span>
-                      {t("browseStudios")}
-                    </Link>
-                  )}
                 </div>
               ) : (
                 filteredBookings.map((booking) => (
