@@ -289,6 +289,7 @@ export function BookingsClient({ bookings, favorites, totalHours }: BookingsClie
                             src={coverImage.image_url}
                             alt={fav.studio.title}
                             fill
+                            sizes="48px"
                             className="object-cover"
                           />
                         ) : (
@@ -384,6 +385,7 @@ function BookingCard({
               src={coverImage.image_url}
               alt={booking.studio.title}
               fill
+              sizes="(max-width: 768px) 100vw, 256px"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (

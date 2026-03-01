@@ -75,21 +75,15 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
   }, [studio.price_per_hour, selectedDuration, selectedEquipment, equipment])
 
   const handleContinue = () => {
-    const equipmentParams = Object.entries(selectedEquipment)
-      .map(([id, qty]) => `eq_${id}=${qty}`)
-      .join("&")
-
     const params = new URLSearchParams({
       date: selectedDate,
       start: selectedTime,
       duration: selectedDuration.toString(),
     })
 
-    if (equipmentParams) {
-      Object.entries(selectedEquipment).forEach(([id, qty]) => {
-        params.append(`eq_${id}`, qty.toString())
-      })
-    }
+    Object.entries(selectedEquipment).forEach(([id, qty]) => {
+      params.append(`eq_${id}`, qty.toString())
+    })
 
     router.push(`/book/${studio.id}/checkout?${params.toString()}`)
   }
@@ -248,6 +242,7 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
                       src={coverImage.image_url}
                       alt={studio.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover"
                     />
                   ) : (

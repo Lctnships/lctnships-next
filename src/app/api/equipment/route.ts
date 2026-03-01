@@ -15,12 +15,27 @@ export async function GET(request: Request) {
       )
     }
 
-    const { data: equipment, error } = await supabase
+    // Check if the requesting user is the host of this studio
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data: studio } = await supabase
+      .from("studios")
+      .select("host_id")
+      .eq("id", studioId)
+      .single()
+
+    const isHost = user && studio && studio.host_id === user.id
+
+    let query = supabase
       .from("equipment")
       .select("*")
       .eq("studio_id", studioId)
-      .eq("is_available", true)
-      .order("name")
+
+    // Only filter on is_available for non-hosts
+    if (!isHost) {
+      query = query.eq("is_available", true)
+    }
+
+    const { data: equipment, error } = await query.order("name")
 
     if (error) throw error
 

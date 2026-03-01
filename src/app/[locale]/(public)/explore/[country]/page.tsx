@@ -435,6 +435,7 @@ export default async function CountryPage({ params }: PageProps) {
               src={data.heroImage}
               alt={data.name}
               fill
+              sizes="100vw"
               className="object-cover"
               priority
             />
@@ -485,6 +486,7 @@ export default async function CountryPage({ params }: PageProps) {
                       src={city.image}
                       alt={city.name}
                       fill
+                      sizes="288px"
                       className="object-cover"
                     />
                   </div>
@@ -516,6 +518,7 @@ export default async function CountryPage({ params }: PageProps) {
                     src={studio.image}
                     alt={studio.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover"
                   />
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-sm">
@@ -570,6 +573,7 @@ export default async function CountryPage({ params }: PageProps) {
                         src={trend.image}
                         alt={trend.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
@@ -637,6 +641,7 @@ export default async function CountryPage({ params }: PageProps) {
                       src={trend.image}
                       alt={trend.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, 25vw"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-primary/40 mix-blend-multiply" />

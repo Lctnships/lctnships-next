@@ -108,6 +108,7 @@ export function ReviewModal({ booking, onClose, onSuccess }: ReviewModalProps) {
                   src={coverImage.image_url}
                   alt={booking.studio.title}
                   fill
+                  sizes="80px"
                   className="object-cover"
                 />
               ) : (

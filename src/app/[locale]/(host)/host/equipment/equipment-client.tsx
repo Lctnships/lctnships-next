@@ -198,7 +198,7 @@ export function EquipmentClient({ studios }: EquipmentClientProps) {
           <div className="grid grid-cols-4 gap-4 mt-8">
             {images.map((url, index) => (
               <div key={index} className="aspect-square rounded-2xl overflow-hidden relative group">
-                <Image src={url} alt={`Equipment ${index + 1}`} fill className="object-cover" />
+                <Image src={url} alt={`Equipment ${index + 1}`} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
                 <button
                   type="button"
                   onClick={() => removeImage(index)}

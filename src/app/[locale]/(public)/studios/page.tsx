@@ -90,19 +90,19 @@ export default async function StudiosPage(props: StudiosPageProps) {
     <div className="bg-[#fcfcfc]">
       {/* Search Section */}
       <section className="max-w-7xl mx-auto px-6 py-8 mb-4">
-        <Suspense>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>}>
           <MarketplaceSearch />
         </Suspense>
       </section>
 
       <section className="max-w-7xl mx-auto px-6 mb-16">
-        <Suspense>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>}>
           <CategoryFilter />
         </Suspense>
       </section>
 
       <section className="max-w-7xl mx-auto px-6 mb-20">
-        <Suspense>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>}>
           <TrendingStudios />
         </Suspense>
       </section>
@@ -112,7 +112,7 @@ export default async function StudiosPage(props: StudiosPageProps) {
           <div className="flex items-center gap-3 overflow-x-auto pb-2">
             {params.city && (
               <Link
-                href={`/studios?${new URLSearchParams({ type: params.type || "" }).toString()}`}
+                href={`/studios${params.type ? `?${new URLSearchParams({ type: params.type }).toString()}` : ""}`}
                 className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 rounded-full text-sm font-medium hover:bg-gray-200 transition-all"
               >
                 {params.city}
@@ -121,7 +121,7 @@ export default async function StudiosPage(props: StudiosPageProps) {
             )}
             {params.type && (
               <Link
-                href={`/studios?${new URLSearchParams({ city: params.city || "" }).toString()}`}
+                href={`/studios${params.city ? `?${new URLSearchParams({ city: params.city }).toString()}` : ""}`}
                 className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 rounded-full text-sm font-medium hover:bg-gray-200 transition-all"
               >
                 {params.type}

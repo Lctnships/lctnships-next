@@ -46,6 +46,11 @@ function getCompletedSteps(): Set<string> {
     completed.add("pricing")
   }
 
+  // Calendar is completed if available_days were set
+  if (draft.available_days && draft.available_days.length > 0) {
+    completed.add("calendar")
+  }
+
   return completed
 }
 
@@ -69,13 +74,18 @@ export default function OnboardingLayout({
 
   const progress = getProgress(completedSteps)
 
-  // Determine which steps are accessible: completed steps + the first uncompleted step
+  const currentStepIndex = steps.findIndex((s) => s.id === currentStep)
+
+  // A step is accessible if:
+  // 1. It's step 0 (always accessible)
+  // 2. It's at or before the current step (so you can go back)
+  // 3. The step itself is completed
+  // 4. The previous step is completed (so you can go forward)
   const getIsAccessible = (stepId: string) => {
-    if (completedSteps.has(stepId)) return true
     const stepIndex = steps.findIndex((s) => s.id === stepId)
-    // First step is always accessible
     if (stepIndex === 0) return true
-    // A step is accessible if the previous step is completed
+    if (stepIndex <= currentStepIndex) return true
+    if (completedSteps.has(stepId)) return true
     const prevStep = steps[stepIndex - 1]
     return completedSteps.has(prevStep.id)
   }

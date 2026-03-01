@@ -63,6 +63,7 @@ export async function GET(request: Request) {
       `)
       .in("id", conversationIds)
       .order("updated_at", { ascending: false })
+      .limit(50)
 
     if (error) throw error
 

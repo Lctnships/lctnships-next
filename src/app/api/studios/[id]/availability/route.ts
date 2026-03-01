@@ -25,7 +25,7 @@ export async function GET(request: Request, { params }: RouteParams) {
     // Get studio details
     const { data: studio, error: studioError } = await supabase
       .from("studios")
-      .select("id, title, hourly_rate, minimum_hours, maximum_hours")
+      .select("id, title, price_per_hour, minimum_hours, maximum_hours")
       .eq("id", id)
       .single()
 
@@ -67,6 +67,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
         // Check if slot conflicts with any booking
         const isBooked = bookings?.some((booking) => {
+          if (!booking.start_datetime || !booking.end_datetime) return false
           const bookingStart = new Date(booking.start_datetime)
           const bookingEnd = new Date(booking.end_datetime)
           return slotStart < bookingEnd && slotEnd > bookingStart
@@ -94,7 +95,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       studio: {
         id: studio.id,
         title: studio.title,
-        hourlyRate: studio.hourly_rate,
+        hourlyRate: studio.price_per_hour,
         minimumHours: studio.minimum_hours,
         maximumHours: studio.maximum_hours,
       },

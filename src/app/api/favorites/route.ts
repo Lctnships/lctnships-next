@@ -21,7 +21,7 @@ export async function GET(request: Request) {
           title,
           city,
           country,
-          hourly_rate,
+          price_per_hour,
           avg_rating,
           total_reviews,
           studio_images (id, image_url, is_cover)

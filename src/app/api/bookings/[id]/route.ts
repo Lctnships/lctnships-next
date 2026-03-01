@@ -52,6 +52,9 @@ export async function GET(request: Request, { params }: RouteParams) {
 }
 
 // PATCH /api/bookings/[id] - Update booking
+// TODO: Implement cron job or scheduled function to automatically
+// set booking status to "completed" after end_datetime has passed.
+// For now, hosts can manually mark bookings as completed.
 export async function PATCH(request: Request, { params }: RouteParams) {
   try {
     const { id } = await params

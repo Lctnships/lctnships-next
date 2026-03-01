@@ -57,6 +57,7 @@ export function StudioGallery({ images, title }: StudioGalleryProps) {
                 src={mainImage.image_url}
                 alt={title}
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover hover:opacity-90 transition-opacity"
                 priority
               />
@@ -77,6 +78,7 @@ export function StudioGallery({ images, title }: StudioGalleryProps) {
                 src={image.image_url}
                 alt={`${title} ${index + 2}`}
                 fill
+                sizes="(max-width: 768px) 50vw, 25vw"
                 className="object-cover hover:opacity-90 transition-opacity"
               />
             </div>
@@ -111,6 +113,7 @@ export function StudioGallery({ images, title }: StudioGalleryProps) {
               src={sortedImages[currentIndex]?.image_url || ""}
               alt={`${title} ${currentIndex + 1}`}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-contain"
             />
 
@@ -153,6 +156,7 @@ export function StudioGallery({ images, title }: StudioGalleryProps) {
                   src={image.image_url}
                   alt={`Thumbnail ${index + 1}`}
                   fill
+                  sizes="80px"
                   className="object-cover"
                 />
               </button>

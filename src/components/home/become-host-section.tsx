@@ -12,6 +12,7 @@ export async function BecomeHostSection() {
           src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069"
           alt={t("becomeHostImageAlt")}
           fill
+          sizes="100vw"
           className="object-cover transition-transform duration-1000 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-8">

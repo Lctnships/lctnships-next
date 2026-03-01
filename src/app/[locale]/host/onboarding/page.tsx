@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 import { AddressAutocomplete, AddressData } from "@/components/ui/address-autocomplete"
 
@@ -29,6 +29,26 @@ export default function OnboardingBasicsPage() {
   const [address, setAddress] = useState<AddressData>(emptyAddress)
   const [description, setDescription] = useState("")
 
+  // Restore state from localStorage on mount
+  useEffect(() => {
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    if (draft.type) setSelectedType(draft.type)
+    if (draft.title) setStudioName(draft.title)
+    if (draft.description) setDescription(draft.description)
+    if (draft.address) {
+      setAddress({
+        street: draft.address.street || "",
+        houseNumber: draft.address.houseNumber || "",
+        postalCode: draft.address.postalCode || "",
+        city: draft.address.city || "",
+        country: draft.address.country || "",
+        formatted: draft.location || "",
+        lat: draft.address.lat,
+        lng: draft.address.lng,
+      })
+    }
+  }, [])
+
   const handleContinue = () => {
     // Save to localStorage for now (will save to Supabase later)
     localStorage.setItem(
@@ -52,7 +72,7 @@ export default function OnboardingBasicsPage() {
     router.push("/host/onboarding/media")
   }
 
-  const isAddressValid = address.street && address.city
+  const isAddressValid = address.street && address.city && address.postalCode && address.houseNumber
 
   return (
     <>

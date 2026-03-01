@@ -62,6 +62,7 @@ export async function TrendingStudios() {
                 src={studio.images[0]}
                 alt={studio.title}
                 fill
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover transition-transform duration-1000 group-hover:scale-110"
               />
             ) : (

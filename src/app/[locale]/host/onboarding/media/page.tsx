@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 import Image from "next/image"
 
@@ -8,21 +8,73 @@ export default function OnboardingMediaPage() {
   const router = useRouter()
   const [images, setImages] = useState<string[]>([])
   const [isDragging, setIsDragging] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Restore state from localStorage on mount
+  useEffect(() => {
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    if (draft.images && draft.images.length > 0) {
+      setImages(draft.images)
+    }
+  }, [])
+
+  const uploadFiles = async (files: FileList | File[]) => {
+    setIsUploading(true)
+    const newUrls: string[] = []
+
+    try {
+      for (const file of Array.from(files)) {
+        const formData = new FormData()
+        formData.append("file", file)
+        formData.append("bucket", "studio-images")
+        formData.append("folder", "onboarding")
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        })
+
+        if (res.ok) {
+          const data = await res.json()
+          newUrls.push(data.url)
+        } else {
+          console.error("Upload failed for file:", file.name)
+        }
+      }
+
+      if (newUrls.length > 0) {
+        setImages((prev) => [...prev, ...newUrls])
+      }
+    } catch (error) {
+      console.error("Upload error:", error)
+    } finally {
+      setIsUploading(false)
+    }
+  }
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(false)
-    // In production, handle file upload to Supabase Storage
-    // For now, we'll use placeholder images
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      uploadFiles(e.dataTransfer.files)
+    }
   }
 
   const handleFileSelect = () => {
-    // Simulate adding images
-    const placeholders = [
-      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=400",
-      "https://images.unsplash.com/photo-1574362848149-11496d93a7c7?q=80&w=400",
-    ]
-    setImages([...images, ...placeholders])
+    fileInputRef.current?.click()
+  }
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      uploadFiles(e.target.files)
+      // Reset input so same file can be selected again
+      e.target.value = ""
+    }
+  }
+
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index))
   }
 
   const handleContinue = () => {
@@ -33,6 +85,16 @@ export default function OnboardingMediaPage() {
 
   return (
     <>
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={handleFileInputChange}
+      />
+
       {/* Header Section */}
       <header className="max-w-4xl w-full mx-auto px-12 pt-16 pb-8">
         <div className="flex flex-col gap-2">
@@ -54,25 +116,37 @@ export default function OnboardingMediaPage() {
           }}
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
+          onClick={handleFileSelect}
           className={`bg-white p-8 rounded-xl border-2 border-dashed flex flex-col items-center justify-center min-h-[340px] group cursor-pointer transition-colors relative overflow-hidden ${
             isDragging ? "border-primary bg-primary/5" : "border-primary/40 hover:bg-primary/5"
           }`}
         >
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] -z-0 opacity-50"></div>
           <div className="relative z-10 flex flex-col items-center text-center">
-            <div className="size-20 bg-primary/10 rounded-full flex items-center justify-center mb-4 text-primary group-hover:scale-110 transition-transform">
-              <span className="material-symbols-outlined text-4xl">cloud_upload</span>
-            </div>
-            <h4 className="text-xl font-bold mb-2">Sleep foto's hierheen</h4>
-            <p className="text-gray-500 mb-6 max-w-xs">
-              Upload minimaal 5 foto's om verschillende hoeken en lichtopstellingen te tonen.
-            </p>
-            <button
-              onClick={handleFileSelect}
-              className="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
-            >
-              Bestanden Kiezen
-            </button>
+            {isUploading ? (
+              <>
+                <div className="size-20 bg-primary/10 rounded-full flex items-center justify-center mb-4 text-primary">
+                  <span className="material-symbols-outlined text-4xl animate-spin">progress_activity</span>
+                </div>
+                <h4 className="text-xl font-bold mb-2">Uploaden...</h4>
+                <p className="text-gray-500 mb-6 max-w-xs">
+                  Je foto's worden geupload naar de server.
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="size-20 bg-primary/10 rounded-full flex items-center justify-center mb-4 text-primary group-hover:scale-110 transition-transform">
+                  <span className="material-symbols-outlined text-4xl">cloud_upload</span>
+                </div>
+                <h4 className="text-xl font-bold mb-2">Sleep foto's hierheen</h4>
+                <p className="text-gray-500 mb-6 max-w-xs">
+                  Upload minimaal 5 foto's om verschillende hoeken en lichtopstellingen te tonen.
+                </p>
+                <span className="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+                  Bestanden Kiezen
+                </span>
+              </>
+            )}
           </div>
         </div>
 
@@ -83,8 +157,14 @@ export default function OnboardingMediaPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {images.map((img, i) => (
                 <div key={i} className="relative aspect-square rounded-xl overflow-hidden group">
-                  <Image src={img} alt={`Upload ${i + 1}`} fill className="object-cover" />
-                  <button className="absolute top-2 right-2 size-8 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <Image src={img} alt={`Upload ${i + 1}`} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeImage(i)
+                    }}
+                    className="absolute top-2 right-2 size-8 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                  >
                     <span className="material-symbols-outlined text-sm">close</span>
                   </button>
                   {i === 0 && (
@@ -95,7 +175,10 @@ export default function OnboardingMediaPage() {
                 </div>
               ))}
               <button
-                onClick={handleFileSelect}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleFileSelect()
+                }}
                 className="aspect-square rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-2 text-gray-400 hover:border-primary hover:text-primary transition-colors"
               >
                 <span className="material-symbols-outlined text-2xl">add</span>

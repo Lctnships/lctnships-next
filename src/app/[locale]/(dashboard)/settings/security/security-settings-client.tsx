@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Link } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 interface Device {
   id: string
@@ -56,9 +57,25 @@ export function SecuritySettingsClient({
     setDevices(devices.filter((d) => d.id !== deviceId))
   }
 
-  const handleSave = () => {
-    // TODO: Save security settings
-    console.log({ currentPassword, newPassword, twoFactorEnabled })
+  const [isSaving, setIsSaving] = useState(false)
+
+  const handleSave = async () => {
+    setIsSaving(true)
+    try {
+      const res = await fetch("/api/users/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          two_factor_enabled: twoFactorEnabled,
+        }),
+      })
+      if (!res.ok) throw new Error("Failed to save settings")
+      toast.success(t("saveSuccess") || "Security settings saved successfully")
+    } catch {
+      toast.error(t("saveError") || "Failed to save security settings")
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -204,10 +221,11 @@ export function SecuritySettingsClient({
       <div className="flex justify-end pt-4 pb-12">
         <button
           onClick={handleSave}
-          className="bg-primary text-white text-base font-bold px-10 py-5 rounded-full hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-3"
+          disabled={isSaving}
+          className="bg-primary text-white text-base font-bold px-10 py-5 rounded-full hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span className="material-symbols-outlined">shield</span>
-          {t("saveButton")}
+          <span className="material-symbols-outlined">{isSaving ? "hourglass_empty" : "shield"}</span>
+          {isSaving ? (t("saving") || "Saving...") : t("saveButton")}
         </button>
       </div>
     </div>
