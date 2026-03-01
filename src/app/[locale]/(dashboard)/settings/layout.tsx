@@ -9,10 +9,9 @@ export default async function SettingsLayout({
   const t = await getTranslations("Settings")
 
   const settingsNav = [
-    { href: "/profile", label: t("navProfile"), icon: "person" },
     { href: "/settings", label: t("navAccount"), icon: "settings" },
-    { href: "/settings/payouts", label: t("navPayouts"), icon: "payments" },
-    { href: "/settings/privacy", label: t("navPrivacySecurity"), icon: "shield_lock" },
+    { href: "/settings/privacy", label: t("navPrivacy"), icon: "visibility" },
+    { href: "/settings/security", label: t("navSecurity"), icon: "shield_lock" },
   ]
 
   return (

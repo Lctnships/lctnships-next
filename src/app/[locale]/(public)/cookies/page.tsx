@@ -84,7 +84,7 @@ export default function CookiePolicyPage() {
               Laatst bijgewerkt op 24 januari 2025
             </p>
           </div>
-          <button className="flex min-w-[200px] cursor-pointer items-center justify-center rounded-full h-14 px-8 bg-primary text-white text-base font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+          <button className="flex min-w-[200px] cursor-pointer items-center justify-center rounded-full h-14 px-8 bg-black text-white text-base font-bold shadow-lg shadow-black/10 hover:scale-[1.02] transition-transform">
             <span className="truncate">Beheer Cookie-instellingen</span>
           </button>
         </div>
@@ -104,7 +104,7 @@ export default function CookiePolicyPage() {
                     href={`#${item.id}`}
                     className={`flex items-center gap-3 px-4 py-2.5 rounded-full transition-colors ${
                       index === 0
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-gray-100 text-black"
                         : "hover:bg-gray-100 text-[#0d121b]"
                     }`}
                   >
@@ -139,7 +139,7 @@ export default function CookiePolicyPage() {
             {/* What are cookies */}
             <section id="wat-zijn-cookies">
               <h2 className="text-2xl font-bold pb-4 text-[#0d121b] flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">cookie</span>
+                <span className="material-symbols-outlined text-black">cookie</span>
                 Wat zijn cookies?
               </h2>
               <p className="text-[#4c669a] text-base leading-relaxed">
@@ -163,7 +163,7 @@ export default function CookiePolicyPage() {
                       <div
                         className={`p-2 rounded-lg ${
                           cookie.color === "blue"
-                            ? "bg-blue-50 text-primary"
+                            ? "bg-blue-50 text-black"
                             : cookie.color === "green"
                             ? "bg-green-50 text-green-600"
                             : "bg-purple-50 text-purple-600"
@@ -195,7 +195,7 @@ export default function CookiePolicyPage() {
                   <tbody className="divide-y divide-[#e7ebf3]">
                     {cookieTable.map((cookie) => (
                       <tr key={cookie.name}>
-                        <td className="px-6 py-4 text-sm font-mono text-primary">{cookie.name}</td>
+                        <td className="px-6 py-4 text-sm font-mono text-black">{cookie.name}</td>
                         <td className="px-6 py-4 text-sm text-[#4c669a]">{cookie.provider}</td>
                         <td className="px-6 py-4 text-sm text-[#4c669a]">{cookie.purpose}</td>
                         <td className="px-6 py-4 text-sm text-[#4c669a]">{cookie.expiry}</td>
@@ -208,7 +208,7 @@ export default function CookiePolicyPage() {
 
             {/* Manage Settings */}
             <section id="beheer" className="pb-20">
-              <div className="bg-primary/5 rounded-lg p-10 border border-primary/20">
+              <div className="bg-gray-100 rounded-lg p-10 border border-gray-200">
                 <h2 className="text-2xl font-bold pb-4 text-[#0d121b]">
                   Hoe beheer ik mijn instellingen?
                 </h2>
@@ -218,7 +218,7 @@ export default function CookiePolicyPage() {
                   invloed kan hebben op de functionaliteit van onze studio-portal.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <button className="px-6 py-3 bg-primary text-white font-bold rounded-full hover:shadow-lg transition-all">
+                  <button className="px-6 py-3 bg-black text-white font-bold rounded-full hover:shadow-lg transition-all">
                     Open Voorkeuren Center
                   </button>
                   <button className="px-6 py-3 bg-white border border-[#e7ebf3] text-[#0d121b] font-bold rounded-full hover:bg-gray-50 transition-all">

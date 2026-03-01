@@ -5,6 +5,7 @@ import { Link, useRouter } from "@/i18n/routing"
 import Image from "next/image"
 import { useTranslations, useLocale } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
+import { useUser } from "@/hooks/use-user"
 import dynamic from "next/dynamic"
 
 const StudioMap = dynamic(
@@ -40,9 +41,53 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   const [selectedEquipment, setSelectedEquipment] = useState<Set<string>>(new Set())
 
   const router = useRouter()
+  const { user } = useUser()
   const datePickerRef = useRef<HTMLDivElement>(null)
   const dateLocale = locale === "nl" ? "nl-NL" : locale === "es" ? "es-ES" : "en-US"
   const today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+
+  // Check favorite status on mount
+  useEffect(() => {
+    if (!user) return
+    const supabase = createClient()
+    supabase
+      .from("favorites")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("studio_id", studio.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) setIsFavorite(true)
+      })
+  }, [user, studio.id])
+
+  const handleFavorite = async () => {
+    if (!user) {
+      router.push(`/login?redirect=/studios/${studio.id}`)
+      return
+    }
+
+    const newState = !isFavorite
+    setIsFavorite(newState) // Optimistic update
+
+    try {
+      if (newState) {
+        const res = await fetch("/api/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ studio_id: studio.id }),
+        })
+        if (!res.ok) throw new Error()
+      } else {
+        const res = await fetch(`/api/favorites?studioId=${studio.id}`, {
+          method: "DELETE",
+        })
+        if (!res.ok) throw new Error()
+      }
+    } catch {
+      setIsFavorite(!newState) // Revert on error
+    }
+  }
 
   const handleContactHost = async () => {
     const supabase = createClient()
@@ -108,7 +153,8 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   }
 
   // Get images from studio_images or images array
-  const images = studio.studio_images?.map((img: any) => img.url) || studio.images || []
+  const studioImageUrls = studio.studio_images?.map((img: any) => img.url) || []
+  const images = studioImageUrls.length > 0 ? studioImageUrls : (studio.images || [])
   const amenities = studio.studio_amenities || []
   const equipment = studio.equipment || []
   const ratingBreakdown = studio.rating_breakdown || {}
@@ -256,6 +302,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                 src={images[0]}
                 alt={studio.title}
                 fill
+                priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover transition-transform group-hover:scale-105"
               />
@@ -300,7 +347,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
             )}
           </button>
           <button
-            onClick={() => setIsFavorite(!isFavorite)}
+            onClick={handleFavorite}
             className="flex items-center gap-1.5 md:gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-white rounded-full shadow-lg hover:shadow-xl transition-all text-sm font-medium"
           >
             <span className={`material-symbols-outlined text-base md:text-lg ${isFavorite ? "text-red-500" : ""}`}>
@@ -327,7 +374,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
                 {studio.is_superhost && (
-                  <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wide">
+                  <span className="px-3 py-1 bg-gray-100 text-black text-xs font-bold rounded-full uppercase tracking-wide">
                     {t("superhost")}
                   </span>
                 )}
@@ -336,7 +383,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
               <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">{studio.title}</h1>
               <div className="flex items-center gap-4 text-sm">
                 <div className="flex items-center gap-1">
-                  <span className="material-symbols-outlined text-primary text-lg">star</span>
+                  <span className="material-symbols-outlined text-black text-lg">star</span>
                   <span className="font-bold">{studio.avg_rating || 4.9}</span>
                     <span className="text-gray-500">({t("reviewsCount", { count: studio.total_reviews || reviews.length })})</span>
                 </div>
@@ -357,7 +404,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                     onClick={() => scrollToSection(tab.id)}
                     className={`flex items-center gap-1.5 md:gap-2 px-3 py-3 md:px-5 md:py-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
                       activeTab === tab.id
-                        ? "border-primary text-primary"
+                        ? "border-black text-black"
                         : "border-transparent text-gray-500 hover:text-gray-900"
                     }`}
                   >
@@ -377,12 +424,12 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                 {studio.size_sqm && (
                   <div className="flex gap-6 mt-6">
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-primary">square_foot</span>
+                      <span className="material-symbols-outlined text-black">square_foot</span>
                       <span>{studio.size_sqm}m²</span>
                     </div>
                     {studio.max_guests && (
                       <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary">group</span>
+                        <span className="material-symbols-outlined text-black">group</span>
                         <span>{t("upToGuests", { count: studio.max_guests })}</span>
                       </div>
                     )}
@@ -411,7 +458,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                         )}
                       </div>
                       {studio.host.is_verified && (
-                        <div className="absolute -bottom-1 -right-1 size-6 bg-primary rounded-full flex items-center justify-center">
+                        <div className="absolute -bottom-1 -right-1 size-6 bg-black rounded-full flex items-center justify-center">
                           <span className="material-symbols-outlined text-white text-sm">verified</span>
                         </div>
                       )}
@@ -424,13 +471,13 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                       <div className="flex items-center gap-3 md:gap-4 text-sm flex-wrap">
                         {studio.host.response_time && (
                           <span className="flex items-center gap-1">
-                            <span className="material-symbols-outlined text-primary text-base md:text-lg">schedule</span>
+                            <span className="material-symbols-outlined text-black text-base md:text-lg">schedule</span>
                             {t("respondsIn", { time: studio.host.response_time })}
                           </span>
                         )}
                         {studio.host.response_rate && (
                           <span className="flex items-center gap-1">
-                            <span className="material-symbols-outlined text-primary text-base md:text-lg">chat</span>
+                            <span className="material-symbols-outlined text-black text-base md:text-lg">chat</span>
                             {t("responseRate", { rate: studio.host.response_rate })}
                           </span>
                         )}
@@ -451,9 +498,9 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                     {amenities.map((amenity: any, index: number) => (
                       <div
                         key={amenity.id || index}
-                        className="flex flex-col p-5 bg-white rounded-2xl border border-gray-100 hover:border-primary/20 hover:shadow-lg transition-all"
+                        className="flex flex-col p-5 bg-white rounded-2xl border border-gray-100 hover:border-black/20 hover:shadow-lg transition-all"
                       >
-                        <span className="material-symbols-outlined text-2xl text-primary mb-3">
+                        <span className="material-symbols-outlined text-2xl text-black mb-3">
                           {amenity.icon || "check_circle"}
                         </span>
                         <span className="font-bold text-sm mb-1">{amenity.name}</span>
@@ -520,7 +567,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                   )}
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div className="size-20 bg-white/90 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                      <span className="material-symbols-outlined text-4xl text-primary">play_arrow</span>
+                      <span className="material-symbols-outlined text-4xl text-black">play_arrow</span>
                     </div>
                     <p className="text-white font-bold text-lg">{t("discover360")}</p>
                     <p className="text-white/70 text-sm">{t("clickToStartTour")}</p>
@@ -532,7 +579,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
               <div id="section-reviews">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
                   <div className="flex items-center gap-2 md:gap-3">
-                    <span className="material-symbols-outlined text-2xl md:text-3xl text-primary">star</span>
+                    <span className="material-symbols-outlined text-2xl md:text-3xl text-black">star</span>
                     <span className="text-2xl md:text-3xl font-bold">{studio.avg_rating || 4.9}</span>
                     <span className="text-gray-500 text-sm md:text-base">• {t("reviewsCount", { count: studio.total_reviews || reviews.length })}</span>
                   </div>
@@ -550,7 +597,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                         <div className="flex items-center gap-2">
                           <div className="w-16 md:w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-primary rounded-full"
+                              className="h-full bg-black rounded-full"
                               style={{ width: `${((value as number) / 5) * 100}%` }}
                             />
                           </div>
@@ -701,7 +748,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                                 disabled={date < today}
                                 className={`w-full h-full rounded-full text-sm font-medium transition-colors
                                   ${date < today ? "text-gray-300 cursor-not-allowed" : "hover:bg-gray-100"}
-                                  ${isDateSelected(date) ? "bg-primary text-white hover:bg-primary" : ""}
+                                  ${isDateSelected(date) ? "bg-black text-white hover:bg-gray-800" : ""}
                                 `}
                               >
                                 {date.getDate()}
@@ -747,7 +794,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                 <div className="mb-4 p-4 border border-gray-200 rounded-xl">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-bold uppercase text-gray-400">{t("duration")}</span>
-                    <span className="text-xs text-primary font-medium flex items-center gap-1">
+                    <span className="text-xs text-black font-medium flex items-center gap-1">
                       <span className="material-symbols-outlined text-sm">info</span>
                       {t("minHours", { count: minHours })}
                     </span>
@@ -815,7 +862,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                 {/* Book Button */}
                 <button
                   onClick={handleBooking}
-                  className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors"
+                  className="w-full py-4 bg-black text-white font-bold rounded-xl hover:bg-gray-800 transition-colors"
                 >
                   {selectedDate ? t("reserve") : t("checkAvailability")}
                 </button>
@@ -825,15 +872,15 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                 {/* Quick Stats */}
                 <div className="flex items-center justify-center gap-6 mt-6 pt-6 border-t border-gray-100">
                   <div className="text-center">
-                    <span className="material-symbols-outlined text-primary">verified</span>
+                    <span className="material-symbols-outlined text-black">verified</span>
                     <p className="text-xs text-gray-500 mt-1">{t("verified")}</p>
                   </div>
                   <div className="text-center">
-                    <span className="material-symbols-outlined text-primary">bolt</span>
+                    <span className="material-symbols-outlined text-black">bolt</span>
                     <p className="text-xs text-gray-500 mt-1">{t("instantBook")}</p>
                   </div>
                   <div className="text-center">
-                    <span className="material-symbols-outlined text-primary">event_available</span>
+                    <span className="material-symbols-outlined text-black">event_available</span>
                     <p className="text-xs text-gray-500 mt-1">{t("freeCancellation")}</p>
                   </div>
                 </div>
@@ -853,7 +900,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
         <section className="mt-20">
           <div className="flex items-start justify-between gap-4 mb-8">
             <h2 className="text-2xl font-bold">{t("similarStudiosNearby")}</h2>
-            <Link href="/studios" className="text-primary font-medium hover:underline whitespace-nowrap shrink-0">
+            <Link href="/studios" className="text-black font-medium hover:underline whitespace-nowrap shrink-0">
               {t("viewAll")}
             </Link>
           </div>
@@ -873,7 +920,18 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                       />
                     )}
                     <button
-                      onClick={(e) => e.preventDefault()}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        if (!user) {
+                          router.push(`/login?redirect=/studios/${studio.id}`)
+                          return
+                        }
+                        fetch("/api/favorites", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ studio_id: similarStudio.id }),
+                        })
+                      }}
                       className="absolute top-3 right-3 size-9 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <span className="material-symbols-outlined text-lg">favorite_border</span>
@@ -881,11 +939,11 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                   </div>
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-bold group-hover:text-primary transition-colors">{similarStudio.title}</h3>
+                      <h3 className="font-bold group-hover:text-black transition-colors">{similarStudio.title}</h3>
                       <p className="text-sm text-gray-500">{similarStudio.location || similarStudio.city}</p>
                     </div>
                     <div className="flex items-center gap-1 text-sm">
-                      <span className="material-symbols-outlined text-base text-primary">star</span>
+                      <span className="material-symbols-outlined text-base text-black">star</span>
                       <span className="font-medium">{similarStudio.avg_rating || 4.8}</span>
                     </div>
                   </div>
@@ -939,14 +997,14 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
               <span className="text-gray-500 text-sm">{t("perHour")}</span>
             </div>
             <div className="flex items-center gap-1 text-sm">
-              <span className="material-symbols-outlined text-primary text-sm">star</span>
+              <span className="material-symbols-outlined text-black text-sm">star</span>
               <span className="font-medium">{studio.avg_rating || 4.9}</span>
               <span className="text-gray-500">({studio.total_reviews || reviews.length})</span>
             </div>
           </div>
           <button
             onClick={() => setShowMobileBooking(true)}
-            className="px-6 md:px-8 py-3 bg-primary text-white font-bold rounded-xl text-sm md:text-base"
+            className="px-6 md:px-8 py-3 bg-black text-white font-bold rounded-xl text-sm md:text-base"
           >
             {t("checkAvailability")}
           </button>
@@ -1026,7 +1084,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                               disabled={date < today}
                               className={`w-full h-full rounded-full text-sm font-medium transition-colors
                                 ${date < today ? "text-gray-300 cursor-not-allowed" : "hover:bg-white"}
-                                ${isDateSelected(date) ? "bg-primary text-white hover:bg-primary" : ""}
+                                ${isDateSelected(date) ? "bg-black text-white hover:bg-gray-800" : ""}
                               `}
                             >
                               {date.getDate()}
@@ -1063,7 +1121,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
               <div className="mb-4 p-4 border border-gray-200 rounded-xl">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold uppercase text-gray-400">{t("duration")}</span>
-                  <span className="text-xs text-primary font-medium flex items-center gap-1">
+                  <span className="text-xs text-black font-medium flex items-center gap-1">
                     <span className="material-symbols-outlined text-sm">info</span>
                     {t("minHours", { count: minHours })}
                   </span>
@@ -1131,7 +1189,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
               {/* Book Button */}
               <button
                 onClick={handleBooking}
-                className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors text-lg"
+                className="w-full py-4 bg-black text-white font-bold rounded-xl hover:bg-gray-800 transition-colors text-lg"
               >
                 {selectedDate ? t("reserve") : t("checkAvailability")}
               </button>

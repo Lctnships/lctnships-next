@@ -65,12 +65,12 @@ export function CreditPackages({ packages }: CreditPackagesProps) {
           <Card
             key={pkg.id}
             className={`relative transition-all hover:shadow-lg ${
-              isPopular ? "border-primary ring-2 ring-primary/20" : ""
+              isPopular ? "border-black ring-2 ring-black/20" : ""
             }`}
           >
             {isPopular && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <Badge className="bg-primary text-primary-foreground px-4">
+                <Badge className="bg-black text-white px-4">
                   Meest gekozen
                 </Badge>
               </div>
@@ -81,7 +81,7 @@ export function CreditPackages({ packages }: CreditPackagesProps) {
                 <div
                   className={`p-2 rounded-lg ${
                     isPopular
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-gray-100 text-black"
                       : "bg-muted text-muted-foreground"
                   }`}
                 >

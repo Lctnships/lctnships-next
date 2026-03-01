@@ -45,20 +45,20 @@ export function CategoryFilter() {
             onClick={() => handleCategoryClick(category.id)}
             className={`flex flex-col items-center gap-2 min-w-[90px] px-4 py-3 rounded-[2rem] transition-all group ${
               isActive
-                ? "bg-white shadow-sm border border-gray-100 ring-2 ring-primary"
+                ? "bg-white shadow-sm border border-gray-100 ring-2 ring-black"
                 : "hover:bg-white"
             }`}
           >
             <span
               className={`material-symbols-outlined text-[24px] ${
-                isActive ? "text-primary" : "text-gray-400 group-hover:text-primary"
+                isActive ? "text-black" : "text-gray-400 group-hover:text-black"
               }`}
             >
               {category.icon}
             </span>
             <span
               className={`text-xs font-medium ${
-                isActive ? "text-primary font-semibold" : "text-gray-500 group-hover:text-primary"
+                isActive ? "text-black font-semibold" : "text-gray-500 group-hover:text-black"
               }`}
             >
               {t(category.key)}

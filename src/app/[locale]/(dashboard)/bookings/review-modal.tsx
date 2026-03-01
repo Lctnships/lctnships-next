@@ -86,12 +86,12 @@ export function ReviewModal({ booking, onClose, onSuccess }: ReviewModalProps) {
         <div className="p-6 pb-4 border-b border-gray-100">
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-xl font-bold text-[#0d121b]">Leave a Review</h2>
-              <p className="text-gray-500 text-sm mt-1">Share your experience at {booking.studio.title}</p>
+              <h2 className="text-xl font-bold text-black">{t("title")}</h2>
+              <p className="text-gray-500 text-sm mt-1">{t("subtitle")} {booking.studio.title}</p>
             </div>
             <button
               onClick={onClose}
-              className="flex size-10 items-center justify-center rounded-full bg-gray-100 text-[#0d121b] hover:bg-gray-200 transition-colors"
+              className="flex size-10 items-center justify-center rounded-full bg-gray-100 text-black hover:bg-gray-200 transition-colors"
             >
               <span className="material-symbols-outlined">close</span>
             </button>
@@ -118,10 +118,10 @@ export function ReviewModal({ booking, onClose, onSuccess }: ReviewModalProps) {
               )}
             </div>
             <div>
-              <h3 className="font-bold text-[#0d121b]">{booking.studio.title}</h3>
+              <h3 className="font-bold text-black">{booking.studio.title}</h3>
               <p className="text-sm text-gray-500">{booking.studio.city}</p>
               <p className="text-xs text-gray-400 mt-1">
-                {new Date(booking.start_datetime).toLocaleDateString("nl-NL", {
+                {new Date(booking.start_datetime).toLocaleDateString(dateLocale, {
                   month: "long",
                   day: "numeric",
                   year: "numeric",
@@ -132,7 +132,7 @@ export function ReviewModal({ booking, onClose, onSuccess }: ReviewModalProps) {
 
           {/* Star Rating */}
           <div className="text-center">
-            <p className="text-sm font-bold text-gray-700 mb-3">How was your experience?</p>
+            <p className="text-sm font-bold text-gray-700 mb-3">{t("ratingQuestion")}</p>
             <div className="flex justify-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -157,11 +157,11 @@ export function ReviewModal({ booking, onClose, onSuccess }: ReviewModalProps) {
             </div>
             {displayRating > 0 && (
               <p className="text-sm text-gray-500 mt-2">
-                {displayRating === 1 && "Poor"}
-                {displayRating === 2 && "Fair"}
-                {displayRating === 3 && "Good"}
-                {displayRating === 4 && "Very Good"}
-                {displayRating === 5 && "Excellent!"}
+                {displayRating === 1 && t("ratingPoor")}
+                {displayRating === 2 && t("ratingFair")}
+                {displayRating === 3 && t("ratingGood")}
+                {displayRating === 4 && t("ratingVeryGood")}
+                {displayRating === 5 && t("ratingExcellent")}
               </p>
             )}
           </div>
@@ -169,14 +169,14 @@ export function ReviewModal({ booking, onClose, onSuccess }: ReviewModalProps) {
           {/* Review Text */}
           <div>
             <label className="text-sm font-bold text-gray-700 block mb-2">
-              Tell others about your experience (optional)
+              {t("textLabel")}
             </label>
             <textarea
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
-              placeholder="What did you like about this studio? Would you recommend it to others?"
+              placeholder={t("textPlaceholder")}
               rows={4}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2b6cee]/20 focus:border-[#2b6cee] resize-none text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black resize-none text-sm"
             />
             <p className="text-xs text-gray-400 mt-1 text-right">
               {reviewText.length}/500
@@ -185,9 +185,9 @@ export function ReviewModal({ booking, onClose, onSuccess }: ReviewModalProps) {
 
           {/* Quick Tags */}
           <div>
-            <p className="text-sm font-bold text-gray-700 mb-3">What stood out? (optional)</p>
+            <p className="text-sm font-bold text-gray-700 mb-3">{t("tagsLabel")}</p>
             <div className="flex flex-wrap gap-2">
-              {["Great Location", "Clean Space", "Friendly Host", "Good Equipment", "Value for Money", "Easy Check-in"].map((tag) => (
+              {[t("tagGreatLocation"), t("tagCleanSpace"), t("tagFriendlyHost"), t("tagGoodEquipment"), t("tagValueForMoney"), t("tagEasyCheckin")].map((tag) => (
                 <button
                   key={tag}
                   onClick={() => {
@@ -199,7 +199,7 @@ export function ReviewModal({ booking, onClose, onSuccess }: ReviewModalProps) {
                   }}
                   className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
                     reviewText.includes(tag)
-                      ? "bg-[#2b6cee] text-white"
+                      ? "bg-black text-white"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -224,26 +224,26 @@ export function ReviewModal({ booking, onClose, onSuccess }: ReviewModalProps) {
               disabled={isSubmitting}
               className="flex-1 px-6 py-3 rounded-full border border-gray-200 text-sm font-bold text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
-              Cancel
+              {t("cancel")}
             </button>
             <button
               onClick={handleSubmit}
               disabled={rating === 0 || isSubmitting}
               className={`flex-1 px-6 py-3 rounded-full text-sm font-bold transition-all flex items-center justify-center gap-2 ${
                 rating > 0 && !isSubmitting
-                  ? "bg-[#2b6cee] text-white hover:bg-[#2b6cee]/90 shadow-lg shadow-[#2b6cee]/20"
+                  ? "bg-black text-white hover:bg-gray-800 shadow-lg shadow-black/10"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
             >
               {isSubmitting ? (
                 <>
                   <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
-                  Submitting...
+                  {t("submitting")}
                 </>
               ) : (
                 <>
                   <span className="material-symbols-outlined text-lg">send</span>
-                  Submit Review
+                  {t("submitReview")}
                 </>
               )}
             </button>

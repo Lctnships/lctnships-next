@@ -15,14 +15,14 @@ const activityKeys = [
 ] as const
 
 const popularCities = [
-  { name: "Amsterdam", countryKey: "countryNetherlands" },
-  { name: "Rotterdam", countryKey: "countryNetherlands" },
-  { name: "Den Haag", countryKey: "countryNetherlands" },
-  { name: "Utrecht", countryKey: "countryNetherlands" },
-  { name: "Londen", countryKey: "countryUK" },
-  { name: "Berlijn", countryKey: "countryGermany" },
-  { name: "Parijs", countryKey: "countryFrance" },
-  { name: "Antwerpen", countryKey: "countryBelgium" },
+  { nameKey: "cityAmsterdam", countryKey: "countryNetherlands" },
+  { nameKey: "cityRotterdam", countryKey: "countryNetherlands" },
+  { nameKey: "cityTheHague", countryKey: "countryNetherlands" },
+  { nameKey: "cityUtrecht", countryKey: "countryNetherlands" },
+  { nameKey: "cityLondon", countryKey: "countryUK" },
+  { nameKey: "cityBerlin", countryKey: "countryGermany" },
+  { nameKey: "cityParis", countryKey: "countryFrance" },
+  { nameKey: "cityAntwerp", countryKey: "countryBelgium" },
 ] as const
 
 function getDaysInMonth(year: number, month: number) {
@@ -101,7 +101,7 @@ export function HeroSection() {
 
   // Build translated cities list
   const cities = popularCities.map((c) => ({
-    name: c.name,
+    name: t(c.nameKey),
     country: t(c.countryKey),
   }))
 
@@ -176,7 +176,7 @@ export function HeroSection() {
         />
 
         <div className="relative z-10 w-full max-w-4xl text-center">
-          <h1 className="text-white text-5xl md:text-7xl font-extrabold tracking-tight mb-8 drop-shadow-sm">
+          <h1 className="text-white text-4xl md:text-7xl font-extrabold tracking-tight mb-8 drop-shadow-sm text-center">
             {t("heroTitleLine1")} <br /> {t("heroTitleLine2")}
           </h1>
 
@@ -190,7 +190,7 @@ export function HeroSection() {
                   setShowLocationSuggestions(false)
                   setShowDatePicker(false)
                 }}
-                className="w-full flex items-center px-4 md:px-6 py-3 md:py-0 border-b md:border-b-0 md:border-r border-gray-100 hover:bg-gray-50 transition-colors rounded-xl md:rounded-l-full md:rounded-r-none h-full text-left"
+                className="w-full flex items-center justify-center md:justify-start px-4 md:px-6 py-3 md:py-0 border-b md:border-b-0 md:border-r border-gray-100 hover:bg-gray-50 transition-colors rounded-xl md:rounded-l-full md:rounded-r-none h-full text-center md:text-left"
               >
                 <span className="material-symbols-outlined text-gray-400 mr-3">search</span>
                 <div className="flex flex-col">
@@ -217,10 +217,10 @@ export function HeroSection() {
                         activityLabel === type.title ? "bg-gray-50" : ""
                       }`}
                     >
-                      <span className="material-symbols-outlined text-xl text-primary">{type.icon}</span>
+                      <span className="material-symbols-outlined text-xl text-black">{type.icon}</span>
                       <span className="font-semibold text-sm text-gray-900">{type.title}</span>
                       {activityLabel === type.title && (
-                        <span className="material-symbols-outlined text-primary ml-auto text-lg">check</span>
+                        <span className="material-symbols-outlined text-black ml-auto text-lg">check</span>
                       )}
                     </button>
                   ))}
@@ -243,7 +243,7 @@ export function HeroSection() {
 
             {/* Location - Typeable Input with Suggestions */}
             <div ref={locationRef} className="relative flex-1">
-              <div className="flex items-center px-4 md:px-6 py-3 md:py-0 border-b md:border-b-0 md:border-r border-gray-100 h-full">
+              <div className="flex items-center justify-center md:justify-start px-4 md:px-6 py-3 md:py-0 border-b md:border-b-0 md:border-r border-gray-100 h-full">
                 <span className="material-symbols-outlined text-gray-400 mr-3">location_on</span>
                 <div className="flex flex-col flex-1 min-w-0">
                   <span className="text-[10px] font-bold uppercase text-gray-400">{t("locationLabel")}</span>
@@ -317,7 +317,7 @@ export function HeroSection() {
                   setShowActivityDropdown(false)
                   setShowLocationSuggestions(false)
                 }}
-                className="w-full flex items-center px-4 md:px-6 py-3 md:py-0 hover:bg-gray-50 transition-colors h-full text-left cursor-pointer"
+                className="w-full flex items-center justify-center md:justify-start px-4 md:px-6 py-3 md:py-0 hover:bg-gray-50 transition-colors h-full text-center md:text-left cursor-pointer"
               >
                 <span className="material-symbols-outlined text-gray-400 mr-3">calendar_today</span>
                 <div className="flex flex-col">
@@ -381,9 +381,9 @@ export function HeroSection() {
                             }}
                             disabled={date < today}
                             className={`w-9 h-9 rounded-full text-sm font-medium transition-all
-                              ${date < today ? "text-gray-300 cursor-not-allowed" : "hover:bg-primary/10 hover:text-primary"}
-                              ${selectedDate && isSameDay(date, selectedDate) ? "bg-primary text-white hover:bg-primary hover:text-white shadow-sm" : ""}
-                              ${isSameDay(date, today) && !(selectedDate && isSameDay(date, selectedDate)) ? "border border-primary/30 text-primary font-bold" : ""}
+                              ${date < today ? "text-gray-300 cursor-not-allowed" : "hover:bg-gray-100 hover:text-black"}
+                              ${selectedDate && isSameDay(date, selectedDate) ? "bg-black text-white hover:bg-black hover:text-white shadow-sm" : ""}
+                              ${isSameDay(date, today) && !(selectedDate && isSameDay(date, selectedDate)) ? "border border-gray-200 text-black font-bold" : ""}
                             `}
                           >
                             {date.getDate()}
@@ -400,7 +400,7 @@ export function HeroSection() {
                         setSelectedDate(today)
                         setShowDatePicker(false)
                       }}
-                      className="text-xs font-bold text-primary hover:underline"
+                      className="text-xs font-bold text-black hover:underline"
                     >
                       {t("today")}
                     </button>
@@ -420,7 +420,7 @@ export function HeroSection() {
             {/* Search Button */}
             <button
               onClick={handleSearch}
-              className="bg-primary text-white h-12 md:size-14 rounded-full flex items-center justify-center hover:scale-105 transition-transform shrink-0 mt-2 md:mt-0 w-full md:w-14 gap-2 md:gap-0"
+              className="bg-black text-white h-12 md:size-14 rounded-full flex items-center justify-center hover:scale-105 transition-transform shrink-0 mt-2 md:mt-0 w-full md:w-14 gap-2 md:gap-0"
             >
               <span className="material-symbols-outlined">search</span>
               <span className="md:hidden text-sm font-bold">{t("searchStudios")}</span>

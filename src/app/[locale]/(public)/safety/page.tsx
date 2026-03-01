@@ -109,7 +109,7 @@ export default function SafetyPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 to-primary/15 min-h-[420px] flex items-center justify-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-gray-100 to-gray-200 min-h-[420px] flex items-center justify-center">
         <div className="absolute inset-0">
           <Image
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZp3aBzRsD7aPNlWUw4xq0lECzN1ApRCOGJA_cCAJcy_XqwfszYJVxHO9FV0pkNBTRci6l53tbm_xwOuf2jWCOqcS0dhGDw_kUAQsK0CPQTekDceULEfdWZIqj3fA4jH4bhoOtSIrUxKOaJN_kCdkWilkvAOJ4c6uzkTzi9uAlgXk79GZ_efL6sJ3AX9IkBB0lbAPy_BfKolOKdXIAomAD6VqDwVRh9ptvVjCRCcmZSKhyYt7ffjJwmA8ePaKNgM7CJgGRcqD5-LM"
@@ -121,7 +121,7 @@ export default function SafetyPage() {
           />
         </div>
         <div className="relative z-10 max-w-2xl mx-auto text-center px-6 py-12">
-          <span className="text-primary font-bold tracking-widest text-xs uppercase">
+          <span className="text-black font-bold tracking-widest text-xs uppercase">
             Your Security is Our Priority
           </span>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mt-4 text-gray-900 dark:text-white">
@@ -131,7 +131,7 @@ export default function SafetyPage() {
             Building a secure, transparent environment where studio hosts and creative renters can flourish with complete peace of mind.
           </p>
           <div className="mt-8">
-            <button className="inline-flex items-center justify-center rounded-full h-12 px-6 bg-primary text-white text-base font-bold transition-transform hover:scale-105">
+            <button className="inline-flex items-center justify-center rounded-full h-12 px-6 bg-black text-white text-base font-bold transition-transform hover:scale-105">
               Transparency Report
             </button>
           </div>
@@ -155,7 +155,7 @@ export default function SafetyPage() {
               key={pillar.title}
               className="flex flex-col gap-6 p-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[32px] shadow-sm hover:shadow-xl transition-all duration-300 group"
             >
-              <div className="w-14 h-14 flex items-center justify-center bg-primary/10 rounded-2xl text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+              <div className="w-14 h-14 flex items-center justify-center bg-gray-100 rounded-2xl text-black group-hover:bg-black group-hover:text-white transition-colors">
                 {pillar.icon}
               </div>
               <div>
@@ -166,7 +166,7 @@ export default function SafetyPage() {
                   {pillar.features.map((feature) => (
                     <li key={feature.title} className="flex items-start gap-3">
                       <svg
-                        className="w-5 h-5 text-primary flex-shrink-0 mt-0.5"
+                        className="w-5 h-5 text-black flex-shrink-0 mt-0.5"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -199,7 +199,7 @@ export default function SafetyPage() {
                 key={feature.title}
                 className="p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 text-center flex flex-col items-center gap-3"
               >
-                <div className="text-primary">{feature.icon}</div>
+                <div className="text-black">{feature.icon}</div>
                 <p className="text-gray-900 dark:text-white font-bold text-sm">{feature.title}</p>
               </div>
             ))}

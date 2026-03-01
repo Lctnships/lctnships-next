@@ -64,9 +64,9 @@ const categoryData: Record<string, {
       },
     ],
   },
-  "hosts": {
-    title: "Voor Verhuurders",
-    description: "Tips en tools voor studio-eigenaren om zichtbaarheid en boekingen te maximaliseren.",
+  "studios": {
+    title: "Studio Informatie",
+    description: "Alles over studio's, faciliteiten en wat je kunt verwachten.",
     icon: "storefront",
     sections: [
       {
@@ -202,27 +202,27 @@ export default async function HelpCategoryPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f6f8]">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="w-full max-w-5xl mx-auto px-6 md:px-0 mt-12 mb-10">
-        <nav className="flex items-center gap-2 text-[#4c669a] text-xs font-semibold mb-6 uppercase tracking-wider">
-          <Link href="/help" className="hover:text-primary transition-colors">
+        <nav className="flex items-center gap-2 text-gray-500 text-xs font-semibold mb-6 uppercase tracking-wider">
+          <Link href="/help" className="hover:text-black transition-colors">
             {t("helpCenter")}
           </Link>
           <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-          <span className="text-[#0d121b]">{data.title}</span>
+          <span className="text-black">{data.title}</span>
         </nav>
 
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-[#e7ebf3] pb-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-gray-200 pb-10">
           <div className="flex items-start gap-6">
-            <div className="size-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shrink-0">
+            <div className="size-16 bg-gray-100 rounded-2xl flex items-center justify-center text-black shrink-0">
               <span className="material-symbols-outlined text-4xl">{data.icon}</span>
             </div>
             <div className="flex flex-col gap-2">
-              <h1 className="text-[#0d121b] text-4xl md:text-5xl font-extrabold tracking-tight">
+              <h1 className="text-black text-4xl md:text-5xl font-extrabold tracking-tight">
                 {data.title}
               </h1>
-              <p className="text-[#4c669a] text-lg max-w-xl">{data.description}</p>
+              <p className="text-gray-500 text-lg max-w-xl">{data.description}</p>
             </div>
           </div>
         </div>
@@ -234,15 +234,15 @@ export default async function HelpCategoryPage({ params }: PageProps) {
           {data.sections.map((section) => (
             <section key={section.title} className="flex flex-col">
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-primary">{section.icon}</span>
-                <h2 className="text-xl font-extrabold text-[#0d121b]">{section.title}</h2>
+                <span className="material-symbols-outlined text-black">{section.icon}</span>
+                <h2 className="text-xl font-extrabold text-black">{section.title}</h2>
               </div>
               <div className="flex flex-col gap-4">
                 {section.articles.map((article) => (
                   <Link
                     key={article.slug}
                     href={`/help/${category}/${article.slug}`}
-                    className="group flex items-center justify-between py-1 text-[#4c669a] hover:text-primary transition-all"
+                    className="group flex items-center justify-between py-1 text-gray-500 hover:text-black transition-all"
                   >
                     <span className="text-base font-medium">{article.title}</span>
                     <span className="material-symbols-outlined text-xl opacity-0 group-hover:opacity-100 transition-all">
@@ -257,19 +257,19 @@ export default async function HelpCategoryPage({ params }: PageProps) {
       </div>
 
       {/* Still need help */}
-      <div className="w-full bg-white border-y border-[#e7ebf3] py-16">
+      <div className="w-full bg-white border-y border-gray-200 py-16">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h3 className="text-2xl font-bold mb-4">{t("stillNeedHelp")}</h3>
-          <p className="text-[#4c669a] mb-8">
+          <p className="text-gray-500 mb-8">
             {t("supportAvailable")}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-primary text-white font-bold px-8 py-3 rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+            <button className="bg-black text-white font-bold px-8 py-3 rounded-xl hover:bg-gray-800 transition-all shadow-lg shadow-black/20">
               {t("contactUs")}
             </button>
             <Link
               href="/help"
-              className="bg-white text-[#0d121b] border border-[#e7ebf3] font-bold px-8 py-3 rounded-xl hover:bg-[#f6f6f8] transition-all"
+              className="bg-white text-black border border-gray-200 font-bold px-8 py-3 rounded-xl hover:bg-gray-50 transition-all"
             >
               {t("backToHelpCenter")}
             </Link>

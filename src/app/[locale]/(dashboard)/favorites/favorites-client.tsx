@@ -118,7 +118,7 @@ export function FavoritesClient({ studios, totalCount, isEmpty }: FavoritesClien
         <div>
           <Link
             href="/studios"
-            className="bg-primary text-charcoal font-bold px-8 py-4 rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all flex items-center gap-3 active:scale-95"
+            className="bg-black text-white font-bold px-8 py-4 rounded-full hover:shadow-lg hover:shadow-black/10 transition-all flex items-center gap-3 active:scale-95"
           >
             <span className="material-symbols-outlined text-xl">calendar_today</span>
             {t("bookStudio")}
@@ -181,7 +181,7 @@ export function FavoritesClient({ studios, totalCount, isEmpty }: FavoritesClien
                     e.preventDefault()
                     toggleFavorite(studio.id)
                   }}
-                  className="absolute top-4 right-4 size-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center text-primary transition-all hover:scale-110 active:scale-95 z-10"
+                  className="absolute top-4 right-4 size-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center text-black transition-all hover:scale-110 active:scale-95 z-10"
                 >
                   <span className={`material-symbols-outlined ${favorites.includes(studio.id) ? "heart-filled" : ""}`}>
                     favorite
@@ -199,7 +199,7 @@ export function FavoritesClient({ studios, totalCount, isEmpty }: FavoritesClien
             <div className="px-2 flex justify-between items-start">
               <div>
                 <Link href={`/studios/${studio.id}`}>
-                  <h3 className="text-lg font-bold text-gray-900 leading-tight hover:text-primary transition-colors">
+                  <h3 className="text-lg font-bold text-gray-900 leading-tight hover:text-black transition-colors">
                     {studio.title}
                   </h3>
                 </Link>
@@ -258,12 +258,12 @@ function FavoritesEmptyState({ t }: { t: (key: string) => string }) {
       <div className="max-w-md text-center">
         {/* Visual */}
         <div className="relative w-64 h-64 mx-auto mb-8">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full" />
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-100 rounded-full" />
           <div className="absolute inset-8 bg-white rounded-full shadow-xl flex items-center justify-center">
             <span className="material-symbols-outlined text-7xl text-gray-300">favorite</span>
           </div>
-          <div className="absolute -top-4 -right-4 size-16 bg-primary/10 rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined text-2xl text-primary">add</span>
+          <div className="absolute -top-4 -right-4 size-16 bg-gray-100 rounded-full flex items-center justify-center">
+            <span className="material-symbols-outlined text-2xl text-black">add</span>
           </div>
         </div>
 
@@ -276,7 +276,7 @@ function FavoritesEmptyState({ t }: { t: (key: string) => string }) {
         {/* CTA */}
         <Link
           href="/studios"
-          className="inline-flex items-center justify-center gap-2 bg-primary text-charcoal py-4 px-8 rounded-full font-bold text-sm tracking-wide shadow-lg shadow-primary/25 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+          className="inline-flex items-center justify-center gap-2 bg-black text-white py-4 px-8 rounded-full font-bold text-sm tracking-wide shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
         >
           <span>{t("emptyCta")}</span>
           <span className="material-symbols-outlined text-base">arrow_forward</span>

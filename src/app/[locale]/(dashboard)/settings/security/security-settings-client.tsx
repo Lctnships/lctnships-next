@@ -100,7 +100,7 @@ export function SecuritySettingsClient({
       {/* Change Password Card */}
       <section className="bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
         <div className="flex items-center gap-3 mb-8">
-          <span className="material-symbols-outlined text-primary">lock_reset</span>
+          <span className="material-symbols-outlined text-black">lock_reset</span>
           <h3 className="text-2xl font-bold tracking-tight">{t("changePassword")}</h3>
         </div>
 
@@ -111,7 +111,7 @@ export function SecuritySettingsClient({
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full rounded-xl border-gray-200 bg-gray-50 h-14 px-5 focus:border-primary focus:ring-0 transition-all"
+              className="w-full rounded-xl border-gray-200 bg-gray-50 h-14 px-5 focus:border-black focus:ring-0 transition-all"
               placeholder="••••••••"
             />
           </div>
@@ -121,7 +121,7 @@ export function SecuritySettingsClient({
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full rounded-xl border-gray-200 bg-gray-50 h-14 px-5 focus:border-primary focus:ring-0 transition-all"
+              className="w-full rounded-xl border-gray-200 bg-gray-50 h-14 px-5 focus:border-black focus:ring-0 transition-all"
               placeholder="••••••••"
             />
           </div>
@@ -135,12 +135,12 @@ export function SecuritySettingsClient({
                 <div
                   key={level}
                   className={`h-1.5 w-12 rounded-full ${
-                    level <= passwordStrength.level ? "bg-primary" : "bg-primary/20"
+                    level <= passwordStrength.level ? "bg-black" : "bg-gray-200"
                   }`}
                 />
               ))}
             </div>
-            <span className="text-[10px] font-bold text-primary uppercase tracking-widest ml-2">
+            <span className="text-[10px] font-bold text-black uppercase tracking-widest ml-2">
               {t("strengthLabel")} {passwordStrength.label}
             </span>
           </div>
@@ -152,7 +152,7 @@ export function SecuritySettingsClient({
         <div className="flex items-center justify-between gap-6">
           <div className="flex flex-col gap-2 max-w-xl">
             <div className="flex items-center gap-3 mb-1">
-              <span className="material-symbols-outlined text-primary">vibration</span>
+              <span className="material-symbols-outlined text-black">vibration</span>
               <h3 className="text-2xl font-bold tracking-tight">{t("twoFactor")}</h3>
             </div>
             <p className="text-gray-500 text-base leading-relaxed">
@@ -167,7 +167,7 @@ export function SecuritySettingsClient({
                 onChange={(e) => setTwoFactorEnabled(e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black" />
             </label>
           </div>
         </div>
@@ -176,7 +176,7 @@ export function SecuritySettingsClient({
       {/* Logged-in Devices */}
       <section className="bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
         <div className="flex items-center gap-3 mb-8">
-          <span className="material-symbols-outlined text-primary">devices</span>
+          <span className="material-symbols-outlined text-black">devices</span>
           <h3 className="text-2xl font-bold tracking-tight">{t("loggedInDevices")}</h3>
         </div>
 
@@ -222,7 +222,7 @@ export function SecuritySettingsClient({
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="bg-primary text-white text-base font-bold px-10 py-5 rounded-full hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-black text-white text-base font-bold px-10 py-5 rounded-full hover:bg-gray-800 transition-all shadow-lg shadow-black/10 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span className="material-symbols-outlined">{isSaving ? "hourglass_empty" : "shield"}</span>
           {isSaving ? (t("saving") || "Saving...") : t("saveButton")}

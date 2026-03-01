@@ -110,7 +110,7 @@ export async function addCredits(
     credits: credits,
     package_id: packageId,
     stripe_session_id: stripeSessionId,
-    description: `Strippenkaart gekocht: ${credits} credits`,
+    description: `Credit package purchased: ${credits} credits`,
   })
 
   if (txError) throw txError

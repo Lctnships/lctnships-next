@@ -27,8 +27,8 @@ export default function CreditsSuccessPage() {
           </div>
 
           <div className="bg-muted/50 rounded-lg p-4 flex items-center gap-4">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <CreditCard className="w-6 h-6 text-primary" />
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <CreditCard className="w-6 h-6 text-black" />
             </div>
             <div className="text-left">
               <p className="font-medium">Credits bijgeschreven</p>

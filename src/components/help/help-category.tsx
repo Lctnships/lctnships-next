@@ -10,8 +10,8 @@ interface HelpCategoryProps {
 export function HelpCategory({ slug, title, description, icon }: HelpCategoryProps) {
   return (
     <Link href={`/help/${slug}`}>
-      <div className="flex flex-col gap-4 rounded-xl border border-[#cfd7e7] bg-white p-8 transition-all hover:shadow-xl hover:-translate-y-1 hover:border-primary/50 group cursor-pointer">
-        <div className="size-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+      <div className="flex flex-col gap-4 rounded-xl border border-[#cfd7e7] bg-white p-8 transition-all hover:shadow-xl hover:-translate-y-1 hover:border-gray-200 group cursor-pointer">
+        <div className="size-12 bg-gray-100 rounded-lg flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-colors">
           <span className="material-symbols-outlined text-3xl">{icon}</span>
         </div>
         <div className="flex flex-col gap-2">

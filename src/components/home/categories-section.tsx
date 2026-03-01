@@ -17,7 +17,7 @@ export function CategoriesSection() {
 
   return (
     <section className="max-w-[1440px] mx-auto px-8 mt-12">
-      <div className="flex items-center justify-center gap-16 overflow-x-auto hide-scrollbar py-6 border-b border-gray-100">
+      <div className="flex items-center justify-start md:justify-center gap-8 md:gap-16 overflow-x-auto hide-scrollbar py-6 border-b border-gray-100">
         {categories.map((category) => (
           <Link key={category.key} href={category.href}>
             <button className="flex flex-col items-center gap-3 group min-w-max">

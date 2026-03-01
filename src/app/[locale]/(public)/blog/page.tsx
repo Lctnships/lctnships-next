@@ -52,7 +52,7 @@ export default async function BlogPage() {
                     {featuredArticle.excerpt}
                   </p>
                 </div>
-                <Button className="shrink-0 bg-white text-black hover:bg-primary hover:text-white rounded-full px-8 py-6 text-base font-bold transition-all">
+                <Button className="shrink-0 bg-white text-black hover:bg-black hover:text-white rounded-full px-8 py-6 text-base font-bold transition-all">
                   {t("readFullStory")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -85,7 +85,7 @@ export default async function BlogPage() {
               placeholder={t("emailPlaceholder")}
               className="flex-1 max-w-sm rounded-full px-6 py-6 border-gray-200"
             />
-            <Button className="bg-primary text-white px-10 py-6 rounded-full font-bold hover:bg-primary/90">
+            <Button className="bg-black text-white px-10 py-6 rounded-full font-bold hover:bg-gray-800">
               {t("subscribe")}
             </Button>
           </form>

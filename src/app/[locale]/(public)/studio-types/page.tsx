@@ -87,7 +87,7 @@ export default async function StudioTypesPage() {
                 <div className="mt-auto">
                   <Link
                     href={`/studios?type=${studio.slug}`}
-                    className="w-full bg-primary text-white font-bold py-4 rounded-full transition-opacity hover:opacity-90 text-center block"
+                    className="w-full bg-black text-white font-bold py-4 rounded-full transition-opacity hover:opacity-90 text-center block"
                   >
                     {t("find")} {studio.name}
                   </Link>
@@ -97,7 +97,7 @@ export default async function StudioTypesPage() {
           ))}
 
           {/* CTA Card */}
-          <div className="bg-primary text-white flex flex-col justify-center items-center p-12 text-center rounded-[32px] shadow-lg transform hover:scale-[1.02] transition-transform">
+          <div className="bg-black text-white flex flex-col justify-center items-center p-12 text-center rounded-[32px] shadow-lg transform hover:scale-[1.02] transition-transform">
             <svg className="w-16 h-16 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -109,7 +109,7 @@ export default async function StudioTypesPage() {
             </p>
             <Link
               href="/help"
-              className="bg-white text-primary font-bold py-4 px-8 rounded-full hover:bg-gray-100 transition-colors"
+              className="bg-white text-black font-bold py-4 px-8 rounded-full hover:bg-gray-100 transition-colors"
             >
               {t("getInTouch")}
             </Link>

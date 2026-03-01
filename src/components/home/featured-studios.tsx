@@ -2,6 +2,7 @@ import { Link } from "@/i18n/routing"
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/server"
 import { getTranslations } from "next-intl/server"
+import { FavoriteButton } from "@/components/ui/favorite-button"
 
 export async function FeaturedStudios() {
   const t = await getTranslations("Home")
@@ -62,9 +63,7 @@ export async function FeaturedStudios() {
                   <span className="material-symbols-outlined text-5xl text-gray-300">image</span>
                 </div>
               )}
-              <button className="absolute top-5 right-5 size-10 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-black transition-all">
-                <span className="material-symbols-outlined text-xl">favorite</span>
-              </button>
+              <FavoriteButton />
             </div>
             <div className="flex justify-between items-start">
               <div>

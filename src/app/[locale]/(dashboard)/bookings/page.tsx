@@ -36,6 +36,7 @@ export default async function BookingsPage() {
   const { data: favorites } = await supabase
     .from("favorites")
     .select(`
+      *,
       studio:studios (
         id,
         title,

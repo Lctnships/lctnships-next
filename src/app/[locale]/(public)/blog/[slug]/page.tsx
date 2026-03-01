@@ -80,7 +80,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-8 lg:bottom-12 left-0 w-full px-6">
             <div className="max-w-[1200px] mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary text-white text-xs font-bold uppercase tracking-widest rounded-full mb-4">
+              <span className="inline-block px-4 py-1.5 bg-black text-white text-xs font-bold uppercase tracking-widest rounded-full mb-4">
                 {article.category}
               </span>
             </div>
@@ -119,7 +119,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
                 prose-headings:font-bold prose-headings:tracking-tight
                 prose-h2:text-2xl prose-h2:lg:text-3xl prose-h2:mt-12 prose-h2:mb-4
                 prose-p:leading-relaxed prose-p:mb-6 prose-p:text-gray-700
-                prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-8 prose-blockquote:py-2 prose-blockquote:my-12
+                prose-blockquote:border-l-4 prose-blockquote:border-black prose-blockquote:pl-8 prose-blockquote:py-2 prose-blockquote:my-12
                 prose-blockquote:text-2xl prose-blockquote:font-medium prose-blockquote:italic prose-blockquote:not-italic
               "
               dangerouslySetInnerHTML={{ __html: article.content }}
@@ -147,7 +147,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
             <div className="max-w-[1200px] mx-auto px-6">
               <div className="flex items-center justify-between mb-10 lg:mb-12">
                 <h3 className="text-2xl lg:text-3xl font-bold font-display tracking-tight">{t("recommendedReading")}</h3>
-                <Link href="/blog" className="text-primary font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">
+                <Link href="/blog" className="text-black font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">
                   {t("viewAllArticles")} <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -161,7 +161,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
                           style={{ backgroundImage: `url("${related.cover_image}")` }}
                         />
                       </div>
-                      <h4 className="text-lg lg:text-xl font-bold font-display group-hover:text-primary transition-colors leading-tight mb-2">
+                      <h4 className="text-lg lg:text-xl font-bold font-display group-hover:text-black transition-colors leading-tight mb-2">
                         {related.title}
                       </h4>
                       <p className="text-sm text-gray-500 line-clamp-2">{related.excerpt}</p>

@@ -94,9 +94,9 @@ export default async function ExplorePage() {
         {countries.map((country) => (
           <section key={country.slug} className="mb-20">
             <Link href={`/explore/${country.slug}`}>
-              <h2 className="text-gray-900 dark:text-white text-3xl font-extrabold mb-8 flex items-center gap-3 hover:text-primary transition-colors">
+              <h2 className="text-gray-900 dark:text-white text-3xl font-extrabold mb-8 flex items-center gap-3 hover:text-black transition-colors">
                 {country.name}
-                <span className="h-1 w-12 bg-primary rounded-full"></span>
+                <span className="h-1 w-12 bg-black rounded-full"></span>
               </h2>
             </Link>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

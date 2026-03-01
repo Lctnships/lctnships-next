@@ -1,9 +1,11 @@
 "use client"
 
-import { Link } from "@/i18n/routing"
+import { Link, useRouter } from "@/i18n/routing"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
+import { useUser } from "@/hooks/use-user"
+import { createClient } from "@/lib/supabase/client"
 
 interface Studio {
   id: string
@@ -21,7 +23,54 @@ interface StudioCardProps {
 
 export function StudioCard({ studio }: StudioCardProps) {
   const t = useTranslations("Studios")
+  const router = useRouter()
+  const { user } = useUser()
   const [isFavorite, setIsFavorite] = useState(false)
+
+  // Check favorite status on mount
+  useEffect(() => {
+    if (!user) return
+    const supabase = createClient()
+    supabase
+      .from("favorites")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("studio_id", studio.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) setIsFavorite(true)
+      })
+  }, [user, studio.id])
+
+  const handleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    if (!user) {
+      router.push(`/login?redirect=/studios/${studio.id}`)
+      return
+    }
+
+    const newState = !isFavorite
+    setIsFavorite(newState) // Optimistic update
+
+    try {
+      if (newState) {
+        const res = await fetch("/api/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ studio_id: studio.id }),
+        })
+        if (!res.ok) throw new Error()
+      } else {
+        const res = await fetch(`/api/favorites?studioId=${studio.id}`, {
+          method: "DELETE",
+        })
+        if (!res.ok) throw new Error()
+      }
+    } catch {
+      setIsFavorite(!newState) // Revert on error
+    }
+  }
 
   return (
     <Link href={`/studios/${studio.id}`} className="group cursor-pointer block">
@@ -40,10 +89,7 @@ export function StudioCard({ studio }: StudioCardProps) {
           </div>
         )}
         <button
-          onClick={(e) => {
-            e.preventDefault()
-            setIsFavorite(!isFavorite)
-          }}
+          onClick={handleFavorite}
           className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-colors"
         >
           <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: isFavorite ? "'FILL' 1" : "'FILL' 0" }}>

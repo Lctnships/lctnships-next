@@ -141,7 +141,7 @@ export default async function StudiosPage(props: StudiosPageProps) {
       <section className="max-w-7xl mx-auto px-6 mb-10">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary/60 block mb-2">
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-600 block mb-2">
               {t("discover")}
             </span>
             <h2 className="text-3xl font-bold tracking-tight">{t("title")}</h2>

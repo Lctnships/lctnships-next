@@ -19,7 +19,7 @@ export async function TrendingStudios() {
       <div>
         <div className="flex items-end justify-between mb-8">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary/60 block mb-2">
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-600 block mb-2">
               {t("selected")}
             </span>
             <h2 className="text-3xl font-bold tracking-tight">{t("popularStudios")}</h2>
@@ -37,14 +37,14 @@ export async function TrendingStudios() {
     <div>
       <div className="flex items-end justify-between mb-8">
         <div>
-          <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary/60 block mb-2">
+          <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-600 block mb-2">
             {t("selected")}
           </span>
           <h2 className="text-3xl font-bold tracking-tight">{t("popularStudios")}</h2>
         </div>
         <Link
           href="/studios"
-          className="text-sm font-semibold border-b-2 border-primary/10 hover:border-primary transition-colors pb-1"
+          className="text-sm font-semibold border-b-2 border-gray-100 hover:border-black transition-colors pb-1"
         >
           {t("viewAll")}
         </Link>
@@ -66,7 +66,7 @@ export async function TrendingStudios() {
                 className="object-cover transition-transform duration-1000 group-hover:scale-110"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center">
+              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-400 flex items-center justify-center">
                 <span className="material-symbols-outlined text-6xl text-white/50">image</span>
               </div>
             )}
