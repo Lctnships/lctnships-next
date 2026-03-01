@@ -23,10 +23,10 @@ export function HelpFAQ({ questions }: HelpFAQProps) {
         >
           <button
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="w-full px-6 py-5 flex items-center justify-between text-left group-hover:bg-primary/5 transition-colors"
+            className="w-full px-6 py-5 flex items-center justify-between text-left group-hover:bg-gray-100 transition-colors"
           >
             <span className="text-[#0d121b] font-semibold">{item.question}</span>
-            <span className={`material-symbols-outlined text-primary transition-transform ${openIndex === index ? "rotate-180" : ""}`}>
+            <span className={`material-symbols-outlined text-black transition-transform ${openIndex === index ? "rotate-180" : ""}`}>
               expand_more
             </span>
           </button>

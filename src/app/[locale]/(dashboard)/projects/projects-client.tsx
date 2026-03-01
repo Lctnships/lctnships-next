@@ -79,7 +79,7 @@ export function ProjectsClient({ projects }: ProjectsClientProps) {
         </div>
         <button
           onClick={() => setShowNewProjectModal(true)}
-          className="hidden sm:flex min-w-[140px] cursor-pointer items-center justify-center rounded-full h-12 px-6 bg-primary text-white text-sm font-bold tracking-wide transition-transform active:scale-95 shadow-lg shadow-primary/20"
+          className="hidden sm:flex min-w-[140px] cursor-pointer items-center justify-center rounded-full h-12 px-6 bg-black text-white text-sm font-bold tracking-wide transition-transform active:scale-95 shadow-lg shadow-black/10"
         >
           <span className="material-symbols-outlined mr-2 text-[20px]">add</span>
           {t("newProject")}
@@ -90,7 +90,7 @@ export function ProjectsClient({ projects }: ProjectsClientProps) {
       <div className="sm:hidden mb-6">
         <button
           onClick={() => setShowNewProjectModal(true)}
-          className="w-full flex cursor-pointer items-center justify-center rounded-full h-12 px-6 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20"
+          className="w-full flex cursor-pointer items-center justify-center rounded-full h-12 px-6 bg-black text-white text-sm font-bold shadow-lg shadow-black/10"
         >
           <span className="material-symbols-outlined mr-2">add</span>
           {t("newProject")}
@@ -106,7 +106,7 @@ export function ProjectsClient({ projects }: ProjectsClientProps) {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-full bg-white border border-gray-200 rounded-2xl pl-12 pr-4 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-base"
+              className="w-full h-full bg-white border border-gray-200 rounded-2xl pl-12 pr-4 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-black/20 focus:border-black transition-all text-base"
               placeholder={t("searchPlaceholder")}
             />
           </label>
@@ -116,15 +116,15 @@ export function ProjectsClient({ projects }: ProjectsClientProps) {
             onClick={() => setFilterType("all")}
             className={`flex h-11 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 border transition-colors ${
               filterType === "all"
-                ? "bg-primary/10 border-primary/20 text-primary"
-                : "bg-white border-gray-200 hover:border-primary/50"
+                ? "bg-gray-100 border-gray-200 text-black"
+                : "bg-white border-gray-200 hover:border-gray-400"
             }`}
           >
             <span className={`text-sm ${filterType === "all" ? "font-bold" : "font-semibold"}`}>
               {t("filterAll")}
             </span>
             {filterType === "all" && (
-              <span className="material-symbols-outlined text-primary text-[20px]">
+              <span className="material-symbols-outlined text-black text-[20px]">
                 keyboard_arrow_down
               </span>
             )}
@@ -135,8 +135,8 @@ export function ProjectsClient({ projects }: ProjectsClientProps) {
               onClick={() => setFilterType(type)}
               className={`flex h-11 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 border transition-colors ${
                 filterType === type
-                  ? "bg-primary/10 border-primary/20 text-primary font-bold"
-                  : "bg-white border-gray-200 hover:border-primary/50 font-semibold"
+                  ? "bg-gray-100 border-gray-200 text-black font-bold"
+                  : "bg-white border-gray-200 hover:border-gray-400 font-semibold"
               }`}
             >
               <span className="text-sm capitalize">{type === "photoshoot" ? t("filterPhotography") : type}</span>
@@ -157,7 +157,7 @@ export function ProjectsClient({ projects }: ProjectsClientProps) {
           </p>
           <button
             onClick={() => setShowNewProjectModal(true)}
-            className="px-6 py-3 bg-primary text-white rounded-full font-bold hover:bg-primary/90 transition-colors"
+            className="px-6 py-3 bg-black text-white rounded-full font-bold hover:bg-gray-800 transition-colors"
           >
             {t("createProject")}
           </button>
@@ -195,7 +195,7 @@ export function ProjectsClient({ projects }: ProjectsClientProps) {
                 </div>
               </div>
               <div className="mt-5 px-2">
-                <h3 className="text-xl font-bold leading-tight group-hover:text-primary transition-colors">
+                <h3 className="text-xl font-bold leading-tight group-hover:text-black transition-colors">
                   {project.title}
                 </h3>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-gray-500 text-sm font-medium">
@@ -221,7 +221,7 @@ export function ProjectsClient({ projects }: ProjectsClientProps) {
       {/* Load More */}
       {filteredProjects.length > 0 && (
         <div className="mt-16 flex justify-center">
-          <button className="flex items-center justify-center gap-2 px-10 h-14 bg-white border border-gray-200 rounded-full font-bold hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">
+          <button className="flex items-center justify-center gap-2 px-10 h-14 bg-white border border-gray-200 rounded-full font-bold hover:bg-black hover:text-white hover:border-black transition-all duration-300">
             <span>{t("loadMore")}</span>
             <span className="material-symbols-outlined">expand_more</span>
           </button>
@@ -287,7 +287,7 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
                   onClick={() => setProjectType(type.id)}
                   className={`flex h-10 items-center justify-center gap-x-2 rounded-full px-6 transition-all ${
                     projectType === type.id
-                      ? "bg-primary text-white shadow-lg shadow-primary/20"
+                      ? "bg-black text-white shadow-lg shadow-black/10"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -306,7 +306,7 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full rounded-2xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary/20 bg-gray-50 p-4 text-sm min-h-[160px] placeholder:text-gray-400 resize-none"
+                className="w-full rounded-2xl border border-gray-200 focus:border-black focus:ring-1 focus:ring-black/20 bg-gray-50 p-4 text-sm min-h-[160px] placeholder:text-gray-400 resize-none"
                 placeholder={t("modalDescriptionPlaceholder")}
               />
             </div>
@@ -314,9 +314,9 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
             {/* Upload Zone */}
             <div className="flex flex-col gap-3">
               <p className="text-base font-semibold">{t("modalCoverImage")}</p>
-              <div className="w-full aspect-square flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-primary/5 transition-colors group p-8 text-center border-2 border-dashed border-gray-300 rounded-3xl">
+              <div className="w-full aspect-square flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors group p-8 text-center border-2 border-dashed border-gray-300 rounded-3xl">
                 <div className="size-16 rounded-full bg-white shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <span className="material-symbols-outlined text-primary text-3xl">upload_file</span>
+                  <span className="material-symbols-outlined text-black text-3xl">upload_file</span>
                 </div>
                 <p className="text-sm font-bold">{t("modalClickOrDragUpload")}</p>
                 <p className="text-xs text-gray-500 mt-1">{t("modalUploadRecommendation")}</p>
@@ -326,7 +326,7 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
 
           {/* Create Button */}
           <div className="flex justify-center pt-4">
-            <button className="bg-primary hover:bg-primary/90 text-white px-12 py-5 rounded-full font-bold text-lg transition-all shadow-xl shadow-primary/30 flex items-center gap-3">
+            <button className="bg-black hover:bg-gray-800 text-white px-12 py-5 rounded-full font-bold text-lg transition-all shadow-xl shadow-black/10 flex items-center gap-3">
               <span>{t("modalCreateButton")}</span>
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>

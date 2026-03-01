@@ -69,7 +69,7 @@ export function Navbar() {
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || 'User'} />
-                      <AvatarFallback className="bg-primary text-white">
+                      <AvatarFallback className="bg-black text-white">
                         {profile?.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
                       </AvatarFallback>
                     </Avatar>
@@ -125,7 +125,7 @@ export function Navbar() {
                 </Button>
               </Link>
               <Link href="/login">
-                <Button className="bg-primary text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-gray-800 transition-all">
+                <Button className="bg-black text-white text-sm font-bold px-8 py-3 rounded-full hover:bg-gray-800 transition-all">
                   {t("login")}
                 </Button>
               </Link>

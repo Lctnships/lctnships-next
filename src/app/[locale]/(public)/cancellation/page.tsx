@@ -74,7 +74,7 @@ export default async function CancellationPage() {
                   tier.color === "green"
                     ? "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400"
                     : tier.color === "blue"
-                    ? "bg-blue-50 dark:bg-blue-900/20 text-primary"
+                    ? "bg-blue-50 dark:bg-blue-900/20 text-black"
                     : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
                 }`}
               >
@@ -89,13 +89,13 @@ export default async function CancellationPage() {
                 <div className="relative h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                   <div
                     className={`absolute left-0 top-0 h-full ${tier.timelineWidth} ${
-                      tier.color === "gray" ? "bg-gray-400" : "bg-primary"
+                      tier.color === "gray" ? "bg-gray-400" : "bg-black"
                     } rounded-full`}
                   />
                 </div>
                 <div className="flex justify-between text-xs font-bold text-gray-400 uppercase">
                   <span>{t("booking")}</span>
-                  <span className={tier.color === "gray" ? "text-gray-400" : "text-primary"}>
+                  <span className={tier.color === "gray" ? "text-gray-400" : "text-black"}>
                     {tier.timeLabel}
                   </span>
                   <span>{t("session")}</span>
@@ -130,8 +130,8 @@ export default async function CancellationPage() {
                   <div
                     className={`w-14 h-14 rounded-full flex items-center justify-center ${
                       index === processSteps.length - 1
-                        ? "bg-primary text-white"
-                        : "bg-gray-50 dark:bg-gray-800 text-primary"
+                        ? "bg-black text-white"
+                        : "bg-gray-50 dark:bg-gray-800 text-black"
                     }`}
                   >
                     {step.icon === "cancel" && (
@@ -165,13 +165,13 @@ export default async function CancellationPage() {
               </div>
             ))}
           </div>
-          <div className="mt-12 p-6 bg-primary/5 rounded-2xl text-center border border-primary/10">
+          <div className="mt-12 p-6 bg-gray-100 rounded-2xl text-center border border-gray-200">
             <p className="text-gray-600 dark:text-gray-400 text-sm leading-normal flex items-center justify-center gap-2">
-              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               {t("refundNote")}{" "}
-              <span className="font-bold text-primary">{t("businessDays")}</span>.
+              <span className="font-bold text-black">{t("businessDays")}</span>.
             </p>
           </div>
         </section>
@@ -187,7 +187,7 @@ export default async function CancellationPage() {
           <div className="flex justify-center gap-4 flex-wrap">
             <Link
               href="/help"
-              className="bg-primary text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-primary/20 hover:brightness-105 transition-all"
+              className="bg-black text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-black/10 hover:brightness-105 transition-all"
             >
               {t("contactUs")}
             </Link>

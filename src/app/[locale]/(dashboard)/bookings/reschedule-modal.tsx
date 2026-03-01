@@ -162,12 +162,12 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
       <div className="relative bg-white w-full max-w-[1024px] shadow-2xl rounded-[40px] flex flex-col overflow-hidden border border-white/20">
         {/* Header */}
         <div className="flex flex-wrap justify-between items-center gap-3 p-8 pb-4">
-          <h1 className="text-[#0d121b] tracking-tight text-[28px] md:text-[32px] font-bold leading-tight min-w-72">
+          <h1 className="text-black tracking-tight text-[28px] md:text-[32px] font-bold leading-tight min-w-72">
             {t("title")} {booking.studio.title}
           </h1>
           <button
             onClick={onClose}
-            className="flex size-10 items-center justify-center rounded-full bg-gray-100 text-[#0d121b] hover:bg-gray-200 transition-colors"
+            className="flex size-10 items-center justify-center rounded-full bg-gray-100 text-black hover:bg-gray-200 transition-colors"
           >
             <span className="material-symbols-outlined">close</span>
           </button>
@@ -176,13 +176,13 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
         <div className="flex flex-col md:flex-row flex-1 overflow-hidden p-8 gap-8">
           {/* Left Column: Current Booking Card */}
           <div className="flex flex-col gap-4 w-full md:w-[320px]">
-            <h3 className="text-[#0d121b] text-lg font-bold leading-tight tracking-[-0.015em] px-1">{t("currentBooking")}</h3>
+            <h3 className="text-black text-lg font-bold leading-tight tracking-[-0.015em] px-1">{t("currentBooking")}</h3>
             <div className="p-6 bg-gray-50 rounded-xl border border-gray-100 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
-                <p className="text-[#2b6cee] text-sm font-semibold uppercase tracking-wider">
+                <p className="text-black text-sm font-semibold uppercase tracking-wider">
                   {originalTime} - {originalEndTime}
                 </p>
-                <p className="text-[#0d121b] text-xl font-bold leading-tight">
+                <p className="text-black text-xl font-bold leading-tight">
                   {booking.total_hours} {t("hourSession")}
                 </p>
                 <p className="text-gray-500 text-sm font-medium">
@@ -217,7 +217,7 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
           <div className="flex flex-col flex-1 gap-6 overflow-y-auto pr-2">
             {/* Calendar Section */}
             <div className="flex flex-col gap-4">
-              <h3 className="text-[#0d121b] text-lg font-bold leading-tight tracking-[-0.015em] px-1">{t("selectNewDate")}</h3>
+              <h3 className="text-black text-lg font-bold leading-tight tracking-[-0.015em] px-1">{t("selectNewDate")}</h3>
               <div className="bg-gray-50 rounded-xl p-4">
                 <div className="flex items-center p-1 justify-between mb-4">
                   <button
@@ -226,7 +226,7 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
                   >
                     <span className="material-symbols-outlined text-gray-700">chevron_left</span>
                   </button>
-                  <p className="text-[#0d121b] text-base font-bold leading-tight flex-1 text-center">{monthYear}</p>
+                  <p className="text-black text-base font-bold leading-tight flex-1 text-center">{monthYear}</p>
                   <button
                     onClick={() => navigateMonth(1)}
                     className="p-2 hover:bg-gray-200 rounded-full transition-colors"
@@ -252,12 +252,12 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
                           ? "text-gray-300 cursor-not-allowed"
                           : selectedDate === item.day
                           ? ""
-                          : "text-[#0d121b] hover:bg-gray-200 rounded-full"
+                          : "text-black hover:bg-gray-200 rounded-full"
                       }`}
                     >
                       {item.day > 0 && (
                         selectedDate === item.day ? (
-                          <div className="flex size-9 items-center justify-center rounded-full bg-[#2b6cee] text-white shadow-lg shadow-[#2b6cee]/30 font-bold">
+                          <div className="flex size-9 items-center justify-center rounded-full bg-black text-white shadow-lg shadow-black/20 font-bold">
                             {item.day}
                           </div>
                         ) : (
@@ -273,9 +273,9 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
             {/* Time Selection */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-[#0d121b] text-lg font-bold leading-tight tracking-[-0.015em] px-1">{t("availableTimes")}</h3>
+                <h3 className="text-black text-lg font-bold leading-tight tracking-[-0.015em] px-1">{t("availableTimes")}</h3>
                 {selectedDate && (
-                  <span className="text-xs text-[#2b6cee] font-bold">{getNewDateString()}</span>
+                  <span className="text-xs text-black font-bold">{getNewDateString()}</span>
                 )}
               </div>
               <div className="flex gap-3 flex-wrap">
@@ -291,7 +291,7 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
                         isUnavailable
                           ? "border-2 border-transparent bg-gray-100 opacity-50 cursor-not-allowed"
                           : isSelected
-                          ? "border-2 border-[#2b6cee] bg-[#2b6cee]/10"
+                          ? "border-2 border-black bg-black/10"
                           : "border-2 border-transparent bg-gray-100 hover:bg-gray-200"
                       }`}
                     >
@@ -299,8 +299,8 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
                         isUnavailable
                           ? "text-gray-400 line-through"
                           : isSelected
-                          ? "text-[#2b6cee]"
-                          : "text-[#0d121b]"
+                          ? "text-black"
+                          : "text-black"
                       }`}>
                         {time}
                       </p>
@@ -322,10 +322,10 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-[#2b6cee]">info</span>
+                <span className="material-symbols-outlined text-black">info</span>
                 <p className="text-sm text-gray-500">
                   {t("changingTo")}{" "}
-                  <span className="font-bold text-[#0d121b]">
+                  <span className="font-bold text-black">
                     {getNewDateString()}, {selectedTime}
                   </span>
                 </p>
@@ -336,7 +336,7 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
             <button
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-8 h-14 text-sm font-bold text-gray-500 hover:text-[#0d121b] transition-colors disabled:opacity-50"
+              className="px-8 h-14 text-sm font-bold text-gray-500 hover:text-black transition-colors disabled:opacity-50"
             >
               {t("cancel")}
             </button>
@@ -345,7 +345,7 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
               disabled={!selectedDate || isSubmitting}
               className={`flex-1 md:flex-none min-w-[200px] px-8 h-14 items-center justify-center rounded-full text-base font-bold shadow-xl transition-all flex gap-2 ${
                 selectedDate && !isSubmitting
-                  ? "bg-[#0d121b] text-white hover:scale-[1.02] active:scale-[0.98]"
+                  ? "bg-black text-white hover:scale-[1.02] active:scale-[0.98]"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
             >

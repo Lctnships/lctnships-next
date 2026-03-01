@@ -51,7 +51,7 @@ export default async function BlogPage() {
                     {featuredArticle.excerpt}
                   </p>
                 </div>
-                <Button className="shrink-0 bg-white text-black hover:bg-primary hover:text-white rounded-full px-8 py-6 text-base font-bold transition-all">
+                <Button className="shrink-0 bg-white text-black hover:bg-black hover:text-white rounded-full px-8 py-6 text-base font-bold transition-all">
                   {t("readFullStory")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -70,8 +70,8 @@ export default async function BlogPage() {
               variant={index === 0 ? "default" : "secondary"}
               className={`rounded-full px-6 py-2 text-sm font-medium ${
                 index === 0
-                  ? "bg-primary text-white hover:bg-primary/90"
-                  : "bg-gray-100 hover:bg-primary/10"
+                  ? "bg-black text-white hover:bg-gray-800"
+                  : "bg-gray-100 hover:bg-gray-100"
               }`}
             >
               {category.name}
@@ -107,10 +107,10 @@ export default async function BlogPage() {
                     />
                   </div>
                   <div>
-                    <span className="text-primary text-[10px] font-bold tracking-[0.2em] uppercase block mb-2">
+                    <span className="text-black text-[10px] font-bold tracking-[0.2em] uppercase block mb-2">
                       {article.category}
                     </span>
-                    <h4 className="text-xl lg:text-2xl font-bold leading-tight mb-3 group-hover:underline underline-offset-4 decoration-primary/30 font-display">
+                    <h4 className="text-xl lg:text-2xl font-bold leading-tight mb-3 group-hover:underline underline-offset-4 decoration-gray-300 font-display">
                       {article.title}
                     </h4>
                     <p className="text-gray-600 text-sm line-clamp-2 mb-3">
@@ -142,7 +142,7 @@ export default async function BlogPage() {
               placeholder={t("emailPlaceholder")}
               className="flex-1 max-w-sm rounded-full px-6 py-6 border-gray-200"
             />
-            <Button className="bg-primary text-white px-10 py-6 rounded-full font-bold hover:bg-primary/90">
+            <Button className="bg-black text-white px-10 py-6 rounded-full font-bold hover:bg-gray-800">
               {t("subscribe")}
             </Button>
           </form>

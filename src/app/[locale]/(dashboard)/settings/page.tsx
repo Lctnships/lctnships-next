@@ -19,9 +19,9 @@ export default async function SettingsPage() {
   const settingsCards = [
     {
       href: "/profile/edit",
-      icon: "person",
-      title: t("cardProfileTitle"),
-      description: t("cardProfileDesc"),
+      icon: "badge",
+      title: t("cardPersonalTitle"),
+      description: t("cardPersonalDesc"),
     },
     {
       href: "/settings/privacy",
@@ -53,10 +53,10 @@ export default async function SettingsPage() {
           <Link
             key={card.href}
             href={card.href}
-            className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:border-primary/20 transition-all group"
+            className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-300 transition-all group"
           >
-            <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-              <span className="material-symbols-outlined text-primary">{card.icon}</span>
+            <div className="size-12 rounded-xl bg-gray-100 flex items-center justify-center mb-4 group-hover:bg-gray-200 transition-colors">
+              <span className="material-symbols-outlined text-black">{card.icon}</span>
             </div>
             <h3 className="text-lg font-bold mb-2">{card.title}</h3>
             <p className="text-sm text-gray-500">{card.description}</p>
@@ -67,7 +67,7 @@ export default async function SettingsPage() {
       {/* Account Info */}
       <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
         <div className="flex items-center gap-3 mb-4">
-          <span className="material-symbols-outlined text-primary">email</span>
+          <span className="material-symbols-outlined text-black">email</span>
           <h3 className="text-lg font-bold">{t("accountEmail")}</h3>
         </div>
         <div className="flex items-center justify-between">

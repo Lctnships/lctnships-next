@@ -73,7 +73,7 @@ export function Footer() {
             <h4 className="font-bold mb-6">{t("followUs")}</h4>
             <div className="flex gap-4">
               <a
-                href="https://www.tiktok.com"
+                href="https://www.tiktok.com/@lctnships"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all"
@@ -84,7 +84,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="https://www.instagram.com"
+                href="https://www.instagram.com/lctnships"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all"
@@ -95,7 +95,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="https://www.facebook.com"
+                href="https://www.facebook.com/lctnships"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all"

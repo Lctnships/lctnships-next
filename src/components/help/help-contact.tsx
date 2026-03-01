@@ -2,7 +2,7 @@ import { Link } from "@/i18n/routing"
 
 export function HelpContact() {
   return (
-    <div className="bg-primary rounded-xl p-8 text-white sticky top-24 shadow-2xl shadow-primary/30 overflow-hidden relative">
+    <div className="bg-black rounded-xl p-8 text-white sticky top-24 shadow-2xl shadow-black/10 overflow-hidden relative">
       {/* Abstract background circles */}
       <div className="absolute -top-10 -right-10 size-40 bg-white/10 rounded-full blur-2xl" />
       <div className="absolute -bottom-10 -left-10 size-40 bg-white/10 rounded-full blur-2xl" />
@@ -14,7 +14,7 @@ export function HelpContact() {
         </p>
 
         <div className="space-y-4">
-          <button className="w-full bg-white text-primary font-bold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-[#f6f6f8] transition-colors group">
+          <button className="w-full bg-white text-black font-bold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-[#f6f6f8] transition-colors group">
             <span className="material-symbols-outlined">chat</span>
             Begin Live Chat
           </button>

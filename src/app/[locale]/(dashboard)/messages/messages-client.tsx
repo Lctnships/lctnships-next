@@ -259,7 +259,7 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
               placeholder={t("searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-black/20"
             />
           </div>
         </div>
@@ -280,7 +280,7 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
                   setShowMobileChat(true)
                 }}
                 className={`w-full p-4 flex gap-4 hover:bg-gray-50 transition-colors border-b border-gray-50 text-left ${
-                  selectedConversation?.id === conv.id ? "bg-primary/5 border-l-4 border-l-primary" : ""
+                  selectedConversation?.id === conv.id ? "bg-gray-100 border-l-4 border-l-black" : ""
                 }`}
               >
                 <div className="relative flex-shrink-0">
@@ -313,7 +313,7 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
                     {conv.latestMessage?.content || t("noMessages")}
                   </p>
                   {conv.unreadCount > 0 && (
-                    <span className="inline-flex items-center justify-center size-5 bg-primary text-white text-xs font-bold rounded-full mt-1">
+                    <span className="inline-flex items-center justify-center size-5 bg-black text-white text-xs font-bold rounded-full mt-1">
                       {conv.unreadCount}
                     </span>
                   )}
@@ -382,7 +382,7 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
                     <div
                       className={`max-w-[70%] ${
                         isOwn
-                          ? "bg-primary text-white rounded-3xl rounded-br-lg"
+                          ? "bg-black text-white rounded-3xl rounded-br-lg"
                           : "bg-gray-100 rounded-3xl rounded-bl-lg"
                       } p-4`}
                     >
@@ -432,12 +432,12 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder={t("inputPlaceholder")}
-                  className="flex-1 px-5 py-3 bg-gray-50 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="flex-1 px-5 py-3 bg-gray-50 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-black/20"
                 />
                 <button
                   type="submit"
                   disabled={!newMessage.trim() || isSending}
-                  className="p-3 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="material-symbols-outlined">send</span>
                 </button>
@@ -446,7 +446,7 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
           </>
         ) : isCreatingConversation ? (
           <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
-            <div className="size-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+            <div className="size-8 border-2 border-black border-t-transparent rounded-full animate-spin mb-4" />
             <p className="text-lg font-medium">{t("creatingConversation") || "Starting conversation..."}</p>
           </div>
         ) : (
@@ -475,7 +475,7 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
               <div className="p-4">
                 <h4 className="font-bold mb-1">{selectedConversation.studio.title}</h4>
                 <div className="flex items-center gap-1 text-sm text-gray-500">
-                  <span className="material-symbols-outlined text-primary text-base">star</span>
+                  <span className="material-symbols-outlined text-black text-base">star</span>
                   <span>5.0</span>
                   <span className="mx-1">·</span>
                   <span>24 {t("reviews")}</span>

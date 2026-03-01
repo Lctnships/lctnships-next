@@ -230,7 +230,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     name="full_name"
                     value={formData.full_name}
                     onChange={handleChange}
-                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-primary focus:ring-0 transition-all"
+                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all"
                   />
                 </div>
                 <div className="md:col-span-2 space-y-2">
@@ -241,7 +241,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     value={formData.location}
                     onChange={handleChange}
                     placeholder={t("fieldLocationPlaceholder")}
-                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-primary focus:ring-0 transition-all"
+                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all"
                   />
                 </div>
                 <div className="md:col-span-2 space-y-2">
@@ -252,7 +252,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     onChange={handleChange}
                     rows={4}
                     placeholder={t("fieldBioPlaceholder")}
-                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-primary focus:ring-0 transition-all resize-none"
+                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all resize-none"
                   />
                 </div>
                 <div className="md:col-span-2 space-y-2">
@@ -263,7 +263,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="+31 6 12345678"
-                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-primary focus:ring-0 transition-all"
+                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all"
                   />
                 </div>
               </div>
@@ -338,7 +338,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                 <span className="material-symbols-outlined text-6xl text-gray-300 mb-4">account_balance</span>
                 <h3 className="text-xl font-bold mb-2">{t("payoutsNoMethod")}</h3>
                 <p className="text-gray-500 mb-6">{t("payoutsNoMethodDesc")}</p>
-                <button className="px-8 py-3 bg-primary text-white rounded-full font-bold hover:bg-primary/90 transition-all">
+                <button className="px-8 py-3 bg-black text-white rounded-full font-bold hover:bg-gray-800 transition-all">
                   {t("payoutsAddMethod")}
                 </button>
               </div>
@@ -363,7 +363,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     <p className="font-bold">{t("securityTwoFactor")}</p>
                     <p className="text-sm text-gray-500">{t("securityTwoFactorDesc")}</p>
                   </div>
-                  <button className="px-6 py-2 bg-primary text-white rounded-full text-sm font-bold hover:bg-primary/90 transition-all">
+                  <button className="px-6 py-2 bg-black text-white rounded-full text-sm font-bold hover:bg-gray-800 transition-all">
                     {t("securityEnable")}
                   </button>
                 </div>
@@ -398,14 +398,14 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                   )}
                 </div>
                 {profile.is_verified && (
-                  <div className="absolute bottom-0 right-0 bg-primary text-white p-1 rounded-full border-2 border-white">
+                  <div className="absolute bottom-0 right-0 bg-black text-white p-1 rounded-full border-2 border-white">
                     <span className="material-symbols-outlined text-[10px] block">verified</span>
                   </div>
                 )}
               </div>
               <h4 className="text-xl font-bold">{formData.full_name || t("previewYourName")}</h4>
               {isHost && (
-                <p className="text-xs font-medium text-primary uppercase tracking-widest mt-1">{t("previewSuperhost")}</p>
+                <p className="text-xs font-medium text-black uppercase tracking-widest mt-1">{t("previewSuperhost")}</p>
               )}
               <p className="text-sm text-gray-500 mt-3 line-clamp-2 italic">
                 &ldquo;{formData.bio?.slice(0, 80) || t("previewBioPlaceholder")}&rdquo;
@@ -419,7 +419,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-gray-500">{t("previewRating")}</span>
                     <div className="flex items-center gap-1 font-bold">
-                      <span className="material-symbols-outlined text-primary text-[14px]">star</span>
+                      <span className="material-symbols-outlined text-black text-[14px]">star</span>
                       5.0
                     </div>
                   </div>
@@ -431,8 +431,8 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10">
-            <p className="text-xs text-primary font-bold leading-relaxed">
+          <div className="p-6 rounded-3xl bg-gray-100 border border-gray-100">
+            <p className="text-xs text-black font-bold leading-relaxed">
               {isHost
                 ? t("previewHostVisibilityNote")
                 : t("previewRenterVisibilityNote")}

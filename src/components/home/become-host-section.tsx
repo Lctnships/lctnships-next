@@ -19,7 +19,7 @@ export async function BecomeHostSection() {
             {t("becomeHostTitle")}
           </h2>
           <Link href="/studios">
-            <button className="bg-white text-primary px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-colors">
+            <button className="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-colors">
               {t("becomeHostButton")}
             </button>
           </Link>

@@ -21,7 +21,7 @@ export default function TermsPage() {
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumbs */}
       <nav className="mb-6 flex items-center gap-2 text-sm font-medium text-gray-500">
-        <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+        <Link href="/" className="hover:text-black transition-colors">Home</Link>
         <span className="material-symbols-outlined text-sm">chevron_right</span>
         <span className="text-gray-900">Algemene Voorwaarden</span>
       </nav>
@@ -32,8 +32,8 @@ export default function TermsPage() {
           <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">Algemene Voorwaarden</h1>
           <p className="text-gray-500 text-lg">Laatst bijgewerkt: 24 januari 2025</p>
         </div>
-        <button className="flex items-center gap-2 bg-white border border-gray-200 hover:border-primary/50 rounded-xl h-12 px-6 font-bold shadow-sm transition-all group">
-          <span className="material-symbols-outlined text-primary">print</span>
+        <button className="flex items-center gap-2 bg-white border border-gray-200 hover:border-gray-400 rounded-xl h-12 px-6 font-bold shadow-sm transition-all group">
+          <span className="material-symbols-outlined text-black">print</span>
           <span>Print PDF</span>
         </button>
       </div>
@@ -54,8 +54,8 @@ export default function TermsPage() {
                   href={`#${section.id}`}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                     index === 0
-                      ? "bg-primary/5 text-primary font-semibold"
-                      : "text-gray-500 hover:bg-gray-50 hover:text-primary"
+                      ? "bg-gray-100 text-black font-semibold"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-black"
                   }`}
                 >
                   <span className="material-symbols-outlined text-xl">{section.icon}</span>
@@ -77,15 +77,15 @@ export default function TermsPage() {
               </p>
               <ul className="space-y-4 text-gray-600 list-none p-0">
                 <li className="flex gap-4">
-                  <span className="font-bold text-primary min-w-[100px]">lcntships:</span>
+                  <span className="font-bold text-black min-w-[100px]">lcntships:</span>
                   <span>Het online platform dat bemiddelt tussen verhuurders van creatieve ruimtes en huurders.</span>
                 </li>
                 <li className="flex gap-4">
-                  <span className="font-bold text-primary min-w-[100px]">Studio:</span>
+                  <span className="font-bold text-black min-w-[100px]">Studio:</span>
                   <span>De creatieve werkruimte die via het platform wordt aangeboden voor tijdelijk gebruik.</span>
                 </li>
                 <li className="flex gap-4">
-                  <span className="font-bold text-primary min-w-[100px]">Huurder:</span>
+                  <span className="font-bold text-black min-w-[100px]">Huurder:</span>
                   <span>De natuurlijke persoon of rechtspersoon die een boeking plaatst via lcntships.</span>
                 </li>
               </ul>
@@ -107,15 +107,15 @@ export default function TermsPage() {
               </p>
               <div className="grid gap-4">
                 <div className="flex items-start gap-4 p-4 rounded-xl bg-gray-50">
-                  <span className="material-symbols-outlined text-primary mt-1">check_circle</span>
+                  <span className="material-symbols-outlined text-black mt-1">check_circle</span>
                   <p className="text-gray-600">U dient minimaal 18 jaar oud te zijn om een account aan te maken en boekingen te verrichten.</p>
                 </div>
                 <div className="flex items-start gap-4 p-4 rounded-xl bg-gray-50">
-                  <span className="material-symbols-outlined text-primary mt-1">verified_user</span>
+                  <span className="material-symbols-outlined text-black mt-1">verified_user</span>
                   <p className="text-gray-600">De verstrekte informatie bij registratie dient naar waarheid en volledig te zijn.</p>
                 </div>
                 <div className="flex items-start gap-4 p-4 rounded-xl bg-gray-50">
-                  <span className="material-symbols-outlined text-primary mt-1">lock</span>
+                  <span className="material-symbols-outlined text-black mt-1">lock</span>
                   <p className="text-gray-600">U bent zelf verantwoordelijk voor het geheimhouden van uw inloggegevens.</p>
                 </div>
               </div>
@@ -127,7 +127,7 @@ export default function TermsPage() {
               <p className="text-gray-600 leading-relaxed mb-4">
                 Een boeking is pas definitief nadat lcntships de betaling heeft ontvangen en de verhuurder de aanvraag heeft bevestigd. Alle prijzen op het platform zijn inclusief BTW, tenzij anders vermeld.
               </p>
-              <div className="border-l-4 border-primary pl-6 py-2 my-6">
+              <div className="border-l-4 border-black pl-6 py-2 my-6">
                 <p className="font-medium italic">
                   &quot;Wij maken gebruik van beveiligde betalingsproviders om uw transacties te beschermen. lcntships slaat zelf geen creditcardgegevens op.&quot;
                 </p>
@@ -177,11 +177,11 @@ export default function TermsPage() {
           <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
             <p className="text-sm text-gray-500">
               Vragen over onze voorwaarden? Neem contact op via{" "}
-              <a href="mailto:legal@lcntships.nl" className="text-primary font-bold hover:underline">legal@lcntships.nl</a>
+              <a href="mailto:legal@lcntships.nl" className="text-black font-bold hover:underline">legal@lcntships.nl</a>
             </p>
             <div className="flex gap-4">
-              <button className="text-sm font-bold text-primary">Download PDF</button>
-              <Link href="/privacy" className="text-sm font-bold text-primary">Privacy Beleid</Link>
+              <button className="text-sm font-bold text-black">Download PDF</button>
+              <Link href="/privacy" className="text-sm font-bold text-black">Privacy Beleid</Link>
             </div>
           </div>
         </div>

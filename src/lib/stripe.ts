@@ -115,8 +115,8 @@ export async function createCreditPurchase({
         price_data: {
           currency: "eur",
           product_data: {
-            name: `${packageName} - ${credits} Studio Dagen`,
-            description: `${discountPercent}% korting - Strippenkaart`,
+            name: `${packageName} - ${credits} Studio Days`,
+            description: `${discountPercent}% discount - Credit package`,
           },
           unit_amount: amountInCents,
         },

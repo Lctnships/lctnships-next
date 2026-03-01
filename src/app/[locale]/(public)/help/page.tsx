@@ -37,8 +37,8 @@ export default function HelpPage() {
         {/* Search Bar */}
         <div className="max-w-2xl mx-auto px-4 py-3 relative">
           <label className="flex flex-col min-w-40 h-16 w-full group">
-            <div className="flex w-full flex-1 items-stretch rounded-xl h-full bg-white border border-gray-200 shadow-xl shadow-primary/5 transition-all focus-within:ring-2 focus-within:ring-primary/20">
-              <div className="text-primary flex items-center justify-center pl-6 pr-2">
+            <div className="flex w-full flex-1 items-stretch rounded-xl h-full bg-white border border-gray-200 shadow-xl shadow-black/5 transition-all focus-within:ring-2 focus-within:ring-black/20">
+              <div className="text-black flex items-center justify-center pl-6 pr-2">
                 <span className="material-symbols-outlined text-3xl">search</span>
               </div>
               <input
@@ -49,7 +49,7 @@ export default function HelpPage() {
                 placeholder={t("searchPlaceholder")}
               />
               <div className="flex items-center pr-4">
-                <span className="bg-primary/10 text-primary text-xs font-bold px-2 py-1 rounded-md">
+                <span className="bg-gray-100 text-gray-500 text-xs font-bold px-2 py-1 rounded-md">
                   CMD + K
                 </span>
               </div>
@@ -68,9 +68,9 @@ export default function HelpPage() {
             <Link
               key={category.titleKey}
               href={category.href}
-              className="flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-8 transition-all hover:shadow-xl hover:-translate-y-1 hover:border-primary/50 group"
+              className="flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-8 transition-all hover:shadow-xl hover:-translate-y-1 hover:border-gray-300 group"
             >
-              <div className="size-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+              <div className="size-12 bg-gray-100 rounded-lg flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-colors">
                 <span className="material-symbols-outlined text-3xl">{category.icon}</span>
               </div>
               <div className="flex flex-col gap-2">
@@ -97,11 +97,11 @@ export default function HelpPage() {
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  className="w-full px-6 py-5 flex items-center justify-between text-left group-hover:bg-primary/5 transition-colors"
+                  className="w-full px-6 py-5 flex items-center justify-between text-left group-hover:bg-gray-50 transition-colors"
                 >
                   <span className="font-semibold">{t(faq.questionKey)}</span>
                   <span
-                    className={`material-symbols-outlined text-primary transition-transform ${
+                    className={`material-symbols-outlined text-black transition-transform ${
                       openFaq === index ? "rotate-180" : ""
                     }`}
                   >
@@ -120,7 +120,7 @@ export default function HelpPage() {
 
         {/* Contact Sidebar */}
         <div className="lg:col-span-4">
-          <div className="bg-primary rounded-xl p-8 text-white sticky top-24 shadow-2xl shadow-primary/30 overflow-hidden relative">
+          <div className="bg-black rounded-xl p-8 text-white sticky top-24 shadow-2xl shadow-black/30 overflow-hidden relative">
             {/* Abstract background circles */}
             <div className="absolute -top-10 -right-10 size-40 bg-white/10 rounded-full blur-2xl" />
             <div className="absolute -bottom-10 -left-10 size-40 bg-white/10 rounded-full blur-2xl" />
@@ -132,7 +132,7 @@ export default function HelpPage() {
               </p>
 
               <div className="space-y-4">
-                <button className="w-full bg-white text-primary font-bold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors group">
+                <button className="w-full bg-white text-black font-bold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors group">
                   <span className="material-symbols-outlined">chat</span>
                   {t("startLiveChat")}
                 </button>

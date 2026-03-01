@@ -20,8 +20,8 @@ interface Notification {
 const typeIcons: Record<string, { icon: string; bgClass: string; textClass: string }> = {
   booking_request: {
     icon: "calendar_today",
-    bgClass: "bg-primary/10",
-    textClass: "text-primary",
+    bgClass: "bg-gray-100",
+    textClass: "text-black",
   },
   booking_confirmed: {
     icon: "check_circle",
@@ -144,7 +144,7 @@ export default function NotificationsPage() {
     return (
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col items-center justify-center py-20">
-          <span className="material-symbols-outlined text-4xl text-primary animate-spin">
+          <span className="material-symbols-outlined text-4xl text-black animate-spin">
             progress_activity
           </span>
           <p className="mt-4 text-gray-500">{t("loading")}</p>
@@ -161,7 +161,7 @@ export default function NotificationsPage() {
           <p className="mt-4 text-red-500">{error}</p>
           <button
             onClick={fetchNotifications}
-            className="mt-4 px-6 py-2 bg-primary text-white rounded-full font-bold"
+            className="mt-4 px-6 py-2 bg-black text-white rounded-full font-bold"
           >
             {t("retry")}
           </button>
@@ -187,9 +187,9 @@ export default function NotificationsPage() {
         {unreadCount > 0 && (
           <button
             onClick={markAllAsRead}
-            className="group flex items-center gap-2 px-6 h-12 bg-white rounded-full border border-gray-200 hover:border-primary transition-all shadow-sm"
+            className="group flex items-center gap-2 px-6 h-12 bg-white rounded-full border border-gray-200 hover:border-black transition-all shadow-sm"
           >
-            <span className="material-symbols-outlined text-lg text-gray-400 group-hover:text-primary transition-colors">
+            <span className="material-symbols-outlined text-lg text-gray-400 group-hover:text-black transition-colors">
               done_all
             </span>
             <span className="text-sm font-bold">{t("markAllRead")}</span>
@@ -207,7 +207,7 @@ export default function NotificationsPage() {
               onClick={() => setFilter(type)}
               className={`flex h-10 shrink-0 items-center justify-center rounded-full px-6 transition-all ${
                 filter === type
-                  ? "bg-primary text-white shadow-lg shadow-primary/20"
+                  ? "bg-black text-white shadow-lg shadow-black/10"
                   : "bg-white border border-gray-100 text-gray-900 hover:bg-gray-50"
               }`}
             >
@@ -230,7 +230,7 @@ export default function NotificationsPage() {
               className={`relative group flex items-center justify-between gap-6 p-6 rounded-2xl transition-all border cursor-pointer ${
                 notification.is_read
                   ? "bg-gray-50 border-gray-100 opacity-80 hover:opacity-100"
-                  : "bg-white border-transparent hover:shadow-xl hover:shadow-gray-200/50 hover:border-primary/20"
+                  : "bg-white border-transparent hover:shadow-xl hover:shadow-gray-200/50 hover:border-gray-200"
               }`}
             >
               {/* Unread Indicator Dot */}
@@ -263,7 +263,7 @@ export default function NotificationsPage() {
                     className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
                       notification.is_read
                         ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        : "bg-primary hover:bg-primary/90 text-white"
+                        : "bg-black hover:bg-gray-800 text-white"
                     }`}
                   >
                     {t("view")}
@@ -291,16 +291,16 @@ function NotificationsEmptyState({ t }: { t: (key: string) => string }) {
     <div className="flex flex-col items-center justify-center flex-1 py-12">
       <div className="flex flex-col items-center gap-12 w-full max-w-2xl">
         {/* Visual */}
-        <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow-2xl shadow-primary/5 group">
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent z-10" />
+        <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow-2xl shadow-black/10 group">
+          <div className="absolute inset-0 bg-gradient-to-tr from-gray-100 to-transparent z-10" />
           <div
             className="bg-center bg-no-repeat bg-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700"
             style={{
               backgroundImage: `url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=800')`,
             }}
           />
-          <div className="absolute -top-10 -right-10 size-40 bg-primary/20 rounded-full blur-3xl opacity-50" />
-          <div className="absolute -bottom-10 -left-10 size-40 bg-primary/10 rounded-full blur-3xl opacity-50" />
+          <div className="absolute -top-10 -right-10 size-40 bg-gray-200 rounded-full blur-3xl opacity-50" />
+          <div className="absolute -bottom-10 -left-10 size-40 bg-gray-100 rounded-full blur-3xl opacity-50" />
         </div>
 
         {/* Text */}
@@ -315,7 +315,7 @@ function NotificationsEmptyState({ t }: { t: (key: string) => string }) {
         <div className="mt-4">
           <Link
             href="/studios"
-            className="group flex items-center justify-center gap-2 min-w-[220px] bg-primary text-white py-4 px-8 rounded-full font-bold text-sm tracking-wide shadow-lg shadow-primary/25 hover:bg-primary/90 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+            className="group flex items-center justify-center gap-2 min-w-[220px] bg-black text-white py-4 px-8 rounded-full font-bold text-sm tracking-wide shadow-lg shadow-black/10 hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
           >
             <span>{t("emptyCta")}</span>
             <span className="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">

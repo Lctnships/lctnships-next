@@ -76,14 +76,14 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
               )}
             </div>
             {profile.is_verified && (
-              <div className="absolute bottom-2 right-2 bg-primary text-white p-1 rounded-full border-2 border-white">
+              <div className="absolute bottom-2 right-2 bg-black text-white p-1 rounded-full border-2 border-white">
                 <span className="material-symbols-outlined text-sm leading-none block">verified</span>
               </div>
             )}
           </div>
           <div className="flex flex-col justify-center pt-2">
             <h1 className="text-4xl font-extrabold tracking-tight mb-1">{profile.full_name}</h1>
-            <p className="text-primary font-semibold text-lg mb-3">{profile.professional_title}</p>
+            <p className="text-black font-semibold text-lg mb-3">{profile.professional_title}</p>
             <p className="text-gray-500 max-w-xl text-base leading-relaxed">
               {t("basedIn")} {profile.location} • {profile.bio}
             </p>
@@ -99,7 +99,7 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
             </Link>
           ) : (
             <>
-              <button className="flex-1 md:flex-none min-w-[120px] bg-primary text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+              <button className="flex-1 md:flex-none min-w-[120px] bg-black text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-black/10 hover:scale-[1.02] transition-transform">
                 {t("message")}
               </button>
               <button className="flex-1 md:flex-none min-w-[120px] bg-white border border-gray-200 px-8 py-3 rounded-full font-bold hover:bg-gray-50 transition-colors">
@@ -121,7 +121,7 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
                 onClick={() => setActiveTab("portfolio")}
                 className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                   activeTab === "portfolio"
-                    ? "border-primary text-primary"
+                    ? "border-black text-black"
                     : "border-transparent text-gray-500 hover:text-gray-900"
                 }`}
               >
@@ -131,7 +131,7 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
                 onClick={() => setActiveTab("reviews")}
                 className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                   activeTab === "reviews"
-                    ? "border-primary text-primary"
+                    ? "border-black text-black"
                     : "border-transparent text-gray-500 hover:text-gray-900"
                 }`}
               >
@@ -141,7 +141,7 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
                 onClick={() => setActiveTab("history")}
                 className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                   activeTab === "history"
-                    ? "border-primary text-primary"
+                    ? "border-black text-black"
                     : "border-transparent text-gray-500 hover:text-gray-900"
                 }`}
               >
@@ -178,7 +178,7 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
                 <Link
                   key={studio.id}
                   href={`/studios/${studio.id}`}
-                  className="group bg-white rounded-xl overflow-hidden border border-transparent hover:border-primary/20 hover:shadow-xl transition-all duration-300"
+                  className="group bg-white rounded-xl overflow-hidden border border-transparent hover:border-gray-200 hover:shadow-xl transition-all duration-300"
                 >
                   <div className="relative w-full aspect-[4/3] overflow-hidden">
                     <div
@@ -191,10 +191,10 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
                   </div>
                   <div className="p-6">
                     <div className="flex justify-between items-start mb-2">
-                      <h4 className="text-lg font-bold group-hover:text-primary transition-colors">{studio.title}</h4>
+                      <h4 className="text-lg font-bold group-hover:text-black transition-colors">{studio.title}</h4>
                       {studio.avg_rating && (
                         <div className="flex items-center gap-1 text-sm font-bold">
-                          <span className="material-symbols-outlined text-primary text-base">star</span>
+                          <span className="material-symbols-outlined text-black text-base">star</span>
                           <span>{studio.avg_rating.toFixed(1)}</span>
                         </div>
                       )}
@@ -233,7 +233,7 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
             <h3 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-6">{t("sidebarProfessionalProfile")}</h3>
             <div className="space-y-5">
               <div className="flex items-center gap-4">
-                <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <div className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-black">
                   <span className="material-symbols-outlined">verified_user</span>
                 </div>
                 <div>
@@ -271,13 +271,13 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
               <div className="pt-2 border-t border-gray-100">
                 <p className="text-sm font-bold mb-3">{t("sidebarConnect")}</p>
                 <div className="flex gap-4">
-                  <button className="size-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all">
+                  <button className="size-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all">
                     <span className="material-symbols-outlined text-lg">camera_alt</span>
                   </button>
-                  <button className="size-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all">
+                  <button className="size-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all">
                     <span className="material-symbols-outlined text-lg">share</span>
                   </button>
-                  <button className="size-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all">
+                  <button className="size-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all">
                     <span className="material-symbols-outlined text-lg">mail</span>
                   </button>
                 </div>
@@ -299,7 +299,7 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50">
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary">hotel_class</span>
+                    <span className="material-symbols-outlined text-black">hotel_class</span>
                     <span className="text-sm font-medium">{t("sidebarAvgRating")}</span>
                   </div>
                   <span className="font-bold text-lg">
@@ -308,14 +308,14 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50">
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary">timer</span>
+                    <span className="material-symbols-outlined text-black">timer</span>
                     <span className="text-sm font-medium">{t("sidebarResponseTime")}</span>
                   </div>
                   <span className="font-bold text-lg">&lt; 1hr</span>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50">
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary">event_available</span>
+                    <span className="material-symbols-outlined text-black">event_available</span>
                     <span className="text-sm font-medium">{t("sidebarTotalBookings")}</span>
                   </div>
                   <span className="font-bold text-lg">{stats.bookingCount}</span>
@@ -325,12 +325,12 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
           )}
 
           {/* Studio Preferences */}
-          <div className="bg-primary/5 p-8 rounded-xl border border-primary/20">
-            <h3 className="text-sm font-bold text-primary uppercase tracking-widest mb-4">{t("sidebarFavoriteSpaces")}</h3>
+          <div className="bg-gray-100 p-8 rounded-xl border border-gray-200">
+            <h3 className="text-sm font-bold text-black uppercase tracking-widest mb-4">{t("sidebarFavoriteSpaces")}</h3>
             <p className="text-sm leading-relaxed mb-4">
               {profile.full_name} {t("sidebarFavoriteSpacesDesc")}
             </p>
-            <Link href="/bookings" className="text-sm font-extrabold text-primary underline underline-offset-4 decoration-2">
+            <Link href="/bookings" className="text-sm font-extrabold text-black underline underline-offset-4 decoration-2">
               {t("sidebarViewPreviousBookings")}
             </Link>
           </div>

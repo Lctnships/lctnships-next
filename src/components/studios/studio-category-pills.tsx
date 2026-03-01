@@ -46,7 +46,7 @@ export function StudioCategoryPills() {
               size="sm"
               className={cn(
                 "rounded-full",
-                isActive && "bg-primary text-primary-foreground"
+                isActive && "bg-black text-white"
               )}
               onClick={() => handleCategoryClick(category.value)}
             >

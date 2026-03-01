@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
               amount: (session.amount_total || 0) / 100,
               status: "completed",
               stripe_session_id: session.id,
-              description: `Strippenkaart: ${credits} credits`,
+              description: `Credit package: ${credits} credits`,
             })
           } catch (error) {
             console.error("Failed to add credits:", error)
@@ -113,8 +113,8 @@ export async function POST(request: NextRequest) {
               await supabase.from("notifications").insert({
                 user_id: booking.host_id,
                 type: "payment_received",
-                title: "Betaling ontvangen",
-                message: `Je hebt een betaling ontvangen voor ${(booking.studio as any)?.title}`,
+                title: "Payment received",
+                message: `Payment received for ${(booking.studio as any)?.title}`,
                 link: `/host/bookings/${bookingId}`,
               })
             }

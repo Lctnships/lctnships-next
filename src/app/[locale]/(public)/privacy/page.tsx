@@ -20,7 +20,7 @@ export default function PrivacyPage() {
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumbs */}
       <nav className="mb-6 flex items-center gap-2 text-sm font-medium text-gray-500">
-        <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+        <Link href="/" className="hover:text-black transition-colors">Home</Link>
         <span className="material-symbols-outlined text-sm">chevron_right</span>
         <span className="text-gray-900">Privacy Policy</span>
       </nav>
@@ -41,8 +41,8 @@ export default function PrivacyPage() {
                   href={`#${section.id}`}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                     index === 0
-                      ? "bg-primary/5 text-primary font-semibold"
-                      : "text-gray-500 hover:bg-gray-50 hover:text-primary"
+                      ? "bg-gray-100 text-black font-semibold"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-black"
                   }`}
                 >
                   <span className="material-symbols-outlined text-xl">{section.icon}</span>
@@ -51,7 +51,7 @@ export default function PrivacyPage() {
               ))}
             </nav>
             <hr className="border-gray-100" />
-            <button className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-primary font-medium transition-colors py-2">
+            <button className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-black font-medium transition-colors py-2">
               <span className="material-symbols-outlined text-lg">print</span>
               Print Document
             </button>
@@ -75,9 +75,9 @@ export default function PrivacyPage() {
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
               At lcntships, we value your privacy and are committed to protecting your personal data. This policy outlines how we handle information when you use our creative studio rental platform. Whether you are a studio owner listing your space or a creative professional looking for your next workspace, we ensure your data is treated with the highest standard of care.
             </p>
-            <div className="bg-primary/5 border border-primary/10 rounded-xl p-6 mb-4">
+            <div className="bg-gray-100 border border-gray-200 rounded-xl p-6 mb-4">
               <div className="flex gap-4 items-start">
-                <span className="material-symbols-outlined text-primary mt-1">lightbulb</span>
+                <span className="material-symbols-outlined text-black mt-1">lightbulb</span>
                 <p className="text-sm font-medium leading-relaxed">
                   <strong>Summary:</strong> We only collect data necessary to provide you with the best studio booking experience. We never sell your personal information to third parties.
                 </p>
@@ -93,19 +93,19 @@ export default function PrivacyPage() {
             </p>
             <ul className="space-y-4 mb-6">
               <li className="flex items-start gap-4">
-                <div className="mt-2 size-2 rounded-full bg-primary flex-shrink-0"></div>
+                <div className="mt-2 size-2 rounded-full bg-black flex-shrink-0"></div>
                 <div>
                   <span className="font-bold">Identity Data:</span> includes first name, last name, username or similar identifier, and title.
                 </div>
               </li>
               <li className="flex items-start gap-4">
-                <div className="mt-2 size-2 rounded-full bg-primary flex-shrink-0"></div>
+                <div className="mt-2 size-2 rounded-full bg-black flex-shrink-0"></div>
                 <div>
                   <span className="font-bold">Contact Data:</span> includes email address and telephone numbers.
                 </div>
               </li>
               <li className="flex items-start gap-4">
-                <div className="mt-2 size-2 rounded-full bg-primary flex-shrink-0"></div>
+                <div className="mt-2 size-2 rounded-full bg-black flex-shrink-0"></div>
                 <div>
                   <span className="font-bold">Transaction Data:</span> includes details about payments to and from you and other details of products and services you have purchased from us.
                 </div>
@@ -135,28 +135,28 @@ export default function PrivacyPage() {
           <section className="scroll-mt-24" id="gdpr">
             <div className="flex items-center gap-3 mb-4">
               <h2 className="text-2xl font-bold">4. GDPR & User Rights</h2>
-              <span className="bg-primary/10 text-primary text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-widest">EU Compliance</span>
+              <span className="bg-gray-100 text-black text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-widest">EU Compliance</span>
             </div>
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
               Under the General Data Protection Regulation (GDPR), users in the European Economic Area have specific rights regarding their personal data:
             </p>
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-4 p-5 rounded-xl border border-gray-100 bg-white">
-                <span className="material-symbols-outlined text-primary">visibility</span>
+                <span className="material-symbols-outlined text-black">visibility</span>
                 <div>
                   <p className="font-bold">Right of Access</p>
                   <p className="text-sm text-gray-500">You can request copies of your personal data at any time through your dashboard.</p>
                 </div>
               </div>
               <div className="flex items-start gap-4 p-5 rounded-xl border border-gray-100 bg-white">
-                <span className="material-symbols-outlined text-primary">delete_sweep</span>
+                <span className="material-symbols-outlined text-black">delete_sweep</span>
                 <div>
                   <p className="font-bold">Right to Erasure</p>
                   <p className="text-sm text-gray-500">You have the right to request that we delete your personal data under certain conditions.</p>
                 </div>
               </div>
               <div className="flex items-start gap-4 p-5 rounded-xl border border-gray-100 bg-white">
-                <span className="material-symbols-outlined text-primary">edit_square</span>
+                <span className="material-symbols-outlined text-black">edit_square</span>
                 <div>
                   <p className="font-bold">Right to Rectification</p>
                   <p className="text-sm text-gray-500">You have the right to request that we correct any information you believe is inaccurate.</p>
@@ -183,24 +183,24 @@ export default function PrivacyPage() {
               If you have any questions about this Privacy Policy, please contact our data protection officer:
             </p>
             <div className="bg-gray-900 text-white p-8 rounded-2xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gray-200 rounded-full -mr-16 -mt-16 blur-3xl"></div>
               <div className="relative z-10">
                 <h3 className="text-xl font-bold mb-2">Legal Department</h3>
                 <p className="text-gray-400 text-sm mb-4">Available Mon-Fri, 9am - 5pm CET</p>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary">mail</span>
+                    <span className="material-symbols-outlined text-black">mail</span>
                     <span className="font-medium">privacy@lcntships.com</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary">location_on</span>
+                    <span className="material-symbols-outlined text-black">location_on</span>
                     <span className="font-medium">Amsterdam, Netherlands</span>
                   </div>
                 </div>
               </div>
               <div className="relative z-10">
                 <Link href="/contact">
-                  <button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-bold transition-all transform hover:scale-105">
+                  <button className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-full font-bold transition-all transform hover:scale-105">
                     Send Inquiry
                   </button>
                 </Link>
@@ -212,9 +212,9 @@ export default function PrivacyPage() {
           <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-gray-500">© {new Date().getFullYear()} lcntships Creative Rentals. All rights reserved.</p>
             <div className="flex gap-6">
-              <Link href="/terms" className="text-sm font-medium text-gray-500 hover:text-primary transition-colors">Terms of Service</Link>
-              <Link href="/privacy" className="text-sm font-medium text-primary underline">Privacy Policy</Link>
-              <Link href="/cookies" className="text-sm font-medium text-gray-500 hover:text-primary transition-colors">Cookie Policy</Link>
+              <Link href="/terms" className="text-sm font-medium text-gray-500 hover:text-black transition-colors">Terms of Service</Link>
+              <Link href="/privacy" className="text-sm font-medium text-black underline">Privacy Policy</Link>
+              <Link href="/cookies" className="text-sm font-medium text-gray-500 hover:text-black transition-colors">Cookie Policy</Link>
             </div>
           </div>
         </div>
@@ -223,7 +223,7 @@ export default function PrivacyPage() {
       {/* Back to Top */}
       <a
         href="#"
-        className="fixed bottom-8 right-8 size-12 bg-white shadow-xl rounded-full flex items-center justify-center text-primary border border-gray-100 hover:-translate-y-1 transition-all"
+        className="fixed bottom-8 right-8 size-12 bg-white shadow-xl rounded-full flex items-center justify-center text-black border border-gray-100 hover:-translate-y-1 transition-all"
       >
         <span className="material-symbols-outlined">arrow_upward</span>
       </a>

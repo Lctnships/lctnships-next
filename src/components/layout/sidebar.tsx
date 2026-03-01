@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/tooltip"
 import { useTranslations } from "next-intl"
 import { Link, usePathname, useRouter } from "@/i18n/routing"
+import Image from "next/image"
 
 const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed"
 
@@ -65,13 +66,16 @@ export function Sidebar() {
         collapsed ? "w-[68px]" : "w-64"
       )}
     >
-      {/* Logo - icon only, no brand text */}
+      {/* Logo */}
       <div className={cn("flex items-center h-20 border-b", collapsed ? "justify-center px-2" : "px-6")}>
-        <Link href="/" className="flex items-center text-primary">
-          <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M24 4L44 24L24 44L4 24L24 4Z" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M24 14V34" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/>
-          </svg>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/Lctnships-cropped.png"
+            alt="lcntships"
+            width={collapsed ? 28 : 120}
+            height={collapsed ? 28 : 53}
+            className={cn(collapsed ? "h-7 w-7 object-contain" : "h-8 w-auto")}
+          />
         </Link>
       </div>
 
@@ -87,7 +91,7 @@ export function Sidebar() {
                 "flex items-center rounded-lg py-2.5 text-sm transition-colors",
                 collapsed ? "justify-center px-2" : "gap-3 px-3",
                 isActive
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-black text-white"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent"
               )}
             >
@@ -123,7 +127,7 @@ export function Sidebar() {
             <button
               onClick={() => router.push(isHost ? "/host/dashboard" : "/host/onboarding")}
               className={cn(
-                "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-primary hover:bg-primary/10 w-full",
+                "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-black hover:bg-gray-100 w-full",
                 collapsed ? "justify-center px-2" : "gap-3 px-3"
               )}
             >
@@ -134,7 +138,7 @@ export function Sidebar() {
             <button
               onClick={() => router.push("/dashboard")}
               className={cn(
-                "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-primary hover:bg-primary/10 w-full",
+                "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors text-black hover:bg-gray-100 w-full",
                 collapsed ? "justify-center px-2" : "gap-3 px-3"
               )}
             >

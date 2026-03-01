@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/server"
 import { Link } from "@/i18n/routing"
+import { getTranslations } from "next-intl/server"
 
 export const metadata = {
   title: "Inspiratie | lcntships",
@@ -21,6 +22,7 @@ const fallbackItems = [
 const aspectRatios = ["aspect-[3/4]", "aspect-[4/5]", "aspect-[2/3]", "aspect-[4/5]", "aspect-[3/4]", "aspect-[2/3]"]
 
 export default async function InspirationPage() {
+  const t = await getTranslations("Inspiration")
   const supabase = await createClient()
 
   const { data: studios } = await supabase
@@ -56,8 +58,8 @@ export default async function InspirationPage() {
     <div className="min-h-screen">
       {/* Header */}
       <div className="max-w-2xl mx-auto px-4 py-8 text-center">
-        <h1 className="text-3xl font-extrabold tracking-tight mb-2">Inspiratie</h1>
-        <p className="text-gray-500">Ontdek creatieve ruimtes van onze community</p>
+        <h1 className="text-3xl font-extrabold tracking-tight mb-2">{t("title")}</h1>
+        <p className="text-gray-500">{t("subtitle")}</p>
       </div>
 
       {/* Pinterest Masonry Grid */}

@@ -131,7 +131,7 @@ export function ProjectWorkspaceClient({
               </button>
             </div>
             <div className="flex items-center gap-4">
-              <span className="bg-primary px-3 py-1 rounded-full text-white text-xs font-bold uppercase tracking-wider">
+              <span className="bg-black px-3 py-1 rounded-full text-white text-xs font-bold uppercase tracking-wider">
                 {project.status === "active" ? t("activeProduction") : project.status}
               </span>
               <p className="text-white/80 text-sm font-medium">Project ID: PRJ-{project.id.slice(0, 8).toUpperCase()}</p>
@@ -152,8 +152,8 @@ export function ProjectWorkspaceClient({
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 border-b-[3px] pb-4 px-2 transition-colors whitespace-nowrap ${
                     activeTab === tab.id
-                      ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-primary"
+                      ? "border-black text-black"
+                      : "border-transparent text-gray-500 hover:text-black"
                   }`}
                 >
                   <span className="material-symbols-outlined text-lg">{tab.icon}</span>
@@ -168,7 +168,7 @@ export function ProjectWorkspaceClient({
             <>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">{t("scheduledSessions")}</h2>
-                <button className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-md transition-all">
+                <button className="bg-black hover:bg-gray-800 text-white rounded-full px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-md transition-all">
                   <span className="material-symbols-outlined text-lg">add</span>
                   {t("newSession")}
                 </button>
@@ -186,14 +186,14 @@ export function ProjectWorkspaceClient({
                         <div className="flex gap-6 items-center">
                           <div
                             className={`flex flex-col items-center justify-center rounded-xl size-20 p-2 ${
-                              isUpcoming ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500"
+                              isUpcoming ? "bg-gray-100 text-black" : "bg-gray-100 text-gray-500"
                             }`}
                           >
                             <span className="text-xs font-bold uppercase">{month}</span>
                             <span className="text-2xl font-extrabold leading-none">{day}</span>
                           </div>
                           <div>
-                            <h3 className="text-lg font-bold group-hover:text-primary transition-colors">
+                            <h3 className="text-lg font-bold group-hover:text-black transition-colors">
                               {booking.studio_title}
                             </h3>
                             <div className="flex gap-4 mt-1">
@@ -212,7 +212,7 @@ export function ProjectWorkspaceClient({
                           <button className="p-2 rounded-full border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors">
                             <span className="material-symbols-outlined">description</span>
                           </button>
-                          <button className="px-5 py-2 rounded-full bg-gray-100 font-bold text-sm hover:bg-primary hover:text-white transition-all">
+                          <button className="px-5 py-2 rounded-full bg-gray-100 font-bold text-sm hover:bg-black hover:text-white transition-all">
                             {t("manage")}
                           </button>
                         </div>
@@ -239,7 +239,7 @@ export function ProjectWorkspaceClient({
                     <span className="material-symbols-outlined text-lg">file_download</span>
                     {t("exportPdf")}
                   </button>
-                  <button className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-md transition-all">
+                  <button className="bg-black hover:bg-gray-800 text-white rounded-full px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-md transition-all">
                     <span className="material-symbols-outlined text-lg">add</span>
                     {t("addFrame")}
                   </button>
@@ -283,7 +283,7 @@ export function ProjectWorkspaceClient({
                           {t("locationLink")}
                         </p>
                         <div className="relative">
-                          <select className="w-full bg-gray-50 border-none rounded-lg py-2 pl-3 pr-10 text-sm font-semibold appearance-none focus:ring-1 focus:ring-primary">
+                          <select className="w-full bg-gray-50 border-none rounded-lg py-2 pl-3 pr-10 text-sm font-semibold appearance-none focus:ring-1 focus:ring-black">
                             <option>{frame.location}</option>
                           </select>
                           <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-lg text-gray-500 pointer-events-none">
@@ -313,7 +313,7 @@ export function ProjectWorkspaceClient({
                     <span className="material-symbols-outlined text-lg">filter_list</span>
                     {t("filter")}
                   </button>
-                  <button className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-md transition-all">
+                  <button className="bg-black hover:bg-gray-800 text-white rounded-full px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-md transition-all">
                     <span className="material-symbols-outlined text-lg">add</span>
                     {t("addShot")}
                   </button>
@@ -323,16 +323,16 @@ export function ProjectWorkspaceClient({
                 {shotlist.map((shot) => (
                   <div
                     key={shot.id}
-                    className={`bg-white p-4 rounded-xl border shadow-sm hover:border-primary/30 transition-all flex items-center justify-between group ${
-                      shot.status === "in_progress" ? "border-primary/20 ring-1 ring-primary/5" : "border-gray-100"
+                    className={`bg-white p-4 rounded-xl border shadow-sm hover:border-gray-200 transition-all flex items-center justify-between group ${
+                      shot.status === "in_progress" ? "border-gray-200 ring-1 ring-gray-100" : "border-gray-100"
                     }`}
                   >
                     <div className="flex items-center gap-4 flex-1">
                       <button
                         className={`size-6 rounded-full border-2 flex items-center justify-center ${
                           shot.status === "completed"
-                            ? "border-primary bg-primary text-white"
-                            : "border-gray-300 hover:border-primary transition-colors"
+                            ? "border-black bg-black text-white"
+                            : "border-gray-300 hover:border-black transition-colors"
                         }`}
                       >
                         {shot.status === "completed" && (
@@ -390,7 +390,7 @@ export function ProjectWorkspaceClient({
                   <button className="p-2 rounded-lg bg-white border border-gray-200 text-gray-500">
                     <span className="material-symbols-outlined text-sm">grid_view</span>
                   </button>
-                  <button className="p-2 rounded-lg bg-gray-100 border border-gray-200 text-primary">
+                  <button className="p-2 rounded-lg bg-gray-100 border border-gray-200 text-black">
                     <span className="material-symbols-outlined text-sm">format_list_bulleted</span>
                   </button>
                 </div>
@@ -442,7 +442,7 @@ export function ProjectWorkspaceClient({
                           {new Date(file.modified).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button className="text-gray-500 hover:text-primary">
+                          <button className="text-gray-500 hover:text-black">
                             <span className="material-symbols-outlined">more_horiz</span>
                           </button>
                         </td>
@@ -451,14 +451,14 @@ export function ProjectWorkspaceClient({
                   </tbody>
                 </table>
               </div>
-              <div className="mt-8 border-2 border-dashed border-primary/30 rounded-3xl p-12 flex flex-col items-center justify-center bg-white/30 hover:bg-white/50 transition-all cursor-pointer group">
-                <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform">
+              <div className="mt-8 border-2 border-dashed border-gray-200 rounded-3xl p-12 flex flex-col items-center justify-center bg-white/30 hover:bg-white/50 transition-all cursor-pointer group">
+                <div className="size-16 rounded-full bg-gray-100 flex items-center justify-center text-black mb-4 group-hover:scale-110 transition-transform">
                   <span className="material-symbols-outlined text-3xl">upload_file</span>
                 </div>
                 <h3 className="text-lg font-bold mb-1">{t("uploadNewFile")}</h3>
                 <p className="text-gray-500 text-sm">
                   {t("dragAndDrop")}{" "}
-                  <span className="text-primary font-bold">{t("browse")}</span>
+                  <span className="text-black font-bold">{t("browse")}</span>
                 </p>
               </div>
             </>
@@ -469,7 +469,7 @@ export function ProjectWorkspaceClient({
             <>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">{t("teamHeading")}</h2>
-                <button className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-md transition-all">
+                <button className="bg-black hover:bg-gray-800 text-white rounded-full px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-md transition-all">
                   <span className="material-symbols-outlined text-lg">person_add</span>
                   {t("inviteMember")}
                 </button>
@@ -533,7 +533,7 @@ export function ProjectWorkspaceClient({
           <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-bold text-lg">{t("teamHeading")}</h3>
-              <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
+              <span className="text-xs font-bold text-black bg-gray-100 px-2 py-0.5 rounded">
                 {onlineCount} {t("teamOnline")}
               </span>
             </div>
@@ -563,7 +563,7 @@ export function ProjectWorkspaceClient({
                   </div>
                 </div>
               ))}
-              <button className="mt-2 w-full py-2 rounded-full border border-dashed border-gray-300 text-gray-500 text-sm font-semibold hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2">
+              <button className="mt-2 w-full py-2 rounded-full border border-dashed border-gray-300 text-gray-500 text-sm font-semibold hover:border-black hover:text-black transition-all flex items-center justify-center gap-2">
                 <span className="material-symbols-outlined text-sm">person_add</span>
                 {t("inviteMember")}
               </button>

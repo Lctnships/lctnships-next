@@ -61,7 +61,7 @@ export default async function CreditsPage() {
         <h2 className="text-2xl font-semibold mb-6">{t("howItWorksTitle")}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-2">
-            <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">
               1
             </div>
             <h3 className="font-semibold">{t("step1Title")}</h3>
@@ -70,7 +70,7 @@ export default async function CreditsPage() {
             </p>
           </div>
           <div className="space-y-2">
-            <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">
               2
             </div>
             <h3 className="font-semibold">{t("step2Title")}</h3>
@@ -79,7 +79,7 @@ export default async function CreditsPage() {
             </p>
           </div>
           <div className="space-y-2">
-            <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">
               3
             </div>
             <h3 className="font-semibold">{t("step3Title")}</h3>

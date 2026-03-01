@@ -16,7 +16,7 @@ export async function WhyLcntships() {
         {featureKeys.map((feature) => (
           <div key={feature.titleKey} className="text-center flex flex-col items-center">
             <div className="size-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-6">
-              <span className="material-symbols-outlined text-3xl text-primary">{feature.icon}</span>
+              <span className="material-symbols-outlined text-3xl text-black">{feature.icon}</span>
             </div>
             <h3 className="text-xl font-bold mb-3">{t(feature.titleKey)}</h3>
             <p className="text-gray-500 text-sm leading-relaxed">{t(feature.descKey)}</p>

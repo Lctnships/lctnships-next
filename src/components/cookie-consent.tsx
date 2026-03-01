@@ -62,7 +62,7 @@ export function CookieConsent({ onAcceptAll, onSavePreferences }: CookieConsentP
         {/* Header */}
         <div className="px-10 pt-10 pb-6">
           <div className="flex justify-center mb-6">
-            <div className="p-3 rounded-full bg-primary/10 text-primary">
+            <div className="p-3 rounded-full bg-gray-100 text-black">
               <span className="material-symbols-outlined text-3xl">cookie</span>
             </div>
           </div>
@@ -93,7 +93,7 @@ export function CookieConsent({ onAcceptAll, onSavePreferences }: CookieConsentP
               </p>
             </div>
             <div className="shrink-0">
-              <label className="relative flex h-[32px] w-[56px] cursor-not-allowed items-center rounded-full bg-primary p-1 justify-end opacity-50">
+              <label className="relative flex h-[32px] w-[56px] cursor-not-allowed items-center rounded-full bg-black p-1 justify-end opacity-50">
                 <div className="h-full aspect-square rounded-full bg-white shadow-sm" />
               </label>
             </div>
@@ -145,7 +145,7 @@ export function CookieConsent({ onAcceptAll, onSavePreferences }: CookieConsentP
         <div className="pb-6 text-center">
           <a
             href="/cookies"
-            className="text-xs text-gray-400 underline underline-offset-4 hover:text-primary transition-colors uppercase tracking-widest font-semibold"
+            className="text-xs text-gray-400 underline underline-offset-4 hover:text-black transition-colors uppercase tracking-widest font-semibold"
           >
             Lees ons volledige Cookiebeleid
           </a>
@@ -174,7 +174,7 @@ function CookieToggle({ title, description, enabled, onToggle, noBorder }: Cooki
         <button
           onClick={onToggle}
           className={`relative flex h-[32px] w-[56px] cursor-pointer items-center rounded-full p-1 transition-all duration-300 ${
-            enabled ? "bg-primary justify-end" : "bg-[#e7ebf3] justify-start"
+            enabled ? "bg-black justify-end" : "bg-[#e7ebf3] justify-start"
           }`}
         >
           <div

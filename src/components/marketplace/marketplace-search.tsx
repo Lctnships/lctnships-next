@@ -38,9 +38,9 @@ export function MarketplaceSearch() {
   const popularCities = ["Amsterdam", "Rotterdam", "Utrecht", "Den Haag", "Eindhoven", "Groningen"]
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative flex items-center bg-white rounded-[3.5rem] px-3 py-2 shadow-xl shadow-gray-200/50 border border-gray-100">
-        <div className="flex items-center">
+    <div className="flex flex-col items-center w-full">
+      <div className="relative flex flex-col md:flex-row items-stretch md:items-center bg-white rounded-2xl md:rounded-[3.5rem] px-3 py-2 shadow-xl shadow-gray-200/50 border border-gray-100 w-full md:w-auto">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center">
           {/* Location */}
           <div className="relative">
             <button
@@ -49,9 +49,9 @@ export function MarketplaceSearch() {
                 setShowDateDropdown(false)
                 setShowTypeDropdown(false)
               }}
-              className="flex items-center gap-2 px-6 py-4 hover:bg-gray-50 rounded-[2.5rem] transition-all group"
+              className="flex items-center gap-2 px-4 md:px-6 py-3 md:py-4 hover:bg-gray-50 rounded-xl md:rounded-[2.5rem] transition-all group w-full"
             >
-              <span className="material-symbols-outlined text-gray-400 group-hover:text-primary">location_on</span>
+              <span className="material-symbols-outlined text-gray-400 group-hover:text-black">location_on</span>
               <span className="text-sm font-medium">{location || t("locationLabel")}</span>
             </button>
             {showLocationDropdown && (
@@ -61,7 +61,7 @@ export function MarketplaceSearch() {
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder={t("searchCity")}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-black"
                 />
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("popular")}</p>
                 <div className="flex flex-wrap gap-2">
@@ -82,7 +82,8 @@ export function MarketplaceSearch() {
             )}
           </div>
 
-          <div className="h-8 w-px bg-gray-200" />
+          <div className="hidden md:block h-8 w-px bg-gray-200" />
+          <div className="md:hidden h-px w-full bg-gray-100" />
 
           {/* Date */}
           <div className="relative">
@@ -92,9 +93,9 @@ export function MarketplaceSearch() {
                 setShowLocationDropdown(false)
                 setShowTypeDropdown(false)
               }}
-              className="flex items-center gap-2 px-6 py-4 hover:bg-gray-50 rounded-[2.5rem] transition-all group"
+              className="flex items-center gap-2 px-4 md:px-6 py-3 md:py-4 hover:bg-gray-50 rounded-xl md:rounded-[2.5rem] transition-all group w-full"
             >
-              <span className="material-symbols-outlined text-gray-400 group-hover:text-primary">calendar_today</span>
+              <span className="material-symbols-outlined text-gray-400 group-hover:text-black">calendar_today</span>
               <span className="text-sm font-medium">{date || t("dates")}</span>
             </button>
             {showDateDropdown && (
@@ -106,13 +107,14 @@ export function MarketplaceSearch() {
                     setDate(e.target.value)
                     setShowDateDropdown(false)
                   }}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
                 />
               </div>
             )}
           </div>
 
-          <div className="h-8 w-px bg-gray-200" />
+          <div className="hidden md:block h-8 w-px bg-gray-200" />
+          <div className="md:hidden h-px w-full bg-gray-100" />
 
           {/* Studio Type */}
           <div className="relative">
@@ -122,13 +124,13 @@ export function MarketplaceSearch() {
                 setShowLocationDropdown(false)
                 setShowDateDropdown(false)
               }}
-              className="flex items-center gap-2 px-6 py-4 hover:bg-gray-50 rounded-[2.5rem] transition-all group"
+              className="flex items-center gap-2 px-4 md:px-6 py-3 md:py-4 hover:bg-gray-50 rounded-xl md:rounded-[2.5rem] transition-all group w-full"
             >
-              <span className="material-symbols-outlined text-gray-400 group-hover:text-primary">category</span>
+              <span className="material-symbols-outlined text-gray-400 group-hover:text-black">category</span>
               <span className="text-sm font-medium">{studioType ? studioTypes.find(t => t.id === studioType)?.label : t("studioTypeLabel")}</span>
             </button>
             {showTypeDropdown && (
-              <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50">
+              <div className="absolute top-full left-0 md:right-0 md:left-auto mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50">
                 {studioTypes.map((type) => (
                   <button
                     key={type.id}
@@ -137,7 +139,7 @@ export function MarketplaceSearch() {
                       setShowTypeDropdown(false)
                     }}
                     className={`w-full px-4 py-3 text-left rounded-xl text-sm font-medium transition-colors ${
-                      studioType === type.id ? "bg-primary/10 text-primary" : "hover:bg-gray-50"
+                      studioType === type.id ? "bg-gray-100 text-black" : "hover:bg-gray-50"
                     }`}
                   >
                     {type.label}
@@ -150,9 +152,10 @@ export function MarketplaceSearch() {
           {/* Search Button */}
           <button
             onClick={handleSearch}
-            className="ml-2 w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-primary/20"
+            className="mt-2 md:mt-0 md:ml-2 w-full md:w-14 h-12 md:h-14 bg-black text-white rounded-xl md:rounded-full flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-black/10"
           >
             <span className="material-symbols-outlined">search</span>
+            <span className="md:hidden text-sm font-medium">{t("searchButton") || "Search"}</span>
           </button>
         </div>
       </div>

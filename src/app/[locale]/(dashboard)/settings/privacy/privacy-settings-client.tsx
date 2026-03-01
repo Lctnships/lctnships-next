@@ -99,7 +99,7 @@ export function PrivacySettingsClient({
       {/* Notifications Section */}
       <section className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
         <div className="flex items-center gap-3 mb-8">
-          <span className="material-symbols-outlined text-primary">notifications_active</span>
+          <span className="material-symbols-outlined text-black">notifications_active</span>
           <h3 className="text-2xl font-bold">{t("notificationPreferences")}</h3>
         </div>
 
@@ -139,7 +139,7 @@ export function PrivacySettingsClient({
                           }
                           className="sr-only peer"
                         />
-                        <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary" />
+                        <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black" />
                       </label>
                     </td>
                   ))}
@@ -153,7 +153,7 @@ export function PrivacySettingsClient({
       {/* Privacy Section */}
       <section className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
         <div className="flex items-center gap-3 mb-8">
-          <span className="material-symbols-outlined text-primary">visibility</span>
+          <span className="material-symbols-outlined text-black">visibility</span>
           <h3 className="text-2xl font-bold">{t("privacySettings")}</h3>
         </div>
 
@@ -169,7 +169,7 @@ export function PrivacySettingsClient({
                 onChange={(e) =>
                   setPrivacy((prev) => ({ ...prev, profileVisibility: e.target.value }))
                 }
-                className="w-full h-14 bg-gray-50 border-none rounded-2xl px-5 appearance-none focus:ring-2 focus:ring-primary font-medium"
+                className="w-full h-14 bg-gray-50 border-none rounded-2xl px-5 appearance-none focus:ring-2 focus:ring-black font-medium"
               >
                 <option value="public">{t("visibilityPublic")}</option>
                 <option value="marketplace">{t("visibilityMarketplace")}</option>
@@ -197,7 +197,7 @@ export function PrivacySettingsClient({
                     showPortfolioToUnregistered: e.target.checked,
                   }))
                 }
-                className="w-6 h-6 rounded border-gray-300 text-primary focus:ring-primary"
+                className="w-6 h-6 rounded border-gray-300 text-black focus:ring-black"
               />
             </div>
             <label htmlFor="portfolio-visibility" className="flex flex-col cursor-pointer">
@@ -227,7 +227,7 @@ export function PrivacySettingsClient({
       <div className="flex justify-end pt-4 mb-10">
         <button
           onClick={handleSave}
-          className="bg-primary hover:bg-primary/90 text-white px-10 py-5 rounded-full font-bold text-lg shadow-lg shadow-primary/20 transition-all flex items-center gap-3"
+          className="bg-black hover:bg-gray-800 text-white px-10 py-5 rounded-full font-bold text-lg shadow-lg shadow-black/10 transition-all flex items-center gap-3"
         >
           <span className="material-symbols-outlined">check_circle</span>
           {t("saveButton")}

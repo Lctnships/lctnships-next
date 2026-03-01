@@ -105,19 +105,19 @@ export default async function CitiesPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <div className="relative w-full max-w-md">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-black">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
               <input
-                className="w-full pl-12 pr-6 py-4 rounded-full border-2 border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:border-primary focus:ring-0 transition-all text-sm font-semibold"
+                className="w-full pl-12 pr-6 py-4 rounded-full border-2 border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:border-black focus:ring-0 transition-all text-sm font-semibold"
                 placeholder={t("enterCityName")}
                 type="text"
               />
             </div>
-            <button className="w-full sm:w-auto px-8 py-4 bg-primary text-white font-extrabold rounded-full hover:shadow-xl hover:brightness-105 active:scale-95 transition-all">
+            <button className="w-full sm:w-auto px-8 py-4 bg-black text-white font-extrabold rounded-full hover:shadow-xl hover:brightness-105 active:scale-95 transition-all">
               {t("submitRequest")}
             </button>
           </div>

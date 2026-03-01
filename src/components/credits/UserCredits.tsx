@@ -21,7 +21,7 @@ export function UserCredits({ credits, totalPurchased = 0 }: UserCreditsProps) {
           <CreditCard className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-primary">{credits}</div>
+          <div className="text-3xl font-bold text-black">{credits}</div>
           <p className="text-xs text-muted-foreground mt-1">
             studio dagen beschikbaar
           </p>

@@ -449,7 +449,7 @@ export default async function CountryPage({ params }: PageProps) {
             </p>
             <Link
               href={`/studios?country=${country}`}
-              className="inline-flex items-center gap-2 bg-primary text-white h-14 px-10 rounded-xl font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-lg"
+              className="inline-flex items-center gap-2 bg-black text-white h-14 px-10 rounded-xl font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-lg"
             >
               {t("viewStudios")}
               <span className="material-symbols-outlined">arrow_forward</span>
@@ -466,7 +466,7 @@ export default async function CountryPage({ params }: PageProps) {
             </div>
             <Link
               href="/explore"
-              className="text-primary font-bold flex items-center gap-1 hover:underline"
+              className="text-black font-bold flex items-center gap-1 hover:underline"
             >
               {t("viewAllCities")}
               <span className="material-symbols-outlined text-sm">open_in_new</span>
@@ -525,10 +525,10 @@ export default async function CountryPage({ params }: PageProps) {
                 </div>
                 <div className="p-8">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold group-hover:text-primary transition-colors">
+                    <h3 className="text-xl font-bold group-hover:text-black transition-colors">
                       {studio.title}
                     </h3>
-                    <span className="text-primary font-bold">€{studio.pricePerHour}{t("perHour")}</span>
+                    <span className="text-black font-bold">€{studio.pricePerHour}{t("perHour")}</span>
                   </div>
                   <p className="text-gray-500 text-sm mb-6 flex items-center gap-1">
                     <span className="material-symbols-outlined text-sm">location_on</span>
@@ -544,7 +544,7 @@ export default async function CountryPage({ params }: PageProps) {
                       </span>
                     ))}
                   </div>
-                  <button className="w-full border-2 border-primary text-primary font-bold py-3 rounded-xl hover:bg-primary hover:text-white transition-all">
+                  <button className="w-full border-2 border-black text-black font-bold py-3 rounded-xl hover:bg-black hover:text-white transition-all">
                     {t("bookNow")}
                   </button>
                 </div>
@@ -576,7 +576,7 @@ export default async function CountryPage({ params }: PageProps) {
                     </div>
                     <div className="absolute bottom-10 left-10 right-10">
                       {trend.tag && (
-                        <span className="bg-primary/20 backdrop-blur text-primary px-4 py-1 rounded-full text-xs font-bold mb-4 inline-block">
+                        <span className="bg-gray-200 backdrop-blur text-black px-4 py-1 rounded-full text-xs font-bold mb-4 inline-block">
                           {trend.tag}
                         </span>
                       )}
@@ -615,7 +615,7 @@ export default async function CountryPage({ params }: PageProps) {
             {data.trends.filter(tr => tr.type === "small").map((trend, i) => (
               <div
                 key={i}
-                className="md:col-span-1 relative rounded-[2rem] overflow-hidden shadow-xl group bg-primary p-8 text-white"
+                className="md:col-span-1 relative rounded-[2rem] overflow-hidden shadow-xl group bg-black p-8 text-white"
               >
                 <h3 className="text-xl font-bold mb-2">{trend.title}</h3>
                 <p className="text-white/80 text-sm">{trend.description}</p>
@@ -639,7 +639,7 @@ export default async function CountryPage({ params }: PageProps) {
                       fill
                       className="object-cover"
                     />
-                    <div className="absolute inset-0 bg-primary/40 mix-blend-multiply" />
+                    <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
                     <div className="absolute inset-0 p-8 flex flex-col justify-end">
                       <h3 className="text-white font-bold text-lg">{trend.title}</h3>
                     </div>
@@ -653,8 +653,8 @@ export default async function CountryPage({ params }: PageProps) {
         {/* Final CTA */}
         <section className="mb-24 px-2">
           <div className="bg-[#111d21] rounded-[2rem] p-16 text-center shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 size-64 bg-primary/20 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 size-64 bg-primary/10 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
+            <div className="absolute top-0 right-0 size-64 bg-gray-200 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 size-64 bg-gray-100 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
             <h2 className="text-white text-4xl md:text-5xl font-black mb-6 relative z-10">
               {t("readyToStart")}
             </h2>
@@ -664,7 +664,7 @@ export default async function CountryPage({ params }: PageProps) {
             <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
               <Link
                 href="/studios"
-                className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white h-14 px-10 rounded-xl font-bold text-lg transition-all shadow-lg"
+                className="inline-flex items-center justify-center bg-black hover:bg-gray-800 text-white h-14 px-10 rounded-xl font-bold text-lg transition-all shadow-lg"
               >
                 {t("viewMarketplace")}
               </Link>

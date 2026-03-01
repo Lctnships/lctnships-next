@@ -120,7 +120,7 @@ export function StudioFilters() {
               <SlidersHorizontal className="h-4 w-4 mr-2" />
               Filters
               {currentAmenities.length > 0 && (
-                <span className="ml-2 rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-xs">
+                <span className="ml-2 rounded-full bg-black text-white px-2 py-0.5 text-xs">
                   {currentAmenities.length}
                 </span>
               )}
