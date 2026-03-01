@@ -338,6 +338,7 @@ export function CheckoutClient({
                       src={coverImage.image_url}
                       alt={studio.title}
                       fill
+                      sizes="80px"
                       className="object-cover"
                     />
                   ) : (

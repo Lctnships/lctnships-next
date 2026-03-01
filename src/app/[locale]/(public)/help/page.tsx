@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Link } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 const categoryKeys = [
   { icon: "credit_card", titleKey: "catBookingsPayments", descKey: "catBookingsPaymentsDesc", href: "/help/booking-payments" },
@@ -64,7 +65,16 @@ export default function HelpPage() {
           {t("browseByCategory")}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-          {categoryKeys.map((category) => (
+          {categoryKeys
+            .filter((category) => {
+              if (!searchQuery.trim()) return true
+              const query = searchQuery.toLowerCase()
+              return (
+                t(category.titleKey).toLowerCase().includes(query) ||
+                t(category.descKey).toLowerCase().includes(query)
+              )
+            })
+            .map((category) => (
             <Link
               key={category.titleKey}
               href={category.href}
@@ -90,7 +100,16 @@ export default function HelpPage() {
         <div className="lg:col-span-8">
           <h2 className="text-2xl font-bold mb-8">{t("popularQuestions")}</h2>
           <div className="space-y-4">
-            {faqKeys.map((faq, index) => (
+            {faqKeys
+              .filter((faq) => {
+                if (!searchQuery.trim()) return true
+                const query = searchQuery.toLowerCase()
+                return (
+                  t(faq.questionKey).toLowerCase().includes(query) ||
+                  t(faq.answerKey).toLowerCase().includes(query)
+                )
+              })
+              .map((faq, index) => (
               <div
                 key={index}
                 className="bg-white rounded-xl border border-gray-200 overflow-hidden group"
@@ -132,7 +151,10 @@ export default function HelpPage() {
               </p>
 
               <div className="space-y-4">
-                <button className="w-full bg-white text-black font-bold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors group">
+                <button
+                  onClick={() => toast.info("Live chat coming soon!")}
+                  className="w-full bg-white text-black font-bold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors group"
+                >
                   <span className="material-symbols-outlined">chat</span>
                   {t("startLiveChat")}
                 </button>

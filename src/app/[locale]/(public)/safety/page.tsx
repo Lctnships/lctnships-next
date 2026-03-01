@@ -115,6 +115,7 @@ export default function SafetyPage() {
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZp3aBzRsD7aPNlWUw4xq0lECzN1ApRCOGJA_cCAJcy_XqwfszYJVxHO9FV0pkNBTRci6l53tbm_xwOuf2jWCOqcS0dhGDw_kUAQsK0CPQTekDceULEfdWZIqj3fA4jH4bhoOtSIrUxKOaJN_kCdkWilkvAOJ4c6uzkTzi9uAlgXk79GZ_efL6sJ3AX9IkBB0lbAPy_BfKolOKdXIAomAD6VqDwVRh9ptvVjCRCcmZSKhyYt7ffjJwmA8ePaKNgM7CJgGRcqD5-LM"
             alt="Safety background"
             fill
+            sizes="100vw"
             className="object-cover opacity-20"
             unoptimized
           />

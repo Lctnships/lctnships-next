@@ -195,6 +195,7 @@ export function RescheduleModal({ booking, onClose, onSuccess }: RescheduleModal
                     src={coverImage.image_url}
                     alt={booking.studio.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 320px"
                     className="object-cover"
                   />
                 ) : (

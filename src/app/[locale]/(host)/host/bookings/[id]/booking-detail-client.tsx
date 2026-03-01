@@ -111,6 +111,15 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
         })
         .eq("id", booking.id)
 
+      // Send notification to the renter about the declined booking
+      await supabase.from("notifications").insert({
+        user_id: booking.renter.id,
+        type: "booking_declined",
+        title: "Booking Declined",
+        message: `Your booking for ${booking.studio?.title} has been declined.`,
+        link: `/bookings/${booking.id}`,
+      })
+
       router.push("/host/bookings")
       router.refresh()
     } catch (error) {

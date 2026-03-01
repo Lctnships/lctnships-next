@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Link } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 interface NotificationChannel {
   email: boolean
@@ -72,9 +73,28 @@ export function PrivacySettingsClient({
     }))
   }
 
-  const handleSave = () => {
-    // TODO: Save settings to database
-    console.log({ notifications, privacy })
+  const [isSaving, setIsSaving] = useState(false)
+
+  const handleSave = async () => {
+    setIsSaving(true)
+    try {
+      const res = await fetch("/api/users/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email_notifications: notifications.newBookings.email,
+          sms_notifications: notifications.newBookings.sms,
+          push_notifications: notifications.newBookings.push,
+          marketing_emails: notifications.platformUpdates.email,
+        }),
+      })
+      if (!res.ok) throw new Error("Failed to save settings")
+      toast.success(t("saveSuccess") || "Settings saved successfully")
+    } catch {
+      toast.error(t("saveError") || "Failed to save settings")
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -227,10 +247,11 @@ export function PrivacySettingsClient({
       <div className="flex justify-end pt-4 mb-10">
         <button
           onClick={handleSave}
-          className="bg-black hover:bg-gray-800 text-white px-10 py-5 rounded-full font-bold text-lg shadow-lg shadow-black/10 transition-all flex items-center gap-3"
+          disabled={isSaving}
+          className="bg-black hover:bg-gray-800 text-white px-10 py-5 rounded-full font-bold text-lg shadow-lg shadow-black/10 transition-all flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span className="material-symbols-outlined">check_circle</span>
-          {t("saveButton")}
+          <span className="material-symbols-outlined">{isSaving ? "hourglass_empty" : "check_circle"}</span>
+          {isSaving ? (t("saving") || "Saving...") : t("saveButton")}
         </button>
       </div>
     </div>

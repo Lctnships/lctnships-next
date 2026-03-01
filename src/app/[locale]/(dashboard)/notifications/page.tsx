@@ -83,6 +83,13 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     fetchNotifications()
+
+    // Poll for new notifications every 30 seconds
+    const intervalId = setInterval(() => {
+      fetchNotifications()
+    }, 30000)
+
+    return () => clearInterval(intervalId)
   }, [])
 
   const fetchNotifications = async () => {

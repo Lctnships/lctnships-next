@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { invalidateCache } from "@/lib/cache"
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -147,7 +148,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       "postal_code",
       "latitude",
       "longitude",
-      "hourly_rate",
+      "price_per_hour",
       "daily_rate",
       "minimum_hours",
       "maximum_hours",
@@ -184,6 +185,10 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       .single()
 
     if (error) throw error
+
+    // Invalidate both the general studios list cache and this specific studio cache
+    await invalidateCache("studios:")
+    await invalidateCache(`studios:${id}`)
 
     return NextResponse.json({ studio })
   } catch (error: unknown) {

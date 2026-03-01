@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/routing"
 import Image from "next/image"
 import { getTranslations } from "next-intl/server"
+import { SuggestCityForm } from "./suggest-city-form"
 
 export async function generateMetadata() {
   const t = await getTranslations("Explore")
@@ -113,6 +114,7 @@ export default async function ExplorePage() {
                       alt={city.name}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
                       unoptimized
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -137,24 +139,10 @@ export default async function ExplorePage() {
           <p className="text-gray-500 dark:text-gray-400 mb-10 font-medium text-lg">
             {t("suggestCityDesc")}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-xl mx-auto">
-            <div className="relative w-full">
-              <div className="absolute left-5 top-1/2 -translate-y-1/2 text-black">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <input
-                className="w-full pl-14 pr-6 py-4 rounded-full border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-black focus:ring-0 transition-all text-sm font-semibold"
-                placeholder={t("enterCity")}
-                type="text"
-              />
-            </div>
-            <button className="w-full sm:w-auto whitespace-nowrap px-10 py-4 bg-black text-white font-extrabold rounded-full hover:shadow-xl hover:brightness-105 active:scale-95 transition-all">
-              {t("submitRequest")}
-            </button>
-          </div>
+          <SuggestCityForm
+            placeholder={t("enterCity")}
+            buttonText={t("submitRequest")}
+          />
         </section>
       </main>
     </div>

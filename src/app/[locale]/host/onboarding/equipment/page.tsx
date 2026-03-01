@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 
 const equipmentCategories = [
@@ -53,11 +53,15 @@ const equipmentCategories = [
 
 export default function OnboardingEquipmentPage() {
   const router = useRouter()
-  const [selectedEquipment, setSelectedEquipment] = useState<string[]>([
-    "Continue Verlichting",
-    "Cyclorama Wand",
-    "Monitor Speakers",
-  ])
+  const [selectedEquipment, setSelectedEquipment] = useState<string[]>([])
+
+  // Restore state from localStorage on mount
+  useEffect(() => {
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    if (draft.equipment && draft.equipment.length > 0) {
+      setSelectedEquipment(draft.equipment)
+    }
+  }, [])
 
   const toggleEquipment = (item: string) => {
     setSelectedEquipment((prev) =>
@@ -158,7 +162,8 @@ export default function OnboardingEquipmentPage() {
           </Link>
           <button
             onClick={handleContinue}
-            className="bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-full font-bold shadow-lg shadow-primary/25 transition-all flex items-center gap-3"
+            disabled={selectedEquipment.length === 0}
+            className="bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-full font-bold shadow-lg shadow-primary/25 transition-all flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Verder naar Prijsstelling
             <span className="material-symbols-outlined text-xl">arrow_forward</span>

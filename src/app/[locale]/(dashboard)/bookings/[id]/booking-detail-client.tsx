@@ -94,8 +94,10 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
     { name: "Avalon VT-737sp Preamp", included: true },
   ]
 
-  // Mock pricing breakdown
-  const gearPrice = 75
+  // Calculate gear price from booking data
+  const gearPrice = (booking.subtotal && booking.service_fee)
+    ? Math.max(0, booking.total_amount - booking.subtotal - booking.service_fee)
+    : 0
   const studioPrice = booking.subtotal || (booking.total_amount - booking.service_fee - gearPrice)
 
   return (
@@ -123,6 +125,7 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
                 src={coverImage.image_url}
                 alt={booking.studio.title}
                 fill
+                sizes="100vw"
                 className="object-cover"
               />
             ) : (
@@ -347,6 +350,7 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
                         src={booking.host.avatar_url}
                         alt={booking.host.full_name || "Host"}
                         fill
+                        sizes="48px"
                         className="object-cover"
                       />
                     ) : (

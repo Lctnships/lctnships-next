@@ -62,7 +62,7 @@ export async function GET(request: Request) {
         description,
         type,
         city,
-        hourly_rate,
+        price_per_hour,
         daily_rate,
         avg_rating,
         total_reviews,
@@ -100,10 +100,10 @@ export async function GET(request: Request) {
 
     // Price range filter
     if (minPrice) {
-      query = query.gte("hourly_rate", parseFloat(minPrice))
+      query = query.gte("price_per_hour", parseFloat(minPrice))
     }
     if (maxPrice) {
-      query = query.lte("hourly_rate", parseFloat(maxPrice))
+      query = query.lte("price_per_hour", parseFloat(maxPrice))
     }
 
     // Amenities filter
@@ -115,7 +115,7 @@ export async function GET(request: Request) {
     }
 
     // Sorting - validate field
-    const validSortFields = ["created_at", "hourly_rate", "avg_rating", "title"]
+    const validSortFields = ["created_at", "price_per_hour", "avg_rating", "title"]
     const sortField = validSortFields.includes(sortBy) ? sortBy : "created_at"
     query = query.order(sortField, { ascending: sortOrder === "asc" })
 
@@ -200,7 +200,7 @@ export async function POST(request: Request) {
       postal_code,
       latitude,
       longitude,
-      hourly_rate,
+      price_per_hour,
       daily_rate,
       minimum_hours,
       maximum_hours,
@@ -213,9 +213,17 @@ export async function POST(request: Request) {
     } = body
 
     // Validate required fields
-    if (!title || !type || !city || !hourly_rate) {
+    if (!title || !type || !city || !price_per_hour) {
       return NextResponse.json(
         { error: "Title, type, city, and hourly rate are required" },
+        { status: 400 }
+      )
+    }
+
+    // Validate price is positive
+    if (!price_per_hour || price_per_hour <= 0) {
+      return NextResponse.json(
+        { error: "Price must be greater than 0" },
         { status: 400 }
       )
     }
@@ -233,7 +241,7 @@ export async function POST(request: Request) {
         postal_code,
         latitude,
         longitude,
-        hourly_rate,
+        price_per_hour,
         daily_rate,
         minimum_hours: minimum_hours || 1,
         maximum_hours: maximum_hours || 24,
@@ -245,13 +253,16 @@ export async function POST(request: Request) {
         access_instructions,
         is_published: false,
       })
-      .select("id, title, type, city, hourly_rate, is_published, created_at")
+      .select("id, title, type, city, price_per_hour, is_published, created_at")
       .single()
 
     if (error) throw error
 
     // Invalidate cache when new studio is created
     await invalidateCache("studios:")
+    if (studio?.id) {
+      await invalidateCache(`studios:${studio.id}`)
+    }
 
     return NextResponse.json({ studio }, { status: 201 })
   } catch (error: unknown) {

@@ -32,12 +32,28 @@ export default async function BookingsPage() {
     .eq("renter_id", user.id)
     .order("start_datetime", { ascending: false })
 
+  // Fetch user's favorites
+  const { data: favorites } = await supabase
+    .from("favorites")
+    .select(`
+      *,
+      studio:studios (
+        id,
+        title,
+        city,
+        studio_images (image_url, is_cover)
+      )
+    `)
+    .eq("user_id", user.id)
+    .limit(3)
+
   // Calculate total hours booked
   const totalHours = bookings?.reduce((sum, booking) => sum + (booking.total_hours || 0), 0) || 0
 
   return (
     <BookingsClient
       bookings={bookings || []}
+      favorites={(favorites || []) as any}
       totalHours={totalHours}
     />
   )

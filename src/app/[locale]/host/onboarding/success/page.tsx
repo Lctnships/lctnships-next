@@ -97,6 +97,7 @@ export default async function OnboardingSuccessPage({
                     src={studio.images[0]}
                     alt={studio.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 400px"
                     className="object-cover"
                   />
                 ) : (

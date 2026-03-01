@@ -29,10 +29,11 @@ interface Booking {
 
 interface BookingsClientProps {
   bookings: Booking[]
+  favorites: any[]
   totalHours: number
 }
 
-export function BookingsClient({ bookings, totalHours }: BookingsClientProps) {
+export function BookingsClient({ bookings, favorites, totalHours }: BookingsClientProps) {
   const t = useTranslations("Bookings")
   const locale = useLocale()
   const dateLocale = locale === "nl" ? "nl-NL" : locale === "es" ? "es-ES" : "en-US"
@@ -131,12 +132,201 @@ export function BookingsClient({ bookings, totalHours }: BookingsClientProps) {
   ]
 
   return (
-    <div className="max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">{t("title")}</h1>
-          <p className="text-gray-500 mt-2 text-[15px]">{t("subtitle")}</p>
+    <div className="min-h-screen bg-[#f6f6f8]">
+      {/* Page Header */}
+      <div className="max-w-[1440px] mx-auto px-4 md:px-10 py-6 md:py-10">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">{t("title")}</h1>
+            <p className="text-gray-500 mt-1 font-medium text-sm md:text-base">{t("subtitle")}</p>
+          </div>
+          <Link
+            href="/studios"
+            className="bg-black hover:bg-gray-800 text-white rounded-full px-6 md:px-8 py-3 text-sm font-bold flex items-center gap-2 shadow-lg shadow-black/10 transition-all w-fit"
+          >
+            <span className="material-symbols-outlined text-lg">add</span>
+            {t("bookStudio")}
+          </Link>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
+          {/* Main Content */}
+          <div className="flex-1">
+            {/* Search Bar */}
+            <div className="mb-8">
+              <div className="flex w-full max-w-md items-stretch rounded-full bg-white border border-gray-200 overflow-hidden">
+                <div className="flex items-center justify-center pl-4 text-gray-400">
+                  <span className="material-symbols-outlined text-xl">search</span>
+                </div>
+                <input
+                  className="w-full border-none bg-transparent focus:ring-0 text-sm placeholder:text-gray-400 px-3 py-3"
+                  placeholder={t("searchPlaceholder")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="mb-8">
+              <div className="flex border-b border-gray-200 gap-6 md:gap-12 overflow-x-auto">
+                <button
+                  onClick={() => setActiveTab("upcoming")}
+                  className={`flex items-center gap-2 border-b-[3px] pb-4 px-2 font-bold text-sm tracking-wide transition-colors ${
+                    activeTab === "upcoming"
+                      ? "border-black text-black"
+                      : "border-transparent text-gray-400 hover:text-gray-700"
+                  }`}
+                >
+                  {t("tabUpcoming")}
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] ${
+                    activeTab === "upcoming" ? "bg-gray-100 text-black" : "bg-gray-100 text-gray-500"
+                  }`}>
+                    {counts.upcoming}
+                  </span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("past")}
+                  className={`flex items-center gap-2 border-b-[3px] pb-4 px-2 font-bold text-sm tracking-wide transition-colors ${
+                    activeTab === "past"
+                      ? "border-black text-black"
+                      : "border-transparent text-gray-400 hover:text-gray-700"
+                  }`}
+                >
+                  {t("tabPast")}
+                </button>
+                <button
+                  onClick={() => setActiveTab("cancelled")}
+                  className={`flex items-center gap-2 border-b-[3px] pb-4 px-2 font-bold text-sm tracking-wide transition-colors ${
+                    activeTab === "cancelled"
+                      ? "border-black text-black"
+                      : "border-transparent text-gray-400 hover:text-gray-700"
+                  }`}
+                >
+                  {t("tabCancelled")}
+                </button>
+              </div>
+            </div>
+
+            {/* Bookings List */}
+            <div className="flex flex-col gap-6">
+              {filteredBookings.length === 0 ? (
+                <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+                  <span className="material-symbols-outlined text-6xl text-gray-300 mb-4">calendar_today</span>
+                  <h3 className="text-lg font-bold mb-2">{t("emptyTitle")}</h3>
+                  <p className="text-gray-400">
+                    {activeTab === "upcoming"
+                      ? t("emptyUpcoming")
+                      : activeTab === "past"
+                      ? t("emptyPast")
+                      : t("emptyCancelled")}
+                  </p>
+                  {activeTab === "upcoming" && (
+                    <Link
+                      href="/studios"
+                      className="inline-flex items-center gap-2 mt-6 bg-black text-white rounded-full px-6 py-3 text-sm font-bold hover:bg-gray-800 transition-colors"
+                    >
+                      <span className="material-symbols-outlined">search</span>
+                      {t("browseStudios")}
+                    </Link>
+                  )}
+                </div>
+              ) : (
+                filteredBookings.map((booking) => (
+                  <BookingCard
+                    key={booking.id}
+                    booking={booking}
+                    isPast={activeTab === "past"}
+                    onReschedule={() => setRescheduleBooking(booking)}
+                    onReview={() => setReviewBooking(booking)}
+                    formatDate={formatDate}
+                    formatTime={formatTime}
+                    getStatusBadge={getStatusBadge}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <aside className="hidden lg:flex w-80 flex-col gap-8">
+            {/* Stats Card */}
+            <div className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm text-center">
+              <div className="inline-flex items-center justify-center size-16 bg-gray-100 rounded-full mb-4">
+                <span className="material-symbols-outlined text-gray-500 text-3xl">timer</span>
+              </div>
+              <h3 className="text-3xl font-extrabold">{totalHours}</h3>
+              <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-2">{t("totalHoursBooked")}</p>
+              <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden mt-4">
+                <div className="h-full bg-black" style={{ width: `${Math.min((totalHours / 200) * 100, 100)}%` }}></div>
+              </div>
+              <p className="text-[11px] text-gray-400 mt-2">{Math.round((totalHours / 200) * 100)}{t("yearlyGoalProgress")}</p>
+            </div>
+
+            {/* Favorites Card */}
+            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-bold text-lg">{t("favoriteStudios")}</h3>
+                <Link href="/favorites" className="text-black text-xs font-bold hover:underline">{t("viewAll")}</Link>
+              </div>
+              <div className="flex flex-col gap-5">
+                {favorites.map((fav, index) => {
+                  const coverImage = fav.studio.studio_images?.find((img) => img.is_cover) || fav.studio.studio_images?.[0]
+                  return (
+                    <Link
+                      key={index}
+                      href={`/studios/${fav.studio.id}`}
+                      className="flex items-center gap-4 group cursor-pointer"
+                    >
+                      <div className="size-12 rounded-lg overflow-hidden flex-shrink-0 relative">
+                        {coverImage ? (
+                          <Image
+                            src={coverImage.image_url}
+                            alt={fav.studio.title}
+                            fill
+                            sizes="48px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold truncate group-hover:text-black transition-colors">
+                          {fav.studio.title}
+                        </p>
+                        <p className="text-xs text-gray-400">{fav.studio.city}</p>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+              <Link
+                href="/favorites"
+                className="mt-6 w-full py-2.5 rounded-full border border-dashed border-gray-300 text-gray-400 text-xs font-bold hover:border-gray-400 hover:text-black transition-all flex items-center justify-center gap-2 uppercase tracking-wider"
+              >
+                <span className="material-symbols-outlined text-sm">favorite</span>
+                {t("manageFavorites")}
+              </Link>
+            </div>
+
+            {/* Support Card */}
+            <div className="bg-black rounded-xl p-6 text-white shadow-xl shadow-black/10 relative overflow-hidden">
+              <div className="relative z-10">
+                <h4 className="font-bold mb-1">{t("needHelp")}</h4>
+                <p className="text-white/80 text-xs mb-4">{t("supportDescription")}</p>
+                <Link
+                  href="/help"
+                  className="w-full py-2 bg-white text-black rounded-full text-xs font-bold hover:bg-gray-100 transition-colors block text-center"
+                >
+                  {t("contactSupport")}
+                </Link>
+              </div>
+              <div className="absolute -right-4 -bottom-4 opacity-10">
+                <span className="material-symbols-outlined text-8xl">support_agent</span>
+              </div>
+            </div>
+          </aside>
         </div>
         <Link
           href="/studios"
@@ -313,7 +503,7 @@ function BookingCard({
               src={coverImage.image_url}
               alt={booking.studio.title}
               fill
-              sizes="(max-width: 768px) 100vw, 224px"
+              sizes="(max-width: 768px) 100vw, 256px"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (

@@ -13,6 +13,7 @@ export default function AuthLayout({
           src="/DSC01072.jpg"
           alt="Creative studio space"
           fill
+          sizes="50vw"
           className="object-cover object-top"
           priority
         />

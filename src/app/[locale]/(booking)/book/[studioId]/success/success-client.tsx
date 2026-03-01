@@ -142,6 +142,7 @@ END:VCALENDAR`
                   src={coverImage.image_url}
                   alt={studio.title}
                   fill
+                  sizes="96px"
                   className="object-cover"
                 />
               ) : (

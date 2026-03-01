@@ -6,46 +6,6 @@ export const metadata = {
   title: "Booking Request",
 }
 
-// Mock booking data for demo
-const mockBooking = {
-  id: "booking-123",
-  booking_number: "BK-2024-0892",
-  status: "pending" as const,
-  payment_status: "paid" as const,
-  created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-  start_datetime: new Date(Date.now() + 86400000 * 5).toISOString(),
-  end_datetime: new Date(Date.now() + 86400000 * 5 + 32400000).toISOString(),
-  total_hours: 9,
-  hourly_rate: 120,
-  subtotal: 1080,
-  service_fee: 108,
-  total_price: 1188,
-  host_payout: 1026,
-  notes: "Hi! I'm planning a fashion editorial shoot with a team of 5 people. We'll need the natural light setup and the white cyc wall. Looking forward to using your amazing space!",
-  renter: {
-    id: "renter-1",
-    full_name: "Sarah Mitchell",
-    avatar_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200",
-    email: "sarah@example.com",
-    phone: "+31 6 12345678",
-    created_at: "2022-06-15",
-    is_verified: true,
-  },
-  studio: {
-    id: "studio-1",
-    title: "Industrial Loft NYC",
-    location: "Brooklyn, New York",
-    images: ["https://images.unsplash.com/photo-1497366216548-37526070297c?w=800"],
-  },
-}
-
-const mockRenterStats = {
-  totalBookings: 12,
-  avgRating: 4.8,
-  cancelRate: 0,
-  responseTime: "< 1hr",
-}
-
 export default async function BookingDetailPage({
   params,
 }: {
@@ -69,9 +29,19 @@ export default async function BookingDetailPage({
     .eq("host_id", user.id)
     .single()
 
-  // Get renter stats if we have a real booking
-  let renterStats = mockRenterStats
-  if (booking?.renter) {
+  if (!booking) {
+    notFound()
+  }
+
+  // Get renter stats
+  let renterStats = {
+    totalBookings: 0,
+    avgRating: 0,
+    cancelRate: 0,
+    responseTime: "< 1hr",
+  }
+
+  if (booking.renter) {
     const { count: bookingsCount } = await supabase
       .from("bookings")
       .select("*", { count: "exact", head: true })
@@ -103,20 +73,17 @@ export default async function BookingDetailPage({
     }
   }
 
-  // Use mock data if no real booking found
-  const bookingData = booking || mockBooking
-
-  // Build studio images
-  const studioImages = booking?.studio?.images ||
-    booking?.studio?.studio_images?.map((img: { url: string }) => img.url) ||
-    mockBooking.studio.images
+  // Build studio images - field is image_url, not url
+  const studioImages = booking.studio?.images ||
+    booking.studio?.studio_images?.map((img: { image_url: string }) => img.image_url) ||
+    []
 
   return (
     <BookingDetailClient
       booking={{
-        ...bookingData,
+        ...booking,
         studio: {
-          ...bookingData.studio,
+          ...booking.studio,
           images: studioImages,
         },
       }}

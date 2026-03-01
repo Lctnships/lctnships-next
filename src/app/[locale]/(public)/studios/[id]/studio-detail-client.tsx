@@ -270,7 +270,10 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   ]
 
   const formatReviewDate = (dateString: string) => {
-    if (!mounted) return ""
+    if (!mounted) {
+      // Return ISO date substring as consistent placeholder for SSR/client hydration
+      return dateString ? dateString.substring(0, 10) : ""
+    }
     const date = new Date(dateString)
     return date.toLocaleDateString(dateLocale, { month: "long", year: "numeric" })
   }
@@ -300,7 +303,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                 alt={studio.title}
                 fill
                 priority
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover transition-transform group-hover:scale-105"
               />
             )}
@@ -319,7 +322,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                 src={image}
                 alt={`${studio.title} ${index + 2}`}
                 fill
-                sizes="25vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover transition-transform group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
@@ -558,6 +561,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                       src={images[0]}
                       alt="Virtual tour preview"
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover opacity-80"
                     />
                   )}
@@ -626,7 +630,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                         </div>
                         <div>
                           <p className="font-bold">{review.reviewer?.full_name || t("anonymous")}</p>
-                          <p className="text-sm text-gray-500">{formatReviewDate(review.created_at)}</p>
+                          <p className="text-sm text-gray-500" suppressHydrationWarning>{formatReviewDate(review.created_at)}</p>
                         </div>
                       </div>
                       <div className="flex gap-0.5 mb-3">
@@ -911,6 +915,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                         src={studioImage}
                         alt={similarStudio.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover transition-transform group-hover:scale-105"
                       />
                     )}
@@ -973,6 +978,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                     src={image}
                     alt={`${studio.title} ${index + 1}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover"
                   />
                 </div>

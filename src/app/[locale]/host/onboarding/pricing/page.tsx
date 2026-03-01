@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 
 export default function OnboardingPricingPage() {
@@ -8,6 +8,14 @@ export default function OnboardingPricingPage() {
   const [hourlyRate, setHourlyRate] = useState(45)
   const [cleaningFee, setCleaningFee] = useState(0)
   const [weekendMarkup, setWeekendMarkup] = useState(15)
+
+  // Restore state from localStorage on mount
+  useEffect(() => {
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    if (draft.price_per_hour) setHourlyRate(draft.price_per_hour)
+    if (draft.cleaning_fee !== undefined) setCleaningFee(draft.cleaning_fee)
+    if (draft.weekend_markup !== undefined) setWeekendMarkup(draft.weekend_markup)
+  }, [])
 
   const handleContinue = () => {
     const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
@@ -59,6 +67,7 @@ export default function OnboardingPricingPage() {
                       <span className="text-2xl font-bold text-primary">€</span>
                       <input
                         type="number"
+                        min={1}
                         value={hourlyRate}
                         onChange={(e) => setHourlyRate(Number(e.target.value))}
                         className="bg-transparent text-2xl font-bold w-16 focus:outline-none border-none p-0 text-center"
@@ -209,7 +218,8 @@ export default function OnboardingPricingPage() {
           </Link>
           <button
             onClick={handleContinue}
-            className="bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-full font-bold shadow-lg shadow-primary/25 transition-all flex items-center gap-3"
+            disabled={hourlyRate <= 0}
+            className="bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-full font-bold shadow-lg shadow-primary/25 transition-all flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Verder naar Kalender
             <span className="material-symbols-outlined text-xl">arrow_forward</span>

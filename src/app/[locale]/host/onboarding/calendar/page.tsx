@@ -110,17 +110,14 @@ function CalendarPageContent() {
     }
   }, [availableDays, minDuration, prepTime, bookingNotice, instantBook, router])
 
-  // Auto-publish after login redirect
+  // Auto-publish after login redirect — no setTimeout, relies on isLoaded
+  const shouldPublish = searchParams.get("publish") === "true"
   useEffect(() => {
-    const shouldPublish = searchParams.get("publish") === "true"
     if (shouldPublish && isLoaded && !hasAutoPublished.current) {
       hasAutoPublished.current = true
-      // Small delay to ensure state is properly loaded from localStorage
-      setTimeout(() => {
-        handlePublish()
-      }, 100)
+      handlePublish()
     }
-  }, [searchParams, isLoaded, handlePublish])
+  }, [shouldPublish, isLoaded, handlePublish])
 
   return (
     <>

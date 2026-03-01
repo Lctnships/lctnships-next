@@ -75,8 +75,8 @@ export async function POST(request: Request, { params }: RouteParams) {
     const renter = booking.renter as any
     const host = booking.host as any
 
-    const startDate = new Date(booking.start_time)
-    const endDate = new Date(booking.end_time)
+    const startDate = new Date(booking.start_datetime)
+    const endDate = new Date(booking.end_datetime)
     const dateTimeStr = `${startDate.toLocaleDateString("nl-NL", {
       weekday: "long",
       month: "short",

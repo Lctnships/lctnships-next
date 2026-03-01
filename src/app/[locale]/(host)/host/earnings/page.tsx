@@ -6,112 +6,6 @@ export const metadata = {
   title: "Earnings & Revenue",
 }
 
-// Mock earnings data for demo
-const mockEarnings = {
-  totalBalance: 8750.00,
-  pendingPayout: 2340.00,
-  thisMonth: 4280.00,
-  lastMonth: 3920.00,
-  monthlyGrowth: 9.2,
-  yearToDate: 42580.00,
-}
-
-const mockTransactions = [
-  {
-    id: "txn-1",
-    type: "booking" as const,
-    description: "Industrial Loft NYC - Full Day Booking",
-    guest: "Sarah Mitchell",
-    amount: 1200.00,
-    date: new Date().toISOString(),
-    status: "completed" as const,
-  },
-  {
-    id: "txn-2",
-    type: "booking" as const,
-    description: "Industrial Loft NYC - Half Day",
-    guest: "Mike Chen",
-    amount: 650.00,
-    date: new Date(Date.now() - 86400000 * 2).toISOString(),
-    status: "completed" as const,
-  },
-  {
-    id: "txn-3",
-    type: "payout" as const,
-    description: "Payout to Bank Account ****4892",
-    guest: "",
-    amount: -3500.00,
-    date: new Date(Date.now() - 86400000 * 5).toISOString(),
-    status: "completed" as const,
-  },
-  {
-    id: "txn-4",
-    type: "booking" as const,
-    description: "Mid-Century Modern Studio - 2 Days",
-    guest: "Emma Johnson",
-    amount: 1800.00,
-    date: new Date(Date.now() - 86400000 * 7).toISOString(),
-    status: "completed" as const,
-  },
-  {
-    id: "txn-5",
-    type: "booking" as const,
-    description: "White Box Studio - Commercial Shoot",
-    guest: "James Wilson",
-    amount: 2200.00,
-    date: new Date(Date.now() - 86400000 * 10).toISOString(),
-    status: "pending" as const,
-  },
-  {
-    id: "txn-6",
-    type: "refund" as const,
-    description: "Refund - Skyline Rooftop Cancellation",
-    guest: "Alex Brown",
-    amount: -450.00,
-    date: new Date(Date.now() - 86400000 * 12).toISOString(),
-    status: "completed" as const,
-  },
-]
-
-const mockMonthlyData = [
-  { month: "Jan", earnings: 3200 },
-  { month: "Feb", earnings: 2800 },
-  { month: "Mar", earnings: 4100 },
-  { month: "Apr", earnings: 3600 },
-  { month: "May", earnings: 4800 },
-  { month: "Jun", earnings: 5200 },
-  { month: "Jul", earnings: 4900 },
-  { month: "Aug", earnings: 5600 },
-  { month: "Sep", earnings: 4280 },
-  { month: "Oct", earnings: 0 },
-  { month: "Nov", earnings: 0 },
-  { month: "Dec", earnings: 0 },
-]
-
-const mockStudios = [
-  {
-    id: "studio-1",
-    title: "Industrial Loft NYC",
-    earnings: 18500,
-    bookings: 45,
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=200",
-  },
-  {
-    id: "studio-2",
-    title: "Mid-Century Modern",
-    earnings: 12300,
-    bookings: 32,
-    image: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=200",
-  },
-  {
-    id: "studio-3",
-    title: "White Box Studio",
-    earnings: 8900,
-    bookings: 28,
-    image: "https://images.unsplash.com/photo-1497215842964-222b430dc094?w=200",
-  },
-]
-
 export default async function EarningsPage() {
   const supabase = await createClient()
 
@@ -149,25 +43,46 @@ export default async function EarningsPage() {
     .order("created_at", { ascending: false })
     .limit(10)
 
-  // Calculate real earnings or use mock data
+  // Calculate real earnings
   const totalEarnings = completedBookings?.reduce((sum, b) => sum + (b.host_payout || 0), 0) || 0
   const pendingAmount = pendingPayouts?.reduce((sum, p) => sum + p.amount, 0) || 0
 
-  // If no real data, use mock data
-  const hasRealData = totalEarnings > 0 || (recentBookings && recentBookings.length > 0)
+  // Calculate thisMonth and lastMonth from real transactions
+  const now = new Date()
+  const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+  const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999)
 
-  const earningsData = hasRealData
-    ? {
-        totalBalance: totalEarnings + pendingAmount,
-        pendingPayout: pendingAmount,
-        thisMonth: mockEarnings.thisMonth, // Would calculate from completedBookings
-        lastMonth: mockEarnings.lastMonth,
-        monthlyGrowth: mockEarnings.monthlyGrowth,
-        yearToDate: totalEarnings,
-      }
-    : mockEarnings
+  const thisMonth = completedBookings?.reduce((sum, b) => {
+    const bookingDate = new Date(b.created_at)
+    if (bookingDate >= thisMonthStart) {
+      return sum + (b.host_payout || 0)
+    }
+    return sum
+  }, 0) || 0
 
-  const transactions = hasRealData && recentBookings
+  const lastMonth = completedBookings?.reduce((sum, b) => {
+    const bookingDate = new Date(b.created_at)
+    if (bookingDate >= lastMonthStart && bookingDate <= lastMonthEnd) {
+      return sum + (b.host_payout || 0)
+    }
+    return sum
+  }, 0) || 0
+
+  const monthlyGrowth = lastMonth > 0
+    ? Math.round(((thisMonth - lastMonth) / lastMonth) * 1000) / 10
+    : 0
+
+  const earningsData = {
+    totalBalance: totalEarnings + pendingAmount,
+    pendingPayout: pendingAmount,
+    thisMonth,
+    lastMonth,
+    monthlyGrowth,
+    yearToDate: totalEarnings,
+  }
+
+  const transactions = recentBookings
     ? recentBookings.map((b) => ({
         id: b.id,
         type: "booking" as const,
@@ -177,14 +92,62 @@ export default async function EarningsPage() {
         date: b.created_at,
         status: (b.status === "completed" ? "completed" : "pending") as "completed" | "pending",
       }))
-    : mockTransactions
+    : []
+
+  // Build monthly data from completed bookings
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+  const monthlyData = monthNames.map((month, index) => {
+    const monthEarnings = completedBookings?.reduce((sum, b) => {
+      const bookingDate = new Date(b.created_at)
+      if (bookingDate.getFullYear() === now.getFullYear() && bookingDate.getMonth() === index) {
+        return sum + (b.host_payout || 0)
+      }
+      return sum
+    }, 0) || 0
+    return { month, earnings: monthEarnings }
+  })
+
+  // Get studio earnings breakdown
+  const { data: studioEarnings } = await supabase
+    .from("bookings")
+    .select(`
+      host_payout,
+      studio:studios (id, title, images, studio_images(*))
+    `)
+    .eq("host_id", user.id)
+    .eq("status", "completed")
+    .eq("payment_status", "paid")
+
+  // Aggregate by studio
+  const studioMap = new Map<string, { id: string; title: string; earnings: number; bookings: number; image: string }>()
+  studioEarnings?.forEach((b) => {
+    const studio = b.studio as any
+    if (!studio) return
+    const existing = studioMap.get(studio.id)
+    const image = studio.images?.[0] ||
+      studio.studio_images?.[0]?.image_url ||
+      ""
+    if (existing) {
+      existing.earnings += b.host_payout || 0
+      existing.bookings += 1
+    } else {
+      studioMap.set(studio.id, {
+        id: studio.id,
+        title: studio.title || "Studio",
+        earnings: b.host_payout || 0,
+        bookings: 1,
+        image,
+      })
+    }
+  })
+  const studios = Array.from(studioMap.values())
 
   return (
     <EarningsClient
       earnings={earningsData}
       transactions={transactions}
-      monthlyData={mockMonthlyData}
-      studios={mockStudios}
+      monthlyData={monthlyData}
+      studios={studios}
     />
   )
 }
