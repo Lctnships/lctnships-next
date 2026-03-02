@@ -18,7 +18,7 @@ const studioTypes = [
   { id: "video", icon: "videocam", title: "Videostudio" },
   { id: "podcast", icon: "mic", title: "Podcast Studio" },
   { id: "music", icon: "music_note", title: "Muziekstudio" },
-  { id: "dance", icon: "fitness_center", title: "Dansstudio" },
+  { id: "dance", icon: "directions_run", title: "Dansstudio" },
   { id: "art", icon: "palette", title: "Galerie" },
 ]
 
@@ -79,7 +79,7 @@ export default function OnboardingBasicsPage() {
       {/* Header Section */}
       <header className="max-w-4xl w-full mx-auto px-12 pt-16 pb-8">
         <div className="flex flex-col gap-2">
-          <p className="text-primary font-bold text-sm tracking-widest uppercase">Stap 1: De Basis</p>
+          <p className="text-black font-bold text-sm tracking-widest uppercase">Stap 1: De Basis</p>
           <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">Vertel ons over je ruimte</h2>
           <p className="text-gray-500 text-lg">Elke goede listing begint met een duidelijke identiteit. Laten we die van jou bepalen.</p>
         </div>
@@ -97,14 +97,14 @@ export default function OnboardingBasicsPage() {
                 onClick={() => setSelectedType(type.id)}
                 className={`group flex flex-col items-center justify-center p-6 bg-white border-2 rounded-xl transition-all shadow-sm ${
                   selectedType === type.id
-                    ? "border-primary"
+                    ? "border-black"
                     : "border-transparent hover:border-gray-200"
                 }`}
               >
                 <div
                   className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-transform group-hover:scale-110 ${
                     selectedType === type.id
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-black/10 text-black"
                       : "bg-gray-100 text-gray-600"
                   }`}
                 >
@@ -130,7 +130,7 @@ export default function OnboardingBasicsPage() {
               type="text"
               value={studioName}
               onChange={(e) => setStudioName(e.target.value)}
-              className="w-full bg-white border-gray-200 rounded-xl h-14 px-5 text-gray-900 focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm placeholder:text-gray-400"
+              className="w-full bg-white border-gray-200 rounded-xl h-14 px-5 text-gray-900 focus:ring-2 focus:ring-black focus:border-black transition-all shadow-sm placeholder:text-gray-400"
               placeholder="bijv. Skyline Creative"
             />
             <p className="text-xs text-gray-500 px-1 mt-1">
@@ -156,21 +156,21 @@ export default function OnboardingBasicsPage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full bg-white border-gray-200 rounded-xl p-5 text-gray-900 focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm placeholder:text-gray-400 resize-none"
+              className="w-full bg-white border-gray-200 rounded-xl p-5 text-gray-900 focus:ring-2 focus:ring-black focus:border-black transition-all shadow-sm placeholder:text-gray-400 resize-none"
               placeholder="Beschrijf wat jouw studio bijzonder maakt..."
             />
           </div>
         </div>
 
         {/* Studio Preview Card */}
-        <div className="mt-16 p-8 bg-primary/5 rounded-xl border border-primary/10 flex items-start gap-6">
+        <div className="mt-16 p-8 bg-black/5 rounded-xl border border-black/10 flex items-start gap-6">
           <div className="w-32 h-32 rounded-lg bg-gray-200 shrink-0 overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-black/20 to-black/40 flex items-center justify-center">
               <span className="material-symbols-outlined text-4xl text-white/50">image</span>
             </div>
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-black mb-1">
               Voorbeeld
             </span>
             <h4 className="text-xl font-bold text-gray-900 mb-2">
@@ -193,17 +193,26 @@ export default function OnboardingBasicsPage() {
       {/* Sticky Footer Action */}
       <footer className="fixed bottom-0 right-0 left-80 bg-white/80 backdrop-blur-md border-t border-gray-200 p-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between px-6">
-          <Link
-            href="/host/dashboard"
-            className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-gray-500 hover:text-gray-900 transition-colors"
-          >
-            <span className="material-symbols-outlined">arrow_back</span>
-            Annuleren
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/host/dashboard"
+              className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-gray-500 hover:text-gray-900 transition-colors"
+            >
+              <span className="material-symbols-outlined">arrow_back</span>
+              Annuleren
+            </Link>
+            <Link
+              href="/host/dashboard"
+              className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Later invullen
+              <span className="material-symbols-outlined text-base">skip_next</span>
+            </Link>
+          </div>
           <button
             onClick={handleContinue}
             disabled={!selectedType || !studioName || !isAddressValid}
-            className="bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-full font-bold shadow-lg shadow-primary/25 transition-all flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-black hover:bg-black/90 text-white px-10 py-4 rounded-full font-bold shadow-lg shadow-primary/25 transition-all flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Verder naar Media
             <span className="material-symbols-outlined text-xl">arrow_forward</span>

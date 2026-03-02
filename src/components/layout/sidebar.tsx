@@ -15,6 +15,9 @@ import {
   PanelLeft,
   ArrowRightLeft,
   LogOut,
+  Building2,
+  DollarSign,
+  Package,
 } from "lucide-react"
 import {
   Tooltip,
@@ -34,7 +37,7 @@ export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const t = useTranslations("Navigation")
 
-  const userNavItems = [
+  const renterNavItems = [
     { href: "/dashboard" as const, label: t("dashboard"), icon: LayoutDashboard },
     { href: "/bookings" as const, label: t("bookings"), icon: Calendar },
     { href: "/projects" as const, label: t("projects"), icon: FolderOpen },
@@ -43,6 +46,17 @@ export function Sidebar() {
     { href: "/notifications" as const, label: t("notifications"), icon: Bell },
     { href: "/profile" as const, label: t("profile"), icon: User },
     { href: "/settings" as const, label: t("settings"), icon: Settings },
+  ]
+
+  const hostNavItems = [
+    { href: "/host/dashboard" as const, label: t("dashboard"), icon: LayoutDashboard },
+    { href: "/host/bookings" as const, label: t("bookings"), icon: Calendar },
+    { href: "/host/studios" as const, label: t("studios") || "Studio's", icon: Building2 },
+    { href: "/host/calendar" as const, label: t("calendar") || "Kalender", icon: Calendar },
+    { href: "/host/earnings" as const, label: t("earnings") || "Inkomsten", icon: DollarSign },
+    { href: "/host/equipment" as const, label: t("equipment") || "Apparatuur", icon: Package },
+    { href: "/host/messages" as const, label: t("messages"), icon: MessageSquare },
+    { href: "/host/settings" as const, label: t("settings"), icon: Settings },
   ]
 
   const isHost = profile?.user_type === "host" || profile?.user_type === "both"
@@ -81,7 +95,7 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-2 py-4 space-y-1">
-        {userNavItems.map((item) => {
+        {(isInHostMode ? hostNavItems : renterNavItems).map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
           const linkContent = (
             <Link

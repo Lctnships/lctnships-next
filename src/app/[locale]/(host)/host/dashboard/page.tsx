@@ -160,7 +160,7 @@ export default async function HostDashboardPage() {
             <CardTitle>Aankomende boekingen</CardTitle>
             <CardDescription>Boekingen voor je studio&apos;s</CardDescription>
           </div>
-          <Link href="/host/bookings" className="text-sm text-primary hover:underline flex items-center">
+          <Link href="/host/bookings" className="text-sm text-black hover:underline flex items-center">
             Bekijk alles
             <ArrowUpRight className="h-4 w-4 ml-1" />
           </Link>

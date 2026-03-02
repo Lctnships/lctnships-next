@@ -1,26 +1,11 @@
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, setRequestLocale } from "next-intl/server"
 import { notFound } from "next/navigation"
-import { Plus_Jakarta_Sans, Newsreader } from "next/font/google"
 import { routing } from "@/i18n/routing"
 import { UserProvider } from "@/components/providers/user-provider"
 import { createClient } from "@/lib/supabase/server"
 import { Toaster } from "@/components/ui/sonner"
-
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
-})
-
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  display: "swap",
-})
+import { SetHtmlLang } from "@/components/providers/set-html-lang"
 
 type Props = {
   children: React.ReactNode
@@ -61,23 +46,12 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300,0..1,0&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className={`${plusJakarta.variable} ${newsreader.variable} font-sans antialiased selection:bg-sky-200/30`}>
-        <NextIntlClientProvider messages={messages}>
-          <UserProvider initialUser={user} initialProfile={profile}>
-            {children}
-          </UserProvider>
-          <Toaster position="bottom-right" />
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages} locale={locale}>
+      <SetHtmlLang locale={locale} />
+      <UserProvider initialUser={user} initialProfile={profile}>
+        {children}
+      </UserProvider>
+      <Toaster position="bottom-right" />
+    </NextIntlClientProvider>
   )
 }

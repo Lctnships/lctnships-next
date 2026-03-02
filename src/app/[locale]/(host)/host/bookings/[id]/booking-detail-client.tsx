@@ -36,7 +36,7 @@ interface Booking {
   total_price: number
   host_payout: number
   notes?: string
-  renter: Renter
+  renter: Renter | null
   studio: Studio
 }
 
@@ -113,7 +113,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
 
       // Send notification to the renter about the declined booking
       await supabase.from("notifications").insert({
-        user_id: booking.renter.id,
+        user_id: booking.renter?.id,
         type: "booking_declined",
         title: "Booking Declined",
         message: `Your booking for ${booking.studio?.title} has been declined.`,
@@ -130,7 +130,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
     }
   }
 
-  const memberSince = new Date(booking.renter.created_at).getFullYear()
+  const memberSince = booking.renter?.created_at ? new Date(booking.renter.created_at).getFullYear() : new Date().getFullYear()
   const studioImage = booking.studio.images?.[0] || ""
 
   return (
@@ -202,7 +202,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
           {booking.notes && (
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
               <h3 className="font-bold mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">chat</span>
+                <span className="material-symbols-outlined text-black">chat</span>
                 Bericht van Gast
               </h3>
               <p className="text-gray-700 leading-relaxed">{booking.notes}</p>
@@ -212,7 +212,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
           {/* Guest Profile */}
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
             <h3 className="font-bold mb-6 flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">person</span>
+              <span className="material-symbols-outlined text-black">person</span>
               Gastprofiel
             </h3>
             <div className="flex flex-col md:flex-row md:items-start gap-6">
@@ -221,12 +221,12 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                   <div
                     className="size-20 rounded-full bg-cover bg-center bg-gray-200 border-4 border-white shadow-lg"
                     style={
-                      booking.renter.avatar_url
-                        ? { backgroundImage: `url("${booking.renter.avatar_url}")` }
+                      booking.renter?.avatar_url
+                        ? { backgroundImage: `url("${booking.renter?.avatar_url}")` }
                         : {}
                     }
                   >
-                    {!booking.renter.avatar_url && (
+                    {!booking.renter?.avatar_url && (
                       <div className="w-full h-full flex items-center justify-center">
                         <span className="material-symbols-outlined text-3xl text-gray-400">
                           person
@@ -234,35 +234,35 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                       </div>
                     )}
                   </div>
-                  {booking.renter.is_verified && (
-                    <div className="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-full border-2 border-white">
+                  {booking.renter?.is_verified && (
+                    <div className="absolute -bottom-1 -right-1 bg-black text-white p-1 rounded-full border-2 border-white">
                       <span className="material-symbols-outlined text-xs">verified</span>
                     </div>
                   )}
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold">{booking.renter.full_name}</h4>
+                  <h4 className="text-lg font-bold">{booking.renter?.full_name}</h4>
                   <p className="text-sm text-gray-500">Lid sinds {memberSince}</p>
                 </div>
               </div>
 
               <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 bg-gray-50 rounded-2xl text-center">
-                  <p className="text-2xl font-bold text-primary">{renterStats.totalBookings}</p>
+                  <p className="text-2xl font-bold text-black">{renterStats.totalBookings}</p>
                   <p className="text-xs text-gray-500">Boekingen</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-2xl text-center">
-                  <p className="text-2xl font-bold text-primary">
+                  <p className="text-2xl font-bold text-black">
                     {renterStats.avgRating > 0 ? renterStats.avgRating.toFixed(1) : "—"}
                   </p>
                   <p className="text-xs text-gray-500">Beoordeling</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-2xl text-center">
-                  <p className="text-2xl font-bold text-primary">{renterStats.cancelRate}%</p>
+                  <p className="text-2xl font-bold text-black">{renterStats.cancelRate}%</p>
                   <p className="text-xs text-gray-500">Annuleringspercentage</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-2xl text-center">
-                  <p className="text-2xl font-bold text-primary">{renterStats.responseTime}</p>
+                  <p className="text-2xl font-bold text-black">{renterStats.responseTime}</p>
                   <p className="text-xs text-gray-500">Reactietijd</p>
                 </div>
               </div>
@@ -270,16 +270,16 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
 
             {/* Contact Info */}
             <div className="mt-6 pt-6 border-t border-gray-100 flex flex-wrap gap-4">
-              {booking.renter.email && (
+              {booking.renter?.email && (
                 <div className="flex items-center gap-2 text-gray-600">
                   <span className="material-symbols-outlined text-lg">mail</span>
-                  <span className="text-sm">{booking.renter.email}</span>
+                  <span className="text-sm">{booking.renter?.email}</span>
                 </div>
               )}
-              {booking.renter.phone && (
+              {booking.renter?.phone && (
                 <div className="flex items-center gap-2 text-gray-600">
                   <span className="material-symbols-outlined text-lg">phone</span>
-                  <span className="text-sm">{booking.renter.phone}</span>
+                  <span className="text-sm">{booking.renter?.phone}</span>
                 </div>
               )}
             </div>
@@ -308,7 +308,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                 <span className="font-bold">Gast betaalt</span>
                 <span className="font-bold">{formatCurrency(booking.total_price)}</span>
               </div>
-              <div className="flex justify-between text-primary">
+              <div className="flex justify-between text-black">
                 <span className="font-bold">Jouw verdiensten</span>
                 <span className="font-bold text-lg">{formatCurrency(booking.host_payout)}</span>
               </div>
@@ -336,7 +336,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
               <button
                 onClick={handleAccept}
                 disabled={isProcessing}
-                className="w-full py-4 bg-primary text-white rounded-full font-bold text-lg hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-4 bg-black text-white rounded-full font-bold text-lg hover:bg-black/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">check</span>
                 Boeking Accepteren
@@ -354,14 +354,21 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
 
           {booking.status === "confirmed" && (
             <div className="space-y-3">
-              <button className="w-full py-4 bg-primary text-white rounded-full font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+              <button
+                onClick={() => router.push(`/host/messages?host=${booking.renter?.id}&studio=${booking.studio.id}`)}
+                className="w-full py-4 bg-black text-white rounded-full font-bold hover:bg-black/90 transition-colors flex items-center justify-center gap-2"
+              >
                 <span className="material-symbols-outlined">chat</span>
                 Bericht Gast
               </button>
-              <button className="w-full py-4 bg-white border border-gray-200 rounded-full font-bold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+              <a
+                href={`/api/calendar/ical/${booking.studio.id}`}
+                download
+                className="w-full py-4 bg-white border border-gray-200 rounded-full font-bold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+              >
                 <span className="material-symbols-outlined">event</span>
                 Toevoegen aan Agenda
-              </button>
+              </a>
             </div>
           )}
 
@@ -373,7 +380,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
             </p>
             <Link
               href="/help"
-              className="text-primary font-bold text-sm hover:underline flex items-center gap-1"
+              className="text-black font-bold text-sm hover:underline flex items-center gap-1"
             >
               Ondersteuning
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -396,7 +403,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
               onChange={(e) => setDeclineReason(e.target.value)}
               placeholder="Voer je reden in..."
               rows={4}
-              className="w-full px-4 py-3 bg-gray-50 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 mb-6"
+              className="w-full px-4 py-3 bg-gray-50 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-black/20 mb-6"
             />
             <div className="flex gap-3">
               <button

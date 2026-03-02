@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/shared/empty-state"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { UserAvatar } from "@/components/shared/user-avatar"
 import { Calendar, Check, X } from "lucide-react"
+import { Link } from "@/i18n/routing"
 import { formatDateRange, formatTimeAgo } from "@/lib/utils/format-date"
 import { formatCurrency } from "@/lib/utils/format-currency"
 
@@ -110,57 +111,59 @@ export default async function HostBookingsPage() {
 
 function BookingRequestCard({ booking, showActions }: { booking: any; showActions?: boolean }) {
   return (
-    <Card>
-      <CardContent className="p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <UserAvatar
-              src={booking.renter?.avatar_url}
-              name={booking.renter?.full_name}
-              size="lg"
-            />
-            <div>
-              <p className="font-semibold">{booking.renter?.full_name}</p>
-              <p className="text-sm text-muted-foreground">{booking.studio?.title}</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {formatDateRange(booking.start_datetime, booking.end_datetime)}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Aangevraagd {formatTimeAgo(booking.created_at)}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-lg font-semibold">{formatCurrency(booking.host_payout)}</p>
-              <p className="text-sm text-muted-foreground">{booking.total_hours} uur</p>
-            </div>
-            {showActions ? (
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="text-red-600">
-                  <X className="h-4 w-4 mr-1" />
-                  Afwijzen
-                </Button>
-                <Button size="sm">
-                  <Check className="h-4 w-4 mr-1" />
-                  Accepteren
-                </Button>
+    <Link href={`/host/bookings/${booking.id}`} className="block">
+      <Card className="transition-colors hover:border-black/20">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <UserAvatar
+                src={booking.renter?.avatar_url}
+                name={booking.renter?.full_name}
+                size="lg"
+              />
+              <div>
+                <p className="font-semibold">{booking.renter?.full_name}</p>
+                <p className="text-sm text-muted-foreground">{booking.studio?.title}</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {formatDateRange(booking.start_datetime, booking.end_datetime)}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Aangevraagd {formatTimeAgo(booking.created_at)}
+                </p>
               </div>
-            ) : (
-              <StatusBadge status={booking.status} />
-            )}
-          </div>
-        </div>
+            </div>
 
-        {booking.notes && (
-          <div className="mt-4 p-3 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground">
-              <span className="font-medium">Notitie:</span> {booking.notes}
-            </p>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-lg font-semibold">{formatCurrency(booking.host_payout)}</p>
+                <p className="text-sm text-muted-foreground">{booking.total_hours} uur</p>
+              </div>
+              {showActions ? (
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" className="text-red-600">
+                    <X className="h-4 w-4 mr-1" />
+                    Afwijzen
+                  </Button>
+                  <Button size="sm">
+                    <Check className="h-4 w-4 mr-1" />
+                    Accepteren
+                  </Button>
+                </div>
+              ) : (
+                <StatusBadge status={booking.status} />
+              )}
+            </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          {booking.notes && (
+            <div className="mt-4 p-3 bg-muted rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-medium">Notitie:</span> {booking.notes}
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </Link>
   )
 }

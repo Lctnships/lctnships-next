@@ -5,18 +5,13 @@ import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 
 const categoryKeys = [
-  { id: "daylight", icon: "wb_sunny", key: "catDaylight" },
-  { id: "loft", icon: "apartment", key: "catLoft" },
   { id: "film", icon: "movie", key: "catFilm" },
-  { id: "cyclorama", icon: "panorama_wide_angle", key: "catCyclorama" },
-  { id: "industrial", icon: "factory", key: "catIndustrial" },
-  { id: "podcast", icon: "mic", key: "catPodcast" },
-  { id: "minimalist", icon: "architecture", key: "catMinimalist" },
-  { id: "historic", icon: "castle", key: "catHistoric" },
   { id: "photo", icon: "photo_camera", key: "catPhoto" },
-  { id: "video", icon: "videocam", key: "catVideo" },
+  { id: "podcast", icon: "mic", key: "catPodcast" },
   { id: "music", icon: "music_note", key: "catMusic" },
-  { id: "dance", icon: "fitness_center", key: "catDance" },
+  { id: "video", icon: "videocam", key: "catVideo" },
+  { id: "daylight", icon: "wb_sunny", key: "catDaylight" },
+  { id: "cyclorama", icon: "panorama_wide_angle", key: "catCyclorama" },
 ]
 
 export function CategoryFilter() {
@@ -36,7 +31,7 @@ export function CategoryFilter() {
   }
 
   return (
-    <div className="flex items-center gap-4 overflow-x-auto pb-2 hide-scrollbar">
+    <div className="flex items-center justify-center gap-4 overflow-x-auto pt-2 pb-2 hide-scrollbar">
       {categoryKeys.map((category) => {
         const isActive = currentType === category.id
         return (

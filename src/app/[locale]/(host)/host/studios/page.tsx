@@ -118,7 +118,7 @@ export default async function HostStudiosPage() {
                         Bewerken
                       </Button>
                     </Link>
-                    <Link href={`/host/studios/${studio.id}/calendar`}>
+                    <Link href="/host/calendar">
                       <Button variant="outline" size="sm">
                         <Calendar className="h-4 w-4" />
                       </Button>

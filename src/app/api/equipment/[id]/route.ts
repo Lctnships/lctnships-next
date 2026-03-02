@@ -66,6 +66,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       "name",
       "description",
       "category",
+      "studio_id",
       "price_per_day",
       "quantity",
       "is_available",
