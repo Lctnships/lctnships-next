@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { Link } from "@/i18n/routing"
 import { MarketplaceSearch } from "@/components/marketplace/marketplace-search"
 import { CategoryFilter } from "@/components/marketplace/category-filter"
-import { TrendingStudios } from "@/components/marketplace/trending-studios"
+import { StudioPlaylists } from "@/components/home/studio-playlists"
 import { StudioCard } from "@/components/marketplace/studio-card"
 import { getTranslations } from "next-intl/server"
 
@@ -90,20 +90,20 @@ export default async function StudiosPage(props: StudiosPageProps) {
     <div className="bg-[#fcfcfc]">
       {/* Search Section */}
       <section className="max-w-7xl mx-auto px-6 py-8 mb-4">
-        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>}>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
           <MarketplaceSearch />
         </Suspense>
       </section>
 
       <section className="max-w-7xl mx-auto px-6 mb-16">
-        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>}>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
           <CategoryFilter />
         </Suspense>
       </section>
 
       <section className="max-w-7xl mx-auto px-6 mb-20">
-        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>}>
-          <TrendingStudios />
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
+          <StudioPlaylists />
         </Suspense>
       </section>
 

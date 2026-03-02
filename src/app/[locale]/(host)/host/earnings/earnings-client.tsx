@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Link } from "@/i18n/routing"
+import { Link, useRouter } from "@/i18n/routing"
 
 interface Transaction {
   id: string
@@ -50,6 +50,7 @@ export function EarningsClient({
   monthlyData,
   studios,
 }: EarningsClientProps) {
+  const router = useRouter()
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("month")
 
   const formatCurrency = (amount: number) => {
@@ -83,7 +84,10 @@ export function EarningsClient({
             <span className="material-symbols-outlined text-lg">download</span>
             Exporteren
           </button>
-          <button className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary/90 transition-colors flex items-center gap-2">
+          <button
+            onClick={() => router.push("/host/payouts")}
+            className="px-6 py-3 bg-black text-white rounded-full font-bold text-sm hover:bg-black/90 transition-colors flex items-center gap-2"
+          >
             <span className="material-symbols-outlined text-lg">account_balance</span>
             Uitbetaling Aanvragen
           </button>
@@ -114,8 +118,8 @@ export function EarningsClient({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <div className="size-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary">account_balance_wallet</span>
+            <div className="size-12 rounded-2xl bg-black/10 flex items-center justify-center">
+              <span className="material-symbols-outlined text-black">account_balance_wallet</span>
             </div>
             <span className="text-sm font-medium text-gray-500">Beschikbaar Saldo</span>
           </div>
@@ -170,7 +174,7 @@ export function EarningsClient({
             <h2 className="text-xl font-bold">Omzet Overzicht</h2>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="size-3 rounded-full bg-primary" />
+                <span className="size-3 rounded-full bg-black" />
                 <span className="text-sm text-gray-500">Inkomsten</span>
               </div>
             </div>
@@ -186,7 +190,7 @@ export function EarningsClient({
                   <div className="w-full relative group">
                     <div
                       className={`w-full rounded-t-lg transition-all ${
-                        isCurrentMonth ? "bg-primary" : "bg-gray-200 hover:bg-gray-300"
+                        isCurrentMonth ? "bg-black" : "bg-gray-200 hover:bg-gray-300"
                       }`}
                       style={{ height: `${Math.max(height, 4)}%`, minHeight: "4px" }}
                     />
@@ -220,7 +224,7 @@ export function EarningsClient({
                   <p className="font-bold truncate">{studio.title}</p>
                   <p className="text-sm text-gray-500">{studio.bookings} boekingen</p>
                 </div>
-                <span className="font-bold text-primary">{formatCurrency(studio.earnings)}</span>
+                <span className="font-bold text-black">{formatCurrency(studio.earnings)}</span>
               </Link>
             ))}
           </div>
@@ -233,7 +237,7 @@ export function EarningsClient({
           <h2 className="text-xl font-bold">Recente Transacties</h2>
           <Link
             href="/host/transactions"
-            className="text-sm font-bold text-primary hover:underline"
+            className="text-sm font-bold text-black hover:underline"
           >
             Alles Bekijken
           </Link>

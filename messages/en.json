@@ -22,7 +22,11 @@
     "becomeHost": "Become a Host",
     "backToRenting": "Back to renting",
     "collapseSidebar": "Collapse sidebar",
-    "expandSidebar": "Expand sidebar"
+    "expandSidebar": "Expand sidebar",
+    "studios": "Studios",
+    "calendar": "Calendar",
+    "earnings": "Earnings",
+    "equipment": "Equipment"
   },
   "Footer": {
     "description": "The platform for creatives to find and book unique studio spaces.",
@@ -179,7 +183,8 @@
     "studioCount": "{count} studios",
     "portfolioTitle": "Made with lcntships",
     "portfolioSubtitle": "Work created by our community in our partner studios",
-    "loadingStudios": "Loading studios..."
+    "loadingStudios": "Loading studios...",
+    "loadingPlaylists": "Loading playlists..."
   },
   "Inspiration": {
     "title": "Inspiration",
@@ -206,9 +211,19 @@
     "review": "review",
     "showMap": "Show map",
     "hideMap": "Hide map",
-    "selected": "Selected",
-    "popularStudios": "Popular Studios",
-    "noPopularStudios": "No popular studios available yet",
+    "selected": "Playlist",
+    "popularStudios": "First Playlist",
+    "noPopularStudios": "No studios in this playlist yet",
+    "playlistLabel": "Curated",
+    "playlistTitle": "Studio Playlists",
+    "playlistSubtitle": "Discover studios hand-picked by our team",
+    "playlistFilm": "Film Locations",
+    "playlistPodcast": "Podcast Studios",
+    "playlistPhoto": "Photography",
+    "playlistMusic": "Music Studios",
+    "playlistContent": "Content Creation",
+    "playlistStudios": "studios",
+    "playlistViewAll": "View all",
     "noImage": "No image",
     "verified": "Verified",
     "instantBook": "Instant Book",
@@ -642,7 +657,8 @@
     "total": "Total",
     "viewBooking": "View Booking",
     "getHelp": "Get Help",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "creatingConversation": "Starting conversation..."
   },
   "Projects": {
     "title": "My Projects",
@@ -1353,5 +1369,26 @@
     "perHour": "/hr",
     "bookingsCount": "{count} bookings",
     "editStudio": "Edit"
+  },
+  "Calendar": {
+    "blockDates": "Block Dates",
+    "blockDatesDesc": "Select dates when your studio is unavailable",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "reason": "Reason (optional)",
+    "block": "Block",
+    "blocking": "Blocking...",
+    "syncCalendar": "Sync Calendar",
+    "syncDesc": "Sync your bookings with your calendar",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "icalExport": "iCal Export",
+    "icalDesc": "Copy the link and add to your calendar app",
+    "googleCalendar": "Google Calendar",
+    "googleDesc": "Open directly in Google Calendar",
+    "blocked": "Blocked",
+    "blockedDates": "Blocked Dates",
+    "noBlockedDates": "No blocked dates",
+    "remove": "Remove"
   }
 }

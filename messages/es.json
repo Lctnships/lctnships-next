@@ -22,7 +22,11 @@
     "becomeHost": "Ser Anfitrión",
     "backToRenting": "Volver a alquilar",
     "collapseSidebar": "Contraer barra lateral",
-    "expandSidebar": "Expandir barra lateral"
+    "expandSidebar": "Expandir barra lateral",
+    "studios": "Estudios",
+    "calendar": "Calendario",
+    "earnings": "Ingresos",
+    "equipment": "Equipamiento"
   },
   "Footer": {
     "description": "La plataforma para creativos para encontrar y reservar espacios de estudio únicos.",
@@ -179,7 +183,8 @@
     "studioCount": "{count} estudios",
     "portfolioTitle": "Hecho con lcntships",
     "portfolioSubtitle": "Trabajo creado por nuestra comunidad en nuestros estudios asociados",
-    "loadingStudios": "Cargando estudios..."
+    "loadingStudios": "Cargando estudios...",
+    "loadingPlaylists": "Cargando playlists..."
   },
   "Inspiration": {
     "title": "Inspiración",
@@ -206,9 +211,19 @@
     "review": "reseña",
     "showMap": "Mostrar mapa",
     "hideMap": "Ocultar mapa",
-    "selected": "Seleccionados",
-    "popularStudios": "Estudios Populares",
-    "noPopularStudios": "Aún no hay estudios populares disponibles",
+    "selected": "Playlist",
+    "popularStudios": "Primera Playlist",
+    "noPopularStudios": "Aún no hay estudios en esta playlist",
+    "playlistLabel": "Selección",
+    "playlistTitle": "Studio Playlists",
+    "playlistSubtitle": "Descubre estudios seleccionados por nuestro equipo",
+    "playlistFilm": "Locaciones de Cine",
+    "playlistPodcast": "Estudios de Podcast",
+    "playlistPhoto": "Fotografía",
+    "playlistMusic": "Estudios de Música",
+    "playlistContent": "Creación de Contenido",
+    "playlistStudios": "estudios",
+    "playlistViewAll": "Ver todo",
     "noImage": "Sin imagen",
     "verified": "Verificado",
     "instantBook": "Reserva Instantánea",
@@ -574,7 +589,8 @@
     "total": "Total",
     "viewBooking": "Ver Reserva",
     "getHelp": "Obtener Ayuda",
-    "yesterday": "Ayer"
+    "yesterday": "Ayer",
+    "creatingConversation": "Iniciando conversación..."
   },
   "Projects": {
     "title": "Mis Proyectos",
@@ -1345,5 +1361,26 @@
     "perHour": "/hora",
     "bookingsCount": "{count} reservas",
     "editStudio": "Editar"
+  },
+  "Calendar": {
+    "blockDates": "Bloquear Fechas",
+    "blockDatesDesc": "Selecciona fechas en las que tu estudio no está disponible",
+    "startDate": "Fecha de inicio",
+    "endDate": "Fecha de fin",
+    "reason": "Razón (opcional)",
+    "block": "Bloquear",
+    "blocking": "Bloqueando...",
+    "syncCalendar": "Sincronizar Calendario",
+    "syncDesc": "Sincroniza tus reservas con tu calendario",
+    "copyLink": "Copiar enlace",
+    "copied": "¡Copiado!",
+    "icalExport": "Exportar iCal",
+    "icalDesc": "Copia el enlace y añádelo a tu app de calendario",
+    "googleCalendar": "Google Calendar",
+    "googleDesc": "Abrir directamente en Google Calendar",
+    "blocked": "Bloqueado",
+    "blockedDates": "Fechas Bloqueadas",
+    "noBlockedDates": "Sin fechas bloqueadas",
+    "remove": "Eliminar"
   }
 }

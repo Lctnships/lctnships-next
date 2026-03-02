@@ -3,10 +3,10 @@ import { redirect } from "next/navigation"
 import { EquipmentClient } from "./equipment-client"
 
 export const metadata = {
-  title: "Add Equipment",
+  title: "Equipment",
 }
 
-export default async function AddEquipmentPage() {
+export default async function EquipmentPage() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -18,5 +18,16 @@ export default async function AddEquipmentPage() {
     .select("id, title")
     .eq("host_id", user.id)
 
-  return <EquipmentClient studios={studios || []} />
+  const studioIds = (studios || []).map(s => s.id)
+
+  // Get existing equipment for user's studios
+  const { data: equipment } = studioIds.length > 0
+    ? await supabase
+        .from("equipment")
+        .select("*, studios(title)")
+        .in("studio_id", studioIds)
+        .order("created_at", { ascending: false })
+    : { data: [] }
+
+  return <EquipmentClient studios={studios || []} equipment={equipment || []} />
 }

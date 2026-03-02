@@ -167,7 +167,7 @@ export function PayoutsClient({
             <button
               onClick={handleConnectStripe}
               disabled={isConnecting}
-              className="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-2xl transition-all shadow-md active:scale-[0.98] flex items-center gap-2 disabled:opacity-50"
+              className="bg-black hover:bg-black/90 text-white font-bold py-3 px-8 rounded-2xl transition-all shadow-md active:scale-[0.98] flex items-center gap-2 disabled:opacity-50"
             >
               {isConnecting ? (
                 <>
@@ -187,7 +187,7 @@ export function PayoutsClient({
         {/* Bank Account Details Card */}
         <section className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
           <div className="flex items-center gap-2 mb-6">
-            <span className="material-symbols-outlined text-primary">account_balance</span>
+            <span className="material-symbols-outlined text-black">account_balance</span>
             <h3 className="text-xl font-bold">Bankrekeninggegevens</h3>
           </div>
 
@@ -200,7 +200,7 @@ export function PayoutsClient({
                 onChange={(e) =>
                   setBankDetails((prev) => ({ ...prev, accountHolderName: e.target.value }))
                 }
-                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black"
                 placeholder="bijv. Creative Spaces BV"
               />
             </div>
@@ -210,7 +210,7 @@ export function PayoutsClient({
                 type="text"
                 value={bankDetails.bic}
                 onChange={(e) => setBankDetails((prev) => ({ ...prev, bic: e.target.value }))}
-                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black"
                 placeholder="ABNANL2AXXX"
               />
             </div>
@@ -220,14 +220,14 @@ export function PayoutsClient({
                 type="text"
                 value={bankDetails.iban}
                 onChange={(e) => setBankDetails((prev) => ({ ...prev, iban: e.target.value }))}
-                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black"
                 placeholder="NL00 ABNA 0000 0000 00"
               />
             </div>
           </div>
 
-          <div className="mt-6 flex items-start gap-3 p-4 bg-primary/5 rounded-xl">
-            <span className="material-symbols-outlined text-primary text-xl">info</span>
+          <div className="mt-6 flex items-start gap-3 p-4 bg-black/5 rounded-xl">
+            <span className="material-symbols-outlined text-black text-xl">info</span>
             <p className="text-xs text-gray-500 leading-relaxed">
               Je bankgegevens worden versleuteld en veilig opgeslagen. We gebruiken deze gegevens alleen
               om handmatige uitbetalingen te verwerken als Stripe-integratie niet beschikbaar is voor jouw regio.
@@ -239,10 +239,10 @@ export function PayoutsClient({
         <section className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">history</span>
+              <span className="material-symbols-outlined text-black">history</span>
               <h3 className="text-xl font-bold">Recente Uitbetalingen</h3>
             </div>
-            <Link href="/host/earnings" className="text-primary text-sm font-bold hover:underline">
+            <Link href="/host/earnings" className="text-black text-sm font-bold hover:underline">
               Bekijk alle geschiedenis
             </Link>
           </div>

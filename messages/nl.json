@@ -22,7 +22,11 @@
     "becomeHost": "Word Host",
     "backToRenting": "Terug naar huren",
     "collapseSidebar": "Sidebar inklappen",
-    "expandSidebar": "Sidebar uitklappen"
+    "expandSidebar": "Sidebar uitklappen",
+    "studios": "Studio's",
+    "calendar": "Kalender",
+    "earnings": "Inkomsten",
+    "equipment": "Apparatuur"
   },
   "Footer": {
     "description": "Het platform voor creatievelingen om unieke studioruimtes te vinden en te boeken.",
@@ -179,7 +183,8 @@
     "studioCount": "{count} studio's",
     "portfolioTitle": "Made with lcntships",
     "portfolioSubtitle": "Werk gemaakt door onze community in onze partnerstudio's",
-    "loadingStudios": "Studios laden..."
+    "loadingStudios": "Studios laden...",
+    "loadingPlaylists": "Playlists laden..."
   },
   "Inspiration": {
     "title": "Inspiratie",
@@ -206,9 +211,19 @@
     "review": "beoordeling",
     "showMap": "Toon kaart",
     "hideMap": "Verberg kaart",
-    "selected": "Geselecteerd",
-    "popularStudios": "Populaire Studio's",
-    "noPopularStudios": "Nog geen populaire studio's beschikbaar",
+    "selected": "Playlist",
+    "popularStudios": "Eerster Playlist",
+    "noPopularStudios": "Nog geen studio's in deze playlist",
+    "playlistLabel": "Curated",
+    "playlistTitle": "Studio Playlists",
+    "playlistSubtitle": "Ontdek studio's geselecteerd door ons team",
+    "playlistFilm": "Filmlocaties",
+    "playlistPodcast": "Podcast Studios",
+    "playlistPhoto": "Fotografie",
+    "playlistMusic": "Muziekstudio's",
+    "playlistContent": "Content Creatie",
+    "playlistStudios": "studio's",
+    "playlistViewAll": "Bekijk alles",
     "noImage": "Geen afbeelding",
     "verified": "Geverifieerd",
     "instantBook": "Instant Book",
@@ -642,7 +657,8 @@
     "total": "Totaal",
     "viewBooking": "Boeking Bekijken",
     "getHelp": "Hulp Krijgen",
-    "yesterday": "Gisteren"
+    "yesterday": "Gisteren",
+    "creatingConversation": "Gesprek starten..."
   },
   "Projects": {
     "title": "Mijn Projecten",
@@ -1353,5 +1369,26 @@
     "perHour": "/uur",
     "bookingsCount": "{count} boekingen",
     "editStudio": "Bewerken"
+  },
+  "Calendar": {
+    "blockDates": "Datums Blokkeren",
+    "blockDatesDesc": "Selecteer datums waarop je studio niet beschikbaar is",
+    "startDate": "Startdatum",
+    "endDate": "Einddatum",
+    "reason": "Reden (optioneel)",
+    "block": "Blokkeren",
+    "blocking": "Blokkeren...",
+    "syncCalendar": "Agenda Synchroniseren",
+    "syncDesc": "Synchroniseer je boekingen met je agenda",
+    "copyLink": "Link Kopiëren",
+    "copied": "Gekopieerd!",
+    "icalExport": "iCal Export",
+    "icalDesc": "Kopieer de link en voeg toe aan je agenda-app",
+    "googleCalendar": "Google Calendar",
+    "googleDesc": "Open direct in Google Calendar",
+    "blocked": "Geblokkeerd",
+    "blockedDates": "Geblokkeerde Datums",
+    "noBlockedDates": "Geen geblokkeerde datums",
+    "remove": "Verwijderen"
   }
 }

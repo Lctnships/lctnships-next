@@ -99,16 +99,54 @@ export function MarketplaceSearch() {
               <span className="text-sm font-medium">{date || t("dates")}</span>
             </button>
             {showDateDropdown && (
-              <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 z-50">
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => {
-                    setDate(e.target.value)
-                    setShowDateDropdown(false)
-                  }}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                />
+              <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 z-50">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">{t("dates")}</p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {(() => {
+                    const today = new Date()
+                    const tomorrow = new Date(today)
+                    tomorrow.setDate(tomorrow.getDate() + 1)
+                    const saturday = new Date(today)
+                    saturday.setDate(saturday.getDate() + (6 - saturday.getDay()))
+                    const nextWeek = new Date(today)
+                    nextWeek.setDate(nextWeek.getDate() + 7)
+                    const fmt = (d: Date) => d.toISOString().split("T")[0]
+                    const quickDates = [
+                      { label: "Vandaag", value: fmt(today) },
+                      { label: "Morgen", value: fmt(tomorrow) },
+                      { label: "Dit weekend", value: fmt(saturday) },
+                      { label: "Volgende week", value: fmt(nextWeek) },
+                    ]
+                    return quickDates.map((qd) => (
+                      <button
+                        key={qd.label}
+                        onClick={() => {
+                          setDate(qd.value)
+                          setShowDateDropdown(false)
+                        }}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                          date === qd.value
+                            ? "bg-black text-white"
+                            : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                        }`}
+                      >
+                        {qd.label}
+                      </button>
+                    ))
+                  })()}
+                </div>
+                <div className="border-t border-gray-100 pt-3">
+                  <input
+                    type="date"
+                    value={date}
+                    min={new Date().toISOString().split("T")[0]}
+                    onChange={(e) => {
+                      setDate(e.target.value)
+                      setShowDateDropdown(false)
+                    }}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black cursor-pointer"
+                  />
+                </div>
               </div>
             )}
           </div>

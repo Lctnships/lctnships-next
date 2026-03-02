@@ -114,7 +114,7 @@ export default function OnboardingLayout({
                 href={step.href}
                 className={`flex items-center gap-4 px-4 py-3 rounded-full transition-colors ${
                   isActive
-                    ? "bg-primary/10 text-primary border border-primary/20"
+                    ? "bg-gray-100 text-black border border-gray-200"
                     : isCompleted
                     ? "text-green-600 hover:bg-gray-100"
                     : "text-gray-400 hover:bg-gray-100"
@@ -124,7 +124,7 @@ export default function OnboardingLayout({
                   {isCompleted && !isActive ? "check_circle" : step.icon}
                 </span>
                 <p className={`text-sm ${isActive ? "font-semibold" : "font-medium"}`}>{step.title}</p>
-                {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-primary"></div>}
+                {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-black"></div>}
               </Link>
             ) : (
               <div
@@ -141,14 +141,21 @@ export default function OnboardingLayout({
         <div className="mt-auto pt-8 border-t border-gray-100">
           <div className="flex items-center justify-between mb-2">
             <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Setup Progress</p>
-            <p className="text-xs font-bold text-primary">{progress}%</p>
+            <p className="text-xs font-bold text-black">{progress}%</p>
           </div>
           <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
             <div
-              className="bg-primary h-full transition-all duration-500"
+              className="bg-black h-full transition-all duration-500"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
+          <Link
+            href="/host/dashboard"
+            className="mt-4 flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-gray-400 hover:text-gray-700 transition-colors rounded-xl hover:bg-gray-50"
+          >
+            <span className="material-symbols-outlined text-base">skip_next</span>
+            Later invullen
+          </Link>
         </div>
       </aside>
 
