@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter, usePathname } from "@/i18n/routing"
 import {
@@ -23,9 +24,24 @@ export function LanguageSwitcher() {
   const router = useRouter()
   const pathname = usePathname()
   const t = useTranslations("LanguageSwitcher")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   function switchLocale(newLocale: Locale) {
     router.replace(pathname, { locale: newLocale })
+  }
+
+  // SSR placeholder to prevent Radix useId() hydration mismatch
+  if (!mounted) {
+    return (
+      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
+        <Globe className="h-4 w-4" />
+        <span className="sr-only">{t("label")}</span>
+      </Button>
+    )
   }
 
   return (
