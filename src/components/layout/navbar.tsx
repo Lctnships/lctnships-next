@@ -64,11 +64,7 @@ export function Navbar() {
         {/* Right side */}
         <div className="flex items-center gap-4">
           <div className="hidden md:block">
-            {mounted ? (
-              <LanguageSwitcher />
-            ) : (
-              <div className="h-9 w-9" />
-            )}
+            <LanguageSwitcher />
           </div>
           {isLoading ? (
             <div className="h-10 w-10 rounded-full bg-gray-100 animate-pulse" />
