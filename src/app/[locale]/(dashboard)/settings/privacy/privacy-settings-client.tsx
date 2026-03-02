@@ -26,11 +26,13 @@ interface PrivacySettings {
 interface PrivacySettingsClientProps {
   notificationSettings: NotificationSettings
   privacySettings: PrivacySettings
+  settingsHref?: string
 }
 
 export function PrivacySettingsClient({
   notificationSettings: initialNotificationSettings,
   privacySettings: initialPrivacySettings,
+  settingsHref = "/settings",
 }: PrivacySettingsClientProps) {
   const [notifications, setNotifications] = useState(initialNotificationSettings)
   const [privacy, setPrivacy] = useState(initialPrivacySettings)
@@ -101,7 +103,7 @@ export function PrivacySettingsClient({
     <div className="flex flex-col gap-8">
       {/* Breadcrumbs */}
       <div className="flex items-center gap-2 text-sm">
-        <Link href="/settings" className="text-gray-500 font-medium">
+        <Link href={settingsHref as "/settings"} className="text-gray-500 font-medium">
           {t("breadcrumbSettings")}
         </Link>
         <span className="text-gray-500 font-medium">/</span>
