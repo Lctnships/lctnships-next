@@ -519,7 +519,10 @@
     "reviewsTitle": "Reseñas",
     "reviewsDesc": "Recordatorios para dejar una reseña después de tu sesión",
     "visibilityDescription": "Determina quién puede ver tu perfil y datos de contacto.",
-    "saveButton": "Guardar Configuración"
+    "saveButton": "Guardar Configuración",
+    "saving": "Guardando...",
+    "saveSuccess": "Configuracion guardada",
+    "saveError": "Error al guardar. Intentalo de nuevo."
   },
   "Security": {
     "title": "Seguridad de la Cuenta",
@@ -547,7 +550,10 @@
     "strengthStrong": "Fuerte",
     "loggedInDevices": "Dispositivos Conectados",
     "logout": "Cerrar sesión",
-    "saveButton": "Actualizar Configuración de Seguridad"
+    "saveButton": "Actualizar Configuración de Seguridad",
+    "saving": "Guardando...",
+    "saveSuccess": "Configuracion de seguridad guardada",
+    "saveError": "Error al guardar. Intentalo de nuevo."
   },
   "Host": {
     "dashboard": "Panel",
