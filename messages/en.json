@@ -615,7 +615,13 @@
     "strengthStrong": "Strong",
     "loggedInDevices": "Logged-in Devices",
     "logout": "Log out",
-    "saveButton": "Update Security Settings"
+    "saveButton": "Update Security Settings",
+    "saving": "Saving...",
+    "saveSuccess": "Security settings saved successfully",
+    "saveError": "Failed to save security settings",
+    "deviceLoggedOut": "Device logged out successfully",
+    "deviceLogoutError": "Failed to log out device",
+    "noDevices": "No active sessions found. Sessions are recorded when you log in."
   },
   "Host": {
     "dashboard": "Dashboard",

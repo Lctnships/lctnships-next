@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
+import { cookies, headers } from "next/headers"
 import { NextResponse } from "next/server"
+import { parseUserAgent } from "@/lib/utils/parse-user-agent"
 
 // Sanitize string input to prevent XSS and SQL injection
 function sanitizeString(input: unknown): string | null {
@@ -124,6 +125,30 @@ export async function GET(request: Request) {
       if (profileError) {
         console.error("Auth callback: profile creation failed:", profileError.message)
       }
+    }
+
+    // Record this session for device tracking
+    try {
+      const headersList = await headers()
+      const userAgent = headersList.get("user-agent") || ""
+      const ipAddress = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+                        headersList.get("x-real-ip") || null
+
+      const parsed = parseUserAgent(userAgent)
+
+      await supabase.from("user_sessions").insert({
+        user_id: data.user.id,
+        device_name: parsed.deviceName,
+        device_type: parsed.deviceType,
+        browser: `${parsed.browser} on ${parsed.os}`,
+        os: parsed.os,
+        ip_address: ipAddress,
+        user_agent: userAgent.slice(0, 500),
+        is_current: true,
+      })
+    } catch (sessionError) {
+      // Non-critical: don't block login if session tracking fails
+      console.error("Auth callback: session tracking failed:", sessionError)
     }
 
     return NextResponse.redirect(`${origin}${redirect}`)

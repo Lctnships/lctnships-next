@@ -615,7 +615,13 @@
     "strengthStrong": "Sterk",
     "loggedInDevices": "Ingelogde Apparaten",
     "logout": "Afmelden",
-    "saveButton": "Beveiligingsinstellingen Bijwerken"
+    "saveButton": "Beveiligingsinstellingen Bijwerken",
+    "saving": "Opslaan...",
+    "saveSuccess": "Beveiligingsinstellingen opgeslagen",
+    "saveError": "Kon beveiligingsinstellingen niet opslaan",
+    "deviceLoggedOut": "Apparaat succesvol afgemeld",
+    "deviceLogoutError": "Kon apparaat niet afmelden",
+    "noDevices": "Geen actieve sessies gevonden. Sessies worden vastgelegd wanneer je inlogt."
   },
   "Host": {
     "dashboard": "Dashboard",

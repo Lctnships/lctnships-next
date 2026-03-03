@@ -55,8 +55,17 @@ export function SecuritySettingsClient({
     return icons[type] || "devices"
   }
 
-  const handleLogoutDevice = (deviceId: string) => {
-    setDevices(devices.filter((d) => d.id !== deviceId))
+  const handleLogoutDevice = async (deviceId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${deviceId}`, {
+        method: "DELETE",
+      })
+      if (!res.ok) throw new Error("Failed to logout device")
+      setDevices(devices.filter((d) => d.id !== deviceId))
+      toast.success(t("deviceLoggedOut") || "Device logged out successfully")
+    } catch {
+      toast.error(t("deviceLogoutError") || "Failed to logout device")
+    }
   }
 
   const [isSaving, setIsSaving] = useState(false)
@@ -183,6 +192,11 @@ export function SecuritySettingsClient({
         </div>
 
         <div className="space-y-3 md:space-y-6">
+          {devices.length === 0 && (
+            <p className="text-gray-500 text-sm md:text-base py-4">
+              {t("noDevices") || "No active sessions found. Sessions are recorded when you log in."}
+            </p>
+          )}
           {devices.map((device) => (
             <div
               key={device.id}
