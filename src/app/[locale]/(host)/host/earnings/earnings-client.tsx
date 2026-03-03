@@ -72,121 +72,120 @@ export function EarningsClient({
   const maxEarning = Math.max(...monthlyData.map((d) => d.earnings))
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto space-y-4 md:space-y-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Inkomsten & Omzet</h1>
-          <p className="text-gray-500 mt-1">Beheer je inkomsten en uitbetalingen</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Inkomsten</h1>
+          <p className="text-gray-500 text-sm md:text-base mt-0.5">Beheer je inkomsten en uitbetalingen</p>
         </div>
-        <div className="flex gap-3">
-          <button className="px-6 py-3 bg-white border border-gray-200 rounded-full font-bold text-sm hover:bg-gray-50 transition-colors flex items-center gap-2">
+        <div className="flex gap-2">
+          <button className="hidden md:flex px-6 py-3 bg-white border border-gray-200 rounded-full font-bold text-sm hover:bg-gray-50 transition-colors items-center gap-2">
             <span className="material-symbols-outlined text-lg">download</span>
             Exporteren
           </button>
           <button
             onClick={() => router.push("/host/payouts")}
-            className="px-6 py-3 bg-black text-white rounded-full font-bold text-sm hover:bg-black/90 transition-colors flex items-center gap-2"
+            className="px-4 py-2 md:px-6 md:py-3 bg-black text-white rounded-full font-bold text-xs md:text-sm hover:bg-black/90 transition-colors flex items-center gap-1.5 md:gap-2"
           >
-            <span className="material-symbols-outlined text-lg">account_balance</span>
-            Uitbetaling Aanvragen
+            <span className="material-symbols-outlined text-base md:text-lg">account_balance</span>
+            <span className="hidden sm:inline">Uitbetaling Aanvragen</span>
+            <span className="sm:hidden">Uitbetalen</span>
           </button>
         </div>
       </div>
 
       {/* Time Filter */}
-      <div className="flex gap-2">
+      <div className="flex gap-1.5 md:gap-2 overflow-x-auto pb-1 -mx-1 px-1">
         {(["week", "month", "year", "all"] as TimeFilter[]).map((filter) => (
           <button
             key={filter}
             onClick={() => setTimeFilter(filter)}
-            className={`px-5 py-2 rounded-full text-sm font-bold transition-all ${
+            className={`px-3.5 md:px-5 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
               timeFilter === filter
                 ? "bg-gray-900 text-white"
                 : "bg-white border border-gray-200 hover:bg-gray-50"
             }`}
           >
-            {filter === "week" && "Deze Week"}
-            {filter === "month" && "Deze Maand"}
-            {filter === "year" && "Dit Jaar"}
+            {filter === "week" && "Week"}
+            {filter === "month" && "Maand"}
+            {filter === "year" && "Jaar"}
             {filter === "all" && "Alles"}
           </button>
         ))}
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="size-12 rounded-2xl bg-black/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-black">account_balance_wallet</span>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+        <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
+            <div className="size-9 md:size-12 rounded-xl md:rounded-2xl bg-black/10 flex items-center justify-center">
+              <span className="material-symbols-outlined text-black text-lg md:text-2xl">account_balance_wallet</span>
             </div>
-            <span className="text-sm font-medium text-gray-500">Beschikbaar Saldo</span>
+            <span className="text-xs md:text-sm font-medium text-gray-500">Saldo</span>
           </div>
-          <p className="text-3xl font-bold">{formatCurrency(earnings.totalBalance)}</p>
-          <p className="text-sm text-gray-500 mt-2">Klaar om op te nemen</p>
+          <p className="text-lg md:text-3xl font-bold truncate">{formatCurrency(earnings.totalBalance)}</p>
+          <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2 hidden md:block">Klaar om op te nemen</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="size-12 rounded-2xl bg-yellow-100 flex items-center justify-center">
-              <span className="material-symbols-outlined text-yellow-600">schedule</span>
+        <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
+            <div className="size-9 md:size-12 rounded-xl md:rounded-2xl bg-yellow-100 flex items-center justify-center">
+              <span className="material-symbols-outlined text-yellow-600 text-lg md:text-2xl">schedule</span>
             </div>
-            <span className="text-sm font-medium text-gray-500">In Afwachting</span>
+            <span className="text-xs md:text-sm font-medium text-gray-500">In Afwachting</span>
           </div>
-          <p className="text-3xl font-bold">{formatCurrency(earnings.pendingPayout)}</p>
-          <p className="text-sm text-gray-500 mt-2">Verwerking in 2-3 dagen</p>
+          <p className="text-lg md:text-3xl font-bold truncate">{formatCurrency(earnings.pendingPayout)}</p>
+          <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2 hidden md:block">Verwerking in 2-3 dagen</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="size-12 rounded-2xl bg-green-100 flex items-center justify-center">
-              <span className="material-symbols-outlined text-green-600">trending_up</span>
+        <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
+            <div className="size-9 md:size-12 rounded-xl md:rounded-2xl bg-green-100 flex items-center justify-center">
+              <span className="material-symbols-outlined text-green-600 text-lg md:text-2xl">trending_up</span>
             </div>
-            <span className="text-sm font-medium text-gray-500">Deze Maand</span>
+            <span className="text-xs md:text-sm font-medium text-gray-500">Deze Maand</span>
           </div>
-          <p className="text-3xl font-bold">{formatCurrency(earnings.thisMonth)}</p>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-green-500 text-sm font-bold flex items-center">
-              <span className="material-symbols-outlined text-sm">arrow_upward</span>
+          <p className="text-lg md:text-3xl font-bold truncate">{formatCurrency(earnings.thisMonth)}</p>
+          <div className="flex items-center gap-1 md:gap-2 mt-1 md:mt-2">
+            <span className="text-green-500 text-xs md:text-sm font-bold flex items-center">
+              <span className="material-symbols-outlined text-xs md:text-sm">arrow_upward</span>
               {earnings.monthlyGrowth}%
             </span>
-            <span className="text-sm text-gray-500">t.o.v. vorige maand</span>
+            <span className="text-xs text-gray-500 hidden md:inline">t.o.v. vorige maand</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="size-12 rounded-2xl bg-blue-100 flex items-center justify-center">
-              <span className="material-symbols-outlined text-blue-600">calendar_month</span>
+        <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
+            <div className="size-9 md:size-12 rounded-xl md:rounded-2xl bg-blue-100 flex items-center justify-center">
+              <span className="material-symbols-outlined text-blue-600 text-lg md:text-2xl">calendar_month</span>
             </div>
-            <span className="text-sm font-medium text-gray-500">Dit Jaar</span>
+            <span className="text-xs md:text-sm font-medium text-gray-500">Dit Jaar</span>
           </div>
-          <p className="text-3xl font-bold">{formatCurrency(earnings.yearToDate)}</p>
-          <p className="text-sm text-gray-500 mt-2">Totale inkomsten in 2024</p>
+          <p className="text-lg md:text-3xl font-bold truncate">{formatCurrency(earnings.yearToDate)}</p>
+          <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2 hidden md:block">Totale inkomsten in 2024</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
         {/* Chart */}
-        <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold">Omzet Overzicht</h2>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="size-3 rounded-full bg-black" />
-                <span className="text-sm text-gray-500">Inkomsten</span>
-              </div>
+        <div className="lg:col-span-2 bg-white rounded-2xl md:rounded-3xl p-4 md:p-8 border border-gray-100 shadow-sm">
+          <div className="flex items-center justify-between mb-4 md:mb-8">
+            <h2 className="text-base md:text-xl font-bold">Omzet Overzicht</h2>
+            <div className="flex items-center gap-2">
+              <span className="size-2.5 md:size-3 rounded-full bg-black" />
+              <span className="text-xs md:text-sm text-gray-500">Inkomsten</span>
             </div>
           </div>
 
           {/* Simple Bar Chart */}
-          <div className="flex items-end justify-between h-48 gap-2">
+          <div className="flex items-end justify-between h-32 md:h-48 gap-1 md:gap-2">
             {monthlyData.map((data, index) => {
               const height = maxEarning > 0 ? (data.earnings / maxEarning) * 100 : 0
               const isCurrentMonth = index === 8 // September
               return (
-                <div key={data.month} className="flex-1 flex flex-col items-center gap-2">
+                <div key={data.month} className="flex-1 flex flex-col items-center gap-1 md:gap-2">
                   <div className="w-full relative group">
                     <div
                       className={`w-full rounded-t-lg transition-all ${
@@ -198,7 +197,7 @@ export function EarningsClient({
                       {formatCurrency(data.earnings)}
                     </div>
                   </div>
-                  <span className="text-xs text-gray-500">{data.month}</span>
+                  <span className="text-[10px] md:text-xs text-gray-500">{data.month}</span>
                 </div>
               )
             })}
@@ -206,25 +205,25 @@ export function EarningsClient({
         </div>
 
         {/* Top Studios */}
-        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-          <h2 className="text-xl font-bold mb-6">Best Presterende Studio's</h2>
-          <div className="space-y-4">
+        <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-8 border border-gray-100 shadow-sm">
+          <h2 className="text-base md:text-xl font-bold mb-3 md:mb-6">Top Studio&apos;s</h2>
+          <div className="space-y-2 md:space-y-4">
             {studios.map((studio, index) => (
               <Link
                 key={studio.id}
                 href={`/host/studios/${studio.id}`}
-                className="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-3 md:gap-4 p-2 md:p-3 rounded-xl md:rounded-2xl hover:bg-gray-50 transition-colors"
               >
-                <span className="text-lg font-bold text-gray-400 w-6">{index + 1}</span>
+                <span className="text-sm md:text-lg font-bold text-gray-400 w-5 md:w-6">{index + 1}</span>
                 <div
-                  className="size-12 rounded-xl bg-cover bg-center bg-gray-200"
+                  className="size-10 md:size-12 rounded-lg md:rounded-xl bg-cover bg-center bg-gray-200 flex-shrink-0"
                   style={{ backgroundImage: `url("${studio.image}")` }}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold truncate">{studio.title}</p>
-                  <p className="text-sm text-gray-500">{studio.bookings} boekingen</p>
+                  <p className="font-bold text-sm md:text-base truncate">{studio.title}</p>
+                  <p className="text-xs md:text-sm text-gray-500">{studio.bookings} boekingen</p>
                 </div>
-                <span className="font-bold text-black">{formatCurrency(studio.earnings)}</span>
+                <span className="font-bold text-black text-sm md:text-base">{formatCurrency(studio.earnings)}</span>
               </Link>
             ))}
           </div>
@@ -232,18 +231,75 @@ export function EarningsClient({
       </div>
 
       {/* Transactions */}
-      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold">Recente Transacties</h2>
+      <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-8 border border-gray-100 shadow-sm">
+        <div className="flex items-center justify-between mb-4 md:mb-6">
+          <h2 className="text-base md:text-xl font-bold">Recente Transacties</h2>
           <Link
             href="/host/transactions"
-            className="text-sm font-bold text-black hover:underline"
+            className="text-xs md:text-sm font-bold text-black hover:underline"
           >
             Alles Bekijken
           </Link>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile: Card layout */}
+        <div className="md:hidden space-y-2">
+          {transactions.map((txn) => (
+            <div key={txn.id} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100">
+              <div
+                className={`size-9 rounded-lg flex-shrink-0 flex items-center justify-center ${
+                  txn.type === "booking"
+                    ? "bg-green-100"
+                    : txn.type === "payout"
+                    ? "bg-blue-100"
+                    : "bg-red-100"
+                }`}
+              >
+                <span
+                  className={`material-symbols-outlined text-base ${
+                    txn.type === "booking"
+                      ? "text-green-600"
+                      : txn.type === "payout"
+                      ? "text-blue-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {txn.type === "booking"
+                    ? "calendar_month"
+                    : txn.type === "payout"
+                    ? "account_balance"
+                    : "undo"}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sm truncate">{txn.description}</p>
+                <p className="text-xs text-gray-500">{formatDate(txn.date)}</p>
+              </div>
+              <div className="text-right flex-shrink-0">
+                <span
+                  className={`font-bold text-sm ${
+                    txn.amount >= 0 ? "text-green-600" : "text-gray-900"
+                  }`}
+                >
+                  {txn.amount >= 0 ? "+" : ""}
+                  {formatCurrency(txn.amount)}
+                </span>
+                <span
+                  className={`block mt-0.5 px-2 py-0.5 rounded-full text-[10px] font-bold w-fit ml-auto ${
+                    txn.status === "completed"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-yellow-100 text-yellow-700"
+                  }`}
+                >
+                  {txn.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: Table layout */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-100">
@@ -328,20 +384,20 @@ export function EarningsClient({
       </div>
 
       {/* Payout Settings */}
-      <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-3xl p-8 text-white">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl md:rounded-3xl p-5 md:p-8 text-white">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
           <div>
-            <h3 className="text-xl font-bold mb-2">Uitbetalingsinstellingen</h3>
-            <p className="text-gray-300">
+            <h3 className="text-base md:text-xl font-bold mb-1 md:mb-2">Uitbetalingsinstellingen</h3>
+            <p className="text-gray-300 text-sm md:text-base">
               Beheer je uitbetalingsmethoden en plan automatische overboekingen
             </p>
           </div>
-          <div className="flex gap-3">
-            <button className="px-6 py-3 bg-white/10 rounded-full font-bold text-sm hover:bg-white/20 transition-colors">
-              Bekijk Geschiedenis
+          <div className="flex gap-2 md:gap-3">
+            <button className="px-4 py-2.5 md:px-6 md:py-3 bg-white/10 rounded-full font-bold text-xs md:text-sm hover:bg-white/20 transition-colors">
+              Geschiedenis
             </button>
-            <button className="px-6 py-3 bg-white text-gray-900 rounded-full font-bold text-sm hover:bg-gray-100 transition-colors">
-              Methoden Beheren
+            <button className="px-4 py-2.5 md:px-6 md:py-3 bg-white text-gray-900 rounded-full font-bold text-xs md:text-sm hover:bg-gray-100 transition-colors">
+              Beheren
             </button>
           </div>
         </div>

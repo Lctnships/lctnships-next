@@ -81,9 +81,9 @@ export function SecuritySettingsClient({
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-5 md:gap-8">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-2 text-xs md:text-sm">
         <Link href={settingsHref as "/settings"} className="text-gray-500 font-medium">
           {t("breadcrumbSettings")}
         </Link>
@@ -92,38 +92,38 @@ export function SecuritySettingsClient({
       </div>
 
       {/* Page Heading */}
-      <div className="flex flex-col gap-2">
-        <h2 className="text-4xl font-black tracking-tight">{t("heading")}</h2>
-        <p className="text-gray-500 text-lg max-w-2xl">
+      <div className="flex flex-col gap-1 md:gap-2">
+        <h2 className="text-2xl md:text-4xl font-black tracking-tight">{t("heading")}</h2>
+        <p className="text-gray-500 text-sm md:text-lg max-w-2xl">
           {t("headingDescription")}
         </p>
       </div>
 
       {/* Change Password Card */}
-      <section className="bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-3 mb-8">
-          <span className="material-symbols-outlined text-black">lock_reset</span>
-          <h3 className="text-2xl font-bold tracking-tight">{t("changePassword")}</h3>
+      <section className="bg-white rounded-2xl md:rounded-[2rem] p-4 md:p-10 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-8">
+          <span className="material-symbols-outlined text-black text-xl md:text-2xl">lock_reset</span>
+          <h3 className="text-base md:text-2xl font-bold tracking-tight">{t("changePassword")}</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 max-w-3xl">
           <div className="flex flex-col">
-            <label className="text-sm font-bold text-gray-500 mb-3 ml-1">{t("currentPassword")}</label>
+            <label className="text-xs md:text-sm font-bold text-gray-500 mb-2 md:mb-3 ml-1">{t("currentPassword")}</label>
             <input
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full rounded-xl border-gray-200 bg-gray-50 h-14 px-5 focus:border-black focus:ring-0 transition-all"
+              className="w-full rounded-xl border-gray-200 bg-gray-50 h-12 md:h-14 px-4 md:px-5 text-sm md:text-base focus:border-black focus:ring-0 transition-all"
               placeholder="••••••••"
             />
           </div>
           <div className="flex flex-col">
-            <label className="text-sm font-bold text-gray-500 mb-3 ml-1">{t("newPassword")}</label>
+            <label className="text-xs md:text-sm font-bold text-gray-500 mb-2 md:mb-3 ml-1">{t("newPassword")}</label>
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full rounded-xl border-gray-200 bg-gray-50 h-14 px-5 focus:border-black focus:ring-0 transition-all"
+              className="w-full rounded-xl border-gray-200 bg-gray-50 h-12 md:h-14 px-4 md:px-5 text-sm md:text-base focus:border-black focus:ring-0 transition-all"
               placeholder="••••••••"
             />
           </div>
@@ -131,12 +131,12 @@ export function SecuritySettingsClient({
 
         {/* Password Strength Indicator */}
         {newPassword && (
-          <div className="mt-4 flex items-center gap-2 px-1">
+          <div className="mt-3 md:mt-4 flex items-center gap-2 px-1">
             <div className="flex gap-1">
               {[1, 2, 3, 4].map((level) => (
                 <div
                   key={level}
-                  className={`h-1.5 w-12 rounded-full ${
+                  className={`h-1.5 w-8 md:w-12 rounded-full ${
                     level <= passwordStrength.level ? "bg-black" : "bg-gray-200"
                   }`}
                 />
@@ -150,18 +150,18 @@ export function SecuritySettingsClient({
       </section>
 
       {/* 2FA Section */}
-      <section className="bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
-        <div className="flex items-center justify-between gap-6">
-          <div className="flex flex-col gap-2 max-w-xl">
-            <div className="flex items-center gap-3 mb-1">
-              <span className="material-symbols-outlined text-black">vibration</span>
-              <h3 className="text-2xl font-bold tracking-tight">{t("twoFactor")}</h3>
+      <section className="bg-white rounded-2xl md:rounded-[2rem] p-4 md:p-10 shadow-sm border border-gray-100">
+        <div className="flex items-center justify-between gap-4 md:gap-6">
+          <div className="flex flex-col gap-1 md:gap-2 min-w-0">
+            <div className="flex items-center gap-2 md:gap-3 mb-0.5 md:mb-1">
+              <span className="material-symbols-outlined text-black text-xl md:text-2xl">vibration</span>
+              <h3 className="text-base md:text-2xl font-bold tracking-tight">{t("twoFactor")}</h3>
             </div>
-            <p className="text-gray-500 text-base leading-relaxed">
+            <p className="text-gray-500 text-xs md:text-base leading-relaxed">
               {t("twoFactorDesc")}
             </p>
           </div>
-          <div>
+          <div className="flex-shrink-0">
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -176,32 +176,32 @@ export function SecuritySettingsClient({
       </section>
 
       {/* Logged-in Devices */}
-      <section className="bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-3 mb-8">
-          <span className="material-symbols-outlined text-black">devices</span>
-          <h3 className="text-2xl font-bold tracking-tight">{t("loggedInDevices")}</h3>
+      <section className="bg-white rounded-2xl md:rounded-[2rem] p-4 md:p-10 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-8">
+          <span className="material-symbols-outlined text-black text-xl md:text-2xl">devices</span>
+          <h3 className="text-base md:text-2xl font-bold tracking-tight">{t("loggedInDevices")}</h3>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-3 md:space-y-6">
           {devices.map((device) => (
             <div
               key={device.id}
-              className="flex items-center justify-between py-4 border-b border-gray-100 last:border-0"
+              className="flex items-center justify-between py-3 md:py-4 border-b border-gray-100 last:border-0 gap-3"
             >
-              <div className="flex items-center gap-5">
-                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                  <span className="material-symbols-outlined">{getDeviceIcon(device.type)}</span>
+              <div className="flex items-center gap-3 md:gap-5 min-w-0">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                  <span className="material-symbols-outlined text-lg md:text-2xl">{getDeviceIcon(device.type)}</span>
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-bold">{device.name}</p>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-bold text-sm md:text-base">{device.name}</p>
                     {device.isCurrent && (
                       <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-black uppercase tracking-tighter">
                         {t("currentSession")}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-500 mt-0.5">
+                  <p className="text-xs md:text-sm text-gray-500 mt-0.5 truncate">
                     {device.location} • {device.browser}
                   </p>
                 </div>
@@ -209,7 +209,7 @@ export function SecuritySettingsClient({
               {!device.isCurrent && (
                 <button
                   onClick={() => handleLogoutDevice(device.id)}
-                  className="text-sm font-bold text-gray-500 hover:text-red-500 transition-colors"
+                  className="text-xs md:text-sm font-bold text-gray-500 hover:text-red-500 transition-colors flex-shrink-0"
                 >
                   {t("logout")}
                 </button>
@@ -220,13 +220,13 @@ export function SecuritySettingsClient({
       </section>
 
       {/* Action Footer */}
-      <div className="flex justify-end pt-4 pb-12">
+      <div className="flex justify-end pt-2 md:pt-4 pb-6 md:pb-12">
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="bg-black text-white text-base font-bold px-10 py-5 rounded-full hover:bg-gray-800 transition-all shadow-lg shadow-black/10 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-black text-white text-sm md:text-base font-bold px-6 py-3 md:px-10 md:py-5 rounded-full hover:bg-gray-800 transition-all shadow-lg shadow-black/10 flex items-center gap-2 md:gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span className="material-symbols-outlined">{isSaving ? "hourglass_empty" : "shield"}</span>
+          <span className="material-symbols-outlined text-lg md:text-2xl">{isSaving ? "hourglass_empty" : "shield"}</span>
           {isSaving ? (t("saving") || "Saving...") : t("saveButton")}
         </button>
       </div>
