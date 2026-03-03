@@ -3,7 +3,6 @@
 import { useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import { Link, useRouter } from "@/i18n/routing"
-import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 
 interface Project {
@@ -281,20 +280,20 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
     }
     setIsCreating(true)
     try {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error("Not authenticated")
-
-      const { error } = await supabase.from("projects").insert({
-        title: title.trim(),
-        project_type: projectType,
-        description: description.trim() || null,
-        cover_image_url: coverUrl || null,
-        owner_id: user.id,
-        status: "active",
+      const res = await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.trim(),
+          project_type: projectType,
+          description: description.trim() || null,
+          cover_image_url: coverUrl || null,
+        }),
       })
 
-      if (error) throw error
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Project aanmaken mislukt")
+
       toast.success("Project aangemaakt!")
       onClose()
       router.refresh()
