@@ -621,7 +621,12 @@
     "saveError": "Failed to save security settings",
     "deviceLoggedOut": "Device logged out successfully",
     "deviceLogoutError": "Failed to log out device",
-    "noDevices": "No active sessions found. Sessions are recorded when you log in."
+    "noDevices": "No active sessions found. Sessions are recorded when you log in.",
+    "passwordRequired": "Please fill in both password fields",
+    "passwordTooShort": "New password must be at least 8 characters",
+    "passwordChanged": "Password changed successfully",
+    "passwordChangeError": "Failed to change password",
+    "changePasswordButton": "Change Password"
   },
   "Host": {
     "dashboard": "Dashboard",

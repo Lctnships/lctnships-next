@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Link } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
@@ -30,6 +30,22 @@ export function SecuritySettingsClient({
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(initialTwoFactor)
   const [devices, setDevices] = useState(initialDevices)
   const t = useTranslations("Security")
+  const ensuredRef = useRef(false)
+
+  // Auto-register current session if none exist (for users who logged in before tracking)
+  useEffect(() => {
+    if (devices.length === 0 && !ensuredRef.current) {
+      ensuredRef.current = true
+      fetch("/api/sessions/ensure", { method: "POST" })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.created && data.session) {
+            setDevices([data.session])
+          }
+        })
+        .catch(() => {})
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const getPasswordStrength = (password: string) => {
     if (!password) return { level: 0, label: "" }
@@ -69,6 +85,35 @@ export function SecuritySettingsClient({
   }
 
   const [isSaving, setIsSaving] = useState(false)
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
+
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword) {
+      toast.error(t("passwordRequired") || "Please fill in both password fields")
+      return
+    }
+    if (newPassword.length < 8) {
+      toast.error(t("passwordTooShort") || "New password must be at least 8 characters")
+      return
+    }
+    setIsChangingPassword(true)
+    try {
+      const res = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Failed to change password")
+      toast.success(t("passwordChanged") || "Password changed successfully")
+      setCurrentPassword("")
+      setNewPassword("")
+    } catch (err: any) {
+      toast.error(err.message || t("passwordChangeError") || "Failed to change password")
+    } finally {
+      setIsChangingPassword(false)
+    }
+  }
 
   const handleSave = async () => {
     setIsSaving(true)
@@ -154,6 +199,20 @@ export function SecuritySettingsClient({
             <span className="text-[10px] font-bold text-black uppercase tracking-widest ml-2">
               {t("strengthLabel")} {passwordStrength.label}
             </span>
+          </div>
+        )}
+
+        {/* Change Password Button */}
+        {(currentPassword || newPassword) && (
+          <div className="mt-4 md:mt-6">
+            <button
+              onClick={handleChangePassword}
+              disabled={isChangingPassword || !currentPassword || !newPassword}
+              className="bg-black text-white text-xs md:text-sm font-bold px-5 py-2.5 md:px-6 md:py-3 rounded-full hover:bg-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined text-base md:text-lg">{isChangingPassword ? "hourglass_empty" : "lock_reset"}</span>
+              {isChangingPassword ? (t("saving") || "Saving...") : (t("changePasswordButton") || "Change Password")}
+            </button>
           </div>
         )}
       </section>
