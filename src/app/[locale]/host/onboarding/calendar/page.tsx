@@ -66,23 +66,28 @@ function CalendarPageContent() {
 
       const draft = updatedDraft
 
+      // Map draft data to actual database columns
       const studioData = {
+        owner_id: user.id,
         host_id: user.id,
         title: draft.title || "Untitled Studio",
         description: draft.description || "",
+        type: draft.type || "photo",
         location: draft.location || "",
-        studio_type: draft.type || "photo",
+        address: draft.address
+          ? `${draft.address.street || ""} ${draft.address.houseNumber || ""}`.trim()
+          : "",
+        city: draft.address?.city || "",
+        country: draft.address?.country || "Netherlands",
+        latitude: draft.address?.lat || null,
+        longitude: draft.address?.lng || null,
         price_per_hour: draft.price_per_hour || 45,
         images: draft.images || [],
-        equipment: draft.equipment || [],
-        amenities: [],
-        available_days: availableDays,
-        min_booking_hours: parseInt(minDuration),
-        prep_time_minutes: parseInt(prepTime),
-        booking_notice_hours: parseInt(bookingNotice),
-        instant_book: instantBook,
-        status: "active",
-        is_published: true,
+        amenities: draft.equipment || [],
+        minimum_hours: parseInt(minDuration) || 1,
+        is_instant_book: instantBook,
+        status: "pending_review",
+        is_published: false,
       }
 
       const { data, error } = await supabase
@@ -101,7 +106,7 @@ function CalendarPageContent() {
       // Clear draft
       localStorage.removeItem("studio_draft")
 
-      toast.success("Studio gepubliceerd!")
+      toast.success("Studio ingediend ter beoordeling!")
       router.push(`/host/onboarding/success?id=${data.id}`)
     } catch (error) {
       console.error("Error:", error)
@@ -303,12 +308,12 @@ function CalendarPageContent() {
             {isSubmitting ? (
               <>
                 <span className="material-symbols-outlined animate-spin">progress_activity</span>
-                Publiceren...
+                Indienen...
               </>
             ) : (
               <>
-                Studio Publiceren
-                <span className="material-symbols-outlined text-xl">check</span>
+                Studio Indienen
+                <span className="material-symbols-outlined text-xl">send</span>
               </>
             )}
           </button>

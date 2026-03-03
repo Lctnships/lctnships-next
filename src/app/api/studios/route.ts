@@ -194,14 +194,13 @@ export async function POST(request: Request) {
       title,
       description,
       type,
+      location,
       address,
       city,
       country,
-      postal_code,
       latitude,
       longitude,
       price_per_hour,
-      daily_rate,
       minimum_hours,
       maximum_hours,
       amenities,
@@ -213,15 +212,15 @@ export async function POST(request: Request) {
     } = body
 
     // Validate required fields
-    if (!title || !type || !city || !price_per_hour) {
+    if (!title || !type || !price_per_hour) {
       return NextResponse.json(
-        { error: "Title, type, city, and hourly rate are required" },
+        { error: "Title, type, and hourly rate are required" },
         { status: 400 }
       )
     }
 
     // Validate price is positive
-    if (!price_per_hour || price_per_hour <= 0) {
+    if (price_per_hour <= 0) {
       return NextResponse.json(
         { error: "Price must be greater than 0" },
         { status: 400 }
@@ -231,20 +230,20 @@ export async function POST(request: Request) {
     const { data: studio, error } = await supabase
       .from("studios")
       .insert({
+        owner_id: user.id,
         host_id: user.id,
         title,
         description,
         type,
+        location: location || city || "",
         address,
         city,
         country,
-        postal_code,
         latitude,
         longitude,
         price_per_hour,
-        daily_rate,
         minimum_hours: minimum_hours || 1,
-        maximum_hours: maximum_hours || 24,
+        maximum_hours: maximum_hours || 12,
         amenities: amenities || [],
         rules: rules || [],
         cancellation_policy: cancellation_policy || "flexible",
