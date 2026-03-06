@@ -29,7 +29,7 @@ export default async function OnboardingSuccessPage({
     <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between border-b border-gray-100 px-10 py-3 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <Link href="/" className="flex items-center gap-4 text-primary">
+        <Link href="/" className="flex items-center gap-4 text-black">
           <div className="size-6">
             <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -41,10 +41,10 @@ export default async function OnboardingSuccessPage({
           <h2 className="text-gray-900 text-lg font-bold leading-tight tracking-tight">lcntships</h2>
         </Link>
         <div className="flex items-center gap-9">
-          <Link href="/host/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link href="/host/dashboard" className="text-sm font-medium hover:text-black transition-colors">
             Dashboard
           </Link>
-          <Link href="/host/studios" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link href="/host/studios" className="text-sm font-medium hover:text-black transition-colors">
             Advertenties
           </Link>
         </div>
@@ -54,38 +54,28 @@ export default async function OnboardingSuccessPage({
       <main className="flex-1 flex flex-col items-center justify-center py-12 px-4 relative">
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-black/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-black/5 rounded-full blur-3xl" />
         </div>
 
         <div className="max-w-[800px] w-full text-center flex flex-col items-center relative z-10">
-          {/* Sparkle Icon */}
-          <div className="mb-10">
-            <svg fill="none" height="120" viewBox="0 0 120 120" width="120" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="sparkle-grad" x1="0%" x2="100%" y1="0%" y2="100%">
-                  <stop offset="0%" style={{ stopColor: "#2b6cee", stopOpacity: 1 }} />
-                  <stop offset="100%" style={{ stopColor: "#8e2bee", stopOpacity: 1 }} />
-                </linearGradient>
-              </defs>
-              <path
-                d="M60 0C60 0 63.5 45 120 60C63.5 75 60 120 60 120C60 120 56.5 75 0 60C56.5 45 60 0 60 0Z"
-                fill="url(#sparkle-grad)"
-              />
-              <circle cx="30" cy="30" fill="#2b6cee" opacity="0.4" r="4" />
-              <circle cx="95" cy="20" fill="#2b6cee" opacity="0.3" r="6" />
-              <circle cx="100" cy="100" fill="#8e2bee" opacity="0.4" r="3" />
-            </svg>
+          {/* Check Icon */}
+          <div className="mb-10 w-28 h-28 rounded-full bg-black/5 flex items-center justify-center">
+            <span className="material-symbols-outlined text-6xl text-black">task_alt</span>
           </div>
 
           {/* Heading */}
           <div className="mb-12">
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-4">
-              Je studio staat live!
+              Studio ingediend!
             </h1>
             <p className="text-gray-500 text-lg md:text-xl max-w-lg mx-auto leading-relaxed">
-              Gefeliciteerd, je creatieve ruimte kan nu ontdekt worden door de community.
+              Bedankt! Je studio wordt beoordeeld door ons team. Je ontvangt een bericht zodra deze is goedgekeurd.
             </p>
+            <div className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-amber-50 border border-amber-200 rounded-full text-sm font-semibold text-amber-700">
+              <span className="material-symbols-outlined text-base">hourglass_top</span>
+              In afwachting van goedkeuring
+            </div>
           </div>
 
           {/* Studio Preview Card */}
@@ -113,18 +103,18 @@ export default async function OnboardingSuccessPage({
               <div className="px-2 text-left">
                 <div className="flex justify-between items-start mb-1">
                   <h3 className="font-bold text-lg">{studio.title}</h3>
-                  <p className="text-primary font-bold">
+                  <p className="text-black font-bold">
                     €{studio.price_per_hour}
                     <span className="text-xs text-gray-500 font-normal">/uur</span>
                   </p>
                 </div>
                 <div className="flex items-center gap-2 text-gray-500 text-sm mb-3">
                   <span className="material-symbols-outlined text-sm">location_on</span>
-                  <span>{studio.location}</span>
+                  <span>{studio.city || studio.location}</span>
                 </div>
                 <div className="flex gap-2">
                   <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-bold uppercase tracking-wider text-gray-600">
-                    {studio.studio_type}
+                    {studio.type}
                   </span>
                 </div>
               </div>
@@ -134,10 +124,10 @@ export default async function OnboardingSuccessPage({
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
             <Link
-              href={`/studios/${studio.id}`}
+              href="/host/studios"
               className="px-10 py-5 rounded-full bg-gray-900 text-white font-bold text-lg shadow-xl hover:bg-black/90 transition-all hover:scale-[1.03] active:scale-95"
             >
-              Bekijk Live Advertentie
+              Mijn Studio&apos;s
             </Link>
             <Link
               href="/host/dashboard"

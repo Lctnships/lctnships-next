@@ -72,7 +72,7 @@ export default function OnboardingBasicsPage() {
     router.push("/host/onboarding/media")
   }
 
-  const isAddressValid = address.street && address.city && address.postalCode && address.houseNumber
+  const isAddressValid = address.city && (address.street || address.postalCode)
 
   return (
     <>
