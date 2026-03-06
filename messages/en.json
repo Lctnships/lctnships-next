@@ -869,11 +869,13 @@
     "label": "Language",
     "nl": "Nederlands",
     "en": "English",
-    "es": "Español"
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
   },
   "Dashboard": {
     "metaTitle": "Dashboard",
-    "welcome": "Welcome back, ",
+    "welcome": "Welcome back,",
     "welcomeFallback": "there",
     "subtitle": "Here's an overview of your activities",
     "searchStudios": "Search Studios",

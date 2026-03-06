@@ -861,7 +861,9 @@
     "label": "Idioma",
     "nl": "Nederlands",
     "en": "English",
-    "es": "Español"
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
   },
   "Dashboard": {
     "metaTitle": "Panel",

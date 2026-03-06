@@ -869,7 +869,9 @@
     "label": "Taal",
     "nl": "Nederlands",
     "en": "English",
-    "es": "Español"
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
   },
   "Dashboard": {
     "metaTitle": "Dashboard",
