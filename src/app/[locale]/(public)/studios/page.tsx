@@ -5,6 +5,7 @@ import { MarketplaceSearch } from "@/components/marketplace/marketplace-search"
 import { CategoryFilter } from "@/components/marketplace/category-filter"
 import { StudioPlaylists } from "@/components/home/studio-playlists"
 import { StudioCard } from "@/components/marketplace/studio-card"
+import { StickyCategoryBar } from "@/components/marketplace/sticky-category-bar"
 import { getTranslations } from "next-intl/server"
 
 export async function generateMetadata() {
@@ -95,11 +96,13 @@ export default async function StudiosPage(props: StudiosPageProps) {
         </Suspense>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-10 sm:mb-16">
-        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
-          <CategoryFilter />
-        </Suspense>
-      </section>
+      <StickyCategoryBar>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-3">
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[48px]"><div className="animate-spin h-6 w-6 border-3 border-black border-t-transparent rounded-full" /></div>}>
+            <CategoryFilter />
+          </Suspense>
+        </section>
+      </StickyCategoryBar>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 sm:mb-20">
         <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>

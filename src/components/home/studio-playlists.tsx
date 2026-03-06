@@ -79,35 +79,35 @@ export async function StudioPlaylists() {
   }))
 
   return (
-    <section className="max-w-[1440px] mx-auto px-4 md:px-8 mt-16 md:mt-24">
-      <div className="mb-10">
-        <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 block mb-2">
+    <section className="max-w-[1440px] mx-auto px-4 md:px-8 mt-8 sm:mt-12 md:mt-24">
+      <div className="mb-5 sm:mb-8 md:mb-10">
+        <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 block mb-1 sm:mb-2">
           {t("playlistLabel")}
         </span>
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{t("playlistTitle")}</h2>
-        <p className="text-gray-500 mt-2 max-w-xl">{t("playlistSubtitle")}</p>
+        <h2 className="text-xl sm:text-2xl md:text-4xl font-bold tracking-tight">{t("playlistTitle")}</h2>
+        <p className="text-gray-500 mt-1 sm:mt-2 max-w-xl text-sm sm:text-base">{t("playlistSubtitle")}</p>
       </div>
 
       {/* Single horizontal row of playlist cards */}
-      <div className="flex gap-5 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 md:-mx-0 md:px-0">
+      <div className="flex gap-3 sm:gap-5 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 md:-mx-0 md:px-0">
         {playlistCards.map((playlist) => (
           <Link
             key={playlist.key}
             href={`/studios?type=${playlist.types[0]}`}
-            className="group flex-shrink-0 w-[280px] md:w-[320px]"
+            className="group flex-shrink-0 w-[200px] sm:w-[260px] md:w-[320px]"
           >
-            <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-gray-100">
+            <div className="relative aspect-[16/10] rounded-xl sm:rounded-2xl overflow-hidden bg-gray-100">
               {playlist.coverImage ? (
                 <Image
                   src={playlist.coverImage}
                   alt={t(playlist.key)}
                   fill
-                  sizes="320px"
+                  sizes="(max-width: 640px) 200px, (max-width: 768px) 260px, 320px"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                  <span className="material-symbols-outlined text-5xl text-gray-300">
+                  <span className="material-symbols-outlined text-3xl sm:text-5xl text-gray-300">
                     {playlist.icon}
                   </span>
                 </div>
@@ -115,14 +115,14 @@ export async function StudioPlaylists() {
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               {/* Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="material-symbols-outlined text-white/80 text-xl">
+              <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6">
+                <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                  <span className="material-symbols-outlined text-white/80 text-base sm:text-xl">
                     {playlist.icon}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-white">{t(playlist.key)}</h3>
-                <p className="text-white/60 text-sm mt-1">
+                <h3 className="text-sm sm:text-lg md:text-xl font-bold text-white">{t(playlist.key)}</h3>
+                <p className="text-white/60 text-xs sm:text-sm mt-0.5 sm:mt-1">
                   {playlist.count} {t("playlistStudios")}
                 </p>
               </div>
