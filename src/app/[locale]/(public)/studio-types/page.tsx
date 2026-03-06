@@ -49,45 +49,45 @@ export default async function StudioTypesPage() {
 
   return (
     <div className="min-h-screen">
-      <main className="max-w-[1200px] mx-auto px-6 py-12">
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6 sm:py-12">
         {/* Hero Section */}
-        <div className="text-center mb-20">
-          <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-[1.1] mb-6 max-w-3xl mx-auto">
+        <div className="text-center mb-6 sm:mb-20">
+          <h1 className="text-2xl sm:text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-[1.1] mb-2 sm:mb-6 max-w-3xl mx-auto">
             {t("heroTitle")}
           </h1>
-          <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
             {t("heroDesc")}
           </p>
         </div>
 
         {/* Category Headline */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t("ourCategories")}</h2>
+        <div className="mb-4 sm:mb-8">
+          <h2 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">{t("ourCategories")}</h2>
         </div>
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
           {studioTypes.map((studio) => (
             <div
               key={studio.slug}
-              className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden rounded-[32px] shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden rounded-2xl sm:rounded-[32px] shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               <div className="aspect-[16/9] w-full relative">
                 <Image
                   src={studio.image}
                   alt={studio.name}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover"
                   unoptimized
                 />
               </div>
-              <div className="p-8 flex flex-col grow">
-                <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">{studio.name}</h3>
+              <div className="p-3 sm:p-8 flex flex-col grow">
+                <h3 className="text-sm sm:text-2xl font-bold mb-2 sm:mb-3 text-gray-900 dark:text-white">{studio.name}</h3>
                 <div className="mt-auto">
                   <Link
                     href={`/studios?type=${studio.slug}`}
-                    className="w-full bg-black text-white font-bold py-4 rounded-full transition-opacity hover:opacity-90 text-center block"
+                    className="w-full bg-black text-white font-bold py-2.5 sm:py-4 rounded-full transition-opacity hover:opacity-90 text-center block text-xs sm:text-base"
                   >
                     {t("find")} {studio.name}
                   </Link>
@@ -97,19 +97,19 @@ export default async function StudioTypesPage() {
           ))}
 
           {/* CTA Card */}
-          <div className="bg-black text-white flex flex-col justify-center items-center p-12 text-center rounded-[32px] shadow-lg transform hover:scale-[1.02] transition-transform">
-            <svg className="w-16 h-16 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-black text-white flex flex-col justify-center items-center p-6 sm:p-12 text-center rounded-2xl sm:rounded-[32px] shadow-lg transform hover:scale-[1.02] transition-transform">
+            <svg className="w-8 h-8 sm:w-16 sm:h-16 mb-3 sm:mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <h3 className="text-3xl font-black mb-4 leading-tight">
+            <h3 className="text-lg sm:text-3xl font-black mb-2 sm:mb-4 leading-tight">
               {t("cantFindTitle")}
             </h3>
-            <p className="text-white/80 mb-8 max-w-xs mx-auto">
+            <p className="text-white/80 mb-4 sm:mb-8 max-w-xs mx-auto text-xs sm:text-base">
               {t("cantFindDesc")}
             </p>
             <Link
               href="/help"
-              className="bg-white text-black font-bold py-4 px-8 rounded-full hover:bg-gray-100 transition-colors"
+              className="bg-white text-black font-bold py-2.5 sm:py-4 px-6 sm:px-8 rounded-full hover:bg-gray-100 transition-colors text-xs sm:text-base"
             >
               {t("getInTouch")}
             </Link>
