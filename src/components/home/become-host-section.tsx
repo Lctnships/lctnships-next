@@ -2,6 +2,8 @@ import { Link } from "@/i18n/routing"
 import Image from "next/image"
 import { getTranslations } from "next-intl/server"
 
+const CALENDLY_URL = "https://calendly.com/lcntships/host-onboarding"
+
 export async function BecomeHostSection() {
   const t = await getTranslations("Home")
 
@@ -19,11 +21,15 @@ export async function BecomeHostSection() {
           <h2 className="text-white text-4xl md:text-5xl font-extrabold mb-8 max-w-2xl">
             {t("becomeHostTitle")}
           </h2>
-          <Link href="/studios">
+          <a 
+            href={CALENDLY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <button className="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-colors">
               {t("becomeHostButton")}
             </button>
-          </Link>
+          </a>
         </div>
       </div>
     </section>

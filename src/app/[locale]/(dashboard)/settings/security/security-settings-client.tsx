@@ -61,6 +61,17 @@ export function SecuritySettingsClient({
 
   const passwordStrength = getPasswordStrength(newPassword)
 
+  const formatLocation = (location: string) => {
+    if (!location || location === "Unknown") return t("unknownLocation") || "Unknown"
+    // Strip IPv6-mapped IPv4 prefix
+    const clean = location.replace(/^::ffff:/, "")
+    // Show friendly name for localhost
+    if (clean === "127.0.0.1" || clean === "::1" || clean === "localhost") {
+      return t("localDevice") || "Local"
+    }
+    return clean
+  }
+
   const getDeviceIcon = (type: string) => {
     const icons: Record<string, string> = {
       laptop: "laptop_mac",
@@ -275,7 +286,7 @@ export function SecuritySettingsClient({
                     )}
                   </div>
                   <p className="text-xs md:text-sm text-gray-500 mt-0.5 truncate">
-                    {device.location} • {device.browser}
+                    {formatLocation(device.location)} • {device.browser}
                   </p>
                 </div>
               </div>
