@@ -8,25 +8,40 @@ export async function generateMetadata() {
   return { title: t("metaTitle") }
 }
 
-
 export default async function SecuritySettingsPage() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  // Get user's security settings
-  const { data: userSettings } = await supabase
-    .from("user_settings")
+  // Get two_factor_enabled from users table
+  const { data: userData } = await supabase
+    .from("users")
     .select("two_factor_enabled")
-    .eq("user_id", user.id)
+    .eq("id", user.id)
     .single()
 
-  const twoFactorEnabled = userSettings?.two_factor_enabled ?? false
+  const twoFactorEnabled = userData?.two_factor_enabled ?? false
+
+  // Get real sessions from user_sessions table
+  const { data: sessions } = await supabase
+    .from("user_sessions")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("last_active_at", { ascending: false })
+
+  const devices = (sessions || []).map((session) => ({
+    id: session.id,
+    name: session.device_name || "Unknown Device",
+    type: (session.device_type || "desktop") as "laptop" | "phone" | "desktop" | "tablet",
+    location: session.location || session.ip_address || "Unknown",
+    browser: session.browser || "Unknown Browser",
+    isCurrent: session.is_current ?? false,
+  }))
 
   return (
     <SecuritySettingsClient
-      devices={[]}
+      devices={devices}
       twoFactorEnabled={twoFactorEnabled}
     />
   )

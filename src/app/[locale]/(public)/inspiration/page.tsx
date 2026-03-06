@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { getTranslations } from "next-intl/server"
-import { InspirationGrid } from "./inspiration-grid"
+import { InspirationGallery } from "./inspiration-gallery"
 
 export const metadata = {
   title: "Inspiratie | lcntships",
@@ -30,7 +30,7 @@ export default async function InspirationPage() {
     .order("created_at", { ascending: false })
     .limit(20)
 
-  const inspirationItems: { id: string; title: string; image: string; location: string; aspect?: string }[] = []
+  const inspirationItems: { id: string; title: string; image: string; location: string; studioId?: string; aspect?: string }[] = []
   if (studios) {
     for (const studio of studios) {
       if (studio.images && Array.isArray(studio.images)) {
@@ -41,6 +41,7 @@ export default async function InspirationPage() {
               title: studio.title,
               image: img,
               location: studio.location || "",
+              studioId: studio.id,
             })
           }
         }
@@ -59,9 +60,9 @@ export default async function InspirationPage() {
         <p className="text-gray-500">{t("subtitle")}</p>
       </div>
 
-      {/* Pinterest Masonry Grid */}
+      {/* Pinterest Masonry Grid with Detail View */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 pb-24">
-        <InspirationGrid items={items} />
+        <InspirationGallery items={items} />
       </div>
     </div>
   )

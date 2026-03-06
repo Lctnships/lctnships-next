@@ -1,5 +1,6 @@
 "use client"
 
+import { cn } from "@/lib/utils"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -142,10 +143,10 @@ export function Navbar() {
             </div>
           )}
 
-          {/* Mobile menu */}
+          {/* Mobile menu — hidden on host pages (they use MobileBottomNav) */}
           {mounted ? (
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild className="lg:hidden">
+              <SheetTrigger asChild className={cn("lg:hidden", pathname.startsWith("/host") && "hidden")}>
                 <Button variant="ghost" size="icon">
                   <Menu className="h-5 w-5" />
                 </Button>
@@ -249,7 +250,7 @@ export function Navbar() {
               </SheetContent>
             </Sheet>
           ) : (
-            <Button variant="ghost" size="icon" className="lg:hidden">
+            <Button variant="ghost" size="icon" className={cn("lg:hidden", pathname.startsWith("/host") && "hidden")}>
               <Menu className="h-5 w-5" />
             </Button>
           )}

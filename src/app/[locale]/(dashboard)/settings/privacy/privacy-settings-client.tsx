@@ -100,9 +100,9 @@ export function PrivacySettingsClient({
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-5 md:gap-8">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-2 text-xs md:text-sm">
         <Link href={settingsHref as "/settings"} className="text-gray-500 font-medium">
           {t("breadcrumbSettings")}
         </Link>
@@ -111,21 +111,48 @@ export function PrivacySettingsClient({
       </div>
 
       {/* Page Heading */}
-      <div className="flex flex-col gap-2">
-        <h2 className="text-4xl font-black tracking-tight">{t("heading")}</h2>
-        <p className="text-gray-500 text-lg">
+      <div className="flex flex-col gap-1 md:gap-2">
+        <h2 className="text-2xl md:text-4xl font-black tracking-tight">{t("heading")}</h2>
+        <p className="text-gray-500 text-sm md:text-lg">
           {t("headingDescription")}
         </p>
       </div>
 
       {/* Notifications Section */}
-      <section className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-3 mb-8">
-          <span className="material-symbols-outlined text-black">notifications_active</span>
-          <h3 className="text-2xl font-bold">{t("notificationPreferences")}</h3>
+      <section className="bg-white rounded-2xl md:rounded-[2rem] p-4 md:p-8 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-8">
+          <span className="material-symbols-outlined text-black text-xl md:text-2xl">notifications_active</span>
+          <h3 className="text-base md:text-2xl font-bold">{t("notificationPreferences")}</h3>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile: Card layout */}
+        <div className="md:hidden space-y-4">
+          {notificationTypes.map((type) => (
+            <div key={type.key} className="border border-gray-100 rounded-xl p-3">
+              <p className="font-bold text-sm mb-1">{type.title}</p>
+              <p className="text-xs text-gray-500 mb-3">{type.description}</p>
+              <div className="flex items-center gap-4">
+                {(["email", "sms", "push"] as const).map((channel) => (
+                  <label key={channel} className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={notifications[type.key][channel]}
+                      onChange={(e) =>
+                        updateNotification(type.key, channel, e.target.checked)
+                      }
+                      className="sr-only peer"
+                    />
+                    <div className="relative w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-black" />
+                    <span className="text-[10px] font-bold text-gray-500 uppercase">{channel}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: Table layout */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-gray-100">
@@ -173,16 +200,16 @@ export function PrivacySettingsClient({
       </section>
 
       {/* Privacy Section */}
-      <section className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-3 mb-8">
-          <span className="material-symbols-outlined text-black">visibility</span>
-          <h3 className="text-2xl font-bold">{t("privacySettings")}</h3>
+      <section className="bg-white rounded-2xl md:rounded-[2rem] p-4 md:p-8 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-8">
+          <span className="material-symbols-outlined text-black text-xl md:text-2xl">visibility</span>
+          <h3 className="text-base md:text-2xl font-bold">{t("privacySettings")}</h3>
         </div>
 
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-5 md:gap-8">
           {/* Profile Visibility Dropdown */}
-          <div className="max-w-md">
-            <label className="block text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+          <div className="md:max-w-md">
+            <label className="block text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 md:mb-3">
               {t("profileVisibility")}
             </label>
             <div className="relative">
@@ -191,24 +218,24 @@ export function PrivacySettingsClient({
                 onChange={(e) =>
                   setPrivacy((prev) => ({ ...prev, profileVisibility: e.target.value }))
                 }
-                className="w-full h-14 bg-gray-50 border-none rounded-2xl px-5 appearance-none focus:ring-2 focus:ring-black font-medium"
+                className="w-full h-12 md:h-14 bg-gray-50 border-none rounded-xl md:rounded-2xl px-4 md:px-5 appearance-none focus:ring-2 focus:ring-black font-medium text-sm md:text-base"
               >
                 <option value="public">{t("visibilityPublic")}</option>
                 <option value="marketplace">{t("visibilityMarketplace")}</option>
                 <option value="private">{t("visibilityPrivate")}</option>
               </select>
-              <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+              <span className="material-symbols-outlined absolute right-3 md:right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                 expand_more
               </span>
             </div>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-1.5 md:mt-2 text-xs md:text-sm text-gray-500">
               {t("visibilityDescription")}
             </p>
           </div>
 
           {/* Portfolio Checkbox */}
-          <div className="flex items-start gap-4 p-5 bg-gray-50 rounded-2xl">
-            <div className="flex items-center h-5 mt-1">
+          <div className="flex items-start gap-3 md:gap-4 p-4 md:p-5 bg-gray-50 rounded-xl md:rounded-2xl">
+            <div className="flex items-center h-5 mt-0.5">
               <input
                 id="portfolio-visibility"
                 type="checkbox"
@@ -219,26 +246,26 @@ export function PrivacySettingsClient({
                     showPortfolioToUnregistered: e.target.checked,
                   }))
                 }
-                className="w-6 h-6 rounded border-gray-300 text-black focus:ring-black"
+                className="w-5 h-5 md:w-6 md:h-6 rounded border-gray-300 text-black focus:ring-black"
               />
             </div>
             <label htmlFor="portfolio-visibility" className="flex flex-col cursor-pointer">
-              <span className="font-bold">{t("showPortfolio")}</span>
-              <span className="text-sm text-gray-500">
+              <span className="font-bold text-sm md:text-base">{t("showPortfolio")}</span>
+              <span className="text-xs md:text-sm text-gray-500">
                 {t("showPortfolioDesc")}
               </span>
             </label>
           </div>
 
           {/* Data usage notice */}
-          <div className="p-5 border border-dashed border-gray-200 rounded-2xl">
-            <div className="flex gap-3">
-              <span className="material-symbols-outlined text-gray-500 text-xl">info</span>
-              <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">
+          <div className="p-4 md:p-5 border border-dashed border-gray-200 rounded-xl md:rounded-2xl">
+            <div className="flex gap-2 md:gap-3">
+              <span className="material-symbols-outlined text-gray-500 text-lg md:text-xl">info</span>
+              <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest font-bold">
                 {t("privacyNotice")}
               </p>
             </div>
-            <p className="mt-2 text-sm text-gray-500 leading-normal">
+            <p className="mt-1.5 md:mt-2 text-xs md:text-sm text-gray-500 leading-normal">
               {t("privacyNoticeText")}
             </p>
           </div>
@@ -246,13 +273,13 @@ export function PrivacySettingsClient({
       </section>
 
       {/* Save Action Button */}
-      <div className="flex justify-end pt-4 mb-10">
+      <div className="flex justify-end pt-2 md:pt-4 mb-6 md:mb-10">
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="bg-black hover:bg-gray-800 text-white px-10 py-5 rounded-full font-bold text-lg shadow-lg shadow-black/10 transition-all flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-black hover:bg-gray-800 text-white px-6 py-3 md:px-10 md:py-5 rounded-full font-bold text-sm md:text-lg shadow-lg shadow-black/10 transition-all flex items-center gap-2 md:gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span className="material-symbols-outlined">{isSaving ? "hourglass_empty" : "check_circle"}</span>
+          <span className="material-symbols-outlined text-lg md:text-2xl">{isSaving ? "hourglass_empty" : "check_circle"}</span>
           {isSaving ? (t("saving") || "Saving...") : t("saveButton")}
         </button>
       </div>
