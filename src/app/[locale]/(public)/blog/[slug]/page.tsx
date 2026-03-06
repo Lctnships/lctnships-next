@@ -92,7 +92,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
           <div className="max-w-[760px] mx-auto">
             {/* Header */}
             <header className="mb-12 lg:mb-16">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-[1.1] tracking-[-0.02em] mb-8 font-display">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-[-0.02em] mb-8 font-display">
                 {article.title}
               </h1>
               <div className="flex items-center gap-4 border-y border-gray-100 py-6">

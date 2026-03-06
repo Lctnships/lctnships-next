@@ -73,10 +73,16 @@ export async function PATCH(request: Request) {
 
     updateData.updated_at = new Date().toISOString()
 
-    const { data: settings, error } = await supabase
+    const { error } = await supabase
       .from("users")
       .update(updateData)
       .eq("id", user.id)
+
+    if (error) throw error
+
+    // Fetch updated settings separately to avoid .single() coercion issues
+    const { data: settings, error: fetchError } = await supabase
+      .from("users")
       .select(`
         email_notifications,
         sms_notifications,
@@ -84,9 +90,10 @@ export async function PATCH(request: Request) {
         marketing_emails,
         two_factor_enabled
       `)
-      .single()
+      .eq("id", user.id)
+      .maybeSingle()
 
-    if (error) throw error
+    if (fetchError) throw fetchError
 
     return NextResponse.json({ settings })
   } catch (error: any) {

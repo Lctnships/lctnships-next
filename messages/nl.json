@@ -587,7 +587,10 @@
     "reviewsTitle": "Beoordelingen",
     "reviewsDesc": "Herinneringen om een beoordeling achter te laten na je sessie",
     "visibilityDescription": "Bepaal wie je profiel en contactgegevens kan bekijken.",
-    "saveButton": "Instellingen Opslaan"
+    "saveButton": "Instellingen Opslaan",
+    "saving": "Opslaan...",
+    "saveSuccess": "Instellingen opgeslagen",
+    "saveError": "Opslaan mislukt. Probeer het opnieuw."
   },
   "Security": {
     "title": "Accountbeveiliging",

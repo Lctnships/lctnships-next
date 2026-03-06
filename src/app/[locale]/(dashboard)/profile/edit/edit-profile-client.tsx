@@ -144,14 +144,38 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
   const locale = useLocale()
   const pathname = usePathname()
   const isHost = profile.user_type === "host" || profile.user_type === "both"
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false)
+  const [showCurrencyMenu, setShowCurrencyMenu] = useState(false)
+  const [selectedCurrency, setSelectedCurrency] = useState(() => {
+    if (typeof window !== "undefined") return localStorage.getItem("preferred_currency") || "EUR"
+    return "EUR"
+  })
 
-  const handleChangeLanguage = () => {
-    const locales = ["nl", "en", "es"]
-    const labels: Record<string, string> = { nl: "Nederlands", en: "English", es: "Espanol" }
-    const currentIdx = locales.indexOf(locale)
-    const nextLocale = locales[(currentIdx + 1) % locales.length] as "nl" | "en" | "es"
-    router.replace(pathname, { locale: nextLocale })
-    toast.success(`Taal gewijzigd naar ${labels[nextLocale]}`)
+  const languageOptions = [
+    { code: "nl" as const, label: "Nederlands" },
+    { code: "en" as const, label: "English" },
+    { code: "es" as const, label: "Espanol" },
+  ]
+
+  const currencyOptions = [
+    { code: "EUR", symbol: "\u20ac", label: "Euro" },
+    { code: "USD", symbol: "$", label: "US Dollar" },
+    { code: "GBP", symbol: "\u00a3", label: "British Pound" },
+  ]
+
+  const handleSelectLanguage = (langCode: "nl" | "en" | "es") => {
+    const label = languageOptions.find(l => l.code === langCode)?.label
+    router.replace(pathname, { locale: langCode })
+    setShowLanguageMenu(false)
+    toast.success(`Taal gewijzigd naar ${label}`)
+  }
+
+  const handleSelectCurrency = (currencyCode: string) => {
+    setSelectedCurrency(currencyCode)
+    localStorage.setItem("preferred_currency", currencyCode)
+    setShowCurrencyMenu(false)
+    const label = currencyOptions.find(c => c.code === currencyCode)?.label
+    toast.success(`Valuta gewijzigd naar ${label}`)
   }
 
   const handleDeleteAccount = async () => {
@@ -330,29 +354,69 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     {t("accountChange")}
                   </button>
                 </div>
-                <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl">
-                  <div>
-                    <p className="font-bold">{t("accountLanguage")}</p>
-                    <p className="text-sm text-gray-500">{{ nl: "Nederlands", en: "English", es: "Espanol" }[locale] || locale}</p>
+                <div className="relative p-6 bg-gray-50 rounded-2xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-bold">{t("accountLanguage")}</p>
+                      <p className="text-sm text-gray-500">{{ nl: "Nederlands", en: "English", es: "Espanol" }[locale] || locale}</p>
+                    </div>
+                    <button
+                      onClick={() => { setShowLanguageMenu(!showLanguageMenu); setShowCurrencyMenu(false) }}
+                      className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all"
+                    >
+                      {t("accountChange")}
+                    </button>
                   </div>
-                  <button
-                    onClick={handleChangeLanguage}
-                    className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all"
-                  >
-                    {t("accountChange")}
-                  </button>
+                  {showLanguageMenu && (
+                    <div className="mt-4 bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                      {languageOptions.map((lang) => (
+                        <button
+                          key={lang.code}
+                          onClick={() => handleSelectLanguage(lang.code)}
+                          className={`w-full text-left px-5 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-between ${
+                            locale === lang.code ? "font-bold bg-gray-50" : ""
+                          }`}
+                        >
+                          {lang.label}
+                          {locale === lang.code && (
+                            <span className="material-symbols-outlined text-black text-lg">check</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl">
-                  <div>
-                    <p className="font-bold">{t("accountCurrency")}</p>
-                    <p className="text-sm text-gray-500">EUR (€)</p>
+                <div className="relative p-6 bg-gray-50 rounded-2xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-bold">{t("accountCurrency")}</p>
+                      <p className="text-sm text-gray-500">{selectedCurrency} ({currencyOptions.find(c => c.code === selectedCurrency)?.symbol})</p>
+                    </div>
+                    <button
+                      onClick={() => { setShowCurrencyMenu(!showCurrencyMenu); setShowLanguageMenu(false) }}
+                      className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all"
+                    >
+                      {t("accountChange")}
+                    </button>
                   </div>
-                  <button
-                    onClick={() => toast.info("Valuta wijzigen komt binnenkort beschikbaar.")}
-                    className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all"
-                  >
-                    {t("accountChange")}
-                  </button>
+                  {showCurrencyMenu && (
+                    <div className="mt-4 bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                      {currencyOptions.map((currency) => (
+                        <button
+                          key={currency.code}
+                          onClick={() => handleSelectCurrency(currency.code)}
+                          className={`w-full text-left px-5 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-between ${
+                            selectedCurrency === currency.code ? "font-bold bg-gray-50" : ""
+                          }`}
+                        >
+                          {currency.symbol} {currency.label} ({currency.code})
+                          {selectedCurrency === currency.code && (
+                            <span className="material-symbols-outlined text-black text-lg">check</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center justify-between p-6 bg-red-50 rounded-2xl">
                   <div>

@@ -67,14 +67,21 @@ export async function PATCH(request: Request) {
 
     updateData.updated_at = new Date().toISOString()
 
-    const { data: profile, error } = await supabase
+    const { error } = await supabase
       .from("users")
       .update(updateData)
       .eq("id", user.id)
-      .select()
-      .single()
 
     if (error) throw error
+
+    // Fetch updated profile separately to avoid .single() coercion issues
+    const { data: profile, error: fetchError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", user.id)
+      .maybeSingle()
+
+    if (fetchError) throw fetchError
 
     return NextResponse.json({ profile })
   } catch (error: any) {

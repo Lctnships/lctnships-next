@@ -587,7 +587,10 @@
     "reviewsTitle": "Reviews",
     "reviewsDesc": "Reminders to leave a review after your session",
     "visibilityDescription": "Determine who can view your profile and contact details.",
-    "saveButton": "Save Settings"
+    "saveButton": "Save Settings",
+    "saving": "Saving...",
+    "saveSuccess": "Settings saved successfully",
+    "saveError": "Failed to save settings. Please try again."
   },
   "Security": {
     "title": "Account Security",

@@ -211,7 +211,7 @@ export default function OnboardingBasicsPage() {
           </div>
           <button
             onClick={handleContinue}
-            disabled={!selectedType || !studioName || !isAddressValid}
+            disabled={!selectedType || !studioName}
             className="bg-black hover:bg-black/90 text-white px-10 py-4 rounded-full font-bold shadow-lg shadow-primary/25 transition-all flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Verder naar Media
