@@ -90,8 +90,8 @@ export default async function StudiosPage(props: StudiosPageProps) {
   return (
     <div className="bg-[#fcfcfc]">
       {/* Search Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 mb-2 sm:mb-4">
-        <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-8 mb-0 sm:mb-4">
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[48px] sm:min-h-[200px]"><div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
           <MarketplaceSearch />
         </Suspense>
       </section>
@@ -104,7 +104,7 @@ export default async function StudiosPage(props: StudiosPageProps) {
         </section>
       </StickyCategoryBar>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 sm:mb-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-6 sm:mb-20">
         <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
           <StudioPlaylists />
         </Suspense>
