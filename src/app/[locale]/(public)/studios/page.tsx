@@ -90,14 +90,14 @@ export default async function StudiosPage(props: StudiosPageProps) {
   return (
     <div className="bg-[#fcfcfc]">
       {/* Search Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-8 mb-0 sm:mb-4">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-0 sm:py-8 mb-0 sm:mb-4">
         <Suspense fallback={<div className="flex items-center justify-center min-h-[48px] sm:min-h-[200px]"><div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
           <MarketplaceSearch />
         </Suspense>
       </section>
 
       <StickyCategoryBar>
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-3">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-0 sm:py-3">
           <Suspense fallback={<div className="flex items-center justify-center min-h-[48px]"><div className="animate-spin h-6 w-6 border-3 border-black border-t-transparent rounded-full" /></div>}>
             <CategoryFilter />
           </Suspense>

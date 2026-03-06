@@ -31,14 +31,14 @@ export function CategoryFilter() {
   }
 
   return (
-    <div className="flex items-center sm:justify-center gap-2 sm:gap-4 overflow-x-auto pt-2 pb-2 hide-scrollbar">
+    <div className="flex items-center sm:justify-center gap-2 sm:gap-4 overflow-x-auto pt-1 pb-1 sm:pt-2 sm:pb-2 hide-scrollbar">
       {categoryKeys.map((category) => {
         const isActive = currentType === category.id
         return (
           <button
             key={category.id}
             onClick={() => handleCategoryClick(category.id)}
-            className={`flex flex-col items-center gap-1.5 sm:gap-2 min-w-[70px] sm:min-w-[90px] px-3 sm:px-4 py-2.5 sm:py-3 rounded-[2rem] transition-all group ${
+            className={`flex flex-col items-center gap-1 sm:gap-2 min-w-[70px] sm:min-w-[90px] px-3 sm:px-4 py-1.5 sm:py-3 rounded-[2rem] transition-all group ${
               isActive
                 ? "bg-white shadow-sm border border-gray-100 ring-2 ring-black"
                 : "hover:bg-white"
