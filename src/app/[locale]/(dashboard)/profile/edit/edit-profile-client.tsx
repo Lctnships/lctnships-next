@@ -175,22 +175,23 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="flex flex-col lg:flex-row gap-12">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
         {/* Left Sidebar - Navigation */}
-        <aside className="w-full lg:w-64 space-y-2">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 px-4">{t("settingsLabel")}</h3>
-          <nav className="space-y-1">
+        <aside className="w-full lg:w-64">
+          <h3 className="hidden lg:block text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 px-4">{t("settingsLabel")}</h3>
+          {/* Mobile: horizontal scrollable tabs */}
+          <nav className="flex lg:flex-col gap-2 lg:gap-1 overflow-x-auto no-scrollbar pb-2 lg:pb-0">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-6 py-4 rounded-full font-medium transition-all text-left ${
+                className={`flex items-center gap-2 lg:gap-3 px-4 py-2.5 lg:px-6 lg:py-4 rounded-full font-medium transition-all whitespace-nowrap text-sm lg:text-base lg:text-left ${
                   activeTab === tab.id
                     ? "bg-white shadow-sm text-gray-900 font-bold"
-                    : "text-gray-500 hover:bg-white/50"
+                    : "text-gray-500 hover:bg-white/50 bg-gray-50 lg:bg-transparent"
                 }`}
               >
-                <span className="material-symbols-outlined">{tab.icon}</span>
+                <span className="material-symbols-outlined text-[20px] lg:text-[24px]">{tab.icon}</span>
                 {tab.label}
               </button>
             ))}
@@ -198,13 +199,13 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
         </aside>
 
         {/* Main Content */}
-        <div className="flex-1 space-y-10">
+        <div className="flex-1 space-y-6 lg:space-y-10">
           {activeTab === "profile" && (
-            <section className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm">
-              <h1 className="text-3xl font-bold mb-8">{t("heading")}</h1>
+            <section className="bg-white rounded-2xl lg:rounded-3xl p-5 sm:p-6 lg:p-10 border border-gray-100 shadow-sm">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-5 lg:mb-8">{t("heading")}</h1>
 
               {/* Avatar Upload */}
-              <div className="flex flex-col items-center justify-center mb-12">
+              <div className="flex flex-col items-center justify-center mb-8 lg:mb-12">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -217,12 +218,12 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                   onClick={handleAvatarClick}
                 >
                   {avatarUrl ? (
-                    <div className="relative size-40">
+                    <div className="relative size-28 sm:size-32 lg:size-40">
                       <div
-                        className="size-40 rounded-full bg-cover bg-center border-4 border-white shadow-lg"
+                        className="size-28 sm:size-32 lg:size-40 rounded-full bg-cover bg-center border-4 border-white shadow-lg"
                         style={{ backgroundImage: `url("${avatarUrl}")` }}
                       />
-                      <div className="absolute inset-0 size-40 rounded-full bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                      <div className="absolute inset-0 size-28 sm:size-32 lg:size-40 rounded-full bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
                         {isUploading ? (
                           <Loader2 className="h-8 w-8 text-white animate-spin" />
                         ) : (
@@ -233,7 +234,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                       </div>
                     </div>
                   ) : (
-                    <div className="size-40 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center bg-gray-50 transition-all hover:bg-gray-100">
+                    <div className="size-28 sm:size-32 lg:size-40 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center bg-gray-50 transition-all hover:bg-gray-100">
                       {isUploading ? (
                         <Loader2 className="h-8 w-8 text-gray-400 animate-spin" />
                       ) : (
@@ -257,7 +258,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     name="full_name"
                     value={formData.full_name}
                     onChange={handleChange}
-                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all"
+                    className="w-full px-4 py-3 lg:px-6 lg:py-4 rounded-2xl lg:rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all text-sm lg:text-base"
                   />
                 </div>
                 <div className="md:col-span-2 space-y-2">
@@ -268,7 +269,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     value={formData.location}
                     onChange={handleChange}
                     placeholder={t("fieldLocationPlaceholder")}
-                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all"
+                    className="w-full px-4 py-3 lg:px-6 lg:py-4 rounded-2xl lg:rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all text-sm lg:text-base"
                   />
                 </div>
                 <div className="md:col-span-2 space-y-2">
@@ -279,7 +280,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     onChange={handleChange}
                     rows={4}
                     placeholder={t("fieldBioPlaceholder")}
-                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all resize-none"
+                    className="w-full px-4 py-3 lg:px-6 lg:py-4 rounded-2xl lg:rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all resize-none text-sm lg:text-base"
                   />
                 </div>
                 <div className="md:col-span-2 space-y-2">
@@ -290,23 +291,23 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="+31 6 12345678"
-                    className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all"
+                    className="w-full px-4 py-3 lg:px-6 lg:py-4 rounded-2xl lg:rounded-3xl bg-gray-50 border-transparent focus:border-black focus:ring-0 transition-all text-sm lg:text-base"
                   />
                 </div>
               </div>
 
               {/* Save Button */}
-              <div className="mt-12 flex justify-end gap-4">
+              <div className="mt-8 lg:mt-12 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
                 <Link
                   href="/profile"
-                  className="px-8 py-4 rounded-full border border-gray-200 font-bold hover:bg-gray-50 transition-all"
+                  className="px-6 py-3 lg:px-8 lg:py-4 rounded-full border border-gray-200 font-bold hover:bg-gray-50 transition-all text-center text-sm lg:text-base"
                 >
                   {t("cancel")}
                 </Link>
                 <button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="px-12 py-4 rounded-full bg-gray-900 text-white font-bold text-lg hover:bg-gray-800 transition-all shadow-xl shadow-black/10 disabled:opacity-50"
+                  className="px-8 py-3 lg:px-12 lg:py-4 rounded-full bg-gray-900 text-white font-bold text-sm lg:text-lg hover:bg-gray-800 transition-all shadow-xl shadow-black/10 disabled:opacity-50"
                 >
                   {isSaving ? t("saving") : t("save")}
                 </button>
@@ -315,53 +316,53 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
           )}
 
           {activeTab === "account" && (
-            <section className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm">
-              <h1 className="text-3xl font-bold mb-8">{t("accountHeading")}</h1>
-              <div className="space-y-6">
-                <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl">
+            <section className="bg-white rounded-2xl lg:rounded-3xl p-5 sm:p-6 lg:p-10 border border-gray-100 shadow-sm">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-5 lg:mb-8">{t("accountHeading")}</h1>
+              <div className="space-y-4 lg:space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 lg:p-6 bg-gray-50 rounded-xl lg:rounded-2xl">
                   <div>
                     <p className="font-bold">{t("accountEmail")}</p>
                     <p className="text-sm text-gray-500">{profile.email}</p>
                   </div>
                   <button
                     onClick={() => toast.info("E-mailadres wijzigen is momenteel niet beschikbaar. Neem contact op met support.")}
-                    className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all"
+                    className="px-4 lg:px-6 py-2 border border-gray-200 rounded-full text-xs lg:text-sm font-bold hover:bg-white transition-all shrink-0"
                   >
                     {t("accountChange")}
                   </button>
                 </div>
-                <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 lg:p-6 bg-gray-50 rounded-xl lg:rounded-2xl">
                   <div>
-                    <p className="font-bold">{t("accountLanguage")}</p>
-                    <p className="text-sm text-gray-500">{{ nl: "Nederlands", en: "English", es: "Espanol" }[locale] || locale}</p>
+                    <p className="font-bold text-sm lg:text-base">{t("accountLanguage")}</p>
+                    <p className="text-xs lg:text-sm text-gray-500">{{ nl: "Nederlands", en: "English", es: "Espanol" }[locale] || locale}</p>
                   </div>
                   <button
                     onClick={handleChangeLanguage}
-                    className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all"
+                    className="px-4 lg:px-6 py-2 border border-gray-200 rounded-full text-xs lg:text-sm font-bold hover:bg-white transition-all shrink-0"
                   >
                     {t("accountChange")}
                   </button>
                 </div>
-                <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 lg:p-6 bg-gray-50 rounded-xl lg:rounded-2xl">
                   <div>
-                    <p className="font-bold">{t("accountCurrency")}</p>
-                    <p className="text-sm text-gray-500">EUR (€)</p>
+                    <p className="font-bold text-sm lg:text-base">{t("accountCurrency")}</p>
+                    <p className="text-xs lg:text-sm text-gray-500">EUR (€)</p>
                   </div>
                   <button
                     onClick={() => toast.info("Valuta wijzigen komt binnenkort beschikbaar.")}
-                    className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all"
+                    className="px-4 lg:px-6 py-2 border border-gray-200 rounded-full text-xs lg:text-sm font-bold hover:bg-white transition-all shrink-0"
                   >
                     {t("accountChange")}
                   </button>
                 </div>
-                <div className="flex items-center justify-between p-6 bg-red-50 rounded-2xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 lg:p-6 bg-red-50 rounded-xl lg:rounded-2xl">
                   <div>
-                    <p className="font-bold text-red-600">{t("accountDeleteAccount")}</p>
-                    <p className="text-sm text-red-500">{t("accountDeleteDesc")}</p>
+                    <p className="font-bold text-red-600 text-sm lg:text-base">{t("accountDeleteAccount")}</p>
+                    <p className="text-xs lg:text-sm text-red-500">{t("accountDeleteDesc")}</p>
                   </div>
                   <button
                     onClick={handleDeleteAccount}
-                    className="px-6 py-2 bg-red-100 text-red-600 rounded-full text-sm font-bold hover:bg-red-200 transition-all"
+                    className="px-4 lg:px-6 py-2 bg-red-100 text-red-600 rounded-full text-xs lg:text-sm font-bold hover:bg-red-200 transition-all shrink-0"
                   >
                     {t("accountDelete")}
                   </button>
@@ -371,11 +372,11 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
           )}
 
           {activeTab === "payouts" && isHost && (
-            <section className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm">
-              <h1 className="text-3xl font-bold mb-8">{t("payoutsHeading")}</h1>
-              <div className="text-center py-12">
-                <span className="material-symbols-outlined text-6xl text-gray-300 mb-4">account_balance</span>
-                <h3 className="text-xl font-bold mb-2">{t("payoutsNoMethod")}</h3>
+            <section className="bg-white rounded-2xl lg:rounded-3xl p-5 sm:p-6 lg:p-10 border border-gray-100 shadow-sm">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-5 lg:mb-8">{t("payoutsHeading")}</h1>
+              <div className="text-center py-8 lg:py-12">
+                <span className="material-symbols-outlined text-5xl lg:text-6xl text-gray-300 mb-3 lg:mb-4">account_balance</span>
+                <h3 className="text-lg lg:text-xl font-bold mb-2">{t("payoutsNoMethod")}</h3>
                 <p className="text-gray-500 mb-6">{t("payoutsNoMethodDesc")}</p>
                 <button className="px-8 py-3 bg-black text-white rounded-full font-bold hover:bg-gray-800 transition-all">
                   {t("payoutsAddMethod")}
@@ -385,33 +386,33 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
           )}
 
           {activeTab === "security" && (
-            <section className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm">
-              <h1 className="text-3xl font-bold mb-8">{t("securityHeading")}</h1>
-              <div className="space-y-6">
-                <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl">
+            <section className="bg-white rounded-2xl lg:rounded-3xl p-5 sm:p-6 lg:p-10 border border-gray-100 shadow-sm">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-5 lg:mb-8">{t("securityHeading")}</h1>
+              <div className="space-y-4 lg:space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 lg:p-6 bg-gray-50 rounded-xl lg:rounded-2xl">
                   <div>
-                    <p className="font-bold">{t("securityPassword")}</p>
-                    <p className="text-sm text-gray-500">{t("securityLastChanged")}</p>
+                    <p className="font-bold text-sm lg:text-base">{t("securityPassword")}</p>
+                    <p className="text-xs lg:text-sm text-gray-500">{t("securityLastChanged")}</p>
                   </div>
-                  <button className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all">
+                  <button className="px-4 lg:px-6 py-2 border border-gray-200 rounded-full text-xs lg:text-sm font-bold hover:bg-white transition-all shrink-0">
                     {t("accountChange")}
                   </button>
                 </div>
-                <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 lg:p-6 bg-gray-50 rounded-xl lg:rounded-2xl">
                   <div>
-                    <p className="font-bold">{t("securityTwoFactor")}</p>
-                    <p className="text-sm text-gray-500">{t("securityTwoFactorDesc")}</p>
+                    <p className="font-bold text-sm lg:text-base">{t("securityTwoFactor")}</p>
+                    <p className="text-xs lg:text-sm text-gray-500">{t("securityTwoFactorDesc")}</p>
                   </div>
-                  <button className="px-6 py-2 bg-black text-white rounded-full text-sm font-bold hover:bg-gray-800 transition-all">
+                  <button className="px-4 lg:px-6 py-2 bg-black text-white rounded-full text-xs lg:text-sm font-bold hover:bg-gray-800 transition-all shrink-0">
                     {t("securityEnable")}
                   </button>
                 </div>
-                <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 lg:p-6 bg-gray-50 rounded-xl lg:rounded-2xl">
                   <div>
-                    <p className="font-bold">{t("securityActiveSessions")}</p>
-                    <p className="text-sm text-gray-500">{t("securityActiveSessionsDesc")}</p>
+                    <p className="font-bold text-sm lg:text-base">{t("securityActiveSessions")}</p>
+                    <p className="text-xs lg:text-sm text-gray-500">{t("securityActiveSessionsDesc")}</p>
                   </div>
-                  <button className="px-6 py-2 border border-gray-200 rounded-full text-sm font-bold hover:bg-white transition-all">
+                  <button className="px-4 lg:px-6 py-2 border border-gray-200 rounded-full text-xs lg:text-sm font-bold hover:bg-white transition-all shrink-0">
                     {t("securityManage")}
                   </button>
                 </div>
@@ -420,8 +421,8 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
           )}
         </div>
 
-        {/* Right Sidebar - Live Preview */}
-        <aside className="w-full lg:w-[320px] space-y-6">
+        {/* Right Sidebar - Live Preview (hidden on mobile) */}
+        <aside className="hidden lg:block w-[320px] space-y-6">
           <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 px-2">{t("previewHeading")}</h3>
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-lg overflow-hidden">
             <div className="flex flex-col items-center text-center">
