@@ -41,8 +41,8 @@ export function StickyCategoryBar({ children }: { children: React.ReactNode }) {
     <div
       ref={ref}
       className={cn(
-        "sticky top-16 md:top-20 z-40 bg-[#fcfcfc] transition-shadow duration-200",
-        isStuck && "shadow-[0_2px_8px_rgba(0,0,0,0.08)] border-b border-gray-100"
+        "sticky top-16 md:top-20 z-40 bg-white border-b border-gray-200 transition-shadow duration-200",
+        isStuck && "shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
       )}
     >
       {children}

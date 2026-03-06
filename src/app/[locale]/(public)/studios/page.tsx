@@ -89,22 +89,24 @@ export default async function StudiosPage(props: StudiosPageProps) {
 
   return (
     <div className="bg-[#fcfcfc]">
-      {/* Search Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-0 sm:py-8 mb-0 sm:mb-4">
-        <Suspense fallback={<div className="flex items-center justify-center min-h-[48px] sm:min-h-[200px]"><div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
-          <MarketplaceSearch />
-        </Suspense>
-      </section>
+      {/* Search + Category Filter — one visual group like Airbnb */}
+      <div className="bg-white">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-2 sm:pt-8 sm:pb-4">
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[48px] sm:min-h-[200px]"><div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
+            <MarketplaceSearch />
+          </Suspense>
+        </section>
+      </div>
 
       <StickyCategoryBar>
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-0 sm:py-3">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-1 sm:py-2">
           <Suspense fallback={<div className="flex items-center justify-center min-h-[48px]"><div className="animate-spin h-6 w-6 border-3 border-black border-t-transparent rounded-full" /></div>}>
             <CategoryFilter />
           </Suspense>
         </section>
       </StickyCategoryBar>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-6 sm:mb-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 mt-6 sm:mt-10 mb-6 sm:mb-20">
         <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
           <StudioPlaylists />
         </Suspense>
