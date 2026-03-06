@@ -19,15 +19,13 @@ export function StickyCategoryBar({ children }: { children: React.ReactNode }) {
       { threshold: 0, rootMargin: "-65px 0px 0px 0px" }
     )
 
-    // Create a sentinel element right before the sticky element
+    // Place a sentinel element BEFORE the sticky element in the DOM
+    // so we can detect when the bar reaches its sticky position
     const sentinel = document.createElement("div")
     sentinel.style.height = "1px"
     sentinel.style.width = "100%"
-    sentinel.style.position = "absolute"
-    sentinel.style.top = "-1px"
     sentinel.style.pointerEvents = "none"
-    el.style.position = "relative"
-    el.prepend(sentinel)
+    el.parentNode?.insertBefore(sentinel, el)
 
     observer.observe(sentinel)
 
@@ -41,8 +39,10 @@ export function StickyCategoryBar({ children }: { children: React.ReactNode }) {
     <div
       ref={ref}
       className={cn(
-        "sticky top-16 md:top-20 z-40 bg-white border-b border-gray-200 transition-shadow duration-200",
-        isStuck && "shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+        "sticky top-16 md:top-20 z-40 transition-all duration-200",
+        isStuck
+          ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] border-b border-gray-200"
+          : "bg-transparent"
       )}
     >
       {children}

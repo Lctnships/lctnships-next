@@ -89,17 +89,16 @@ export default async function StudiosPage(props: StudiosPageProps) {
 
   return (
     <div className="bg-[#fcfcfc]">
-      {/* Search + Category Filter — one visual group like Airbnb */}
-      <div className="bg-white">
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-2 sm:pt-8 sm:pb-4">
-          <Suspense fallback={<div className="flex items-center justify-center min-h-[48px] sm:min-h-[200px]"><div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
-            <MarketplaceSearch />
-          </Suspense>
-        </section>
-      </div>
+      {/* Search — compact pill on mobile, full bar on desktop */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-1 sm:pt-8 sm:pb-4">
+        <Suspense fallback={<div className="flex items-center justify-center min-h-[48px] sm:min-h-[80px]"><div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
+          <MarketplaceSearch />
+        </Suspense>
+      </section>
 
+      {/* Category filter — sticks below navbar on scroll */}
       <StickyCategoryBar>
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-1 sm:py-2">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-0.5 sm:py-2">
           <Suspense fallback={<div className="flex items-center justify-center min-h-[48px]"><div className="animate-spin h-6 w-6 border-3 border-black border-t-transparent rounded-full" /></div>}>
             <CategoryFilter />
           </Suspense>
