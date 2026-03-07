@@ -60,7 +60,7 @@ export default function ReEngagementEmail({
     <Html>
       <Head />
       <Preview>
-        We miss your creative energy, {userName} — here's {discountPercent} off
+        We miss your creative energy, {userName} — here&apos;s {discountPercent} off
         your next booking
       </Preview>
       <Body style={main}>
@@ -87,8 +87,8 @@ export default function ReEngagementEmail({
             />
 
             <Text style={heroQuote}>
-              There's a unique rhythm to your creative process, and we've
-              noticed your seat has been empty lately. The right space doesn't
+              There&apos;s a unique rhythm to your creative process, and we&apos;ve
+              noticed your seat has been empty lately. The right space doesn&apos;t
               just hold your tools—it breathes life into your most daring ideas.
             </Text>
           </Section>
@@ -128,7 +128,7 @@ export default function ReEngagementEmail({
               <Text style={giftIcon}>🎁</Text>
               <Heading style={voucherTitle}>A gift for your return</Heading>
               <Text style={voucherText}>
-                We'd love to see what you create next. Use this code at checkout
+                We&apos;d love to see what you create next. Use this code at checkout
                 for {discountPercent} off your next studio booking.
               </Text>
               <Section style={codeBox}>
@@ -170,7 +170,7 @@ export default function ReEngagementEmail({
               creator.
             </Text>
             <Text style={footerSmall}>
-              You're receiving this because you're a member of the lcntships
+              You&apos;re receiving this because you&apos;re a member of the lcntships
               creative community.{" "}
               <Link href={`${baseUrl}/unsubscribe`} style={unsubLink}>
                 Unsubscribe

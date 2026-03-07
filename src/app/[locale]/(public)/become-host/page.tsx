@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server"
 import { Link } from "@/i18n/routing"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Sparkles, Camera, Mic, Music, Check, Calendar } from "lucide-react"
+import { Sparkles, Camera, Mic, Music, Check, Calendar } from "lucide-react"
 
 const CALENDLY_URL = "https://calendly.com/lcntships/host-onboarding"
 

@@ -5,6 +5,28 @@ import { formatRelativeDate } from "@/lib/utils/format-date"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { getTranslations } from "next-intl/server"
 
+interface DashboardProfile {
+  id: string
+  full_name?: string
+  [key: string]: unknown
+}
+
+interface DashboardBooking {
+  id: string
+  start_datetime: string
+  status: "pending" | "confirmed" | "cancelled" | "completed" | "paid" | "refunded"
+  studio?: { title?: string; city?: string }
+  [key: string]: unknown
+}
+
+interface DashboardProject {
+  id: string
+  title: string
+  project_type?: string
+  status: "active" | "completed" | "archived" | "pending" | "confirmed" | "cancelled" | "paid" | "refunded"
+  [key: string]: unknown
+}
+
 export async function generateMetadata() {
   const t = await getTranslations("Dashboard")
   return { title: t("metaTitle") }
@@ -50,9 +72,9 @@ export default async function DashboardPage() {
       .eq("user_id", user.id),
   ])
 
-  const profile = profileData as any
-  const upcomingBookings = upcomingBookingsData as any[] | null
-  const activeProjects = activeProjectsData as any[] | null
+  const profile = profileData as DashboardProfile | null
+  const upcomingBookings = upcomingBookingsData as DashboardBooking[] | null
+  const activeProjects = activeProjectsData as DashboardProject[] | null
 
   const firstName = profile?.full_name?.split(" ")[0] || user.user_metadata?.full_name?.split(" ")[0] || user.email?.split("@")[0] || t("welcomeFallback")
 

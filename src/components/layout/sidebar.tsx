@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { useUser } from "@/hooks/use-user"
 import {
@@ -34,7 +34,10 @@ export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const { user, profile, signOut } = useUser()
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "true"
+  })
   const t = useTranslations("Navigation")
 
   const renterNavItems = [
@@ -61,11 +64,6 @@ export function Sidebar() {
 
   const isHost = profile?.user_type === "host" || profile?.user_type === "both"
   const isInHostMode = pathname.startsWith("/host")
-
-  useEffect(() => {
-    const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY)
-    if (stored === "true") setCollapsed(true)
-  }, [])
 
   const toggleCollapsed = () => {
     const next = !collapsed

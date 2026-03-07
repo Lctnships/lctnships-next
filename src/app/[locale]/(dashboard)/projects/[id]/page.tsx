@@ -3,6 +3,17 @@ import { redirect, notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 import { ProjectWorkspaceClient } from "./project-workspace-client"
 
+interface BookingStudioRelation {
+  title?: string
+  location?: string
+}
+
+interface MemberUserRelation {
+  id: string
+  full_name?: string
+  avatar_url?: string
+}
+
 export async function generateMetadata() {
   const t = await getTranslations("ProjectWorkspace")
   return {
@@ -56,8 +67,8 @@ export default async function ProjectWorkspacePage({
 
   const bookingsData = (bookings || []).map((b) => ({
     id: b.id,
-    studio_title: (b.studio as any)?.title || "Studio",
-    studio_location: (b.studio as any)?.location || "",
+    studio_title: (b.studio as unknown as BookingStudioRelation)?.title || "Studio",
+    studio_location: (b.studio as unknown as BookingStudioRelation)?.location || "",
     date: b.start_datetime,
     start_time: new Date(b.start_datetime).toLocaleTimeString(dateLocale, { hour: "numeric", minute: "2-digit" }),
     end_time: new Date(b.end_datetime).toLocaleTimeString(dateLocale, { hour: "numeric", minute: "2-digit" }),
@@ -65,10 +76,10 @@ export default async function ProjectWorkspacePage({
   }))
 
   const teamData = (members || []).map((m) => ({
-    id: (m.user as any)?.id,
-    full_name: (m.user as any)?.full_name || "Team Member",
+    id: (m.user as unknown as MemberUserRelation)?.id,
+    full_name: (m.user as unknown as MemberUserRelation)?.full_name || "Team Member",
     role: m.role,
-    avatar_url: (m.user as any)?.avatar_url,
+    avatar_url: (m.user as unknown as MemberUserRelation)?.avatar_url,
     is_online: false,
   }))
 

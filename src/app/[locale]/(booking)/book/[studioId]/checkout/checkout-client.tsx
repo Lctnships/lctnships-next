@@ -129,7 +129,7 @@ export function CheckoutClient({
           status: "pending",
           payment_status: "awaiting_payment",
           notes: formData.specialRequests || null,
-        } as any)
+        })
         .select()
         .single()
 
@@ -140,7 +140,7 @@ export function CheckoutClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          bookingId: (booking as any).id,
+          bookingId: booking.id,
           studioId: studio.id,
           studioName: studio.title,
           totalAmount: calculations.total,
@@ -163,9 +163,9 @@ export function CheckoutClient({
       } else {
         throw new Error("Geen checkout URL ontvangen")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Booking error:", err)
-      setError(err.message || "Er is iets misgegaan. Probeer het opnieuw.")
+      setError(err instanceof Error ? err.message : "Er is iets misgegaan. Probeer het opnieuw.")
       setIsSubmitting(false)
     }
   }

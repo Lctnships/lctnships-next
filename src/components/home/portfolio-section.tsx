@@ -52,7 +52,7 @@ export async function PortfolioSection() {
 
       <div className="columns-2 md:columns-4 gap-3 md:gap-4">
         {images.map((img, index) => {
-          const aspect = (img as any).aspect || defaultAspects[index % defaultAspects.length]
+          const aspect = ("aspect" in img ? img.aspect : undefined) || defaultAspects[index % defaultAspects.length]
           return (
             <div
               key={index}

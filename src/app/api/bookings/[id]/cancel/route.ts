@@ -58,7 +58,8 @@ export async function POST(request: Request, { params }: RouteParams) {
     let refundAmount = 0
     let refundPercentage = 0
 
-    const policy = (booking.studio as any)?.cancellation_policy || "flexible"
+    const studioData = booking.studio as { title?: string; cancellation_policy?: string } | null
+    const policy = studioData?.cancellation_policy || "flexible"
 
     if (policy === "flexible") {
       // Full refund up to 24 hours before
@@ -96,7 +97,7 @@ export async function POST(request: Request, { params }: RouteParams) {
           payment_intent: booking.stripe_payment_id,
           amount: Math.round(refundAmount * 100), // Convert to cents
         })
-      } catch (stripeError: any) {
+      } catch (stripeError: unknown) {
         console.error("Stripe refund error:", stripeError)
         // Continue with cancellation even if refund fails
       }
@@ -127,7 +128,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       p_user_id: notifyUserId,
       p_type: "booking_cancelled",
       p_title: "Booking Cancelled",
-      p_message: `A booking at ${(booking.studio as any)?.title} has been cancelled by the ${cancelledBy}`,
+      p_message: `A booking at ${studioData?.title} has been cancelled by the ${cancelledBy}`,
       p_link: `/bookings/${id}`,
     })
 
@@ -139,10 +140,10 @@ export async function POST(request: Request, { params }: RouteParams) {
         amount: refundAmount,
       },
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error cancelling booking:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to cancel booking" },
+      { error: error instanceof Error ? error.message : "Failed to cancel booking" },
       { status: 500 }
     )
   }

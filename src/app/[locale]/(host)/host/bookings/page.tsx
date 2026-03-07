@@ -8,7 +8,7 @@ import { StatusBadge } from "@/components/shared/status-badge"
 import { UserAvatar } from "@/components/shared/user-avatar"
 import { Calendar, Check, X } from "lucide-react"
 import { Link } from "@/i18n/routing"
-import { formatDateRange, formatTimeAgo } from "@/lib/utils/format-date"
+import { formatDateRange } from "@/lib/utils/format-date"
 import { formatCurrency } from "@/lib/utils/format-currency"
 
 export const metadata = {
@@ -109,7 +109,19 @@ export default async function HostBookingsPage() {
   )
 }
 
-function BookingRequestCard({ booking, showActions }: { booking: any; showActions?: boolean }) {
+interface BookingWithRelations {
+  id: string
+  start_datetime: string
+  end_datetime: string
+  total_hours: number
+  host_payout: number
+  status: "pending" | "confirmed" | "cancelled" | "completed" | "paid" | "refunded" | "active" | "archived"
+  notes?: string
+  studio?: { title?: string }
+  renter?: { full_name?: string; avatar_url?: string; email?: string }
+}
+
+function BookingRequestCard({ booking, showActions }: { booking: BookingWithRelations; showActions?: boolean }) {
   return (
     <Link href={`/host/bookings/${booking.id}`} className="block">
       <Card className="transition-colors hover:border-black/20 shadow-none border">

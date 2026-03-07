@@ -94,7 +94,7 @@ export default function PasswordResetEmail({
           {/* Secondary Info */}
           <Section style={secondarySection}>
             <Text style={secondaryText}>
-              If you didn't request this change, you can safely ignore this
+              If you didn&apos;t request this change, you can safely ignore this
               email. Your account is still secure.
             </Text>
 

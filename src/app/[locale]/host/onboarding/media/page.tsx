@@ -101,7 +101,7 @@ export default function OnboardingMediaPage() {
           <p className="text-primary font-bold text-sm tracking-widest uppercase">Stap 2: Media</p>
           <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">Laat je ruimte zien</h2>
           <p className="text-gray-500 text-lg">
-            Help creators hun volgende productie te visualiseren met prachtige foto's.
+            Help creators hun volgende productie te visualiseren met prachtige foto&apos;s.
           </p>
         </div>
       </header>
@@ -130,7 +130,7 @@ export default function OnboardingMediaPage() {
                 </div>
                 <h4 className="text-xl font-bold mb-2">Uploaden...</h4>
                 <p className="text-gray-500 mb-6 max-w-xs">
-                  Je foto's worden geupload naar de server.
+                  Je foto&apos;s worden geupload naar de server.
                 </p>
               </>
             ) : (
@@ -138,9 +138,9 @@ export default function OnboardingMediaPage() {
                 <div className="size-20 bg-primary/10 rounded-full flex items-center justify-center mb-4 text-primary group-hover:scale-110 transition-transform">
                   <span className="material-symbols-outlined text-4xl">cloud_upload</span>
                 </div>
-                <h4 className="text-xl font-bold mb-2">Sleep foto's hierheen</h4>
+                <h4 className="text-xl font-bold mb-2">Sleep foto&apos;s hierheen</h4>
                 <p className="text-gray-500 mb-6 max-w-xs">
-                  Upload minimaal 5 foto's om verschillende hoeken en lichtopstellingen te tonen.
+                  Upload minimaal 5 foto&apos;s om verschillende hoeken en lichtopstellingen te tonen.
                 </p>
                 <span className="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
                   Bestanden Kiezen
@@ -153,7 +153,7 @@ export default function OnboardingMediaPage() {
         {/* Uploaded Images Grid */}
         {images.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-lg font-bold mb-4">Geüploade Foto's ({images.length})</h3>
+            <h3 className="text-lg font-bold mb-4">Geüploade Foto&apos;s ({images.length})</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {images.map((img, i) => (
                 <div key={i} className="relative aspect-square rounded-xl overflow-hidden group">
@@ -195,7 +195,7 @@ export default function OnboardingMediaPage() {
             <div>
               <p className="text-sm font-bold text-primary mb-1">Pro Tip</p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Listings met professionele foto's krijgen 2,5x meer aanvragen. Laat je studio zien vanuit
+                Listings met professionele foto&apos;s krijgen 2,5x meer aanvragen. Laat je studio zien vanuit
                 meerdere hoeken en benadruk unieke kenmerken zoals natuurlijk licht, apparatuur,
                 en de algemene sfeer.
               </p>

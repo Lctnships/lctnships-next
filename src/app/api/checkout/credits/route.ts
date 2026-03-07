@@ -71,10 +71,10 @@ export async function POST(request: NextRequest) {
       url: session.url,
       sessionId: session.id,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Credits checkout error:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to create checkout session" },
+      { error: error instanceof Error ? error.message : "Failed to create checkout session" },
       { status: 500 }
     )
   }

@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import Link from "next/link"
 
 interface CookiePreferences {
   essential: boolean
@@ -15,21 +16,17 @@ interface CookieConsentProps {
 }
 
 export function CookieConsent({ onAcceptAll, onSavePreferences }: CookieConsentProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(() => {
+    if (typeof window === 'undefined') return false
+    const consent = localStorage.getItem("cookie-consent")
+    return !consent
+  })
   const [preferences, setPreferences] = useState<CookiePreferences>({
     essential: true,
     functional: true,
     statistics: false,
     marketing: false,
   })
-
-  useEffect(() => {
-    // Check if user has already set preferences
-    const consent = localStorage.getItem("cookie-consent")
-    if (!consent) {
-      setIsOpen(true)
-    }
-  }, [])
 
   const handleAcceptAll = () => {
     const allAccepted: CookiePreferences = {
@@ -143,12 +140,12 @@ export function CookieConsent({ onAcceptAll, onSavePreferences }: CookieConsentP
 
         {/* Policy Link */}
         <div className="pb-6 text-center">
-          <a
+          <Link
             href="/cookies"
             className="text-xs text-gray-400 underline underline-offset-4 hover:text-black transition-colors uppercase tracking-widest font-semibold"
           >
             Lees ons volledige Cookiebeleid
-          </a>
+          </Link>
         </div>
       </div>
     </div>

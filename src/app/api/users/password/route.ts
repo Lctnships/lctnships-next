@@ -52,10 +52,10 @@ export async function POST(request: Request) {
     if (error) throw error
 
     return NextResponse.json({ message: "Password updated successfully" })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error changing password:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to change password" },
+      { error: error instanceof Error ? error.message : "Failed to change password" },
       { status: 500 }
     )
   }

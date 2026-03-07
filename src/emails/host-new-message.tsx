@@ -93,7 +93,7 @@ export default function HostNewMessageEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because you're a studio host on lcntships.
+              You&apos;re receiving this because you&apos;re a studio host on lcntships.
             </Text>
             <Text style={footerLinks}>
               <Link href={`${baseUrl}/notifications`} style={footerLink}>

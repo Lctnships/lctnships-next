@@ -53,7 +53,7 @@ export default async function BookingsPage() {
   return (
     <BookingsClient
       bookings={bookings || []}
-      favorites={(favorites || []) as any}
+      favorites={(favorites || []) as React.ComponentProps<typeof BookingsClient>["favorites"]}
       totalHours={totalHours}
     />
   )

@@ -105,10 +105,10 @@ export async function GET(request: Request, { params }: RouteParams) {
         end: b.end_datetime,
       })),
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching availability:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch availability" },
+      { error: error instanceof Error ? error.message : "Failed to fetch availability" },
       { status: 500 }
     )
   }
@@ -153,10 +153,10 @@ export async function POST(request: Request, { params }: RouteParams) {
         ? "Time slot conflicts with existing booking"
         : null,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error checking availability:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to check availability" },
+      { error: error instanceof Error ? error.message : "Failed to check availability" },
       { status: 500 }
     )
   }

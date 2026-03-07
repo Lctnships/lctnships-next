@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useMounted } from "@/hooks/use-mounted"
 import { createPortal } from "react-dom"
 import {
   LayoutDashboard,
@@ -34,11 +34,7 @@ const renterNavItems = [
 export function MobileBottomNav() {
   const pathname = usePathname()
   const t = useTranslations("Navigation")
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useMounted()
 
   const isHostMode = pathname.startsWith("/host")
   const navItems = isHostMode ? hostNavItems : renterNavItems

@@ -104,7 +104,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       p_user_id: booking.host_id,
       p_type: "booking_rescheduled",
       p_title: "Booking Rescheduled",
-      p_message: `A booking at ${(booking.studio as any)?.title} has been rescheduled`,
+      p_message: `A booking at ${(booking.studio as { title?: string } | null)?.title} has been rescheduled`,
       p_link: `/host/bookings/${id}`,
     })
 
@@ -112,10 +112,10 @@ export async function POST(request: Request, { params }: RouteParams) {
       message: "Booking rescheduled successfully",
       booking: updatedBooking,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error rescheduling booking:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to reschedule booking" },
+      { error: error instanceof Error ? error.message : "Failed to reschedule booking" },
       { status: 500 }
     )
   }

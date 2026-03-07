@@ -4,7 +4,6 @@ import {
   Container,
   Head,
   Heading,
-  Hr,
   Html,
   Img,
   Link,
@@ -57,7 +56,7 @@ export default function WelcomeEmail({
           <Section style={content}>
             <Heading style={h1}>Welcome to lcntships, {userName}</Heading>
             <Text style={bodyText}>
-              We're thrilled to have you in our community of creators. Your
+              We&apos;re thrilled to have you in our community of creators. Your
               journey to finding the perfect space for your next project starts
               here.
             </Text>
@@ -123,7 +122,7 @@ export default function WelcomeEmail({
           <Section style={footer}>
             <Text style={footerCompany}>lcntships Creative Rental Inc.</Text>
             <Text style={footerText}>
-              You're receiving this because you signed up for an account.{" "}
+              You&apos;re receiving this because you signed up for an account.{" "}
               <Link href={`${baseUrl}/unsubscribe`} style={footerLink}>
                 Unsubscribe
               </Link>

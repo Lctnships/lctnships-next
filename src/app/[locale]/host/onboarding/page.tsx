@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 import { AddressAutocomplete, AddressData } from "@/components/ui/address-autocomplete"
 
@@ -24,19 +24,21 @@ const studioTypes = [
 
 export default function OnboardingBasicsPage() {
   const router = useRouter()
-  const [selectedType, setSelectedType] = useState<string | null>(null)
-  const [studioName, setStudioName] = useState("")
-  const [address, setAddress] = useState<AddressData>(emptyAddress)
-  const [description, setDescription] = useState("")
-
-  // Restore state from localStorage on mount
-  useEffect(() => {
+  const [selectedType, setSelectedType] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
     const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
-    if (draft.type) setSelectedType(draft.type)
-    if (draft.title) setStudioName(draft.title)
-    if (draft.description) setDescription(draft.description)
+    return draft.type || null
+  })
+  const [studioName, setStudioName] = useState(() => {
+    if (typeof window === 'undefined') return ""
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    return draft.title || ""
+  })
+  const [address, setAddress] = useState<AddressData>(() => {
+    if (typeof window === 'undefined') return emptyAddress
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
     if (draft.address) {
-      setAddress({
+      return {
         street: draft.address.street || "",
         houseNumber: draft.address.houseNumber || "",
         postalCode: draft.address.postalCode || "",
@@ -45,9 +47,15 @@ export default function OnboardingBasicsPage() {
         formatted: draft.location || "",
         lat: draft.address.lat,
         lng: draft.address.lng,
-      })
+      }
     }
-  }, [])
+    return emptyAddress
+  })
+  const [description, setDescription] = useState(() => {
+    if (typeof window === 'undefined') return ""
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    return draft.description || ""
+  })
 
   const handleContinue = () => {
     // Save to localStorage for now (will save to Supabase later)
@@ -72,7 +80,7 @@ export default function OnboardingBasicsPage() {
     router.push("/host/onboarding/media")
   }
 
-  const isAddressValid = address.city && (address.street || address.postalCode)
+  const _isAddressValid = address.city && (address.street || address.postalCode)
 
   return (
     <>

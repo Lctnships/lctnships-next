@@ -74,14 +74,14 @@ export default function BookingDeclinedEmail({
                   <Text style={messageMeta}>Message from the host</Text>
                 </div>
               </Section>
-              <Text style={messageText}>"{hostMessage}"</Text>
+              <Text style={messageText}>&ldquo;{hostMessage}&rdquo;</Text>
             </Section>
           </Section>
 
           {/* Pivot */}
           <Section style={{ padding: "32px 32px 8px" }}>
             <Heading as="h2" style={pivotHeading}>
-              Don't worry, there are plenty of other creative spaces ready for
+              Don&apos;t worry, there are plenty of other creative spaces ready for
               your project.
             </Heading>
           </Section>
@@ -97,7 +97,7 @@ export default function BookingDeclinedEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because you have an active account on
+              You&apos;re receiving this because you have an active account on
               lcntships.
               <br />
               If you no longer wish to receive booking updates, you can{" "}

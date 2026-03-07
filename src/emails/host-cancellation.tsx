@@ -101,7 +101,7 @@ export default function HostCancellationEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because you're a studio host on lcntships.
+              You&apos;re receiving this because you&apos;re a studio host on lcntships.
             </Text>
             <Text style={copyright}>
               © {new Date().getFullYear()} LCNTSHIPS STUDIO RENTALS. ALL RIGHTS

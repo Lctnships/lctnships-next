@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
                 user_id: booking.host_id,
                 type: "payment_received",
                 title: "Payment received",
-                message: `Payment received for ${(booking.studio as any)?.title}`,
+                message: `Payment received for ${(booking.studio as { title?: string } | null)?.title}`,
                 link: `/host/bookings/${bookingId}`,
               })
             }

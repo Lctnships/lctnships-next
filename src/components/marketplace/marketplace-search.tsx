@@ -39,12 +39,6 @@ export function MarketplaceSearch() {
 
   const popularCities = ["Amsterdam", "Rotterdam", "Utrecht", "Den Haag", "Eindhoven", "Groningen"]
 
-  // Summary text for compact mobile bar
-  const summaryParts = [
-    location || t("locationLabel"),
-    date || t("dates"),
-  ].filter(Boolean)
-
   return (
     <div className="flex flex-col items-center w-full">
       {/* Mobile: Compact search pill (Airbnb-style) */}

@@ -11,25 +11,33 @@ const daysOfWeek = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"]
 function CalendarPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [availableDays, setAvailableDays] = useState([1, 2, 3, 4]) // Tue-Fri
-  const [minDuration, setMinDuration] = useState("2")
-  const [prepTime, setPrepTime] = useState("30")
-  const [bookingNotice, setBookingNotice] = useState("24")
-  const [instantBook, setInstantBook] = useState(true)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const hasAutoPublished = useRef(false)
-
-  // Load saved draft settings on mount
-  useEffect(() => {
+  const [availableDays, setAvailableDays] = useState(() => {
+    if (typeof window === 'undefined') return [1, 2, 3, 4]
     const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
-    if (draft.available_days) setAvailableDays(draft.available_days)
-    if (draft.min_booking_hours) setMinDuration(String(draft.min_booking_hours))
-    if (draft.prep_time_minutes) setPrepTime(String(draft.prep_time_minutes))
-    if (draft.booking_notice_hours) setBookingNotice(String(draft.booking_notice_hours))
-    if (draft.instant_book !== undefined) setInstantBook(draft.instant_book)
-    setIsLoaded(true)
-  }, [])
+    return draft.available_days || [1, 2, 3, 4]
+  })
+  const [minDuration, setMinDuration] = useState(() => {
+    if (typeof window === 'undefined') return "2"
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    return draft.min_booking_hours ? String(draft.min_booking_hours) : "2"
+  })
+  const [prepTime, setPrepTime] = useState(() => {
+    if (typeof window === 'undefined') return "30"
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    return draft.prep_time_minutes ? String(draft.prep_time_minutes) : "30"
+  })
+  const [bookingNotice, setBookingNotice] = useState(() => {
+    if (typeof window === 'undefined') return "24"
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    return draft.booking_notice_hours ? String(draft.booking_notice_hours) : "24"
+  })
+  const [instantBook, setInstantBook] = useState(() => {
+    if (typeof window === 'undefined') return true
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    return draft.instant_book !== undefined ? draft.instant_book : true
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const hasAutoPublished = useRef(false)
 
   const toggleDay = (index: number) => {
     setAvailableDays((prev) =>
@@ -115,14 +123,15 @@ function CalendarPageContent() {
     }
   }, [availableDays, minDuration, prepTime, bookingNotice, instantBook, router])
 
-  // Auto-publish after login redirect — no setTimeout, relies on isLoaded
+  // Auto-publish after login redirect — intentionally triggers state update
   const shouldPublish = searchParams.get("publish") === "true"
   useEffect(() => {
-    if (shouldPublish && isLoaded && !hasAutoPublished.current) {
+    if (shouldPublish && !hasAutoPublished.current) {
       hasAutoPublished.current = true
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: auto-publish triggers loading state
       handlePublish()
     }
-  }, [shouldPublish, isLoaded, handlePublish])
+  }, [shouldPublish, handlePublish])
 
   return (
     <>

@@ -1,5 +1,3 @@
-import { Link } from "@/i18n/routing"
-
 export const metadata = {
   title: "Cookiebeleid | lctnships",
   description: "Lees hoe lcntships cookies en vergelijkbare technologieën gebruikt.",

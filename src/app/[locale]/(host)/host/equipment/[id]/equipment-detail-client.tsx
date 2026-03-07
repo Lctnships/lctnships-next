@@ -91,8 +91,8 @@ export function EquipmentDetailClient({ item, studios }: Props) {
 
       const data = await response.json()
       setImageUrl(data.url)
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
     } finally {
       setIsUploading(false)
     }
@@ -134,8 +134,8 @@ export function EquipmentDetailClient({ item, studios }: Props) {
       setSuccess(true)
       router.refresh()
       setTimeout(() => setSuccess(false), 3000)
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
     } finally {
       setIsSaving(false)
     }
@@ -152,8 +152,8 @@ export function EquipmentDetailClient({ item, studios }: Props) {
         throw new Error(data.error || "Verwijderen mislukt")
       }
       router.push("/host/equipment")
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
       setIsDeleting(false)
     }
   }

@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
 // GET /api/users/bank-account - Get user's bank account details
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -36,10 +36,10 @@ export async function GET(request: Request) {
         has_bank_details: !!(bankAccount?.bank_iban && bankAccount?.bank_account_name),
       },
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching bank account:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch bank account" },
+      { error: error instanceof Error ? error.message : "Failed to fetch bank account" },
       { status: 500 }
     )
   }
@@ -100,17 +100,17 @@ export async function POST(request: Request) {
         bic: bankAccount?.bank_bic,
       },
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error saving bank account:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to save bank account" },
+      { error: error instanceof Error ? error.message : "Failed to save bank account" },
       { status: 500 }
     )
   }
 }
 
 // DELETE /api/users/bank-account - Remove bank account details
-export async function DELETE(request: Request) {
+export async function DELETE(_request: Request) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -132,10 +132,10 @@ export async function DELETE(request: Request) {
     if (error) throw error
 
     return NextResponse.json({ message: "Bank account removed successfully" })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error removing bank account:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to remove bank account" },
+      { error: error instanceof Error ? error.message : "Failed to remove bank account" },
       { status: 500 }
     )
   }

@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { Link, useRouter } from "@/i18n/routing"
-import Image from "next/image"
 import { useTranslations } from "next-intl"
 
 interface Studio {
@@ -31,10 +30,10 @@ export function FavoritesClient({ studios, totalCount, isEmpty }: FavoritesClien
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [sortBy, setSortBy] = useState<SortOption>("recent")
-  const [filterType, setFilterType] = useState<FilterType>("all")
+  const [filterType, _setFilterType] = useState<FilterType>("all")
   const [favorites, setFavorites] = useState<string[]>(studios.map(s => s.id))
   const [displayCount, setDisplayCount] = useState(8)
-  const [isRemoving, setIsRemoving] = useState<string | null>(null)
+  const [_isRemoving, setIsRemoving] = useState<string | null>(null)
 
   const getStudioImage = (studio: Studio) => {
     return studio.images?.[0] || studio.studio_images?.[0]?.url || ""

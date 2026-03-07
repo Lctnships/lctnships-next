@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
 // GET /api/users/settings - Get user settings
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -26,10 +26,10 @@ export async function GET(request: Request) {
     if (error) throw error
 
     return NextResponse.json({ settings })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching settings:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch settings" },
+      { error: error instanceof Error ? error.message : "Failed to fetch settings" },
       { status: 500 }
     )
   }
@@ -57,7 +57,7 @@ export async function PATCH(request: Request) {
     ]
 
     // Filter to only allowed fields
-    const updateData: Record<string, any> = {}
+    const updateData: Record<string, unknown> = {}
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
         updateData[field] = body[field]
@@ -96,10 +96,10 @@ export async function PATCH(request: Request) {
     if (fetchError) throw fetchError
 
     return NextResponse.json({ settings })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating settings:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to update settings" },
+      { error: error instanceof Error ? error.message : "Failed to update settings" },
       { status: 500 }
     )
   }

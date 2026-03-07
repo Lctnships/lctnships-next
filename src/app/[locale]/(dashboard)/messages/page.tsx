@@ -3,6 +3,21 @@ import { redirect } from "next/navigation"
 import { MessagesClient } from "./messages-client"
 import { getTranslations } from "next-intl/server"
 
+interface ConversationRelation {
+  id: string
+  updated_at: string
+  studio: { id: string; title: string; images?: string[]; studio_images?: { url: string }[] } | null
+  booking: { id: string; booking_number?: string; start_date?: string; end_date?: string; status: string; total_price?: number } | null
+}
+
+interface MessageRecord {
+  id: string
+  conversation_id: string
+  content: string
+  created_at: string
+  sender_id: string
+}
+
 export async function generateMetadata() {
   const t = await getTranslations("Messages")
   return { title: t("metaTitle") }
@@ -66,7 +81,7 @@ export default async function MessagesPage({
     )
 
     const messages = (allMessages || []).filter(
-      (m: any) => m.conversation_id === p.conversation_id
+      (m: MessageRecord) => m.conversation_id === p.conversation_id
     )
 
     // Get latest message from the already-fetched messages
@@ -76,7 +91,7 @@ export default async function MessagesPage({
 
     // Count unread messages in-memory
     const unreadCount = messages.filter(
-      (m: any) =>
+      (m: MessageRecord) =>
         m.sender_id !== user.id &&
         m.created_at > (p.last_read_at || "1970-01-01")
     ).length
@@ -84,8 +99,8 @@ export default async function MessagesPage({
     return {
       id: p.conversation_id,
       otherUser: otherParticipant?.user,
-      studio: (p.conversation as any)?.studio,
-      booking: (p.conversation as any)?.booking,
+      studio: (p.conversation as unknown as ConversationRelation)?.studio,
+      booking: (p.conversation as unknown as ConversationRelation)?.booking,
       latestMessage: latestMessage
         ? { content: latestMessage.content, created_at: latestMessage.created_at, sender_id: latestMessage.sender_id }
         : null,
@@ -96,7 +111,7 @@ export default async function MessagesPage({
 
   return (
     <MessagesClient
-      conversations={conversationsWithDetails as any}
+      conversations={conversationsWithDetails as React.ComponentProps<typeof MessagesClient>["conversations"]}
       currentUserId={user.id}
       preselectedStudioId={studioId}
       preselectedHostId={hostId}

@@ -30,7 +30,7 @@ export function PayoutsClient({
 }: PayoutsClientProps) {
   const router = useRouter()
   const [stripeConnected, setStripeConnected] = useState(initialStripeConnected)
-  const [stripeStatus, setStripeStatus] = useState<{
+  const [_stripeStatus, setStripeStatus] = useState<{
     chargesEnabled?: boolean
     payoutsEnabled?: boolean
   }>({})
@@ -83,8 +83,8 @@ export function PayoutsClient({
 
       // Redirect to Stripe Connect onboarding
       window.location.href = data.url
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
       setIsConnecting(false)
     }
   }
@@ -113,8 +113,8 @@ export function PayoutsClient({
 
       setSuccess("Bankgegevens succesvol opgeslagen!")
       router.refresh()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
     } finally {
       setIsSaving(false)
     }

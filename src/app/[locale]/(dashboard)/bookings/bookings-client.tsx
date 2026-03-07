@@ -27,9 +27,23 @@ interface Booking {
   }
 }
 
+interface StudioImage {
+  image_url: string
+  is_cover: boolean
+}
+
+interface FavoriteStudio {
+  studio: {
+    id: string
+    title: string
+    city?: string
+    studio_images?: StudioImage[]
+  }
+}
+
 interface BookingsClientProps {
   bookings: Booking[]
-  favorites: any[]
+  favorites: FavoriteStudio[]
   totalHours: number
 }
 
@@ -42,7 +56,7 @@ export function BookingsClient({ bookings, favorites, totalHours }: BookingsClie
   const [rescheduleBooking, setRescheduleBooking] = useState<Booking | null>(null)
   const [reviewBooking, setReviewBooking] = useState<Booking | null>(null)
 
-  const now = new Date()
+  const now = useMemo(() => new Date(), [])
 
   const filteredBookings = useMemo(() => {
     let filtered = bookings
@@ -254,7 +268,7 @@ export function BookingsClient({ bookings, favorites, totalHours }: BookingsClie
               </div>
               <div className="flex flex-col gap-4">
                 {favorites.map((fav, index) => {
-                  const coverImage = fav.studio.studio_images?.find((img: any) => img.is_cover) || fav.studio.studio_images?.[0]
+                  const coverImage = fav.studio.studio_images?.find((img: StudioImage) => img.is_cover) || fav.studio.studio_images?.[0]
                   return (
                     <Link
                       key={index}

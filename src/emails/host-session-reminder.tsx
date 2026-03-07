@@ -57,7 +57,7 @@ export default function HostSessionReminderEmail({
             <Heading style={h1}>Session tomorrow</Heading>
 
             <Text style={bodyText}>
-              You have a session coming up at your studio. Here's everything you
+              You have a session coming up at your studio. Here&apos;s everything you
               need to prepare.
             </Text>
 
@@ -87,7 +87,7 @@ export default function HostSessionReminderEmail({
             {/* Session Notes */}
             {sessionNotes && (
               <Section style={notesCard}>
-                <Text style={notesLabel}>RENTER'S SESSION NOTES</Text>
+                <Text style={notesLabel}>RENTER&apos;S SESSION NOTES</Text>
                 <Text style={notesText}>{sessionNotes}</Text>
               </Section>
             )}
@@ -113,7 +113,7 @@ export default function HostSessionReminderEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because you have an upcoming session at your
+              You&apos;re receiving this because you have an upcoming session at your
               studio on lcntships.
             </Text>
             <Text style={copyright}>

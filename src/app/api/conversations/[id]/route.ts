@@ -102,7 +102,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     // Get other participant
     const participants = conversation?.conversation_participants || []
-    const otherParticipant = participants.find((p: any) => p.user_id !== user.id)
+    const otherParticipant = participants.find((p: { user_id: string }) => p.user_id !== user.id)
 
     return NextResponse.json({
       conversation: {
@@ -111,10 +111,10 @@ export async function GET(request: Request, { params }: RouteParams) {
         messages,
       },
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching conversation:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch conversation" },
+      { error: error instanceof Error ? error.message : "Failed to fetch conversation" },
       { status: 500 }
     )
   }

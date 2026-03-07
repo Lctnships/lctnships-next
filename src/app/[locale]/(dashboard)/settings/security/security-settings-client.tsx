@@ -119,8 +119,8 @@ export function SecuritySettingsClient({
       toast.success(t("passwordChanged") || "Password changed successfully")
       setCurrentPassword("")
       setNewPassword("")
-    } catch (err: any) {
-      toast.error(err.message || t("passwordChangeError") || "Failed to change password")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : (t("passwordChangeError") || "Failed to change password"))
     } finally {
       setIsChangingPassword(false)
     }

@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
 // GET /api/conversations - Get user's conversations
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -70,17 +70,17 @@ export async function GET(request: Request) {
     // Process conversations to add computed fields
     const processedConversations = conversations?.map(conv => {
       const participants = conv.conversation_participants || []
-      const otherParticipant = participants.find((p: any) => p.user_id !== user.id)
+      const otherParticipant = participants.find((p: { user_id: string }) => p.user_id !== user.id)
       const myParticipation = participations.find(p => p.conversation_id === conv.id)
 
       // Get last message
       const messages = conv.messages || []
-      const lastMessage = messages.sort((a: any, b: any) =>
+      const lastMessage = messages.sort((a: { created_at: string }, b: { created_at: string }) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       )[0]
 
       // Count unread messages
-      const unreadCount = messages.filter((m: any) =>
+      const unreadCount = messages.filter((m: { sender_id: string; is_read: boolean; created_at: string }) =>
         m.sender_id !== user.id &&
         !m.is_read &&
         (!myParticipation?.last_read_at || new Date(m.created_at) > new Date(myParticipation.last_read_at))
@@ -102,10 +102,10 @@ export async function GET(request: Request) {
     })
 
     return NextResponse.json({ conversations: processedConversations })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching conversations:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch conversations" },
+      { error: error instanceof Error ? error.message : "Failed to fetch conversations" },
       { status: 500 }
     )
   }
@@ -160,10 +160,10 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ conversation_id: conversationId })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating conversation:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to create conversation" },
+      { error: error instanceof Error ? error.message : "Failed to create conversation" },
       { status: 500 }
     )
   }

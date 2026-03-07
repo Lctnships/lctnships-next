@@ -1,9 +1,12 @@
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
+import type { Database } from "@/types/database.types"
+
+type UserInsert = Database["public"]["Tables"]["users"]["Insert"]
 
 // GET /api/users/profile - Get current user's profile
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -21,10 +24,10 @@ export async function GET(request: Request) {
     if (error) throw error
 
     return NextResponse.json({ profile })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching profile:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch profile" },
+      { error: error instanceof Error ? error.message : "Failed to fetch profile" },
       { status: 500 }
     )
   }
@@ -52,10 +55,10 @@ export async function PATCH(request: Request) {
     ]
 
     // Filter to only allowed fields
-    const updateData: Record<string, any> = {}
+    const updateData: Partial<UserInsert> = {}
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
-        updateData[field] = body[field]
+        (updateData as Record<string, unknown>)[field] = body[field]
       }
     }
 
@@ -70,23 +73,23 @@ export async function PATCH(request: Request) {
 
     // Use admin client to bypass RLS — user identity already verified above
     const adminSupabase = createAdminClient()
-    const upsertData = {
+    const upsertData: UserInsert = {
       id: user.id,
       email: user.email!,
       ...updateData,
     }
     const { data: rows, error } = await adminSupabase
       .from("users")
-      .upsert(upsertData as any, { onConflict: "id" })
+      .upsert(upsertData, { onConflict: "id" })
       .select()
 
     if (error) throw error
 
     return NextResponse.json({ profile: rows?.[0] ?? null })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating profile:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to update profile" },
+      { error: error instanceof Error ? error.message : "Failed to update profile" },
       { status: 500 }
     )
   }

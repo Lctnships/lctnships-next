@@ -63,8 +63,8 @@ export function ReviewModal({ booking, onClose, onSuccess }: ReviewModalProps) {
       router.refresh()
       onSuccess?.()
       onClose()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
     } finally {
       setIsSubmitting(false)
     }

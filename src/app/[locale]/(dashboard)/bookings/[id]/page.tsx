@@ -8,7 +8,7 @@ interface BookingDetailPageProps {
 }
 
 export async function generateMetadata({ params }: BookingDetailPageProps) {
-  const { id } = await params
+  const _params = await params
   const t = await getTranslations("BookingDetail")
   return {
     title: t("metaTitle"),

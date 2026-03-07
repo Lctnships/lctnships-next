@@ -2,6 +2,21 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { EarningsClient } from "./earnings-client"
 
+interface BookingStudioRelation {
+  title?: string
+}
+
+interface BookingRenterRelation {
+  full_name?: string
+}
+
+interface EarningsStudioRelation {
+  id: string
+  title?: string
+  images?: string[]
+  studio_images?: { image_url?: string }[]
+}
+
 export const metadata = {
   title: "Earnings & Revenue",
 }
@@ -86,8 +101,8 @@ export default async function EarningsPage() {
     ? recentBookings.map((b) => ({
         id: b.id,
         type: "booking" as const,
-        description: `${(b.studio as any)?.title || "Studio"} - Booking`,
-        guest: (b.renter as any)?.full_name || "Guest",
+        description: `${(b.studio as unknown as BookingStudioRelation)?.title || "Studio"} - Booking`,
+        guest: (b.renter as unknown as BookingRenterRelation)?.full_name || "Guest",
         amount: b.host_payout || 0,
         date: b.created_at,
         status: (b.status === "completed" ? "completed" : "pending") as "completed" | "pending",
@@ -121,7 +136,7 @@ export default async function EarningsPage() {
   // Aggregate by studio
   const studioMap = new Map<string, { id: string; title: string; earnings: number; bookings: number; image: string }>()
   studioEarnings?.forEach((b) => {
-    const studio = b.studio as any
+    const studio = b.studio as unknown as EarningsStudioRelation | null
     if (!studio) return
     const existing = studioMap.get(studio.id)
     const image = studio.images?.[0] ||

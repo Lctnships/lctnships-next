@@ -102,8 +102,8 @@ export default function NotificationsPage() {
       }
 
       setNotifications(data.notifications || [])
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
     } finally {
       setIsLoading(false)
     }

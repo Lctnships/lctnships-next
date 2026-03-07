@@ -94,17 +94,17 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ message })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error sending message:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to send message" },
+      { error: error instanceof Error ? error.message : "Failed to send message" },
       { status: 500 }
     )
   }
 }
 
 // GET /api/messages - Get unread message count
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -136,10 +136,10 @@ export async function GET(request: Request) {
     if (error) throw error
 
     return NextResponse.json({ unread_count: count || 0 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching unread count:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch unread count" },
+      { error: error instanceof Error ? error.message : "Failed to fetch unread count" },
       { status: 500 }
     )
   }

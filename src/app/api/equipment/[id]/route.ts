@@ -27,10 +27,10 @@ export async function GET(request: Request, { params }: RouteParams) {
     if (error) throw error
 
     return NextResponse.json({ equipment })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching equipment:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch equipment" },
+      { error: error instanceof Error ? error.message : "Failed to fetch equipment" },
       { status: 500 }
     )
   }
@@ -54,7 +54,8 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       .eq("id", id)
       .single()
 
-    if (!existingEquipment || (existingEquipment.studio as any)?.host_id !== user.id) {
+    const studioData = existingEquipment?.studio as unknown as { host_id: string } | null
+    if (!existingEquipment || studioData?.host_id !== user.id) {
       return NextResponse.json(
         { error: "You don't have permission to update this equipment" },
         { status: 403 }
@@ -73,7 +74,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       "image_url",
     ]
 
-    const updateData: Record<string, any> = {}
+    const updateData: Record<string, unknown> = {}
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
         updateData[field] = body[field]
@@ -99,10 +100,10 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     if (error) throw error
 
     return NextResponse.json({ equipment })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating equipment:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to update equipment" },
+      { error: error instanceof Error ? error.message : "Failed to update equipment" },
       { status: 500 }
     )
   }
@@ -126,7 +127,8 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       .eq("id", id)
       .single()
 
-    if (!existingEquipment || (existingEquipment.studio as any)?.host_id !== user.id) {
+    const studioDataDel = existingEquipment?.studio as unknown as { host_id: string } | null
+    if (!existingEquipment || studioDataDel?.host_id !== user.id) {
       return NextResponse.json(
         { error: "You don't have permission to delete this equipment" },
         { status: 403 }
@@ -141,10 +143,10 @@ export async function DELETE(request: Request, { params }: RouteParams) {
     if (error) throw error
 
     return NextResponse.json({ message: "Equipment deleted successfully" })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error deleting equipment:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to delete equipment" },
+      { error: error instanceof Error ? error.message : "Failed to delete equipment" },
       { status: 500 }
     )
   }

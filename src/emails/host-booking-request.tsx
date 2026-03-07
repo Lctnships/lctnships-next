@@ -81,7 +81,7 @@ export default function HostBookingRequestEmail({
             {renterMessage && (
               <Section style={messageCard}>
                 <Text style={messageLabel}>MESSAGE FROM {renterName.toUpperCase()}</Text>
-                <Text style={messageText}>"{renterMessage}"</Text>
+                <Text style={messageText}>&ldquo;{renterMessage}&rdquo;</Text>
               </Section>
             )}
 
@@ -110,7 +110,7 @@ export default function HostBookingRequestEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because you're a studio host on lcntships.
+              You&apos;re receiving this because you&apos;re a studio host on lcntships.
             </Text>
             <Text style={copyright}>
               © {new Date().getFullYear()} LCNTSHIPS STUDIO RENTALS. ALL RIGHTS

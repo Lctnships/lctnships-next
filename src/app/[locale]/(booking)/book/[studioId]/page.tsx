@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import type { User } from "@supabase/supabase-js"
 import type { InsertTables } from "@/types/database.types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -20,6 +21,21 @@ import Image from "next/image"
 import { toast } from "sonner"
 import { use } from "react"
 
+interface StudioImage {
+  image_url: string
+  is_cover: boolean
+}
+
+interface BookStudio {
+  id: string
+  title: string
+  city: string
+  price_per_hour: number
+  instant_book?: boolean
+  host?: { id: string }
+  studio_images?: StudioImage[]
+}
+
 interface BookPageProps {
   params: Promise<{ studioId: string }>
 }
@@ -30,8 +46,8 @@ export default function BookPage({ params }: BookPageProps) {
   const searchParams = useSearchParams()
   const supabase = createClient()
 
-  const [studio, setStudio] = useState<any>(null)
-  const [user, setUser] = useState<any>(null)
+  const [studio, setStudio] = useState<BookStudio | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [notes, setNotes] = useState("")
@@ -82,7 +98,7 @@ export default function BookPage({ params }: BookPageProps) {
   const endDateTime = new Date(`${date}T${endTime}`)
   const calculation = calculateBooking(studio.price_per_hour, startDateTime, endDateTime)
 
-  const coverImage = studio.studio_images?.find((img: any) => img.is_cover) ||
+  const coverImage = studio.studio_images?.find((img: StudioImage) => img.is_cover) ||
     studio.studio_images?.[0]
 
   const handleSubmit = async () => {
@@ -113,7 +129,7 @@ export default function BookPage({ params }: BookPageProps) {
 
       const { data: booking, error } = await supabase
         .from("bookings")
-        .insert(bookingData as any)
+        .insert(bookingData)
         .select()
         .single()
 
@@ -126,7 +142,7 @@ export default function BookPage({ params }: BookPageProps) {
           ? "Boeking bevestigd!"
           : "Boekingsaanvraag verstuurd!"
       )
-      router.push(`/bookings/${(booking as any).id}`)
+      router.push(`/bookings/${booking.id}`)
     } catch (error) {
       console.error("Booking error:", error)
       toast.error("Er ging iets mis bij het boeken")

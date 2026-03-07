@@ -34,7 +34,7 @@ export default async function FavoritesPage() {
 
   return (
     <FavoritesClient
-      studios={studios as any}
+      studios={studios as unknown as React.ComponentProps<typeof FavoritesClient>["studios"]}
       totalCount={studios.length}
       isEmpty={studios.length === 0}
     />

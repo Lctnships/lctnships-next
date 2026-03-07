@@ -14,7 +14,8 @@ import {
 import { Menu, Search, Sparkles, BookOpen, Home, Calendar, FolderOpen, Heart, MessageSquare, User, Settings, LogOut } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { useUser } from "@/hooks/use-user"
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import { useMounted } from "@/hooks/use-mounted"
 import { useTranslations } from "next-intl"
 import { Link, usePathname } from "@/i18n/routing"
 import { LanguageSwitcher } from "@/components/layout/language-switcher"
@@ -23,12 +24,8 @@ export function Navbar() {
   const pathname = usePathname()
   const { user, profile, signOut, isLoading } = useUser()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useMounted()
   const t = useTranslations("Navigation")
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">

@@ -58,7 +58,7 @@ export async function GET(request: Request) {
       completed: 0,
     }
 
-    summary?.forEach((payout: any) => {
+    summary?.forEach((payout: { amount: number; status: string }) => {
       totals.total_earned += payout.amount
       if (payout.status === "pending") totals.pending += payout.amount
       if (payout.status === "processing") totals.processing += payout.amount
@@ -69,17 +69,17 @@ export async function GET(request: Request) {
       payouts,
       summary: totals,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching payouts:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch payouts" },
+      { error: error instanceof Error ? error.message : "Failed to fetch payouts" },
       { status: 500 }
     )
   }
 }
 
 // POST /api/payouts - Request payout (manual trigger)
-export async function POST(request: Request) {
+export async function POST(_request: Request) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -140,10 +140,10 @@ export async function POST(request: Request) {
       payout_count: pendingPayouts.length,
       total_amount: totalAmount,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error requesting payout:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to request payout" },
+      { error: error instanceof Error ? error.message : "Failed to request payout" },
       { status: 500 }
     )
   }

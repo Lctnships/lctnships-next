@@ -55,6 +55,7 @@ export type Database = {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       studios: {
         Row: {
@@ -138,6 +139,7 @@ export type Database = {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       studio_images: {
         Row: {
@@ -164,6 +166,7 @@ export type Database = {
           order_index?: number
           created_at?: string
         }
+        Relationships: []
       }
       studio_amenities: {
         Row: {
@@ -181,6 +184,7 @@ export type Database = {
           studio_id?: string
           amenity?: string
         }
+        Relationships: []
       }
       studio_availability: {
         Row: {
@@ -207,6 +211,7 @@ export type Database = {
           end_time?: string
           is_available?: boolean
         }
+        Relationships: []
       }
       studio_blocked_dates: {
         Row: {
@@ -227,6 +232,7 @@ export type Database = {
           blocked_date?: string
           reason?: string | null
         }
+        Relationships: []
       }
       bookings: {
         Row: {
@@ -301,6 +307,7 @@ export type Database = {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       projects: {
         Row: {
@@ -339,6 +346,7 @@ export type Database = {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       project_members: {
         Row: {
@@ -368,6 +376,7 @@ export type Database = {
           invited_at?: string
           joined_at?: string | null
         }
+        Relationships: []
       }
       project_storyboards: {
         Row: {
@@ -403,6 +412,7 @@ export type Database = {
           linked_booking_id?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       project_moodboard_items: {
         Row: {
@@ -429,6 +439,7 @@ export type Database = {
           order_index?: number
           created_at?: string
         }
+        Relationships: []
       }
       project_shotlist: {
         Row: {
@@ -458,6 +469,7 @@ export type Database = {
           order_index?: number
           created_at?: string
         }
+        Relationships: []
       }
       project_locations: {
         Row: {
@@ -490,6 +502,7 @@ export type Database = {
           linked_studio_id?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       project_files: {
         Row: {
@@ -525,6 +538,7 @@ export type Database = {
           uploaded_by?: string
           created_at?: string
         }
+        Relationships: []
       }
       project_notes: {
         Row: {
@@ -554,6 +568,7 @@ export type Database = {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       reviews: {
         Row: {
@@ -589,6 +604,7 @@ export type Database = {
           comment?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       favorites: {
         Row: {
@@ -609,6 +625,7 @@ export type Database = {
           studio_id?: string
           created_at?: string
         }
+        Relationships: []
       }
       conversations: {
         Row: {
@@ -632,6 +649,7 @@ export type Database = {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       conversation_participants: {
         Row: {
@@ -652,6 +670,7 @@ export type Database = {
           user_id?: string
           last_read_at?: string | null
         }
+        Relationships: []
       }
       messages: {
         Row: {
@@ -678,6 +697,7 @@ export type Database = {
           is_read?: boolean
           created_at?: string
         }
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -710,6 +730,7 @@ export type Database = {
           is_read?: boolean
           created_at?: string
         }
+        Relationships: []
       }
       payouts: {
         Row: {
@@ -742,6 +763,7 @@ export type Database = {
           created_at?: string
           completed_at?: string | null
         }
+        Relationships: []
       }
       payment_methods: {
         Row: {
@@ -771,6 +793,7 @@ export type Database = {
           is_default?: boolean
           created_at?: string
         }
+        Relationships: []
       }
     }
     Views: {

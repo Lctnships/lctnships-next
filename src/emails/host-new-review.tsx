@@ -77,7 +77,7 @@ export default function HostNewReviewEmail({
                   <Text style={starsText}>{stars}</Text>
                 </div>
               </Section>
-              <Text style={reviewTextStyle}>"{reviewText}"</Text>
+              <Text style={reviewTextStyle}>&ldquo;{reviewText}&rdquo;</Text>
             </Section>
 
             {/* CTA */}
@@ -100,7 +100,7 @@ export default function HostNewReviewEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because someone reviewed your studio on
+              You&apos;re receiving this because someone reviewed your studio on
               lcntships.
             </Text>
             <Text style={copyright}>

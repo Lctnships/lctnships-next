@@ -1,5 +1,3 @@
-import { Link } from "@/i18n/routing"
-
 export function HelpContact() {
   return (
     <div className="bg-black rounded-xl p-8 text-white sticky top-24 shadow-2xl shadow-black/10 overflow-hidden relative">

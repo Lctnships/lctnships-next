@@ -1,21 +1,25 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 
 export default function OnboardingPricingPage() {
   const router = useRouter()
-  const [hourlyRate, setHourlyRate] = useState(45)
-  const [cleaningFee, setCleaningFee] = useState(0)
-  const [weekendMarkup, setWeekendMarkup] = useState(15)
-
-  // Restore state from localStorage on mount
-  useEffect(() => {
+  const [hourlyRate, setHourlyRate] = useState(() => {
+    if (typeof window === 'undefined') return 45
     const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
-    if (draft.price_per_hour) setHourlyRate(draft.price_per_hour)
-    if (draft.cleaning_fee !== undefined) setCleaningFee(draft.cleaning_fee)
-    if (draft.weekend_markup !== undefined) setWeekendMarkup(draft.weekend_markup)
-  }, [])
+    return draft.price_per_hour || 45
+  })
+  const [cleaningFee, setCleaningFee] = useState(() => {
+    if (typeof window === 'undefined') return 0
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    return draft.cleaning_fee !== undefined ? draft.cleaning_fee : 0
+  })
+  const [weekendMarkup, setWeekendMarkup] = useState(() => {
+    if (typeof window === 'undefined') return 15
+    const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
+    return draft.weekend_markup !== undefined ? draft.weekend_markup : 15
+  })
 
   const handleContinue = () => {
     const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")

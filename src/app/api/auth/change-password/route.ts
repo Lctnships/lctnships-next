@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: true })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Change password error:", error)
     return NextResponse.json(
       { error: "Failed to change password" },

@@ -3,7 +3,7 @@
 import { useState } from "react"
 
 export function HelpArticleFeedback() {
-  const [feedback, setFeedback] = useState<"yes" | "no" | null>(null)
+  const [_feedback, setFeedback] = useState<"yes" | "no" | null>(null)
   const [submitted, setSubmitted] = useState(false)
 
   const handleFeedback = (value: "yes" | "no") => {

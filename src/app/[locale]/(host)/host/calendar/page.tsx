@@ -92,7 +92,7 @@ export default async function CalendarPage() {
   const calendarBookings = bookings && bookings.length > 0
     ? bookings.map((b) => ({
         id: b.id,
-        title: (b.renter as any)?.full_name || "Guest",
+        title: (b.renter as { full_name?: string })?.full_name || "Guest",
         type: "booking",
         date: new Date(b.start_datetime),
         endDate: b.end_datetime ? new Date(b.end_datetime) : undefined,

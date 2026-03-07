@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     }
 
     const amount = totalAmount || Math.round(pricePerHour * hours * 100) / 100
-    const studioOwnerStripeId = (studio.host as any)?.stripe_account_id
+    const studioOwnerStripeId = (studio.host as { stripe_account_id?: string; email?: string } | null)?.stripe_account_id
 
     const origin = request.nextUrl.origin
     const effectiveBookingId = bookingId || `temp_${Date.now()}`
@@ -171,10 +171,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ sessionId: session.id, url: session.url })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Stripe checkout error:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to create checkout session" },
+      { error: error instanceof Error ? error.message : "Failed to create checkout session" },
       { status: 500 }
     )
   }

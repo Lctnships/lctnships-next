@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/sheet"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
 import { Search, SlidersHorizontal, X } from "lucide-react"
 import { STUDIO_TYPES } from "@/lib/constants/studio-types"
 import { CITIES } from "@/lib/constants/cities"

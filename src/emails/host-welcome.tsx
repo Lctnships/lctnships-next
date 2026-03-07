@@ -63,7 +63,7 @@ export default function HostWelcomeEmail({
                 <div>
                   <Text style={stepHeading}>Set your availability</Text>
                   <Text style={stepDesc}>
-                    Block out dates you're unavailable and set your preferred
+                    Block out dates you&apos;re unavailable and set your preferred
                     booking hours.
                   </Text>
                 </div>

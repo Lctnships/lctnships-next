@@ -48,7 +48,7 @@ export async function GET(
   const now = formatICSDate(new Date())
   const calName = escapeICS(`${studio.title} - LCTNSHIPS`)
 
-  let ics = [
+  const ics = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "PRODID:-//LCTNSHIPS//Calendar//EN",
@@ -62,7 +62,7 @@ export async function GET(
     for (const booking of bookings) {
       const start = formatICSDate(new Date(booking.start_datetime))
       const end = formatICSDate(new Date(booking.end_datetime))
-      const renterName = (booking.renter as any)?.full_name || "Guest"
+      const renterName = (booking.renter as { full_name?: string } | null)?.full_name || "Guest"
       const summary = escapeICS(`Booking - ${renterName}`)
       const description = escapeICS(`Status: ${booking.status}\\nStudio: ${studio.title}`)
       const location = studio.location ? escapeICS(studio.location) : ""

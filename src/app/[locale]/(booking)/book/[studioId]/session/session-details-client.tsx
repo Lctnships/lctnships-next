@@ -44,7 +44,7 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
   const router = useRouter()
   const [selectedDuration, setSelectedDuration] = useState(initialDuration || 2)
   const [selectedTime, setSelectedTime] = useState(initialTime || "10:00")
-  const [selectedDate, setSelectedDate] = useState(initialDate || new Date().toISOString().split("T")[0])
+  const [selectedDate, _setSelectedDate] = useState(initialDate || new Date().toISOString().split("T")[0])
   const [selectedEquipment, setSelectedEquipment] = useState<Record<string, number>>(initialEquipment || {})
 
   const coverImage = studio.studio_images?.find((img) => img.is_cover) || studio.studio_images?.[0]
@@ -54,7 +54,7 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
       const current = prev[equipmentId] || 0
       const newValue = Math.max(0, current + delta)
       if (newValue === 0) {
-        const { [equipmentId]: _, ...rest } = prev
+        const { [equipmentId]: __, ...rest } = prev
         return rest
       }
       return { ...prev, [equipmentId]: newValue }

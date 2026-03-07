@@ -80,7 +80,7 @@ export async function DELETE(request: NextRequest) {
     .eq("id", id)
     .single()
 
-  if (!blockedDate || (blockedDate.studio as any)?.host_id !== user.id) {
+  if (!blockedDate || (blockedDate.studio as unknown as { host_id: string } | null)?.host_id !== user.id) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 

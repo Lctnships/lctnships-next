@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
-import { Link } from "@/i18n/routing"
+import Image from "next/image"
 
 interface Project {
   id: string
@@ -252,9 +252,11 @@ export function ProjectWorkspaceClient({
                     className="break-inside-avoid bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group"
                   >
                     <div className="relative">
-                      <img
+                      <Image
                         src={frame.image_url}
                         alt={frame.title}
+                        width={600}
+                        height={400}
                         className="w-full h-auto object-cover"
                       />
                       <div className="absolute top-3 left-3">

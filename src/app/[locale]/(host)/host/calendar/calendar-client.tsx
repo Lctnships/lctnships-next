@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Link } from "@/i18n/routing"
 import {
   Dialog,
@@ -69,12 +69,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
     ? `${window.location.origin}/api/calendar/ical/${studio.id}`
     : ""
 
-  // Fetch blocked dates on mount
-  useEffect(() => {
-    fetchBlockedDates()
-  }, [studio.id])
-
-  const fetchBlockedDates = async () => {
+  const fetchBlockedDates = useCallback(async () => {
     try {
       const res = await fetch(`/api/studios/blocked-dates?studio_id=${studio.id}`)
       if (res.ok) {
@@ -84,7 +79,12 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
     } catch (err) {
       console.error("Failed to fetch blocked dates:", err)
     }
-  }
+  }, [studio.id])
+
+  // Fetch blocked dates on mount
+  useEffect(() => {
+    fetchBlockedDates()
+  }, [fetchBlockedDates])
 
   const handleBlockDates = async () => {
     if (!blockStartDate) return

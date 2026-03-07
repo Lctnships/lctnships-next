@@ -103,8 +103,8 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
 
       const uploadedUrls = await Promise.all(uploadPromises)
       setImages((prev) => [...prev, ...uploadedUrls])
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
     } finally {
       setIsUploading(false)
     }
@@ -154,8 +154,8 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
 
       router.push("/host/equipment")
       router.refresh()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
     } finally {
       setIsSubmitting(false)
     }
@@ -171,8 +171,8 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
         throw new Error(data.error || "Verwijderen mislukt")
       }
       router.refresh()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
     } finally {
       setDeletingId(null)
     }
@@ -190,8 +190,8 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
         throw new Error(data.error || "Bijwerken mislukt")
       }
       router.refresh()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
     }
   }
 

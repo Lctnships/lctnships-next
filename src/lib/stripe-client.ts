@@ -14,12 +14,12 @@ export async function redirectToCheckout(sessionId: string) {
     throw new Error("Stripe not initialized")
   }
 
-  // Use Stripe's checkout redirect - cast to access legacy method if available
-  const stripeAny = stripe as any
-  if (typeof stripeAny.redirectToCheckout === "function") {
-    const { error } = await stripeAny.redirectToCheckout({ sessionId })
-    if (error) {
-      throw error
+  // Use Stripe's checkout redirect - access legacy method if available
+  const stripeObj = stripe as unknown as Record<string, unknown>
+  if (typeof stripeObj.redirectToCheckout === "function") {
+    const result = await (stripeObj.redirectToCheckout as (opts: { sessionId: string }) => Promise<{ error?: { message: string } }>)({ sessionId })
+    if (result.error) {
+      throw result.error
     }
   } else {
     // Fallback: redirect via URL for newer Stripe.js versions

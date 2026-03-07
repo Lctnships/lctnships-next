@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useMounted } from "@/hooks/use-mounted"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter, usePathname } from "@/i18n/routing"
 import {
@@ -26,11 +26,7 @@ export function LanguageSwitcher() {
   const router = useRouter()
   const pathname = usePathname()
   const t = useTranslations("LanguageSwitcher")
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useMounted()
 
   function switchLocale(newLocale: Locale) {
     router.replace(pathname, { locale: newLocale })

@@ -5,7 +5,6 @@ import {
   Head,
   Heading,
   Html,
-  Img,
   Link,
   Preview,
   Section,
@@ -26,7 +25,7 @@ interface BookingCancelledEmailProps {
 
 export default function BookingCancelledEmail({
   studioName = "Studio North - Photography Suite",
-  studioImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuAlAhhMjYHeGHOyepqqTp3nKpkY2TZE6w7EyFaQ3djJhyzWmAH6Fojyss2IzWDHL_A_NmDwhajwyj8Ai6BQ_uza0-29IqWTTPngNvQwywfYeEk6tohpJJgkp96Zba9oXcDKBUX5OLeHIeD_8rR3SAtPNU1g6V4CUkgpfCivaWE8QBys0zhHjSc2i2o_yYQCwULh_QK1M3sYmal0mpNXoopEl0O7KgCq-MwdbG-lxToOJetGYihUxaDYuUib0hGoNw_ELr7deKG1Euw",
+  studioImage: _studioImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuAlAhhMjYHeGHOyepqqTp3nKpkY2TZE6w7EyFaQ3djJhyzWmAH6Fojyss2IzWDHL_A_NmDwhajwyj8Ai6BQ_uza0-29IqWTTPngNvQwywfYeEk6tohpJJgkp96Zba9oXcDKBUX5OLeHIeD_8rR3SAtPNU1g6V4CUkgpfCivaWE8QBys0zhHjSc2i2o_yYQCwULh_QK1M3sYmal0mpNXoopEl0O7KgCq-MwdbG-lxToOJetGYihUxaDYuUib0hGoNw_ELr7deKG1Euw",
   dateTime = "October 24, 2023 | 2:00 PM - 6:00 PM",
   location = "123 Creative Ave, Arts District",
   refundAmount = "$240.00",
@@ -55,7 +54,7 @@ export default function BookingCancelledEmail({
             </div>
             <Heading style={h1}>Your booking has been cancelled</Heading>
             <Text style={bodyText}>
-              We're sorry to see your plans change. Your booking for the
+              We&apos;re sorry to see your plans change. Your booking for the
               creative studio has been successfully cancelled and your refund is
               being processed.
             </Text>

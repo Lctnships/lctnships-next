@@ -86,7 +86,7 @@ export default function ReviewRequestEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because you booked a session through
+              You&apos;re receiving this because you booked a session through
               lcntships.
             </Text>
             <Text style={footerLinks}>

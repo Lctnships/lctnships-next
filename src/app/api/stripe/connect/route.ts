@@ -69,17 +69,17 @@ export async function POST(request: Request) {
       url: accountLink.url,
       accountId,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating Stripe Connect account:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to create Stripe Connect account" },
+      { error: error instanceof Error ? error.message : "Failed to create Stripe Connect account" },
       { status: 500 }
     )
   }
 }
 
 // GET /api/stripe/connect - Get Stripe account status
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     if (!stripe) {
       return NextResponse.json(
@@ -120,10 +120,10 @@ export async function GET(request: Request) {
       detailsSubmitted: account.details_submitted,
       defaultCurrency: account.default_currency,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error getting Stripe account status:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to get Stripe account status" },
+      { error: error instanceof Error ? error.message : "Failed to get Stripe account status" },
       { status: 500 }
     )
   }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 
 const equipmentCategories = [
@@ -53,15 +53,11 @@ const equipmentCategories = [
 
 export default function OnboardingEquipmentPage() {
   const router = useRouter()
-  const [selectedEquipment, setSelectedEquipment] = useState<string[]>([])
-
-  // Restore state from localStorage on mount
-  useEffect(() => {
+  const [selectedEquipment, setSelectedEquipment] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return []
     const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
-    if (draft.equipment && draft.equipment.length > 0) {
-      setSelectedEquipment(draft.equipment)
-    }
-  }, [])
+    return draft.equipment && draft.equipment.length > 0 ? draft.equipment : []
+  })
 
   const toggleEquipment = (item: string) => {
     setSelectedEquipment((prev) =>

@@ -116,7 +116,7 @@ export default function HostPayoutEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because you have payouts enabled on
+              You&apos;re receiving this because you have payouts enabled on
               lcntships.
             </Text>
             <Text style={footerLinks}>

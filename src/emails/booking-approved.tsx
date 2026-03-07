@@ -98,7 +98,7 @@ export default function BookingApprovedEmail({
               />
               <div>
                 <Text style={hostNameStyle}>{hostName}</Text>
-                <Text style={messageText}>"{hostMessage}"</Text>
+                <Text style={messageText}>&ldquo;{hostMessage}&rdquo;</Text>
               </div>
             </Section>
           </Section>
@@ -107,9 +107,9 @@ export default function BookingApprovedEmail({
           <Section style={infoSection}>
             <Text style={infoTitle}>What happens next?</Text>
             <Text style={infoText}>
-              Please click the "Complete Payment" button above to finalize your
+              Please click the &ldquo;Complete Payment&rdquo; button above to finalize your
               booking. Your reservation is held for 24 hours. After payment,
-              you'll receive the access codes and check-in instructions.
+              you&apos;ll receive the access codes and check-in instructions.
             </Text>
           </Section>
 

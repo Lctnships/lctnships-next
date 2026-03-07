@@ -48,7 +48,7 @@ export default function SessionReminderEmail({
             <Heading style={h1}>See you tomorrow!</Heading>
             <Text style={bodyText}>
               Your session at <strong>{studioName}</strong> is just 24 hours
-              away. We're getting everything ready for your creative workflow.
+              away. We&apos;re getting everything ready for your creative workflow.
             </Text>
 
             {/* Booking Summary */}
@@ -96,7 +96,7 @@ export default function SessionReminderEmail({
                 • Format your SD cards and clear space
               </Text>
               <Text style={tipItem}>
-                • Download our equipment list to see what's included
+                • Download our equipment list to see what&apos;s included
               </Text>
             </Section>
 
@@ -114,7 +114,7 @@ export default function SessionReminderEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because you have a confirmed booking with
+              You&apos;re receiving this because you have a confirmed booking with
               lcntships.
               <br />
               Need help?{" "}

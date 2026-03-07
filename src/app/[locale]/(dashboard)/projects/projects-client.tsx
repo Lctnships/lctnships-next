@@ -298,8 +298,8 @@ function NewProjectModal({ onClose }: { onClose: () => void }) {
       toast.success("Project aangemaakt!")
       onClose()
       router.refresh()
-    } catch (err: any) {
-      toast.error(err.message || "Project aanmaken mislukt")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Project aanmaken mislukt")
     } finally {
       setIsCreating(false)
     }

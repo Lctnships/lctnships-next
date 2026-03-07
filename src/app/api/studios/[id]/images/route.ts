@@ -20,10 +20,10 @@ export async function GET(request: Request, { params }: RouteParams) {
     if (error) throw error
 
     return NextResponse.json({ images })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching studio images:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch images" },
+      { error: error instanceof Error ? error.message : "Failed to fetch images" },
       { status: 500 }
     )
   }
@@ -100,10 +100,10 @@ export async function POST(request: Request, { params }: RouteParams) {
     if (error) throw error
 
     return NextResponse.json({ image }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error adding studio image:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to add image" },
+      { error: error instanceof Error ? error.message : "Failed to add image" },
       { status: 500 }
     )
   }
@@ -153,10 +153,10 @@ export async function DELETE(request: Request, { params }: RouteParams) {
     if (error) throw error
 
     return NextResponse.json({ message: "Image deleted successfully" })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error deleting studio image:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to delete image" },
+      { error: error instanceof Error ? error.message : "Failed to delete image" },
       { status: 500 }
     )
   }

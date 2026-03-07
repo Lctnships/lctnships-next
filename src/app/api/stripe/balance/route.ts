@@ -3,7 +3,7 @@ import { stripe } from "@/lib/stripe/config"
 import { NextResponse } from "next/server"
 
 // GET /api/stripe/balance - Get available balance for payout
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     if (!stripe) {
       return NextResponse.json(
@@ -53,10 +53,10 @@ export async function GET(request: Request) {
       pending,
       currency: "EUR",
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error getting balance:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to get balance" },
+      { error: error instanceof Error ? error.message : "Failed to get balance" },
       { status: 500 }
     )
   }

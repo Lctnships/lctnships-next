@@ -13,10 +13,99 @@ const StudioMap = dynamic(
   { ssr: false, loading: () => <div className="w-full h-full bg-gray-100 animate-pulse rounded-2xl" /> }
 )
 
+interface StudioImage {
+  url: string
+  image_url?: string
+  is_cover?: boolean
+}
+
+interface StudioAmenity {
+  id?: string
+  name: string
+  icon?: string
+  description?: string
+}
+
+interface StudioEquipmentItem {
+  id: string
+  name: string
+  price?: number
+  included?: boolean
+}
+
+interface StudioHost {
+  id: string
+  full_name?: string
+  avatar_url?: string
+  is_verified?: boolean
+  created_at?: string
+  response_time?: string
+  response_rate?: number
+}
+
+interface StudioData {
+  id: string
+  title: string
+  description?: string
+  location?: string
+  city?: string
+  address?: string
+  postal_code?: string
+  latitude?: number
+  longitude?: number
+  price_per_hour: number
+  price_per_day?: number
+  min_hours?: number
+  max_guests?: number
+  instant_book?: boolean
+  is_superhost?: boolean
+  studio_type?: string
+  size_sqm?: number
+  rating?: number
+  avg_rating?: number
+  review_count?: number
+  total_reviews?: number
+  rating_breakdown?: Record<string, number>
+  images?: string[]
+  studio_images?: StudioImage[]
+  studio_amenities?: StudioAmenity[]
+  equipment?: StudioEquipmentItem[]
+  host?: StudioHost
+  virtual_tour_url?: string
+  rules?: string[]
+  operating_hours?: Record<string, { open: string; close: string }>
+}
+
+interface ReviewUser {
+  full_name: string
+  avatar_url?: string
+}
+
+interface Review {
+  id: string
+  rating: number
+  comment?: string
+  created_at: string
+  reviewer?: ReviewUser
+}
+
+interface SimilarStudio {
+  id: string
+  title: string
+  city?: string
+  location?: string
+  price_per_hour: number
+  rating?: number
+  avg_rating?: number
+  review_count?: number
+  images?: string[]
+  studio_images?: StudioImage[]
+}
+
 interface StudioDetailClientProps {
-  studio: any
-  reviews: any[]
-  similarStudios: any[]
+  studio: StudioData
+  reviews: Review[]
+  similarStudios: SimilarStudio[]
 }
 
 type TabType = "photos" | "amenities" | "tour" | "dates" | "location" | "reviews"
@@ -114,7 +203,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
     if (navigator.share) {
       try {
         await navigator.share(shareData)
-      } catch (err) {
+      } catch (_err) {
         // User cancelled share
       }
     } else {
@@ -153,7 +242,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   }
 
   // Get images from studio_images or images array
-  const studioImageUrls = studio.studio_images?.map((img: any) => img.url) || []
+  const studioImageUrls = studio.studio_images?.map((img: StudioImage) => img.url) || []
   const images = studioImageUrls.length > 0 ? studioImageUrls : (studio.images || [])
   const amenities = studio.studio_amenities || []
   const equipment = studio.equipment || []
@@ -241,8 +330,8 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   const pricePerDay = studio.price_per_day || pricePerHour * 8
   const minHours = studio.min_hours || 2
   const equipmentTotal = equipment
-    .filter((item: any) => !item.included && selectedEquipment.has(item.id))
-    .reduce((sum: number, item: any) => sum + (item.price || 0), 0)
+    .filter((item: StudioEquipmentItem) => !item.included && selectedEquipment.has(item.id))
+    .reduce((sum: number, item: StudioEquipmentItem) => sum + (item.price || 0), 0)
   const subtotal = bookingHours * pricePerHour + equipmentTotal
   const serviceFee = Math.round(subtotal * 0.12)
   const total = subtotal + serviceFee
@@ -495,7 +584,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                 <div id="section-amenities">
                   <h2 className="text-2xl font-bold mb-6">{t("whatThisSpaceOffers")}</h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {amenities.map((amenity: any, index: number) => (
+                    {amenities.map((amenity: StudioAmenity, index: number) => (
                       <div
                         key={amenity.id || index}
                         className="flex flex-col p-5 bg-white rounded-2xl border border-gray-100 hover:border-black/20 hover:shadow-lg transition-all"
@@ -518,7 +607,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                 <div>
                   <h2 className="text-2xl font-bold mb-6">{t("equipmentExtras")}</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {equipment.map((item: any) => {
+                    {equipment.map((item: StudioEquipmentItem) => {
                       const isSelected = !item.included && selectedEquipment.has(item.id)
                       return (
                         <div
@@ -610,7 +699,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
 
                 {/* Review Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                  {reviews.map((review: any) => (
+                  {reviews.map((review: Review) => (
                     <div key={review.id} className="p-4 md:p-6 bg-white rounded-2xl border border-gray-100">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="size-12 rounded-full overflow-hidden bg-gray-200">
@@ -905,7 +994,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {similarStudios.map((similarStudio: any) => {
+            {similarStudios.map((similarStudio: SimilarStudio) => {
               const studioImage = similarStudio.images?.[0] || similarStudio.studio_images?.[0]?.url
               return (
                 <Link key={similarStudio.id} href={`/studios/${similarStudio.id}`} className="group">

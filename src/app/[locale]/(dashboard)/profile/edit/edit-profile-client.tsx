@@ -144,9 +144,9 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
 
       // Refresh server data so avatar updates in navbar and other pages
       router.refresh()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Avatar upload error:", error)
-      toast.error(error.message || t("errorAvatarUploadFailed"))
+      toast.error(error instanceof Error ? error.message : t("errorAvatarUploadFailed"))
     } finally {
       setIsUploading(false)
       setCropImageSrc(null)
@@ -179,9 +179,9 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
       toast.success(t("successProfileSaved"))
       router.push("/profile")
       router.refresh()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving profile:", error)
-      toast.error(error.message || t("errorProfileSaveFailed"))
+      toast.error(error instanceof Error ? error.message : t("errorProfileSaveFailed"))
     } finally {
       setIsSaving(false)
     }

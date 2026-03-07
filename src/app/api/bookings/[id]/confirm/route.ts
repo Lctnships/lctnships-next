@@ -66,14 +66,14 @@ export async function POST(request: Request, { params }: RouteParams) {
       p_user_id: booking.renter_id,
       p_type: "booking_confirmed",
       p_title: "Booking Confirmed!",
-      p_message: `Your booking at ${(booking.studio as any)?.title} has been confirmed`,
+      p_message: `Your booking at ${(booking.studio as { title?: string } | null)?.title} has been confirmed`,
       p_link: `/bookings/${id}`,
     })
 
     // Send confirmation email to renter
-    const studio = booking.studio as any
-    const renter = booking.renter as any
-    const host = booking.host as any
+    const studio = booking.studio as { title?: string; address?: string; images?: string[] } | null
+    const renter = booking.renter as { full_name?: string; email?: string } | null
+    const host = booking.host as { full_name?: string; phone?: string } | null
 
     const startDate = new Date(booking.start_datetime)
     const endDate = new Date(booking.end_datetime)

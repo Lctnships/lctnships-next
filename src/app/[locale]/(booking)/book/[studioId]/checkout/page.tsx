@@ -54,7 +54,7 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
 
   // Get selected equipment details
   const equipmentIds = Object.keys(equipmentSelections)
-  let equipment: any[] = []
+  let equipment: { id: string; name: string; price_per_day: number }[] = []
 
   if (equipmentIds.length > 0) {
     const { data: equipmentData } = await supabase
@@ -67,7 +67,7 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
 
   // Mock equipment if real ones not found
   if (equipmentIds.length > 0 && equipment.length === 0) {
-    const mockEquipment: Record<string, any> = {
+    const mockEquipment: Record<string, { id: string; name: string; price_per_day: number }> = {
       eq1: { id: "eq1", name: "Professional Lighting Kit", price_per_day: 45 },
       eq2: { id: "eq2", name: "Seamless Paper Backdrop", price_per_day: 25 },
       eq3: { id: "eq3", name: "Studio Assistant", price_per_day: 75 },

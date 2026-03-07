@@ -87,7 +87,7 @@ export default function NewMessageEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You're receiving this because you have an active booking or
+              You&apos;re receiving this because you have an active booking or
               inquiry on lcntships.
             </Text>
             <Text style={footerLinks}>

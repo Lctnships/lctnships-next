@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useMemo } from "react"
 import { Link, usePathname } from "@/i18n/routing"
 import Image from "next/image"
 
@@ -65,12 +65,9 @@ export default function OnboardingLayout({
 }) {
   const pathname = usePathname()
   const currentStep = getCurrentStep(pathname)
-  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set())
-
-  // Check localStorage for completed steps on mount and when pathname changes
-  useEffect(() => {
-    setCompletedSteps(getCompletedSteps())
-  }, [pathname])
+  // Re-compute completed steps whenever pathname changes (user navigates between steps)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const completedSteps = useMemo(() => getCompletedSteps(), [pathname])
 
   const progress = getProgress(completedSteps)
 

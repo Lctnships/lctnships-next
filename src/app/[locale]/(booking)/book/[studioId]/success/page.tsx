@@ -52,13 +52,13 @@ export default async function SuccessPage({ params, searchParams }: SuccessPageP
     booking = data
   }
 
-  // If no booking found, create mock data
+  // If no booking found, create mock data with static values
   if (!booking) {
     booking = {
       id: "mock-booking",
-      booking_number: `BK${Date.now().toString().slice(-8)}`,
+      booking_number: "BK00000000",
       start_datetime: new Date().toISOString(),
-      end_datetime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+      end_datetime: new Date().toISOString(),
       total_hours: 2,
       total_amount: studio.price_per_hour * 2 + Math.round(studio.price_per_hour * 2 * 0.1),
       status: "confirmed",

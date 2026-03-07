@@ -35,10 +35,10 @@ export async function GET(request: Request, { params }: RouteParams) {
     if (error) throw error
 
     return NextResponse.json({ review })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching review:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch review" },
+      { error: error instanceof Error ? error.message : "Failed to fetch review" },
       { status: 500 }
     )
   }
@@ -73,7 +73,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     }
 
     // Update review
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       is_edited: true,
       edited_at: new Date().toISOString(),
     }
@@ -94,10 +94,10 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     // Rating will be auto-updated by trigger
 
     return NextResponse.json({ review })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating review:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to update review" },
+      { error: error instanceof Error ? error.message : "Failed to update review" },
       { status: 500 }
     )
   }
@@ -138,10 +138,10 @@ export async function DELETE(request: Request, { params }: RouteParams) {
     // Rating will be auto-updated by trigger
 
     return NextResponse.json({ message: "Review deleted successfully" })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error deleting review:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to delete review" },
+      { error: error instanceof Error ? error.message : "Failed to delete review" },
       { status: 500 }
     )
   }

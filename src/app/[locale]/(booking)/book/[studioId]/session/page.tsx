@@ -10,7 +10,7 @@ interface SessionPageProps {
 export default async function SessionPage({ params, searchParams }: SessionPageProps) {
   const { studioId } = await params
   const allParams = await searchParams
-  const { date, start, duration, crew } = allParams
+  const { date, start, duration } = allParams
 
   // Parse pre-selected equipment from URL params (eq_opt_1=1, eq_opt_2=1, etc.)
   const initialEquipment: Record<string, number> = {}

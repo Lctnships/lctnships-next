@@ -36,8 +36,8 @@ export default async function ProjectsPage() {
     cover_image_url: p.cover_image_url,
     status: p.status || "active",
     updated_at: p.updated_at,
-    bookings_count: (p.bookings as any)?.[0]?.count || 0,
-    members_count: (p.project_members as any)?.[0]?.count || 0,
+    bookings_count: (p.bookings as { count: number }[])?.[0]?.count || 0,
+    members_count: (p.project_members as { count: number }[])?.[0]?.count || 0,
   }))
 
   return <ProjectsClient projects={projectsData} />
