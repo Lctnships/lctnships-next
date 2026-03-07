@@ -80,21 +80,17 @@ export async function POST(request: Request) {
       studio_id,
       start_datetime,
       end_datetime,
-      total_hours,
-      subtotal,
-      service_fee,
-      total_amount,
-      host_payout,
+      total_amount, // Client-sent total for tolerance check
       notes,
       production_type,
       special_requests,
       equipment_selections,
     } = body
 
-    // Get studio details
+    // Get studio details including hourly rate for server-side price verification
     const { data: studio, error: studioError } = await supabase
       .from("studios")
-      .select("host_id, instant_book, title")
+      .select("host_id, instant_book, title, hourly_rate")
       .eq("id", studio_id)
       .single()
 
@@ -102,10 +98,34 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Studio not found" }, { status: 404 })
     }
 
+    // Server-side price recalculation to prevent client-side price manipulation
+    const startTime = new Date(start_datetime)
+    const endTime = new Date(end_datetime)
+    const durationMs = endTime.getTime() - startTime.getTime()
+    const calculatedHours = Math.max(1, Math.round((durationMs / (1000 * 60 * 60)) * 100) / 100)
+    const hourlyRate = studio.hourly_rate || 0
+
+    const calculatedSubtotal = Math.round(calculatedHours * hourlyRate * 100) / 100
+    const SERVICE_FEE_PERCENTAGE = 0.10 // 10% service fee
+    const calculatedServiceFee = Math.round(calculatedSubtotal * SERVICE_FEE_PERCENTAGE * 100) / 100
+    const calculatedTotal = Math.round((calculatedSubtotal + calculatedServiceFee) * 100) / 100
+    const calculatedHostPayout = Math.round(calculatedSubtotal * 100) / 100
+
+    // Verify client-supplied prices are within acceptable tolerance (2% for rounding)
+    const tolerance = 0.02
+    if (
+      Math.abs(calculatedTotal - total_amount) / Math.max(calculatedTotal, 1) > tolerance
+    ) {
+      return NextResponse.json(
+        { error: "Price mismatch detected. Please refresh and try again." },
+        { status: 400 }
+      )
+    }
+
     // Generate booking number
     const bookingNumber = `BK${Date.now().toString().slice(-8)}`
 
-    // Create booking
+    // Create booking with server-calculated prices
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .insert({
@@ -115,11 +135,11 @@ export async function POST(request: Request) {
         host_id: studio.host_id,
         start_datetime,
         end_datetime,
-        total_hours,
-        subtotal,
-        service_fee,
-        total_amount,
-        host_payout,
+        total_hours: calculatedHours,
+        subtotal: calculatedSubtotal,
+        service_fee: calculatedServiceFee,
+        total_amount: calculatedTotal,
+        host_payout: calculatedHostPayout,
         status: studio.instant_book ? "confirmed" : "pending",
         payment_status: "pending",
         notes,

@@ -19,6 +19,39 @@ export async function GET(
   const { studioId } = await params
   const supabase = await createClient()
 
+  // Authenticate: only the studio owner can access the calendar feed
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    // Also support token-based access via query parameter for calendar apps
+    const { searchParams } = new URL(request.url)
+    const token = searchParams.get("token")
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized. Provide authentication or a valid token." }, { status: 401 })
+    }
+    // Verify token matches the studio's ical_token
+    const { data: studioToken } = await supabase
+      .from("studios")
+      .select("ical_token")
+      .eq("id", studioId)
+      .single()
+
+    if (!studioToken || studioToken.ical_token !== token) {
+      return NextResponse.json({ error: "Invalid or expired token" }, { status: 403 })
+    }
+  } else {
+    // Verify the authenticated user owns this studio
+    const { data: ownership } = await supabase
+      .from("studios")
+      .select("id")
+      .eq("id", studioId)
+      .eq("host_id", user.id)
+      .single()
+
+    if (!ownership) {
+      return NextResponse.json({ error: "Forbidden: you do not own this studio" }, { status: 403 })
+    }
+  }
+
   // Fetch studio info
   const { data: studio } = await supabase
     .from("studios")

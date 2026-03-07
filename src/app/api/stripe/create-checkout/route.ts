@@ -12,6 +12,12 @@ export async function POST(req: Request) {
 
     const supabase = await createClient()
 
+    // Authenticate the user
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     // Get booking details
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
@@ -25,6 +31,11 @@ export async function POST(req: Request) {
 
     if (bookingError || !booking) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 })
+    }
+
+    // Verify the authenticated user is the renter of this booking
+    if (booking.renter_id !== user.id) {
+      return NextResponse.json({ error: "Forbidden: you are not the renter of this booking" }, { status: 403 })
     }
 
     // Get or create Stripe customer

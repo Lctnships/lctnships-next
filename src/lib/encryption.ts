@@ -1,24 +1,37 @@
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from "crypto"
+import { createCipheriv, createDecipheriv, randomBytes, scryptSync, createHash } from "crypto"
 
-// Get encryption key from environment variable or generate a warning
+// Derive a unique salt from the key material itself (deterministic but unique per deployment)
+function deriveSalt(keyMaterial: string): string {
+  return createHash("sha256").update(`lctnships-salt:${keyMaterial}`).digest("hex").slice(0, 32)
+}
+
+// Get encryption key from environment variable
 function getEncryptionKey(): Buffer {
   const key = process.env.ENCRYPTION_KEY
   if (!key) {
+    // Fallback to deriving a key from another secret — never use a hardcoded default
+    const fallbackSecret = process.env.NEXTAUTH_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!fallbackSecret) {
+      throw new Error(
+        "ENCRYPTION_KEY is not set and no fallback secret is available. " +
+        "Set ENCRYPTION_KEY environment variable for encryption support."
+      )
+    }
     console.warn(
-      "WARNING: ENCRYPTION_KEY not set. Using a derived key from NEXTAUTH_SECRET. " +
+      "WARNING: ENCRYPTION_KEY not set. Deriving key from NEXTAUTH_SECRET. " +
       "Set ENCRYPTION_KEY in production for better security."
     )
-    // Fallback to deriving a key from another secret
-    const fallbackSecret = process.env.NEXTAUTH_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || "default-insecure-key"
-    return scryptSync(fallbackSecret, "salt", 32)
+    const salt = deriveSalt(fallbackSecret)
+    return scryptSync(fallbackSecret, salt, 32)
   }
   // Key should be 32 bytes (256 bits) for AES-256
   if (key.length === 64) {
     // Hex encoded key
     return Buffer.from(key, "hex")
   }
-  // Derive a proper key from the provided string
-  return scryptSync(key, "salt", 32)
+  // Derive a proper key from the provided string using a unique salt
+  const salt = deriveSalt(key)
+  return scryptSync(key, salt, 32)
 }
 
 const ALGORITHM = "aes-256-gcm"

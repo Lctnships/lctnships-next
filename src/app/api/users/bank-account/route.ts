@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { encrypt, decrypt, isEncrypted } from "@/lib/encryption"
 
 // GET /api/users/bank-account - Get user's bank account details
 export async function GET(_request: Request) {
@@ -23,10 +24,13 @@ export async function GET(_request: Request) {
 
     if (error) throw error
 
-    // Mask IBAN for security (show only last 4 characters)
-    const maskedIban = bankAccount?.bank_iban
-      ? `****${bankAccount.bank_iban.slice(-4)}`
-      : null
+    // Decrypt IBAN if it's encrypted, then mask for display
+    const rawIban = bankAccount?.bank_iban
+    let maskedIban: string | null = null
+    if (rawIban) {
+      const decryptedIban = isEncrypted(rawIban) ? decrypt(rawIban) : rawIban
+      maskedIban = decryptedIban ? `****${decryptedIban.slice(-4)}` : null
+    }
 
     return NextResponse.json({
       bank_account: {
@@ -74,11 +78,14 @@ export async function POST(request: Request) {
       )
     }
 
+    // Encrypt IBAN before storing
+    const encryptedIban = encrypt(cleanIban)
+
     const { data: bankAccount, error } = await supabase
       .from("users")
       .update({
         bank_account_name: account_name,
-        bank_iban: cleanIban,
+        bank_iban: encryptedIban,
         bank_bic: bic || null,
         updated_at: new Date().toISOString(),
       })

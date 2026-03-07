@@ -14,6 +14,14 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { current_password, new_password } = body
 
+    // Current password is required for security
+    if (!current_password) {
+      return NextResponse.json(
+        { error: "Current password is required" },
+        { status: 400 }
+      )
+    }
+
     if (!new_password) {
       return NextResponse.json(
         { error: "New password is required" },
@@ -28,20 +36,26 @@ export async function POST(request: Request) {
       )
     }
 
-    // Verify current password by trying to sign in
-    // Note: This requires the user to provide their current password for security
-    if (current_password) {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.email!,
-        password: current_password,
-      })
+    // Require at least one uppercase, one lowercase, and one number
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+    if (!passwordRegex.test(new_password)) {
+      return NextResponse.json(
+        { error: "Password must contain at least one uppercase letter, one lowercase letter, and one number" },
+        { status: 400 }
+      )
+    }
 
-      if (signInError) {
-        return NextResponse.json(
-          { error: "Current password is incorrect" },
-          { status: 400 }
-        )
-      }
+    // Verify current password by trying to sign in
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user.email!,
+      password: current_password,
+    })
+
+    if (signInError) {
+      return NextResponse.json(
+        { error: "Current password is incorrect" },
+        { status: 400 }
+      )
     }
 
     // Update password
