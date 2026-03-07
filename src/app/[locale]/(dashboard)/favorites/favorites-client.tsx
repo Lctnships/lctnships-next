@@ -262,9 +262,12 @@ function FavoritesEmptyState({ t }: { t: (key: string) => string }) {
           <div className="absolute inset-8 bg-white rounded-full shadow-xl flex items-center justify-center">
             <span className="material-symbols-outlined text-7xl text-gray-300">favorite</span>
           </div>
-          <div className="absolute -top-4 -right-4 size-16 bg-gray-100 rounded-full flex items-center justify-center">
+          <Link
+            href="/studios"
+            className="absolute -top-4 -right-4 size-16 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer shadow-sm"
+          >
             <span className="material-symbols-outlined text-2xl text-black">add</span>
-          </div>
+          </Link>
         </div>
 
         {/* Text */}

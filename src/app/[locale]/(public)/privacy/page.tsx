@@ -59,10 +59,10 @@ export default function PrivacyPage() {
         </aside>
 
         {/* Main Content */}
-        <div className="flex-1 max-w-3xl flex flex-col gap-10">
+        <div className="flex-1 max-w-3xl flex flex-col gap-6 sm:gap-10">
           {/* Page Heading */}
-          <div className="flex flex-col gap-4 border-b border-gray-100 pb-8">
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">Privacy Policy</h1>
+          <div className="flex flex-col gap-3 sm:gap-4 border-b border-gray-100 pb-6 sm:pb-8">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">Privacy Policy</h1>
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-gray-500 text-lg">calendar_today</span>
               <p className="text-gray-500 font-medium">Last Updated: January 24, 2025</p>
@@ -71,8 +71,8 @@ export default function PrivacyPage() {
 
           {/* Section 1: Introduction */}
           <section className="scroll-mt-24" id="introduction">
-            <h2 className="text-2xl font-bold mb-4">1. Introduction</h2>
-            <p className="text-gray-600 text-lg leading-relaxed mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">1. Introduction</h2>
+            <p className="text-gray-600 text-sm sm:text-lg leading-relaxed mb-4 sm:mb-6">
               At lcntships, we value your privacy and are committed to protecting your personal data. This policy outlines how we handle information when you use our creative studio rental platform. Whether you are a studio owner listing your space or a creative professional looking for your next workspace, we ensure your data is treated with the highest standard of care.
             </p>
             <div className="bg-gray-100 border border-gray-200 rounded-xl p-6 mb-4">
@@ -87,8 +87,8 @@ export default function PrivacyPage() {
 
           {/* Section 2: Information Collection */}
           <section className="scroll-mt-24" id="collection">
-            <h2 className="text-2xl font-bold mb-4">2. Information Collection</h2>
-            <p className="text-gray-600 text-lg leading-relaxed mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">2. Information Collection</h2>
+            <p className="text-gray-600 text-sm sm:text-lg leading-relaxed mb-3 sm:mb-4">
               We collect several types of information from and about users of our Services, including:
             </p>
             <ul className="space-y-4 mb-6">
@@ -115,8 +115,8 @@ export default function PrivacyPage() {
 
           {/* Section 3: Usage of Data */}
           <section className="scroll-mt-24" id="usage">
-            <h2 className="text-2xl font-bold mb-4">3. Usage of Data</h2>
-            <p className="text-gray-600 text-lg leading-relaxed mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">3. Usage of Data</h2>
+            <p className="text-gray-600 text-sm sm:text-lg leading-relaxed mb-4 sm:mb-6">
               We use your data to provide, maintain, and improve our services. Specifically, this includes processing your studio bookings, managing your account, and communicating updates regarding your reservations.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -133,11 +133,11 @@ export default function PrivacyPage() {
 
           {/* Section 4: GDPR & User Rights */}
           <section className="scroll-mt-24" id="gdpr">
-            <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-2xl font-bold">4. GDPR & User Rights</h2>
+            <div className="flex items-center gap-3 mb-3 sm:mb-4 flex-wrap">
+              <h2 className="text-xl sm:text-2xl font-bold">4. GDPR & User Rights</h2>
               <span className="bg-gray-100 text-black text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-widest">EU Compliance</span>
             </div>
-            <p className="text-gray-600 text-lg leading-relaxed mb-6">
+            <p className="text-gray-600 text-sm sm:text-lg leading-relaxed mb-4 sm:mb-6">
               Under the General Data Protection Regulation (GDPR), users in the European Economic Area have specific rights regarding their personal data:
             </p>
             <div className="flex flex-col gap-4">
@@ -167,22 +167,22 @@ export default function PrivacyPage() {
 
           {/* Section 5: Cookies & Tracking */}
           <section className="scroll-mt-24" id="cookies">
-            <h2 className="text-2xl font-bold mb-4">5. Cookies & Tracking</h2>
-            <p className="text-gray-600 text-lg leading-relaxed mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">5. Cookies & Tracking</h2>
+            <p className="text-gray-600 text-sm sm:text-lg leading-relaxed mb-3 sm:mb-4">
               We use cookies and similar tracking technologies to track the activity on our Service and hold certain information. Cookies are files with small amount of data which may include an anonymous unique identifier.
             </p>
-            <p className="text-gray-600 text-lg leading-relaxed mb-6">
+            <p className="text-gray-600 text-sm sm:text-lg leading-relaxed mb-4 sm:mb-6">
               You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Service.
             </p>
           </section>
 
           {/* Section 6: Contact Information */}
-          <section className="scroll-mt-24 mb-20" id="contact">
-            <h2 className="text-2xl font-bold mb-4">6. Contact Information</h2>
-            <p className="text-gray-600 text-lg leading-relaxed mb-6">
+          <section className="scroll-mt-24 mb-10 sm:mb-20" id="contact">
+            <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">6. Contact Information</h2>
+            <p className="text-gray-600 text-sm sm:text-lg leading-relaxed mb-4 sm:mb-6">
               If you have any questions about this Privacy Policy, please contact our data protection officer:
             </p>
-            <div className="bg-gray-900 text-white p-8 rounded-2xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+            <div className="bg-gray-900 text-white p-5 sm:p-8 rounded-xl sm:rounded-2xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 overflow-hidden relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gray-200 rounded-full -mr-16 -mt-16 blur-3xl"></div>
               <div className="relative z-10">
                 <h3 className="text-xl font-bold mb-2">Legal Department</h3>
@@ -208,15 +208,6 @@ export default function PrivacyPage() {
             </div>
           </section>
 
-          {/* Footer links */}
-          <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-gray-500">© {new Date().getFullYear()} lcntships Creative Rentals. All rights reserved.</p>
-            <div className="flex gap-6">
-              <Link href="/terms" className="text-sm font-medium text-gray-500 hover:text-black transition-colors">Terms of Service</Link>
-              <Link href="/privacy" className="text-sm font-medium text-black underline">Privacy Policy</Link>
-              <Link href="/cookies" className="text-sm font-medium text-gray-500 hover:text-black transition-colors">Cookie Policy</Link>
-            </div>
-          </div>
         </div>
       </div>
 

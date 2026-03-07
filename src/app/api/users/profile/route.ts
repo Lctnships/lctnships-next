@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 
 // GET /api/users/profile - Get current user's profile
@@ -67,23 +68,21 @@ export async function PATCH(request: Request) {
 
     updateData.updated_at = new Date().toISOString()
 
-    const { error } = await supabase
+    // Use admin client to bypass RLS — user identity already verified above
+    const adminSupabase = createAdminClient()
+    const upsertData = {
+      id: user.id,
+      email: user.email!,
+      ...updateData,
+    }
+    const { data: rows, error } = await adminSupabase
       .from("users")
-      .update(updateData)
-      .eq("id", user.id)
+      .upsert(upsertData as any, { onConflict: "id" })
+      .select()
 
     if (error) throw error
 
-    // Fetch updated profile separately to avoid .single() coercion issues
-    const { data: profile, error: fetchError } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle()
-
-    if (fetchError) throw fetchError
-
-    return NextResponse.json({ profile })
+    return NextResponse.json({ profile: rows?.[0] ?? null })
   } catch (error: any) {
     console.error("Error updating profile:", error)
     return NextResponse.json(

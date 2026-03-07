@@ -41,9 +41,9 @@ export default async function HelpArticlePage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="w-full max-w-6xl mx-auto px-8 py-8 md:pt-12">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-8 md:pt-12">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm font-medium text-gray-500 mb-8">
+        <nav className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-gray-500 mb-6 sm:mb-8 overflow-x-auto">
           <Link href="/help" className="hover:text-black transition-colors">
             {t("help")}
           </Link>
@@ -55,11 +55,11 @@ export default async function HelpArticlePage({ params }: PageProps) {
           <span className="text-black">{title}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-16">
           {/* Main Article */}
           <article className="lg:col-span-8">
-            <header className="mb-10">
-              <h1 className="text-black text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-6">
+            <header className="mb-6 sm:mb-10">
+              <h1 className="text-black text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4 sm:mb-6">
                 {title}
               </h1>
               <div className="flex items-center gap-4 text-sm text-gray-500">
@@ -103,8 +103,8 @@ export default async function HelpArticlePage({ params }: PageProps) {
             </div>
 
             {/* Feedback Section */}
-            <div className="mt-20 pt-10 border-t border-gray-200">
-              <div className="bg-gray-50 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="mt-10 sm:mt-20 pt-6 sm:pt-10 border-t border-gray-200">
+              <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-5 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
                 <div>
                   <h4 className="text-xl font-bold text-black mb-1">{t("wasHelpful")}</h4>
                   <p className="text-gray-500 text-sm">{t("feedbackHelps")}</p>
@@ -130,22 +130,25 @@ export default async function HelpArticlePage({ params }: PageProps) {
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-10">
             {/* Contact Card */}
-            <div className="bg-black rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl shadow-black/20">
+            <div className="bg-black rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-2xl shadow-black/20">
               <div className="absolute -top-10 -right-10 size-32 bg-white/10 rounded-full blur-2xl" />
               <div className="relative z-10">
                 <h4 className="text-xl font-bold mb-2">{t("stillNeedHelp")}</h4>
                 <p className="text-white/80 text-sm mb-6 leading-relaxed">
                   {t("supportAvailable")}
                 </p>
-                <button className="w-full bg-white text-black font-bold py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
-                  <span className="material-symbols-outlined">chat</span>
+                <a
+                  href="mailto:support@lcntships.com"
+                  className="w-full bg-white text-black font-bold py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors"
+                >
+                  <span className="material-symbols-outlined">mail</span>
                   {t("contactUs")}
-                </button>
+                </a>
               </div>
             </div>
 
             {/* Back to category */}
-            <div className="bg-white border border-gray-200 rounded-3xl p-8">
+            <div className="bg-white border border-gray-200 rounded-2xl sm:rounded-3xl p-5 sm:p-8">
               <h3 className="text-xl font-bold mb-4">{t("moreIn")} {categoryName}</h3>
               <Link
                 href={`/help/${category}`}

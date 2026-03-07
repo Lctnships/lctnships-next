@@ -55,24 +55,24 @@ export default async function CitiesPage() {
 
   return (
     <div className="min-h-screen">
-      <main className="max-w-[1200px] mx-auto px-6 lg:px-10 py-12">
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-12">
         {/* Hero Section */}
-        <div className="mb-16">
-          <h1 className="text-gray-900 dark:text-white tracking-tight text-5xl font-extrabold leading-[1.1] text-center mb-4">
+        <div className="mb-6 sm:mb-16">
+          <h1 className="text-gray-900 dark:text-white tracking-tight text-2xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] text-center mb-2 sm:mb-4">
             {t("heroTitle")}
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 text-lg font-medium text-center max-w-2xl mx-auto">
+          <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-lg font-medium text-center max-w-2xl mx-auto">
             {t("heroDesc")}
           </p>
         </div>
 
         {/* City Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8 pb-8 sm:pb-20">
           {cities.map((city) => (
             <Link
               key={city.slug}
               href={`/studios?city=${city.slug}`}
-              className="group relative overflow-hidden rounded-xl aspect-[3/4] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+              className="group relative overflow-hidden rounded-xl sm:rounded-2xl aspect-[3/4] cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
             >
               <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-110">
                 <Image
@@ -80,29 +80,29 @@ export default async function CitiesPage() {
                   alt={city.name}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 768px) 50vw, 25vw"
+                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 50vw, 33vw"
                   unoptimized
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               </div>
-              <div className="absolute top-4 right-4">
-                <span className="bg-white/20 backdrop-blur-md text-white text-xs font-bold px-4 py-1.5 rounded-full border border-white/30">
+              <div className="absolute top-2 right-2 sm:top-4 sm:right-4">
+                <span className="bg-white/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold px-2 py-1 sm:px-4 sm:py-1.5 rounded-full border border-white/30">
                   {city.studioCount} {t("studiosLabel")}
                 </span>
               </div>
-              <div className="absolute bottom-8 left-8">
-                <h3 className="text-white text-3xl font-extrabold tracking-tight">{city.name}</h3>
+              <div className="absolute bottom-3 left-3 sm:bottom-8 sm:left-8">
+                <h3 className="text-white text-lg sm:text-3xl font-extrabold tracking-tight">{city.name}</h3>
               </div>
             </Link>
           ))}
         </div>
 
         {/* Suggest Section */}
-        <section className="max-w-3xl mx-auto py-16 px-8 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-3">
+        <section className="max-w-3xl mx-auto py-8 sm:py-16 px-4 sm:px-8 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 text-center">
+          <h2 className="text-xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-2 sm:mb-3">
             {t("suggestCity")}
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-8 font-medium">
+          <p className="text-gray-500 dark:text-gray-400 mb-4 sm:mb-8 font-medium text-sm sm:text-base">
             {t("suggestCityDesc")}
           </p>
           <SuggestCityForm

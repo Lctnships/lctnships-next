@@ -63,7 +63,7 @@ export async function GET(
       const start = formatICSDate(new Date(booking.start_datetime))
       const end = formatICSDate(new Date(booking.end_datetime))
       const renterName = (booking.renter as any)?.full_name || "Guest"
-      const summary = escapeICS(`Booking: ${renterName}`)
+      const summary = escapeICS(`Booking - ${renterName}`)
       const description = escapeICS(`Status: ${booking.status}\\nStudio: ${studio.title}`)
       const location = studio.location ? escapeICS(studio.location) : ""
 
@@ -86,14 +86,18 @@ export async function GET(
   if (blockedDates) {
     for (const blocked of blockedDates) {
       const dateStr = blocked.blocked_date.replace(/-/g, "")
-      const summary = escapeICS(blocked.reason ? `Blocked: ${blocked.reason}` : "Blocked")
+      // ICS all-day DTEND is exclusive, so add one day
+      const endDate = new Date(blocked.blocked_date)
+      endDate.setDate(endDate.getDate() + 1)
+      const endDateStr = endDate.toISOString().split("T")[0].replace(/-/g, "")
+      const summary = escapeICS(blocked.reason ? `Geblokkeerd: ${blocked.reason}` : "Geblokkeerd")
 
       ics.push(
         "BEGIN:VEVENT",
         `UID:blocked-${blocked.id}@lctnships.com`,
         `DTSTAMP:${now}`,
         `DTSTART;VALUE=DATE:${dateStr}`,
-        `DTEND;VALUE=DATE:${dateStr}`,
+        `DTEND;VALUE=DATE:${endDateStr}`,
         `SUMMARY:${summary}`,
         "STATUS:CONFIRMED",
         "TRANSP:OPAQUE",
@@ -107,7 +111,7 @@ export async function GET(
   return new NextResponse(ics.join("\r\n"), {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${studio.title || "calendar"}.ics"`,
+      "Content-Disposition": `attachment; filename="studio-calendar.ics"`,
     },
   })
 }

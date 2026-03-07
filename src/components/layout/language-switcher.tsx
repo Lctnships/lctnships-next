@@ -17,6 +17,8 @@ const localeFlags: Record<Locale, string> = {
   nl: "🇳🇱",
   en: "🇬🇧",
   es: "🇪🇸",
+  fr: "🇫🇷",
+  de: "🇩🇪",
 }
 
 export function LanguageSwitcher() {

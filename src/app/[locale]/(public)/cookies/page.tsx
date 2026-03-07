@@ -73,25 +73,25 @@ const tableOfContents = [
 export default function CookiePolicyPage() {
   return (
     <div className="min-h-screen bg-[#f6f6f8]">
-      <main className="max-w-[1200px] mx-auto w-full px-10 py-12">
+      <main className="max-w-[1200px] mx-auto w-full px-4 sm:px-6 lg:px-10 py-6 sm:py-12">
         {/* Page Header */}
-        <div className="flex flex-wrap items-end justify-between gap-6 pb-12 border-b border-[#e7ebf3] mb-12">
-          <div className="flex min-w-72 flex-col gap-3">
-            <h1 className="text-[#0d121b] text-5xl font-black leading-tight tracking-tight">
+        <div className="flex flex-wrap items-end justify-between gap-4 sm:gap-6 pb-6 sm:pb-12 border-b border-[#e7ebf3] mb-6 sm:mb-12">
+          <div className="flex min-w-0 flex-col gap-2 sm:gap-3">
+            <h1 className="text-[#0d121b] text-2xl sm:text-4xl md:text-5xl font-black leading-tight tracking-tight">
               Cookiebeleid
             </h1>
-            <p className="text-[#4c669a] text-lg font-medium">
+            <p className="text-[#4c669a] text-sm sm:text-lg font-medium">
               Laatst bijgewerkt op 24 januari 2025
             </p>
           </div>
-          <button className="flex min-w-[200px] cursor-pointer items-center justify-center rounded-full h-14 px-8 bg-black text-white text-base font-bold shadow-lg shadow-black/10 hover:scale-[1.02] transition-transform">
+          <button className="flex min-w-0 sm:min-w-[200px] cursor-pointer items-center justify-center rounded-full h-11 sm:h-14 px-5 sm:px-8 bg-black text-white text-sm sm:text-base font-bold shadow-lg shadow-black/10 hover:scale-[1.02] transition-transform">
             <span className="truncate">Beheer Cookie-instellingen</span>
           </button>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-16">
+        <div className="flex flex-col lg:flex-row gap-8 sm:gap-12 lg:gap-16">
           {/* Sidebar Navigation */}
-          <aside className="w-full lg:w-72 shrink-0">
+          <aside className="hidden lg:block w-full lg:w-72 shrink-0">
             <div className="sticky top-8 flex flex-col gap-6 p-6 rounded-lg bg-white border border-[#e7ebf3]">
               <div className="flex flex-col">
                 <h3 className="text-[#0d121b] text-base font-bold">Inhoudsopgave</h3>
@@ -125,11 +125,11 @@ export default function CookiePolicyPage() {
           </aside>
 
           {/* Content Area */}
-          <div className="flex-1 space-y-12 max-w-3xl">
+          <div className="flex-1 space-y-8 sm:space-y-12 max-w-3xl">
             {/* Introduction */}
             <section id="inleiding">
-              <h2 className="text-3xl font-extrabold pb-4 text-[#0d121b]">Inleiding</h2>
-              <p className="text-[#4c669a] text-lg leading-relaxed">
+              <h2 className="text-2xl sm:text-3xl font-extrabold pb-3 sm:pb-4 text-[#0d121b]">Inleiding</h2>
+              <p className="text-[#4c669a] text-sm sm:text-lg leading-relaxed">
                 Bij lcntships streven we naar volledige transparantie over hoe we uw gegevens
                 gebruiken. Deze pagina legt uit hoe we cookies en vergelijkbare technologieën
                 gebruiken op ons platform om de ultieme studio-boekingservaring te bieden.
@@ -138,11 +138,11 @@ export default function CookiePolicyPage() {
 
             {/* What are cookies */}
             <section id="wat-zijn-cookies">
-              <h2 className="text-2xl font-bold pb-4 text-[#0d121b] flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-bold pb-3 sm:pb-4 text-[#0d121b] flex items-center gap-2">
                 <span className="material-symbols-outlined text-black">cookie</span>
                 Wat zijn cookies?
               </h2>
-              <p className="text-[#4c669a] text-base leading-relaxed">
+              <p className="text-[#4c669a] text-sm sm:text-base leading-relaxed">
                 Cookies zijn kleine tekstbestanden die op uw computer of mobiele apparaat worden
                 opgeslagen wanneer u onze website bezoekt. Ze helpen ons om de website naar behoren
                 te laten functioneren, uw voorkeuren te onthouden en uw ervaring te verbeteren door
@@ -151,15 +151,15 @@ export default function CookiePolicyPage() {
             </section>
 
             {/* Types of cookies */}
-            <section id="soorten-cookies" className="space-y-6">
-              <h2 className="text-2xl font-bold text-[#0d121b]">Soorten cookies die wij gebruiken</h2>
-              <div className="grid gap-6">
+            <section id="soorten-cookies" className="space-y-4 sm:space-y-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#0d121b]">Soorten cookies die wij gebruiken</h2>
+              <div className="grid gap-4 sm:gap-6">
                 {cookieTypes.map((cookie) => (
                   <div
                     key={cookie.title}
-                    className="p-8 bg-white rounded-2xl border border-[#e7ebf3]"
+                    className="p-4 sm:p-8 bg-white rounded-xl sm:rounded-2xl border border-[#e7ebf3]"
                   >
-                    <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center gap-3 mb-3 sm:mb-4">
                       <div
                         className={`p-2 rounded-lg ${
                           cookie.color === "blue"
@@ -171,7 +171,7 @@ export default function CookiePolicyPage() {
                       >
                         <span className="material-symbols-outlined">{cookie.icon}</span>
                       </div>
-                      <h3 className="text-xl font-bold">{cookie.title}</h3>
+                      <h3 className="text-base sm:text-xl font-bold">{cookie.title}</h3>
                     </div>
                     <p className="text-[#4c669a] leading-relaxed">{cookie.description}</p>
                   </div>
@@ -181,8 +181,22 @@ export default function CookiePolicyPage() {
 
             {/* Cookie Overview Table */}
             <section id="overzicht">
-              <h2 className="text-2xl font-bold pb-6 text-[#0d121b]">Gedetailleerd Cookie Overzicht</h2>
-              <div className="overflow-hidden border border-[#e7ebf3] rounded-lg">
+              <h2 className="text-xl sm:text-2xl font-bold pb-4 sm:pb-6 text-[#0d121b]">Gedetailleerd Cookie Overzicht</h2>
+              {/* Mobile: Card layout */}
+              <div className="sm:hidden space-y-3">
+                {cookieTable.map((cookie) => (
+                  <div key={cookie.name} className="bg-white rounded-xl border border-[#e7ebf3] p-4 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-mono font-bold text-black">{cookie.name}</span>
+                      <span className="text-xs text-[#4c669a] bg-gray-50 px-2 py-0.5 rounded-full">{cookie.expiry}</span>
+                    </div>
+                    <p className="text-xs text-[#4c669a]">{cookie.purpose}</p>
+                    <p className="text-xs text-gray-400">Provider: {cookie.provider}</p>
+                  </div>
+                ))}
+              </div>
+              {/* Desktop: Table layout */}
+              <div className="hidden sm:block overflow-hidden border border-[#e7ebf3] rounded-lg">
                 <table className="w-full text-left border-collapse bg-white">
                   <thead>
                     <tr className="bg-gray-50">
@@ -207,12 +221,12 @@ export default function CookiePolicyPage() {
             </section>
 
             {/* Manage Settings */}
-            <section id="beheer" className="pb-20">
-              <div className="bg-gray-100 rounded-lg p-10 border border-gray-200">
-                <h2 className="text-2xl font-bold pb-4 text-[#0d121b]">
+            <section id="beheer" className="pb-10 sm:pb-20">
+              <div className="bg-gray-100 rounded-lg p-5 sm:p-10 border border-gray-200">
+                <h2 className="text-xl sm:text-2xl font-bold pb-3 sm:pb-4 text-[#0d121b]">
                   Hoe beheer ik mijn instellingen?
                 </h2>
-                <p className="text-[#4c669a] text-base leading-relaxed mb-8">
+                <p className="text-[#4c669a] text-sm sm:text-base leading-relaxed mb-5 sm:mb-8">
                   U kunt uw cookievoorkeuren op elk moment wijzigen via onze on-site tool of via uw
                   browserinstellingen. Houd er rekening mee dat het uitschakelen van sommige cookies
                   invloed kan hebben op de functionaliteit van onze studio-portal.

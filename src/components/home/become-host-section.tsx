@@ -2,14 +2,12 @@ import { Link } from "@/i18n/routing"
 import Image from "next/image"
 import { getTranslations } from "next-intl/server"
 
-const CALENDLY_URL = "https://calendly.com/lcntships/host-onboarding"
-
 export async function BecomeHostSection() {
   const t = await getTranslations("Home")
 
   return (
-    <section className="max-w-[1440px] mx-auto px-8 mt-32 mb-20">
-      <div className="relative h-[480px] rounded-[32px] overflow-hidden group">
+    <section className="max-w-[1440px] mx-auto px-4 sm:px-8 mt-12 sm:mt-32 mb-10 sm:mb-20">
+      <div className="relative h-[280px] sm:h-[480px] rounded-2xl sm:rounded-[32px] overflow-hidden group">
         <Image
           src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069"
           alt={t("becomeHostImageAlt")}
@@ -17,19 +15,15 @@ export async function BecomeHostSection() {
           sizes="100vw"
           className="object-cover transition-transform duration-1000 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-8">
-          <h2 className="text-white text-4xl md:text-5xl font-extrabold mb-8 max-w-2xl">
+        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-6 sm:p-8">
+          <h2 className="text-white text-2xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-8 max-w-2xl">
             {t("becomeHostTitle")}
           </h2>
-          <a 
-            href={CALENDLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <button className="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-colors">
+          <Link href="/become-host">
+            <button className="bg-white text-black px-6 sm:px-10 py-3 sm:py-4 rounded-full font-bold text-sm sm:text-lg hover:bg-gray-100 transition-colors">
               {t("becomeHostButton")}
             </button>
-          </a>
+          </Link>
         </div>
       </div>
     </section>

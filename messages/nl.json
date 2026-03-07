@@ -264,6 +264,7 @@
     "readFullStory": "Lees het Volledige Verhaal",
     "theArchive": "Het Archief",
     "sortedByRecent": "Gesorteerd op Recent",
+    "all": "Alles",
     "joinCollective": "Sluit je aan bij het Collectief",
     "newsletterDesc": "Ontvang de nieuwste redactionele verhalen, studio-openingen en creatieve gidsen wekelijks in je inbox.",
     "emailPlaceholder": "Jouw e-mailadres",
@@ -872,7 +873,9 @@
     "label": "Taal",
     "nl": "Nederlands",
     "en": "English",
-    "es": "Español"
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch"
   },
   "Dashboard": {
     "metaTitle": "Dashboard",
@@ -1107,7 +1110,9 @@
     "successAvatarUpdated": "Profielfoto bijgewerkt",
     "errorAvatarUploadFailed": "Profielfoto uploaden mislukt",
     "successProfileSaved": "Profiel opgeslagen",
-    "errorProfileSaveFailed": "Profiel opslaan mislukt"
+    "errorProfileSaveFailed": "Profiel opslaan mislukt",
+    "cropTitle": "Foto bijsnijden",
+    "cropConfirm": "Opslaan"
   },
   "ProjectWorkspace": {
     "metaTitle": "Project Workspace",
@@ -1393,6 +1398,7 @@
     "endDate": "Einddatum",
     "reason": "Reden (optioneel)",
     "block": "Blokkeren",
+    "unblock": "Deblokkeren",
     "blocking": "Blokkeren...",
     "syncCalendar": "Agenda Synchroniseren",
     "syncDesc": "Synchroniseer je boekingen met je agenda",
@@ -1425,13 +1431,13 @@
     "startEarning": "Begin met verdienen",
     "startEarningDesc": "Ontvang veilige betalingen direct op je rekening na elke succesvolle boeking.",
     "whyLcntships": "Waarom lcntships",
-    "commissionTitle": "Branche-leidende 15% commissie",
+    "commissionTitle": "De laagste commissie in de markt",
     "commissionDescription": "We bieden een van de meest concurrerende commissietarieven, zodat je meer houdt van wat je verdient. Geen verborgen kosten, geen lidmaatschapskosten, alleen groei.",
-    "lowCommission": "Slechts 15% commissie",
+    "lowCommission": "Lage commissie",
     "noHiddenFees": "Geen verborgen kosten",
     "instantBooking": "Direct boeken beschikbaar",
     "securePayments": "Veilige betalingen",
-    "hostInsurance": "Host verzekering",
+    "verifiedUsers": "Geverifieerde gebruikers",
     "24_7Support": "24/7 ondersteuning",
     "learnMore": "Plan een gesprek",
     "whatYouCanList": "Wat je kunt verhuren",

@@ -27,12 +27,12 @@ export default function TermsPage() {
       </nav>
 
       {/* Page Heading */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12">
-        <div className="flex flex-col gap-3">
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">Algemene Voorwaarden</h1>
-          <p className="text-gray-500 text-lg">Laatst bijgewerkt: 24 januari 2025</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 pb-6 sm:pb-12">
+        <div className="flex flex-col gap-2 sm:gap-3">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">Algemene Voorwaarden</h1>
+          <p className="text-gray-500 text-sm sm:text-lg">Laatst bijgewerkt: 24 januari 2025</p>
         </div>
-        <button className="flex items-center gap-2 bg-white border border-gray-200 hover:border-gray-400 rounded-xl h-12 px-6 font-bold shadow-sm transition-all group">
+        <button className="flex items-center gap-2 bg-white border border-gray-200 hover:border-gray-400 rounded-xl h-11 sm:h-12 px-5 sm:px-6 font-bold shadow-sm transition-all group text-sm sm:text-base">
           <span className="material-symbols-outlined text-black">print</span>
           <span>Print PDF</span>
         </button>
@@ -41,7 +41,7 @@ export default function TermsPage() {
       {/* Main Layout: Sidebar + Content */}
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Sticky Sidebar */}
-        <aside className="lg:w-72 flex-shrink-0">
+        <aside className="hidden lg:block lg:w-72 flex-shrink-0">
           <div className="sticky top-24 flex flex-col gap-6 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
             <div className="flex flex-col gap-1">
               <h3 className="text-lg font-bold">Inhoudsopgave</h3>
@@ -67,41 +67,41 @@ export default function TermsPage() {
         </aside>
 
         {/* Legal Content Section */}
-        <div className="flex-1 max-w-3xl bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-gray-100">
+        <div className="flex-1 max-w-3xl bg-white p-4 sm:p-8 md:p-12 rounded-xl sm:rounded-2xl shadow-sm border border-gray-100">
           <div className="prose prose-slate prose-lg max-w-none">
             {/* Section 1: Definities */}
-            <section className="scroll-mt-24 mb-16" id="definities">
-              <h2 className="text-3xl font-bold mb-6 border-b border-gray-100 pb-4">1. Definities</h2>
+            <section className="scroll-mt-24 mb-8 sm:mb-16" id="definities">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">1. Definities</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 In deze Algemene Voorwaarden wordt verstaan onder:
               </p>
               <ul className="space-y-4 text-gray-600 list-none p-0">
                 <li className="flex gap-4">
-                  <span className="font-bold text-black min-w-[100px]">lcntships:</span>
+                  <span className="font-bold text-black min-w-[80px] sm:min-w-[100px]">lcntships:</span>
                   <span>Het online platform dat bemiddelt tussen verhuurders van creatieve ruimtes en huurders.</span>
                 </li>
                 <li className="flex gap-4">
-                  <span className="font-bold text-black min-w-[100px]">Studio:</span>
+                  <span className="font-bold text-black min-w-[80px] sm:min-w-[100px]">Studio:</span>
                   <span>De creatieve werkruimte die via het platform wordt aangeboden voor tijdelijk gebruik.</span>
                 </li>
                 <li className="flex gap-4">
-                  <span className="font-bold text-black min-w-[100px]">Huurder:</span>
+                  <span className="font-bold text-black min-w-[80px] sm:min-w-[100px]">Huurder:</span>
                   <span>De natuurlijke persoon of rechtspersoon die een boeking plaatst via lcntships.</span>
                 </li>
               </ul>
             </section>
 
             {/* Section 2: Toepasselijkheid */}
-            <section className="scroll-mt-24 mb-16" id="toepasselijkheid">
-              <h2 className="text-3xl font-bold mb-6 border-b border-gray-100 pb-4">2. Toepasselijkheid</h2>
+            <section className="scroll-mt-24 mb-8 sm:mb-16" id="toepasselijkheid">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">2. Toepasselijkheid</h2>
               <p className="text-gray-600 leading-relaxed">
                 Deze voorwaarden zijn van toepassing op elk aanbod van lcntships en op elke tot stand gekomen overeenkomst tussen lcntships en de gebruiker. Door gebruik te maken van het platform stemt u uitdrukkelijk in met deze voorwaarden.
               </p>
             </section>
 
             {/* Section 3: Account */}
-            <section className="scroll-mt-24 mb-16" id="account">
-              <h2 className="text-3xl font-bold mb-6 border-b border-gray-100 pb-4">3. Account aanmaken</h2>
+            <section className="scroll-mt-24 mb-8 sm:mb-16" id="account">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">3. Account aanmaken</h2>
               <p className="text-gray-600 leading-relaxed mb-6">
                 Om gebruik te maken van onze diensten dient u een account aan te maken. Hierbij gelden de volgende regels:
               </p>
@@ -122,8 +122,8 @@ export default function TermsPage() {
             </section>
 
             {/* Section 4: Boekingen */}
-            <section className="scroll-mt-24 mb-16" id="boekingen">
-              <h2 className="text-3xl font-bold mb-6 border-b border-gray-100 pb-4">4. Boekingen & Betalingen</h2>
+            <section className="scroll-mt-24 mb-8 sm:mb-16" id="boekingen">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">4. Boekingen & Betalingen</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 Een boeking is pas definitief nadat lcntships de betaling heeft ontvangen en de verhuurder de aanvraag heeft bevestigd. Alle prijzen op het platform zijn inclusief BTW, tenzij anders vermeld.
               </p>
@@ -135,8 +135,8 @@ export default function TermsPage() {
             </section>
 
             {/* Section 5: Annuleren */}
-            <section className="scroll-mt-24 mb-16" id="annuleren">
-              <h2 className="text-3xl font-bold mb-6 border-b border-gray-100 pb-4">5. Annuleringsbeleid</h2>
+            <section className="scroll-mt-24 mb-8 sm:mb-16" id="annuleren">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">5. Annuleringsbeleid</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 Wij hanteren drie niveaus van annuleringsvoorwaarden, die per studio kunnen verschillen:
               </p>
@@ -157,33 +157,22 @@ export default function TermsPage() {
             </section>
 
             {/* Section 6: Gebruiksregels */}
-            <section className="scroll-mt-24 mb-16" id="gebruiksregels">
-              <h2 className="text-3xl font-bold mb-6 border-b border-gray-100 pb-4">6. Gebruiksregels Studio</h2>
+            <section className="scroll-mt-24 mb-8 sm:mb-16" id="gebruiksregels">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">6. Gebruiksregels Studio</h2>
               <p className="text-gray-600 leading-relaxed">
                 De huurder verbindt zich ertoe de gehuurde ruimte als een &apos;goed huisvader&apos; te gebruiken. Dit houdt in dat de ruimte in oorspronkelijke staat wordt achtergelaten, apparatuur met zorg wordt behandeld en eventuele schade direct wordt gemeld aan de verhuurder en lcntships.
               </p>
             </section>
 
             {/* Section 7: Aansprakelijkheid */}
-            <section className="scroll-mt-24 mb-16" id="aansprakelijkheid">
-              <h2 className="text-3xl font-bold mb-6 border-b border-gray-100 pb-4">7. Aansprakelijkheid</h2>
+            <section className="scroll-mt-24 mb-8 sm:mb-16" id="aansprakelijkheid">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">7. Aansprakelijkheid</h2>
               <p className="text-gray-600 leading-relaxed">
                 lcntships faciliteert enkel het platform en is niet aansprakelijk voor schade ontstaan tijdens het gebruik van een studio, noch voor geschillen tussen huurder en verhuurder. Gebruikers wordt geadviseerd een passende bedrijfsaansprakelijkheidsverzekering af te sluiten.
               </p>
             </section>
           </div>
 
-          {/* Footer */}
-          <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
-            <p className="text-sm text-gray-500">
-              Vragen over onze voorwaarden? Neem contact op via{" "}
-              <a href="mailto:legal@lcntships.nl" className="text-black font-bold hover:underline">legal@lcntships.nl</a>
-            </p>
-            <div className="flex gap-4">
-              <button className="text-sm font-bold text-black">Download PDF</button>
-              <Link href="/privacy" className="text-sm font-bold text-black">Privacy Beleid</Link>
-            </div>
-          </div>
         </div>
       </div>
     </main>
