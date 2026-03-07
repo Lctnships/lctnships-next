@@ -8,17 +8,14 @@ export async function POST(request: NextRequest) {
     const {
       bookingId,
       studioId,
-      studioName,
-      pricePerHour,
       hours,
       date,
       startTime,
-      totalAmount,
-      customerEmail,
+      totalAmount, // Client-sent total for tolerance check only
     } = body
 
     // Validate required fields
-    if (!studioId || !studioName || !hours) {
+    if (!studioId || !hours) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -27,13 +24,20 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient()
 
-    // Get studio details including owner's Stripe account
+    // Authenticate user
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    // Get studio details including owner's Stripe account and hourly rate
     const { data: studio, error: studioError } = await supabase
       .from("studios")
       .select(`
         id,
         title,
         host_id,
+        hourly_rate,
         host:users!studios_host_id_fkey (
           stripe_account_id,
           email
@@ -46,18 +50,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Studio not found" }, { status: 404 })
     }
 
-    // Get current user for email
-    const { data: { user } } = await supabase.auth.getUser()
-    const email = customerEmail || user?.email
+    // Server-side price recalculation to prevent client-side price manipulation
+    const hourlyRate = studio.hourly_rate || 0
+    const amount = Math.round(hourlyRate * hours * 100) / 100
 
-    if (!email) {
-      return NextResponse.json(
-        { error: "Customer email required" },
-        { status: 400 }
-      )
+    // Verify client-supplied total is within acceptable tolerance (2% for rounding)
+    if (totalAmount) {
+      const tolerance = 0.02
+      if (Math.abs(amount - totalAmount) / Math.max(amount, 1) > tolerance) {
+        return NextResponse.json(
+          { error: "Price mismatch detected. Please refresh and try again." },
+          { status: 400 }
+        )
+      }
     }
 
-    const amount = totalAmount || Math.round(pricePerHour * hours * 100) / 100
+    const email = user.email
     const studioOwnerStripeId = (studio.host as { stripe_account_id?: string; email?: string } | null)?.stripe_account_id
 
     const origin = request.nextUrl.origin
@@ -80,7 +88,7 @@ export async function POST(request: NextRequest) {
             price_data: {
               currency: "eur",
               product_data: {
-                name: `Boeking: ${studioName || studio.title}`,
+                name: `Boeking: ${studio.title}`,
                 description: `${hours} uur${date ? ` op ${date}` : ""}${startTime ? ` om ${startTime}` : ""}`,
               },
               unit_amount: amountInCents,
@@ -137,7 +145,7 @@ export async function POST(request: NextRequest) {
           price_data: {
             currency: "eur",
             product_data: {
-              name: `Boeking: ${studioName || studio.title}`,
+              name: `Boeking: ${studio.title}`,
               description: `${hours} uur${date ? ` op ${date}` : ""}${startTime ? ` om ${startTime}` : ""}`,
             },
             unit_amount: amountInCents,

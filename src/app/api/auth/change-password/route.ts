@@ -26,6 +26,15 @@ export async function POST(request: Request) {
       )
     }
 
+    // Password complexity: at least one uppercase, one lowercase, and one number
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+    if (!passwordRegex.test(newPassword)) {
+      return NextResponse.json(
+        { error: "Password must contain at least one uppercase letter, one lowercase letter, and one number" },
+        { status: 400 }
+      )
+    }
+
     // Verify current password by re-authenticating
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: user.email!,
