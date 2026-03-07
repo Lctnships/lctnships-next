@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Menu, Search, Sparkles, BookOpen, Home, Calendar, FolderOpen, Heart, MessageSquare, User, Settings, LogOut, CreditCard } from "lucide-react"
+import { Menu, Search, Sparkles, BookOpen, Home, Calendar, FolderOpen, Heart, MessageSquare, User, Settings, LogOut } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { useUser } from "@/hooks/use-user"
 import { useState, useEffect } from "react"
@@ -32,7 +32,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between relative">
         {/* Logo */}
         <Link href="/">
           <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-8 md:h-9 w-auto" priority />
@@ -105,7 +105,6 @@ export function Navbar() {
                       { href: "/projects" as const, icon: FolderOpen, label: t("myProjects") },
                       { href: "/favorites" as const, icon: Heart, label: t("favorites") },
                       { href: "/messages" as const, icon: MessageSquare, label: t("messages") },
-                      { href: "/credits" as const, icon: CreditCard, label: t("creditCard") },
                     ].map((item) => (
                       <DropdownMenuItem key={item.href} asChild className="rounded-xl px-3 py-2.5 cursor-pointer">
                         <Link href={item.href} className="flex items-center gap-3">
@@ -160,7 +159,7 @@ export function Navbar() {
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-full sm:max-w-sm p-0 flex flex-col" showCloseButton={false}>
+              <SheetContent side="right" className="w-[85%] max-w-sm p-0 flex flex-col" showCloseButton={false}>
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                   <Link href="/" onClick={() => setMobileMenuOpen(false)}>

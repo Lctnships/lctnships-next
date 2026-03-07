@@ -204,8 +204,8 @@ export default async function HelpCategoryPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="w-full max-w-5xl mx-auto px-6 md:px-0 mt-12 mb-10">
-        <nav className="flex items-center gap-2 text-gray-500 text-xs font-semibold mb-6 uppercase tracking-wider">
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 md:px-0 mt-6 sm:mt-12 mb-6 sm:mb-10">
+        <nav className="flex items-center gap-1.5 sm:gap-2 text-gray-500 text-xs font-semibold mb-4 sm:mb-6 uppercase tracking-wider">
           <Link href="/help" className="hover:text-black transition-colors">
             {t("helpCenter")}
           </Link>
@@ -213,23 +213,23 @@ export default async function HelpCategoryPage({ params }: PageProps) {
           <span className="text-black">{data.title}</span>
         </nav>
 
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-gray-200 pb-10">
-          <div className="flex items-start gap-6">
-            <div className="size-16 bg-gray-100 rounded-2xl flex items-center justify-center text-black shrink-0">
-              <span className="material-symbols-outlined text-4xl">{data.icon}</span>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-8 border-b border-gray-200 pb-6 sm:pb-10">
+          <div className="flex items-start gap-3 sm:gap-6">
+            <div className="size-12 sm:size-16 bg-gray-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-black shrink-0">
+              <span className="material-symbols-outlined text-2xl sm:text-4xl">{data.icon}</span>
             </div>
-            <div className="flex flex-col gap-2">
-              <h1 className="text-black text-4xl md:text-5xl font-extrabold tracking-tight">
+            <div className="flex flex-col gap-1 sm:gap-2">
+              <h1 className="text-black text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
                 {data.title}
               </h1>
-              <p className="text-gray-500 text-lg max-w-xl">{data.description}</p>
+              <p className="text-gray-500 text-sm sm:text-lg max-w-xl">{data.description}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="w-full max-w-5xl mx-auto px-6 md:px-0 pb-32">
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 md:px-0 pb-16 sm:pb-32">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
           {data.sections.map((section) => (
             <section key={section.title} className="flex flex-col">
@@ -257,16 +257,19 @@ export default async function HelpCategoryPage({ params }: PageProps) {
       </div>
 
       {/* Still need help */}
-      <div className="w-full bg-white border-y border-gray-200 py-16">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <h3 className="text-2xl font-bold mb-4">{t("stillNeedHelp")}</h3>
-          <p className="text-gray-500 mb-8">
+      <div className="w-full bg-white border-y border-gray-200 py-10 sm:py-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+          <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">{t("stillNeedHelp")}</h3>
+          <p className="text-gray-500 text-sm sm:text-base mb-6 sm:mb-8">
             {t("supportAvailable")}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-black text-white font-bold px-8 py-3 rounded-xl hover:bg-gray-800 transition-all shadow-lg shadow-black/20">
+            <a
+              href="mailto:support@lcntships.com"
+              className="bg-black text-white font-bold px-8 py-3 rounded-xl hover:bg-gray-800 transition-all shadow-lg shadow-black/20"
+            >
               {t("contactUs")}
-            </button>
+            </a>
             <Link
               href="/help"
               className="bg-white text-black border border-gray-200 font-bold px-8 py-3 rounded-xl hover:bg-gray-50 transition-all"

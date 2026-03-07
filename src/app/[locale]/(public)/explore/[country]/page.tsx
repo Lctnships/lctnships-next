@@ -427,9 +427,9 @@ export default async function CountryPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-[#f6f7f8]">
-      <main className="max-w-[1200px] mx-auto px-6 py-8">
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 sm:py-8">
         {/* Hero Section */}
-        <div className="relative w-full h-[600px] rounded-[2rem] overflow-hidden group shadow-2xl">
+        <div className="relative w-full h-[300px] sm:h-[450px] md:h-[600px] rounded-2xl sm:rounded-[2rem] overflow-hidden group shadow-2xl">
           <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
             <Image
               src={data.heroImage}
@@ -441,16 +441,16 @@ export default async function CountryPage({ params }: PageProps) {
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/70" />
           </div>
-          <div className="absolute bottom-0 left-0 p-12 w-full max-w-2xl">
-            <h1 className="text-white text-6xl font-black mb-4 leading-[1.1] tracking-tight">
+          <div className="absolute bottom-0 left-0 p-4 sm:p-8 md:p-12 w-full max-w-2xl">
+            <h1 className="text-white text-2xl sm:text-4xl md:text-6xl font-black mb-2 sm:mb-4 leading-[1.1] tracking-tight">
               {data.heroTitle}
             </h1>
-            <p className="text-white/90 text-xl mb-8 leading-relaxed">
+            <p className="text-white/90 text-sm sm:text-lg md:text-xl mb-4 sm:mb-8 leading-relaxed line-clamp-2 sm:line-clamp-none">
               {data.heroDescription}
             </p>
             <Link
               href={`/studios?country=${country}`}
-              className="inline-flex items-center gap-2 bg-black text-white h-14 px-10 rounded-xl font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-lg"
+              className="inline-flex items-center gap-2 bg-black text-white h-11 sm:h-14 px-6 sm:px-10 rounded-xl font-bold text-sm sm:text-lg hover:scale-105 active:scale-95 transition-all shadow-lg"
             >
               {t("viewStudios")}
               <span className="material-symbols-outlined">arrow_forward</span>
@@ -459,28 +459,28 @@ export default async function CountryPage({ params }: PageProps) {
         </div>
 
         {/* Featured Cities Section */}
-        <section className="mt-20">
-          <div className="flex items-end justify-between mb-8 px-2">
+        <section className="mt-10 sm:mt-20">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-0 mb-4 sm:mb-8 px-2">
             <div>
-              <h2 className="text-3xl font-black tracking-tight">{t("featuredCities")}</h2>
-              <p className="text-gray-500 mt-1">{t("creativeHubs")}</p>
+              <h2 className="text-xl sm:text-3xl font-black tracking-tight">{t("featuredCities")}</h2>
+              <p className="text-gray-500 mt-1 text-sm sm:text-base">{t("creativeHubs")}</p>
             </div>
             <Link
               href="/explore"
-              className="text-black font-bold flex items-center gap-1 hover:underline"
+              className="text-black font-bold flex items-center gap-1 hover:underline text-sm sm:text-base"
             >
               {t("viewAllCities")}
               <span className="material-symbols-outlined text-sm">open_in_new</span>
             </Link>
           </div>
-          <div className="flex overflow-x-auto gap-6 pb-4 -mx-2 px-2 scrollbar-hide">
+          <div className="flex overflow-x-auto gap-3 sm:gap-6 pb-4 -mx-2 px-2 scrollbar-hide">
             {data.cities.map((city) => (
               <Link
                 key={city.slug}
                 href={`/studios?city=${city.slug}`}
-                className="flex-none w-72 group cursor-pointer"
+                className="flex-none w-48 sm:w-72 group cursor-pointer"
               >
-                <div className="h-96 rounded-[2rem] overflow-hidden relative shadow-lg mb-4">
+                <div className="h-64 sm:h-96 rounded-2xl sm:rounded-[2rem] overflow-hidden relative shadow-lg mb-3 sm:mb-4">
                   <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-500">
                     <Image
                       src={city.image}
@@ -491,9 +491,9 @@ export default async function CountryPage({ params }: PageProps) {
                     />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-6 left-6 text-white">
-                    <h3 className="text-2xl font-bold">{city.name}</h3>
-                    <p className="text-sm text-white/80">{city.studioCount} {t("studiosLabel")}</p>
+                  <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 text-white">
+                    <h3 className="text-lg sm:text-2xl font-bold">{city.name}</h3>
+                    <p className="text-xs sm:text-sm text-white/80">{city.studioCount} {t("studiosLabel")}</p>
                   </div>
                 </div>
               </Link>
@@ -502,18 +502,18 @@ export default async function CountryPage({ params }: PageProps) {
         </section>
 
         {/* Top Rated Studios Grid */}
-        <section className="mt-24">
-          <h2 className="text-3xl font-black tracking-tight mb-8 px-2">
+        <section className="mt-12 sm:mt-24">
+          <h2 className="text-xl sm:text-3xl font-black tracking-tight mb-4 sm:mb-8 px-2">
             {t("bestStudiosIn", { country: data.name })}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
             {data.topStudios.map((studio) => (
               <Link
                 key={studio.id}
                 href={`/studios/${studio.id}`}
-                className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100 group"
+                className="bg-white rounded-2xl sm:rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100 group"
               >
-                <div className="h-64 relative">
+                <div className="h-48 sm:h-64 relative">
                   <Image
                     src={studio.image}
                     alt={studio.title}
@@ -526,22 +526,22 @@ export default async function CountryPage({ params }: PageProps) {
                     {studio.rating} ({studio.reviewCount})
                   </div>
                 </div>
-                <div className="p-8">
+                <div className="p-4 sm:p-8">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold group-hover:text-black transition-colors">
+                    <h3 className="text-base sm:text-xl font-bold group-hover:text-black transition-colors">
                       {studio.title}
                     </h3>
-                    <span className="text-black font-bold">€{studio.pricePerHour}{t("perHour")}</span>
+                    <span className="text-black font-bold text-sm sm:text-base">€{studio.pricePerHour}{t("perHour")}</span>
                   </div>
-                  <p className="text-gray-500 text-sm mb-6 flex items-center gap-1">
+                  <p className="text-gray-500 text-xs sm:text-sm mb-3 sm:mb-6 flex items-center gap-1">
                     <span className="material-symbols-outlined text-sm">location_on</span>
                     {studio.location}
                   </p>
-                  <div className="flex gap-2 mb-6">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-6">
                     {studio.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="bg-gray-100 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                        className="bg-gray-100 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider"
                       >
                         {tag}
                       </span>
@@ -557,14 +557,14 @@ export default async function CountryPage({ params }: PageProps) {
         </section>
 
         {/* Local Trends Section (Bento Box style) */}
-        <section className="mt-24 mb-24">
-          <h2 className="text-3xl font-black tracking-tight mb-8 px-2">{t("localTrends")}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[600px]">
+        <section className="mt-12 sm:mt-24 mb-12 sm:mb-24">
+          <h2 className="text-xl sm:text-3xl font-black tracking-tight mb-4 sm:mb-8 px-2">{t("localTrends")}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 sm:gap-6 h-auto md:h-[600px]">
             {/* Large Card */}
             {data.trends.filter(tr => tr.type === "large").map((trend, i) => (
               <div
                 key={i}
-                className="md:col-span-2 md:row-span-2 relative rounded-[2rem] overflow-hidden shadow-xl group"
+                className="md:col-span-2 md:row-span-2 relative rounded-2xl sm:rounded-[2rem] overflow-hidden shadow-xl group min-h-[280px] sm:min-h-0"
               >
                 {trend.image && (
                   <>
@@ -578,15 +578,15 @@ export default async function CountryPage({ params }: PageProps) {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     </div>
-                    <div className="absolute bottom-10 left-10 right-10">
+                    <div className="absolute bottom-4 left-4 right-4 sm:bottom-10 sm:left-10 sm:right-10">
                       {trend.tag && (
-                        <span className="bg-gray-200 backdrop-blur text-black px-4 py-1 rounded-full text-xs font-bold mb-4 inline-block">
+                        <span className="bg-gray-200 backdrop-blur text-black px-3 sm:px-4 py-1 rounded-full text-[10px] sm:text-xs font-bold mb-3 sm:mb-4 inline-block">
                           {trend.tag}
                         </span>
                       )}
-                      <h3 className="text-white text-3xl font-bold mb-3">{trend.title}</h3>
-                      <p className="text-white/80 leading-relaxed mb-6">{trend.description}</p>
-                      <button className="text-white font-bold flex items-center gap-2 hover:translate-x-1 transition-transform">
+                      <h3 className="text-white text-xl sm:text-3xl font-bold mb-2 sm:mb-3">{trend.title}</h3>
+                      <p className="text-white/80 text-sm sm:text-base leading-relaxed mb-4 sm:mb-6">{trend.description}</p>
+                      <button className="text-white font-bold text-sm sm:text-base flex items-center gap-2 hover:translate-x-1 transition-transform">
                         {t("readArticle")}
                         <span className="material-symbols-outlined">east</span>
                       </button>
@@ -600,10 +600,10 @@ export default async function CountryPage({ params }: PageProps) {
             {data.trends.filter(tr => tr.type === "medium").map((trend, i) => (
               <div
                 key={i}
-                className="md:col-span-2 relative rounded-[2rem] overflow-hidden shadow-xl group bg-white p-10 flex flex-col justify-center border border-gray-100"
+                className="md:col-span-2 relative rounded-2xl sm:rounded-[2rem] overflow-hidden shadow-xl group bg-white p-5 sm:p-10 flex flex-col justify-center border border-gray-100"
               >
-                <h3 className="text-2xl font-bold mb-3">{trend.title}</h3>
-                <p className="text-gray-500 mb-6">{trend.description}</p>
+                <h3 className="text-lg sm:text-2xl font-bold mb-2 sm:mb-3">{trend.title}</h3>
+                <p className="text-gray-500 text-sm sm:text-base mb-4 sm:mb-6">{trend.description}</p>
                 <div className="flex items-center gap-4">
                   {trend.icon && (
                     <div className="size-12 rounded-full bg-green-100 flex items-center justify-center text-green-600">
@@ -619,10 +619,10 @@ export default async function CountryPage({ params }: PageProps) {
             {data.trends.filter(tr => tr.type === "small").map((trend, i) => (
               <div
                 key={i}
-                className="md:col-span-1 relative rounded-[2rem] overflow-hidden shadow-xl group bg-black p-8 text-white"
+                className="md:col-span-1 relative rounded-2xl sm:rounded-[2rem] overflow-hidden shadow-xl group bg-black p-5 sm:p-8 text-white"
               >
-                <h3 className="text-xl font-bold mb-2">{trend.title}</h3>
-                <p className="text-white/80 text-sm">{trend.description}</p>
+                <h3 className="text-base sm:text-xl font-bold mb-2">{trend.title}</h3>
+                <p className="text-white/80 text-xs sm:text-sm">{trend.description}</p>
                 <span className="material-symbols-outlined absolute bottom-6 right-6 text-4xl opacity-20">
                   bolt
                 </span>
@@ -633,7 +633,7 @@ export default async function CountryPage({ params }: PageProps) {
             {data.trends.filter(tr => tr.type === "highlight").map((trend, i) => (
               <div
                 key={i}
-                className="md:col-span-1 relative rounded-[2rem] overflow-hidden shadow-xl group"
+                className="md:col-span-1 relative rounded-2xl sm:rounded-[2rem] overflow-hidden shadow-xl group min-h-[180px] sm:min-h-0"
               >
                 {trend.image && (
                   <>
@@ -645,8 +645,8 @@ export default async function CountryPage({ params }: PageProps) {
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
-                    <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                      <h3 className="text-white font-bold text-lg">{trend.title}</h3>
+                    <div className="absolute inset-0 p-4 sm:p-8 flex flex-col justify-end">
+                      <h3 className="text-white font-bold text-base sm:text-lg">{trend.title}</h3>
                     </div>
                   </>
                 )}
@@ -656,20 +656,20 @@ export default async function CountryPage({ params }: PageProps) {
         </section>
 
         {/* Final CTA */}
-        <section className="mb-24 px-2">
-          <div className="bg-[#111d21] rounded-[2rem] p-16 text-center shadow-2xl relative overflow-hidden">
+        <section className="mb-12 sm:mb-24 px-2">
+          <div className="bg-[#111d21] rounded-2xl sm:rounded-[2rem] p-6 sm:p-10 md:p-16 text-center shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 size-64 bg-gray-200 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 size-64 bg-gray-100 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
-            <h2 className="text-white text-4xl md:text-5xl font-black mb-6 relative z-10">
+            <h2 className="text-white text-2xl sm:text-4xl md:text-5xl font-black mb-4 sm:mb-6 relative z-10">
               {t("readyToStart")}
             </h2>
-            <p className="text-white/60 text-lg mb-10 max-w-xl mx-auto relative z-10">
+            <p className="text-white/60 text-sm sm:text-lg mb-6 sm:mb-10 max-w-xl mx-auto relative z-10">
               {t("joinCreators", { country: data.name })}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
               <Link
                 href="/studios"
-                className="inline-flex items-center justify-center bg-black hover:bg-gray-800 text-white h-14 px-10 rounded-xl font-bold text-lg transition-all shadow-lg"
+                className="inline-flex items-center justify-center bg-black hover:bg-gray-800 text-white h-11 sm:h-14 px-6 sm:px-10 rounded-xl font-bold text-sm sm:text-lg transition-all shadow-lg"
               >
                 {t("viewMarketplace")}
               </Link>

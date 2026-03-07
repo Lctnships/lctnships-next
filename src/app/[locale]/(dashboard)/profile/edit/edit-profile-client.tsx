@@ -1,11 +1,14 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, useCallback } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { Link, useRouter, usePathname } from "@/i18n/routing"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
+import Cropper from "react-easy-crop"
+import type { Area } from "react-easy-crop"
+import { getCroppedImg } from "@/lib/crop-image"
 
 interface Profile {
   id: string
@@ -42,6 +45,17 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
     phone: profile.phone || "",
   })
 
+  // Crop state
+  const [cropDialogOpen, setCropDialogOpen] = useState(false)
+  const [cropImageSrc, setCropImageSrc] = useState<string | null>(null)
+  const [crop, setCrop] = useState({ x: 0, y: 0 })
+  const [zoom, setZoom] = useState(1)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
+
+  const onCropComplete = useCallback((_: Area, croppedPixels: Area) => {
+    setCroppedAreaPixels(croppedPixels)
+  }, [])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
       ...prev,
@@ -53,6 +67,7 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
     fileInputRef.current?.click()
   }
 
+  // Step 1: User selects file → validate → open crop dialog
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -69,11 +84,35 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
       return
     }
 
+    // Read file as data URL and open crop dialog
+    const reader = new FileReader()
+    reader.onload = () => {
+      setCropImageSrc(reader.result as string)
+      setCrop({ x: 0, y: 0 })
+      setZoom(1)
+      setCroppedAreaPixels(null)
+      setCropDialogOpen(true)
+    }
+    reader.readAsDataURL(file)
+
+    // Reset file input so same file can be re-selected
+    if (fileInputRef.current) fileInputRef.current.value = ""
+  }
+
+  // Step 2: User confirms crop → crop image → upload → refresh
+  const handleCropConfirm = async () => {
+    if (!cropImageSrc || !croppedAreaPixels) return
+
+    setCropDialogOpen(false)
     setIsUploading(true)
 
     try {
+      // Crop the image using canvas
+      const croppedBlob = await getCroppedImg(cropImageSrc, croppedAreaPixels)
+      const croppedFile = new File([croppedBlob], "avatar.jpg", { type: "image/jpeg" })
+
       const formDataUpload = new FormData()
-      formDataUpload.append("file", file)
+      formDataUpload.append("file", croppedFile)
       formDataUpload.append("bucket", "images")
       formDataUpload.append("folder", "avatars")
 
@@ -102,14 +141,21 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
 
       setAvatarUrl(url)
       toast.success(t("successAvatarUpdated"))
+
+      // Refresh server data so avatar updates in navbar and other pages
+      router.refresh()
     } catch (error: any) {
       console.error("Avatar upload error:", error)
       toast.error(error.message || t("errorAvatarUploadFailed"))
     } finally {
       setIsUploading(false)
-      // Reset file input so same file can be re-selected
-      if (fileInputRef.current) fileInputRef.current.value = ""
+      setCropImageSrc(null)
     }
+  }
+
+  const handleCropCancel = () => {
+    setCropDialogOpen(false)
+    setCropImageSrc(null)
   }
 
   const handleSave = async () => {
@@ -483,6 +529,72 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
           </div>
         </aside>
       </div>
+
+      {/* Crop Dialog */}
+      {cropDialogOpen && cropImageSrc && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl lg:rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <h3 className="text-lg font-bold">{t("cropTitle")}</h3>
+              <button
+                onClick={handleCropCancel}
+                className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <span className="material-symbols-outlined text-xl">close</span>
+              </button>
+            </div>
+
+            {/* Crop area */}
+            <div className="relative w-full aspect-square bg-gray-900">
+              <Cropper
+                image={cropImageSrc}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                cropShape="round"
+                showGrid={false}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+              />
+            </div>
+
+            {/* Zoom slider */}
+            <div className="px-5 py-4 space-y-2">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-gray-400 text-lg">zoom_out</span>
+                <input
+                  type="range"
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  value={zoom}
+                  onChange={(e) => setZoom(Number(e.target.value))}
+                  className="flex-1 h-1.5 bg-gray-200 rounded-full appearance-none cursor-pointer accent-black"
+                />
+                <span className="material-symbols-outlined text-gray-400 text-lg">zoom_in</span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3 px-5 pb-5">
+              <button
+                onClick={handleCropCancel}
+                className="flex-1 px-6 py-3 rounded-full border border-gray-200 font-bold text-sm hover:bg-gray-50 transition-all"
+              >
+                {t("cancel")}
+              </button>
+              <button
+                onClick={handleCropConfirm}
+                className="flex-1 px-6 py-3 rounded-full bg-black text-white font-bold text-sm hover:bg-gray-800 transition-all"
+              >
+                {t("cropConfirm")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -110,9 +110,9 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-gray-50 text-xs font-bold text-gray-400">
-          <p>&copy; {new Date().getFullYear()} {t("copyright")}</p>
-          <div className="flex items-center gap-4 md:gap-8 mt-4 md:mt-0">
+        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-gray-50 text-xs font-bold text-gray-400 gap-3 md:gap-0">
+          <p className="text-center md:text-left">&copy; {new Date().getFullYear()} {t("copyright")}</p>
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-8">
             <LanguageSwitcher />
             <Link href="/privacy" className="hover:text-black transition-colors">
               {t("privacyPolicy")}

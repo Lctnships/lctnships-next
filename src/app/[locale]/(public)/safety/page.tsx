@@ -11,16 +11,16 @@ const trustPillars = [
     title: "Protection for Hosts",
     features: [
       {
-        title: "Insurance coverage:",
-        description: "Up to $1M in property damage protection for every booking.",
+        title: "Verified accounts:",
+        description: "Every user must verify their identity before making a booking.",
       },
       {
-        title: "Verified guest IDs:",
-        description: "Every renter undergoes a mandatory background and identity check.",
+        title: "Secure payments:",
+        description: "Payments are processed securely through Stripe with automatic payouts.",
       },
       {
-        title: "Damage protection:",
-        description: "Automated security deposit handling and rapid claims resolution.",
+        title: "Reviews & ratings:",
+        description: "A transparent review system helps you make informed decisions about renters.",
       },
     ],
   },
@@ -33,16 +33,16 @@ const trustPillars = [
     title: "Safety for Renters",
     features: [
       {
-        title: "Secure Escrow:",
-        description: "Payments are held securely and only released to the host after your session begins.",
+        title: "Secure payments:",
+        description: "Payments are processed securely through Stripe. No hidden fees or surprises.",
       },
       {
-        title: "Verified Studios:",
-        description: "On-site inspections and photo verification for every premium listing.",
+        title: "Verified hosts:",
+        description: "Studio hosts verify their identity and listing details before going live.",
       },
       {
-        title: "24/7 Support:",
-        description: "Our dedicated safety team is available around the clock to help.",
+        title: "Support team:",
+        description: "Our team is available to help with any questions or issues during your booking.",
       },
     ],
   },
@@ -109,7 +109,7 @@ export default function SafetyPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-gray-100 to-gray-200 min-h-[420px] flex items-center justify-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-gray-100 to-gray-200 min-h-[280px] sm:min-h-[420px] flex items-center justify-center">
         <div className="absolute inset-0">
           <Image
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZp3aBzRsD7aPNlWUw4xq0lECzN1ApRCOGJA_cCAJcy_XqwfszYJVxHO9FV0pkNBTRci6l53tbm_xwOuf2jWCOqcS0dhGDw_kUAQsK0CPQTekDceULEfdWZIqj3fA4jH4bhoOtSIrUxKOaJN_kCdkWilkvAOJ4c6uzkTzi9uAlgXk79GZ_efL6sJ3AX9IkBB0lbAPy_BfKolOKdXIAomAD6VqDwVRh9ptvVjCRCcmZSKhyYt7ffjJwmA8ePaKNgM7CJgGRcqD5-LM"
@@ -120,46 +120,49 @@ export default function SafetyPage() {
             unoptimized
           />
         </div>
-        <div className="relative z-10 max-w-2xl mx-auto text-center px-6 py-12">
-          <span className="text-black font-bold tracking-widest text-xs uppercase">
+        <div className="relative z-10 max-w-2xl mx-auto text-center px-4 sm:px-6 py-8 sm:py-12">
+          <span className="text-black font-bold tracking-widest text-[10px] sm:text-xs uppercase">
             Your Security is Our Priority
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mt-4 text-gray-900 dark:text-white">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mt-3 sm:mt-4 text-gray-900 dark:text-white">
             Safety & Trust at lcntships
           </h1>
-          <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg font-medium leading-relaxed mt-4">
+          <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base md:text-lg font-medium leading-relaxed mt-3 sm:mt-4">
             Building a secure, transparent environment where studio hosts and creative renters can flourish with complete peace of mind.
           </p>
-          <div className="mt-8">
-            <button className="inline-flex items-center justify-center rounded-full h-12 px-6 bg-black text-white text-base font-bold transition-transform hover:scale-105">
-              Transparency Report
-            </button>
+          <div className="mt-5 sm:mt-8">
+            <a
+              href="mailto:support@lcntships.com?subject=Transparency%20Report%20Request"
+              className="inline-flex items-center justify-center rounded-full h-12 px-6 bg-black text-white text-base font-bold transition-transform hover:scale-105"
+            >
+              Contact Us
+            </a>
           </div>
         </div>
       </section>
 
       {/* Main Content */}
-      <main className="max-w-[1200px] mx-auto px-6 py-12">
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
             Our Commitment to Security
           </h2>
-          <p className="text-gray-500 mt-2">Professional safeguards for every creative journey.</p>
+          <p className="text-gray-500 mt-2 text-sm sm:text-base">Professional safeguards for every creative journey.</p>
         </div>
 
         {/* Trust Pillars Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8 mb-10 sm:mb-20">
           {trustPillars.map((pillar) => (
             <div
               key={pillar.title}
-              className="flex flex-col gap-6 p-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[32px] shadow-sm hover:shadow-xl transition-all duration-300 group"
+              className="flex flex-col gap-4 sm:gap-6 p-5 sm:p-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl sm:rounded-[32px] shadow-sm hover:shadow-xl transition-all duration-300 group"
             >
               <div className="w-14 h-14 flex items-center justify-center bg-gray-100 rounded-2xl text-black group-hover:bg-black group-hover:text-white transition-colors">
                 {pillar.icon}
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-gray-900 dark:text-white">
                   {pillar.title}
                 </h3>
                 <ul className="space-y-4">
@@ -189,15 +192,15 @@ export default function SafetyPage() {
         </div>
 
         {/* Core Safety Features */}
-        <div className="mb-20">
-          <h3 className="text-2xl font-bold leading-tight tracking-tight mb-8 text-gray-900 dark:text-white">
+        <div className="mb-10 sm:mb-20">
+          <h3 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight mb-4 sm:mb-8 text-gray-900 dark:text-white">
             Core Safety Features
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {safetyFeatures.map((feature) => (
               <div
                 key={feature.title}
-                className="p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 text-center flex flex-col items-center gap-3"
+                className="p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-800 text-center flex flex-col items-center gap-2 sm:gap-3"
               >
                 <div className="text-black">{feature.icon}</div>
                 <p className="text-gray-900 dark:text-white font-bold text-sm">{feature.title}</p>
@@ -207,20 +210,23 @@ export default function SafetyPage() {
         </div>
 
         {/* Report CTA Bar */}
-        <div className="bg-gray-900 dark:bg-gray-950 rounded-xl p-10 flex flex-col md:flex-row items-center justify-between gap-8 text-white">
+        <div className="bg-gray-900 dark:bg-gray-950 rounded-xl p-5 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-8 text-white">
           <div className="max-w-xl">
-            <h2 className="text-2xl font-bold mb-2">See something concerning?</h2>
-            <p className="text-gray-400 font-medium">
+            <h2 className="text-xl sm:text-2xl font-bold mb-2">See something concerning?</h2>
+            <p className="text-gray-400 font-medium text-sm sm:text-base">
               Our trust and safety team reviews reports 24/7. Help us keep the community safe for everyone.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-            <button className="flex min-w-[180px] cursor-pointer items-center justify-center rounded-full h-12 px-6 bg-white text-gray-900 text-base font-bold transition-all hover:bg-gray-200 gap-2">
+            <a
+              href="mailto:support@lcntships.com?subject=Safety%20Report"
+              className="flex min-w-[180px] cursor-pointer items-center justify-center rounded-full h-12 px-6 bg-white text-gray-900 text-base font-bold transition-all hover:bg-gray-200 gap-2"
+            >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
               </svg>
               Report an Issue
-            </button>
+            </a>
             <Link
               href="/help"
               className="flex min-w-[180px] cursor-pointer items-center justify-center rounded-full h-12 px-6 border border-gray-700 text-white text-base font-bold transition-all hover:bg-gray-800"
