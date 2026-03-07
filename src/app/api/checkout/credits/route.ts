@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     console.error("Credits checkout error:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create checkout session" },
+      { error: "Failed to create checkout session" },
       { status: 500 }
     )
   }

@@ -171,9 +171,8 @@ export async function GET(request: Request) {
       headers: { "X-Cache": "MISS" },
     })
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Failed to fetch studios"
     console.error("Error fetching studios:", error)
-    return NextResponse.json({ error: message }, { status: 500 })
+    return NextResponse.json({ error: "Failed to fetch studios" }, { status: 500 })
   }
 }
 
@@ -265,8 +264,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ studio }, { status: 201 })
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Failed to create studio"
     console.error("Error creating studio:", error)
-    return NextResponse.json({ error: message }, { status: 500 })
+    return NextResponse.json({ error: "Failed to create studio" }, { status: 500 })
   }
 }

@@ -115,7 +115,7 @@ export async function POST(request: Request, { params }: RouteParams) {
   } catch (error: unknown) {
     console.error("Error rescheduling booking:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to reschedule booking" },
+      { error: "Failed to reschedule booking" },
       { status: 500 }
     )
   }

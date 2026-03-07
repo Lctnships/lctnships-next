@@ -30,7 +30,7 @@ export async function GET(request: Request, { params }: RouteParams) {
   } catch (error: unknown) {
     console.error("Error fetching equipment:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch equipment" },
+      { error: "Failed to fetch equipment" },
       { status: 500 }
     )
   }
@@ -103,7 +103,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   } catch (error: unknown) {
     console.error("Error updating equipment:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to update equipment" },
+      { error: "Failed to update equipment" },
       { status: 500 }
     )
   }
@@ -146,7 +146,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
   } catch (error: unknown) {
     console.error("Error deleting equipment:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to delete equipment" },
+      { error: "Failed to delete equipment" },
       { status: 500 }
     )
   }

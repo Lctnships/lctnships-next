@@ -54,9 +54,30 @@ export async function POST(request: Request) {
     }
 
     // Create onboarding link
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || ""
     const { searchParams } = new URL(request.url)
-    const returnUrl = searchParams.get("returnUrl") || `${process.env.NEXT_PUBLIC_APP_URL}/host/payouts`
-    const refreshUrl = searchParams.get("refreshUrl") || `${process.env.NEXT_PUBLIC_APP_URL}/host/payouts?refresh=true`
+
+    // Validate redirect URLs against app domain to prevent open-redirect attacks
+    const validateRedirectUrl = (url: string | null, fallback: string): string => {
+      if (!url) return fallback
+      try {
+        const parsed = new URL(url)
+        const appOrigin = new URL(appUrl).origin
+        if (parsed.origin !== appOrigin) return fallback
+        return url
+      } catch {
+        return fallback
+      }
+    }
+
+    const returnUrl = validateRedirectUrl(
+      searchParams.get("returnUrl"),
+      `${appUrl}/host/payouts`
+    )
+    const refreshUrl = validateRedirectUrl(
+      searchParams.get("refreshUrl"),
+      `${appUrl}/host/payouts?refresh=true`
+    )
 
     const accountLink = await stripe.accountLinks.create({
       account: accountId,
@@ -72,7 +93,7 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     console.error("Error creating Stripe Connect account:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create Stripe Connect account" },
+      { error: "Failed to create Stripe Connect account" },
       { status: 500 }
     )
   }
@@ -123,7 +144,7 @@ export async function GET(_request: Request) {
   } catch (error: unknown) {
     console.error("Error getting Stripe account status:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to get Stripe account status" },
+      { error: "Failed to get Stripe account status" },
       { status: 500 }
     )
   }

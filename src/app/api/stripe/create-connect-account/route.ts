@@ -71,6 +71,6 @@ export async function POST() {
     return NextResponse.json({ url: accountLink.url })
   } catch (error: unknown) {
     console.error("Connect account error:", error)
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Connect account error" }, { status: 500 })
+    return NextResponse.json({ error: "Connect account error" }, { status: 500 })
   }
 }

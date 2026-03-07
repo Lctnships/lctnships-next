@@ -43,7 +43,7 @@ export async function GET(request: Request) {
   } catch (error: unknown) {
     console.error("Error fetching equipment:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch equipment" },
+      { error: "Failed to fetch equipment" },
       { status: 500 }
     )
   }
@@ -104,7 +104,7 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     console.error("Error adding equipment:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to add equipment" },
+      { error: "Failed to add equipment" },
       { status: 500 }
     )
   }

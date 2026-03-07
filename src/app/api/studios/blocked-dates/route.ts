@@ -15,7 +15,10 @@ export async function GET(request: NextRequest) {
     .eq("studio_id", studioId)
     .order("blocked_date", { ascending: true })
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error("Error fetching blocked dates:", error)
+    return NextResponse.json({ error: "Failed to fetch blocked dates" }, { status: 500 })
+  }
 
   return NextResponse.json({ blockedDates: data })
 }
@@ -60,7 +63,10 @@ export async function POST(request: NextRequest) {
     .upsert(dates, { onConflict: "studio_id,blocked_date" })
     .select()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error("Error saving blocked dates:", error)
+    return NextResponse.json({ error: "Failed to save blocked dates" }, { status: 500 })
+  }
 
   return NextResponse.json({ blockedDates: data })
 }
@@ -89,7 +95,10 @@ export async function DELETE(request: NextRequest) {
     .delete()
     .eq("id", id)
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error("Error deleting blocked date:", error)
+    return NextResponse.json({ error: "Failed to delete blocked date" }, { status: 500 })
+  }
 
   return NextResponse.json({ success: true })
 }

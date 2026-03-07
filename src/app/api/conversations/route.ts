@@ -105,7 +105,7 @@ export async function GET(_request: Request) {
   } catch (error: unknown) {
     console.error("Error fetching conversations:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch conversations" },
+      { error: "Failed to fetch conversations" },
       { status: 500 }
     )
   }
@@ -163,7 +163,7 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     console.error("Error creating conversation:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create conversation" },
+      { error: "Failed to create conversation" },
       { status: 500 }
     )
   }

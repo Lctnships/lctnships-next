@@ -72,7 +72,7 @@ export async function GET(request: Request) {
   } catch (error: unknown) {
     console.error("Error fetching payouts:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch payouts" },
+      { error: "Failed to fetch payouts" },
       { status: 500 }
     )
   }
@@ -143,7 +143,7 @@ export async function POST(_request: Request) {
   } catch (error: unknown) {
     console.error("Error requesting payout:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to request payout" },
+      { error: "Failed to request payout" },
       { status: 500 }
     )
   }

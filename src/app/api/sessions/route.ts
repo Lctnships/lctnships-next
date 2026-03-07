@@ -17,7 +17,8 @@ export async function GET() {
     .order("last_active_at", { ascending: false })
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    console.error("Error fetching sessions:", error)
+    return NextResponse.json({ error: "Failed to fetch sessions" }, { status: 500 })
   }
 
   return NextResponse.json({ sessions })
@@ -47,7 +48,8 @@ export async function POST(request: Request) {
   })
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    console.error("Error creating session:", error)
+    return NextResponse.json({ error: "Failed to create session" }, { status: 500 })
   }
 
   return NextResponse.json({ success: true })

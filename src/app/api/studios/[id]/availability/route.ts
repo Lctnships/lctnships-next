@@ -108,7 +108,7 @@ export async function GET(request: Request, { params }: RouteParams) {
   } catch (error: unknown) {
     console.error("Error fetching availability:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch availability" },
+      { error: "Failed to fetch availability" },
       { status: 500 }
     )
   }
@@ -156,7 +156,7 @@ export async function POST(request: Request, { params }: RouteParams) {
   } catch (error: unknown) {
     console.error("Error checking availability:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to check availability" },
+      { error: "Failed to check availability" },
       { status: 500 }
     )
   }

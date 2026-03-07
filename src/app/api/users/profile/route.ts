@@ -27,7 +27,7 @@ export async function GET(_request: Request) {
   } catch (error: unknown) {
     console.error("Error fetching profile:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch profile" },
+      { error: "Failed to fetch profile" },
       { status: 500 }
     )
   }
@@ -89,7 +89,7 @@ export async function PATCH(request: Request) {
   } catch (error: unknown) {
     console.error("Error updating profile:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to update profile" },
+      { error: "Failed to update profile" },
       { status: 500 }
     )
   }

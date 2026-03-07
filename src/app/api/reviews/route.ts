@@ -47,7 +47,7 @@ export async function GET(request: Request) {
   } catch (error: unknown) {
     console.error("Error fetching reviews:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch reviews" },
+      { error: "Failed to fetch reviews" },
       { status: 500 }
     )
   }
@@ -161,7 +161,7 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     console.error("Error creating review:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create review" },
+      { error: "Failed to create review" },
       { status: 500 }
     )
   }

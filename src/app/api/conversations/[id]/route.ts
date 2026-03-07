@@ -114,7 +114,7 @@ export async function GET(request: Request, { params }: RouteParams) {
   } catch (error: unknown) {
     console.error("Error fetching conversation:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch conversation" },
+      { error: "Failed to fetch conversation" },
       { status: 500 }
     )
   }

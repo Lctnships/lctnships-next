@@ -56,7 +56,7 @@ export async function GET(_request: Request) {
   } catch (error: unknown) {
     console.error("Error getting balance:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to get balance" },
+      { error: "Failed to get balance" },
       { status: 500 }
     )
   }

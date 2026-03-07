@@ -30,7 +30,7 @@ export async function GET() {
   } catch (error: unknown) {
     console.error("Error fetching credits:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch credits" },
+      { error: "Failed to fetch credits" },
       { status: 500 }
     )
   }

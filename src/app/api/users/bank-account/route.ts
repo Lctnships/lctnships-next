@@ -32,18 +32,24 @@ export async function GET(_request: Request) {
       maskedIban = decryptedIban ? `****${decryptedIban.slice(-4)}` : null
     }
 
+    // Decrypt BIC if it's encrypted
+    const rawBic = bankAccount?.bank_bic
+    const decryptedBic = rawBic
+      ? isEncrypted(rawBic) ? decrypt(rawBic) : rawBic
+      : null
+
     return NextResponse.json({
       bank_account: {
         name: bankAccount?.bank_account_name,
         iban_masked: maskedIban,
-        bic: bankAccount?.bank_bic,
+        bic: decryptedBic,
         has_bank_details: !!(bankAccount?.bank_iban && bankAccount?.bank_account_name),
       },
     })
   } catch (error: unknown) {
     console.error("Error fetching bank account:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch bank account" },
+      { error: "Failed to fetch bank account" },
       { status: 500 }
     )
   }
@@ -81,12 +87,15 @@ export async function POST(request: Request) {
     // Encrypt IBAN before storing
     const encryptedIban = encrypt(cleanIban)
 
+    // Encrypt BIC before storing (if provided)
+    const encryptedBic = bic ? encrypt(bic.toUpperCase().trim()) : null
+
     const { data: bankAccount, error } = await supabase
       .from("users")
       .update({
         bank_account_name: account_name,
         bank_iban: encryptedIban,
-        bank_bic: bic || null,
+        bank_bic: encryptedBic,
         updated_at: new Date().toISOString(),
       })
       .eq("id", user.id)
@@ -99,18 +108,24 @@ export async function POST(request: Request) {
 
     if (error) throw error
 
+    // Decrypt BIC from returned data for response
+    const returnedBic = bankAccount?.bank_bic
+    const responseBic = returnedBic
+      ? isEncrypted(returnedBic) ? decrypt(returnedBic) : returnedBic
+      : null
+
     return NextResponse.json({
       message: "Bank account saved successfully",
       bank_account: {
         name: bankAccount?.bank_account_name,
         iban_masked: `****${cleanIban.slice(-4)}`,
-        bic: bankAccount?.bank_bic,
+        bic: responseBic,
       },
     })
   } catch (error: unknown) {
     console.error("Error saving bank account:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to save bank account" },
+      { error: "Failed to save bank account" },
       { status: 500 }
     )
   }
@@ -142,7 +157,7 @@ export async function DELETE(_request: Request) {
   } catch (error: unknown) {
     console.error("Error removing bank account:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to remove bank account" },
+      { error: "Failed to remove bank account" },
       { status: 500 }
     )
   }

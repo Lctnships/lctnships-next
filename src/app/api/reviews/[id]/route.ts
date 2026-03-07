@@ -38,7 +38,7 @@ export async function GET(request: Request, { params }: RouteParams) {
   } catch (error: unknown) {
     console.error("Error fetching review:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch review" },
+      { error: "Failed to fetch review" },
       { status: 500 }
     )
   }
@@ -97,7 +97,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   } catch (error: unknown) {
     console.error("Error updating review:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to update review" },
+      { error: "Failed to update review" },
       { status: 500 }
     )
   }
@@ -141,7 +141,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
   } catch (error: unknown) {
     console.error("Error deleting review:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to delete review" },
+      { error: "Failed to delete review" },
       { status: 500 }
     )
   }

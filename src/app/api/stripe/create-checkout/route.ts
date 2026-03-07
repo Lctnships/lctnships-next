@@ -101,6 +101,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ url: session.url })
   } catch (error: unknown) {
     console.error("Checkout error:", error)
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Checkout failed" }, { status: 500 })
+    return NextResponse.json({ error: "Checkout failed" }, { status: 500 })
   }
 }

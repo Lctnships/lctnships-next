@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { randomBytes } from "crypto"
 
 // GET /api/bookings - Get user's bookings
 export async function GET(request: Request) {
@@ -59,7 +60,7 @@ export async function GET(request: Request) {
   } catch (error: unknown) {
     console.error("Error fetching bookings:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch bookings" },
+      { error: "Failed to fetch bookings" },
       { status: 500 }
     )
   }
@@ -122,8 +123,8 @@ export async function POST(request: Request) {
       )
     }
 
-    // Generate booking number
-    const bookingNumber = `BK${Date.now().toString().slice(-8)}`
+    // Generate crypto-random booking number
+    const bookingNumber = `BK-${randomBytes(4).toString('hex').toUpperCase().slice(0, 6)}`
 
     // Create booking with server-calculated prices
     const { data: booking, error: bookingError } = await supabase
@@ -151,15 +152,39 @@ export async function POST(request: Request) {
 
     if (bookingError) throw bookingError
 
-    // Add equipment selections if any
+    // Add equipment selections if any, with actual prices from DB
     if (equipment_selections && Object.keys(equipment_selections).length > 0) {
-      const equipmentItems = Object.entries(equipment_selections).map(([id, qty]) => ({
-        booking_id: booking.id,
-        equipment_id: id,
-        quantity: qty as number,
-        price_per_unit: 0, // Will be updated from equipment table
-        total_price: 0,
-      }))
+      const equipmentIds = Object.keys(equipment_selections)
+
+      // Fetch actual equipment prices from the database
+      const { data: equipmentPrices, error: equipmentError } = await supabase
+        .from("equipment")
+        .select("id, price_per_day")
+        .in("id", equipmentIds)
+
+      if (equipmentError) {
+        console.error("Error fetching equipment prices:", equipmentError)
+      }
+
+      // Build a price lookup map
+      const priceMap = new Map<string, number>()
+      if (equipmentPrices) {
+        for (const eq of equipmentPrices) {
+          priceMap.set(eq.id, eq.price_per_day ?? 0)
+        }
+      }
+
+      const equipmentItems = Object.entries(equipment_selections).map(([id, qty]) => {
+        const quantity = qty as number
+        const pricePerUnit = priceMap.get(id) ?? 0
+        return {
+          booking_id: booking.id,
+          equipment_id: id,
+          quantity,
+          price_per_unit: pricePerUnit,
+          total_price: Math.round(pricePerUnit * quantity * 100) / 100,
+        }
+      })
 
       await supabase.from("booking_equipment").insert(equipmentItems)
     }
@@ -185,7 +210,7 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     console.error("Error creating booking:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create booking" },
+      { error: "Failed to create booking" },
       { status: 500 }
     )
   }

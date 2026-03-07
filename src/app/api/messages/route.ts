@@ -97,7 +97,7 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     console.error("Error sending message:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to send message" },
+      { error: "Failed to send message" },
       { status: 500 }
     )
   }
@@ -139,7 +139,7 @@ export async function GET(_request: Request) {
   } catch (error: unknown) {
     console.error("Error fetching unread count:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch unread count" },
+      { error: "Failed to fetch unread count" },
       { status: 500 }
     )
   }

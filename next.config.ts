@@ -5,15 +5,11 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   turbopack: {},
-  typescript: {
-    // Skip type checking during build - types can be fixed later
-    ignoreBuildErrors: true,
-  },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*.supabase.co',
+        hostname: 'ytmkmiofoluespwysfxa.supabase.co',
       },
       {
         protocol: 'https',
@@ -66,7 +62,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'none';",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://ytmkmiofoluespwysfxa.supabase.co https://lh3.googleusercontent.com https://graph.facebook.com https://avatars.githubusercontent.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://ytmkmiofoluespwysfxa.supabase.co wss://ytmkmiofoluespwysfxa.supabase.co https://api.stripe.com; frame-src https://js.stripe.com https://checkout.stripe.com; frame-ancestors 'none'",
           },
         ],
       },
