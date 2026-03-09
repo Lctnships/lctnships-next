@@ -4,7 +4,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Sparkles, Camera, Mic, Music, Check, Calendar } from "lucide-react"
 
-const CALENDLY_URL = "https://calendly.com/lcntships/host-onboarding"
+const CALENDLY_URL = "https://calendly.com/rivaldorose/30min"
 
 const steps = [
   {
