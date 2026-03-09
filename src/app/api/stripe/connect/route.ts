@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { stripe } from "@/lib/stripe/config"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // POST /api/stripe/connect - Create Stripe Connect account and onboarding link
 export async function POST(request: Request) {
@@ -91,7 +92,7 @@ export async function POST(request: Request) {
       accountId,
     })
   } catch (error: unknown) {
-    console.error("Error creating Stripe Connect account:", error)
+    logger.error("Error creating Stripe Connect account", error)
     return NextResponse.json(
       { error: "Failed to create Stripe Connect account" },
       { status: 500 }
@@ -142,7 +143,7 @@ export async function GET(_request: Request) {
       defaultCurrency: account.default_currency,
     })
   } catch (error: unknown) {
-    console.error("Error getting Stripe account status:", error)
+    logger.error("Error getting Stripe account status", error)
     return NextResponse.json(
       { error: "Failed to get Stripe account status" },
       { status: 500 }

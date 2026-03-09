@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe/config"
 import { createClient } from "@/lib/supabase/server"
+import { logger } from "@/lib/logger"
 
 export async function POST() {
   if (!stripe) {
@@ -70,7 +71,7 @@ export async function POST() {
 
     return NextResponse.json({ url: accountLink.url })
   } catch (error: unknown) {
-    console.error("Connect account error:", error)
+    logger.error("Connect account error", error)
     return NextResponse.json({ error: "Connect account error" }, { status: 500 })
   }
 }

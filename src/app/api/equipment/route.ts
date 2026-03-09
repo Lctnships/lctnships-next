@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // GET /api/equipment - Get equipment (by studio)
 export async function GET(request: Request) {
@@ -41,7 +42,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ equipment })
   } catch (error: unknown) {
-    console.error("Error fetching equipment:", error)
+    logger.error("Error fetching equipment", error)
     return NextResponse.json(
       { error: "Failed to fetch equipment" },
       { status: 500 }
@@ -102,7 +103,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ equipment })
   } catch (error: unknown) {
-    console.error("Error adding equipment:", error)
+    logger.error("Error adding equipment", error)
     return NextResponse.json(
       { error: "Failed to add equipment" },
       { status: 500 }

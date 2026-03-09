@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -21,7 +22,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ images })
   } catch (error: unknown) {
-    console.error("Error fetching studio images:", error)
+    logger.error("Error fetching studio images", error)
     return NextResponse.json(
       { error: "Failed to fetch images" },
       { status: 500 }
@@ -101,7 +102,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ image }, { status: 201 })
   } catch (error: unknown) {
-    console.error("Error adding studio image:", error)
+    logger.error("Error adding studio image", error)
     return NextResponse.json(
       { error: "Failed to add image" },
       { status: 500 }
@@ -154,7 +155,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ message: "Image deleted successfully" })
   } catch (error: unknown) {
-    console.error("Error deleting studio image:", error)
+    logger.error("Error deleting studio image", error)
     return NextResponse.json(
       { error: "Failed to delete image" },
       { status: 500 }

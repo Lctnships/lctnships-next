@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // POST /api/users/password - Change password
 export async function POST(request: Request) {
@@ -67,7 +68,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ message: "Password updated successfully" })
   } catch (error: unknown) {
-    console.error("Error changing password:", error)
+    logger.error("Error changing password", error)
     return NextResponse.json(
       { error: "Failed to change password" },
       { status: 500 }

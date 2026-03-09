@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // GET /api/notifications - Get user's notifications
 export async function GET(request: Request) {
@@ -44,7 +45,7 @@ export async function GET(request: Request) {
       unread_count: unreadCount || 0,
     })
   } catch (error: unknown) {
-    console.error("Error fetching notifications:", error)
+    logger.error("Error fetching notifications", error, { route: "GET /api/notifications" })
     return NextResponse.json(
       { error: "Failed to fetch notifications" },
       { status: 500 }
@@ -90,7 +91,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({ message: "Notifications marked as read" })
   } catch (error: unknown) {
-    console.error("Error updating notifications:", error)
+    logger.error("Error updating notifications", error, { route: "PATCH /api/notifications" })
     return NextResponse.json(
       { error: "Failed to update notifications" },
       { status: 500 }
@@ -127,7 +128,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ message: "Notification(s) deleted" })
   } catch (error: unknown) {
-    console.error("Error deleting notifications:", error)
+    logger.error("Error deleting notifications", error, { route: "DELETE /api/notifications" })
     return NextResponse.json(
       { error: "Failed to delete notifications" },
       { status: 500 }

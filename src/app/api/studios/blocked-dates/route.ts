@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextRequest, NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient()
@@ -16,7 +17,7 @@ export async function GET(request: NextRequest) {
     .order("blocked_date", { ascending: true })
 
   if (error) {
-    console.error("Error fetching blocked dates:", error)
+    logger.error("Error fetching blocked dates", error)
     return NextResponse.json({ error: "Failed to fetch blocked dates" }, { status: 500 })
   }
 
@@ -64,7 +65,7 @@ export async function POST(request: NextRequest) {
     .select()
 
   if (error) {
-    console.error("Error saving blocked dates:", error)
+    logger.error("Error saving blocked dates", error)
     return NextResponse.json({ error: "Failed to save blocked dates" }, { status: 500 })
   }
 
@@ -96,7 +97,7 @@ export async function DELETE(request: NextRequest) {
     .eq("id", id)
 
   if (error) {
-    console.error("Error deleting blocked date:", error)
+    logger.error("Error deleting blocked date", error)
     return NextResponse.json({ error: "Failed to delete blocked date" }, { status: 500 })
   }
 

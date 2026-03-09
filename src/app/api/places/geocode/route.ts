@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextRequest, NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 export async function GET(request: NextRequest) {
   // Require authentication to prevent API key abuse
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {
-    console.error("Geocode API error:", error)
+    logger.error("Geocode API error", error)
     return NextResponse.json({ error: "Failed to geocode" }, { status: 500 })
   }
 }

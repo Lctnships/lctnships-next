@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -36,7 +37,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ review })
   } catch (error: unknown) {
-    console.error("Error fetching review:", error)
+    logger.error("Error fetching review", error, { route: "GET /api/reviews/[id]" })
     return NextResponse.json(
       { error: "Failed to fetch review" },
       { status: 500 }
@@ -95,7 +96,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ review })
   } catch (error: unknown) {
-    console.error("Error updating review:", error)
+    logger.error("Error updating review", error, { route: "PATCH /api/reviews/[id]" })
     return NextResponse.json(
       { error: "Failed to update review" },
       { status: 500 }
@@ -139,7 +140,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ message: "Review deleted successfully" })
   } catch (error: unknown) {
-    console.error("Error deleting review:", error)
+    logger.error("Error deleting review", error, { route: "DELETE /api/reviews/[id]" })
     return NextResponse.json(
       { error: "Failed to delete review" },
       { status: 500 }

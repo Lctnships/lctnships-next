@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createCreditPurchase } from "@/lib/stripe"
 import { getPackageById } from "@/lib/credits"
 import { createClient } from "@/lib/supabase/server"
+import { logger } from "@/lib/logger"
 
 export async function POST(request: NextRequest) {
   try {
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
       sessionId: session.id,
     })
   } catch (error: unknown) {
-    console.error("Credits checkout error:", error)
+    logger.error("Credits checkout error", error, { route: "POST /api/checkout/credits" })
     return NextResponse.json(
       { error: "Failed to create checkout session" },
       { status: 500 }

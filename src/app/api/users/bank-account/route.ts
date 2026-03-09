@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { encrypt, decrypt, isEncrypted } from "@/lib/encryption"
+import { logger } from "@/lib/logger"
 
 // GET /api/users/bank-account - Get user's bank account details
 export async function GET(_request: Request) {
@@ -47,7 +48,7 @@ export async function GET(_request: Request) {
       },
     })
   } catch (error: unknown) {
-    console.error("Error fetching bank account:", error)
+    logger.error("Error fetching bank account", error, { route: "GET /api/users/bank-account" })
     return NextResponse.json(
       { error: "Failed to fetch bank account" },
       { status: 500 }
@@ -123,7 +124,7 @@ export async function POST(request: Request) {
       },
     })
   } catch (error: unknown) {
-    console.error("Error saving bank account:", error)
+    logger.error("Error saving bank account", error, { route: "POST /api/users/bank-account" })
     return NextResponse.json(
       { error: "Failed to save bank account" },
       { status: 500 }
@@ -155,7 +156,7 @@ export async function DELETE(_request: Request) {
 
     return NextResponse.json({ message: "Bank account removed successfully" })
   } catch (error: unknown) {
-    console.error("Error removing bank account:", error)
+    logger.error("Error removing bank account", error, { route: "DELETE /api/users/bank-account" })
     return NextResponse.json(
       { error: "Failed to remove bank account" },
       { status: 500 }

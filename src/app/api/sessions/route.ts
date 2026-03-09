@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // GET /api/sessions - List all sessions for the current user
 export async function GET() {
@@ -17,7 +18,7 @@ export async function GET() {
     .order("last_active_at", { ascending: false })
 
   if (error) {
-    console.error("Error fetching sessions:", error)
+    logger.error("Error fetching sessions", error, { route: "GET /api/sessions" })
     return NextResponse.json({ error: "Failed to fetch sessions" }, { status: 500 })
   }
 
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
   })
 
   if (error) {
-    console.error("Error creating session:", error)
+    logger.error("Error creating session", error, { route: "POST /api/sessions" })
     return NextResponse.json({ error: "Failed to create session" }, { status: 500 })
   }
 

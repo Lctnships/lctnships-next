@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
       })
 
     if (error) {
-      console.error("Upload error:", error)
+      logger.error("Upload error", error)
       throw error
     }
 
@@ -77,7 +78,7 @@ export async function POST(request: Request) {
       bucket,
     })
   } catch (error: unknown) {
-    console.error("Error uploading file:", error)
+    logger.error("Error uploading file", error)
     return NextResponse.json(
       { error: "Failed to upload file" },
       { status: 500 }
@@ -119,7 +120,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ message: "File deleted successfully" })
   } catch (error: unknown) {
-    console.error("Error deleting file:", error)
+    logger.error("Error deleting file", error)
     return NextResponse.json(
       { error: "Failed to delete file" },
       { status: 500 }

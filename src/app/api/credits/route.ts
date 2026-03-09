@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getUserCredits, getCreditTransactions, getPackages } from "@/lib/credits"
+import { logger } from "@/lib/logger"
 
 // GET /api/credits - Get user's credits and available packages
 export async function GET() {
@@ -28,7 +29,7 @@ export async function GET() {
       transactions,
     })
   } catch (error: unknown) {
-    console.error("Error fetching credits:", error)
+    logger.error("Error fetching credits", error)
     return NextResponse.json(
       { error: "Failed to fetch credits" },
       { status: 500 }

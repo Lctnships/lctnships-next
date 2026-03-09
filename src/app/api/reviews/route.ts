@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // GET /api/reviews - Get reviews (by studio or booking)
 export async function GET(request: Request) {
@@ -45,7 +46,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ reviews: data })
   } catch (error: unknown) {
-    console.error("Error fetching reviews:", error)
+    logger.error("Error fetching reviews", error, { route: "GET /api/reviews" })
     return NextResponse.json(
       { error: "Failed to fetch reviews" },
       { status: 500 }
@@ -159,7 +160,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ review })
   } catch (error: unknown) {
-    console.error("Error creating review:", error)
+    logger.error("Error creating review", error, { route: "POST /api/reviews" })
     return NextResponse.json(
       { error: "Failed to create review" },
       { status: 500 }

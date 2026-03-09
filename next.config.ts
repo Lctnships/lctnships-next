@@ -4,7 +4,9 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
-  turbopack: {},
+  turbopack: {
+    root: '/Users/rivaldomacandrew/lctnships-next',
+  },
   images: {
     remotePatterns: [
       {
@@ -62,7 +64,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://ytmkmiofoluespwysfxa.supabase.co https://lh3.googleusercontent.com https://graph.facebook.com https://avatars.githubusercontent.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://ytmkmiofoluespwysfxa.supabase.co wss://ytmkmiofoluespwysfxa.supabase.co https://api.stripe.com; frame-src https://js.stripe.com https://checkout.stripe.com; frame-ancestors 'none'",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://ytmkmiofoluespwysfxa.supabase.co wss://ytmkmiofoluespwysfxa.supabase.co https://api.stripe.com; frame-src https://js.stripe.com https://checkout.stripe.com; frame-ancestors 'none'",
           },
         ],
       },

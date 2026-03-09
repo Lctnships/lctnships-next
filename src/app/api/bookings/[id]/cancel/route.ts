@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { stripe } from "@/lib/stripe/config"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -98,7 +99,7 @@ export async function POST(request: Request, { params }: RouteParams) {
           amount: Math.round(refundAmount * 100), // Convert to cents
         })
       } catch (stripeError: unknown) {
-        console.error("Stripe refund error:", stripeError)
+        logger.error("Stripe refund error", stripeError)
         // Continue with cancellation even if refund fails
       }
     }
@@ -141,7 +142,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       },
     })
   } catch (error: unknown) {
-    console.error("Error cancelling booking:", error)
+    logger.error("Error cancelling booking", error)
     return NextResponse.json(
       { error: "Failed to cancel booking" },
       { status: 500 }

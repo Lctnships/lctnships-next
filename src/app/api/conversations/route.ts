@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // GET /api/conversations - Get user's conversations
 export async function GET(_request: Request) {
@@ -103,7 +104,7 @@ export async function GET(_request: Request) {
 
     return NextResponse.json({ conversations: processedConversations })
   } catch (error: unknown) {
-    console.error("Error fetching conversations:", error)
+    logger.error("Error fetching conversations", error)
     return NextResponse.json(
       { error: "Failed to fetch conversations" },
       { status: 500 }
@@ -161,7 +162,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ conversation_id: conversationId })
   } catch (error: unknown) {
-    console.error("Error creating conversation:", error)
+    logger.error("Error creating conversation", error)
     return NextResponse.json(
       { error: "Failed to create conversation" },
       { status: 500 }

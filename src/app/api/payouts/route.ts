@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // GET /api/payouts - Get host's payouts
 export async function GET(request: Request) {
@@ -70,7 +71,7 @@ export async function GET(request: Request) {
       summary: totals,
     })
   } catch (error: unknown) {
-    console.error("Error fetching payouts:", error)
+    logger.error("Error fetching payouts", error)
     return NextResponse.json(
       { error: "Failed to fetch payouts" },
       { status: 500 }
@@ -141,7 +142,7 @@ export async function POST(_request: Request) {
       total_amount: totalAmount,
     })
   } catch (error: unknown) {
-    console.error("Error requesting payout:", error)
+    logger.error("Error requesting payout", error)
     return NextResponse.json(
       { error: "Failed to request payout" },
       { status: 500 }

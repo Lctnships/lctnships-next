@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { headers } from "next/headers"
 import { parseUserAgent } from "@/lib/utils/parse-user-agent"
+import { logger } from "@/lib/logger"
 
 // POST /api/sessions/ensure - Ensure the current device has a session
 // Creates one if the user has no sessions at all (e.g. logged in before tracking existed)
@@ -43,7 +44,7 @@ export async function POST() {
   }).select().single()
 
   if (error) {
-    console.error("Error ensuring session:", error)
+    logger.error("Error ensuring session", error, { route: "POST /api/sessions/ensure" })
     return NextResponse.json({ error: "Failed to ensure session" }, { status: 500 })
   }
 

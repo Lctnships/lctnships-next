@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { invalidateCache } from "@/lib/cache"
+import { logger } from "@/lib/logger"
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -104,7 +105,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       bookedSlots: bookings || [],
     })
   } catch (error: unknown) {
-    console.error("Error fetching studio:", error)
+    logger.error("Error fetching studio", error)
     return NextResponse.json(
       { error: "Failed to fetch studio" },
       { status: 500 }
@@ -192,7 +193,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ studio })
   } catch (error: unknown) {
-    console.error("Error updating studio:", error)
+    logger.error("Error updating studio", error)
     return NextResponse.json(
       { error: "Failed to update studio" },
       { status: 500 }
@@ -249,7 +250,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ message: "Studio deleted successfully" })
   } catch (error: unknown) {
-    console.error("Error deleting studio:", error)
+    logger.error("Error deleting studio", error)
     return NextResponse.json(
       { error: "Failed to delete studio" },
       { status: 500 }

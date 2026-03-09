@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -43,7 +44,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ booking })
   } catch (error: unknown) {
-    console.error("Error fetching booking:", error)
+    logger.error("Error fetching booking", error)
     return NextResponse.json(
       { error: "Failed to fetch booking" },
       { status: 500 }
@@ -122,7 +123,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ booking })
   } catch (error: unknown) {
-    console.error("Error updating booking:", error)
+    logger.error("Error updating booking", error)
     return NextResponse.json(
       { error: "Failed to update booking" },
       { status: 500 }

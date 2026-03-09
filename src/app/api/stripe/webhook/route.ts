@@ -3,12 +3,13 @@ import { getStripe } from "@/lib/stripe"
 import { addCredits } from "@/lib/credits"
 import { createServiceClient } from "@/lib/supabase/server"
 import Stripe from "stripe"
+import { logger } from "@/lib/logger"
 
 export async function POST(request: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
 
   if (!webhookSecret) {
-    console.error("STRIPE_WEBHOOK_SECRET is not set")
+    logger.error("STRIPE_WEBHOOK_SECRET is not set")
     return NextResponse.json(
       { error: "Webhook secret not configured" },
       { status: 500 }
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
     const stripe = getStripe()
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
   } catch (err) {
-    console.error("Webhook signature verification failed:", err)
+    logger.error("Webhook signature verification failed", err)
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 })
   }
 
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
               description: `Credit package: ${credits} credits`,
             })
           } catch (error) {
-            console.error("Failed to add credits:", error)
+            logger.error("Failed to add credits", error)
           }
         }
       }
@@ -121,7 +122,7 @@ export async function POST(request: NextRequest) {
 
             console.log(`Booking ${bookingId} confirmed with payment`)
           } catch (error) {
-            console.error("Failed to update booking:", error)
+            logger.error("Failed to update booking", error)
           }
         } else {
           // Log standalone payment (no booking ID)

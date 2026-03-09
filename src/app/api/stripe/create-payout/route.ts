@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { stripe } from "@/lib/stripe/config"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // POST /api/stripe/create-payout - Request a payout
 export async function POST(request: Request) {
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
       .single()
 
     if (dbError) {
-      console.error("Error recording payout:", dbError)
+      logger.error("Error recording payout", dbError)
     }
 
     return NextResponse.json({
@@ -104,7 +105,7 @@ export async function POST(request: Request) {
       record: payoutRecord,
     })
   } catch (error: unknown) {
-    console.error("Error creating payout:", error)
+    logger.error("Error creating payout", error)
     return NextResponse.json(
       { error: "Failed to create payout" },
       { status: 500 }

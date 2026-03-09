@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { getResend } from "@/lib/resend"
 import BookingConfirmedEmail from "@/emails/booking-confirmed"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -113,7 +114,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       booking: updatedBooking,
     })
   } catch (error: unknown) {
-    console.error("Error confirming booking:", error)
+    logger.error("Error confirming booking", error)
     return NextResponse.json(
       { error: "Failed to confirm booking" },
       { status: 500 }

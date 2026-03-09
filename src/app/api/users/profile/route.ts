@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 import type { Database } from "@/types/database.types"
+import { logger } from "@/lib/logger"
 
 type UserInsert = Database["public"]["Tables"]["users"]["Insert"]
 
@@ -25,7 +26,7 @@ export async function GET(_request: Request) {
 
     return NextResponse.json({ profile })
   } catch (error: unknown) {
-    console.error("Error fetching profile:", error)
+    logger.error("Error fetching profile", error)
     return NextResponse.json(
       { error: "Failed to fetch profile" },
       { status: 500 }
@@ -87,7 +88,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({ profile: rows?.[0] ?? null })
   } catch (error: unknown) {
-    console.error("Error updating profile:", error)
+    logger.error("Error updating profile", error)
     return NextResponse.json(
       { error: "Failed to update profile" },
       { status: 500 }

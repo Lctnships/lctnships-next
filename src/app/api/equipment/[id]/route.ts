@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -28,7 +29,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ equipment })
   } catch (error: unknown) {
-    console.error("Error fetching equipment:", error)
+    logger.error("Error fetching equipment", error)
     return NextResponse.json(
       { error: "Failed to fetch equipment" },
       { status: 500 }
@@ -101,7 +102,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ equipment })
   } catch (error: unknown) {
-    console.error("Error updating equipment:", error)
+    logger.error("Error updating equipment", error)
     return NextResponse.json(
       { error: "Failed to update equipment" },
       { status: 500 }
@@ -144,7 +145,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ message: "Equipment deleted successfully" })
   } catch (error: unknown) {
-    console.error("Error deleting equipment:", error)
+    logger.error("Error deleting equipment", error)
     return NextResponse.json(
       { error: "Failed to delete equipment" },
       { status: 500 }

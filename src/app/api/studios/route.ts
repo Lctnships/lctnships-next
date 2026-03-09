@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 import { getFromCache, setInCache, createCacheKey, cacheTTL, invalidateCache } from "@/lib/cache"
 
 // GET /api/studios - List studios with filtering and search
@@ -171,7 +172,7 @@ export async function GET(request: Request) {
       headers: { "X-Cache": "MISS" },
     })
   } catch (error: unknown) {
-    console.error("Error fetching studios:", error)
+    logger.error("Error fetching studios", error)
     return NextResponse.json({ error: "Failed to fetch studios" }, { status: 500 })
   }
 }
@@ -264,7 +265,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ studio }, { status: 201 })
   } catch (error: unknown) {
-    console.error("Error creating studio:", error)
+    logger.error("Error creating studio", error)
     return NextResponse.json({ error: "Failed to create studio" }, { status: 500 })
   }
 }

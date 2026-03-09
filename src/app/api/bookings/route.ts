@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { randomBytes } from "crypto"
+import { logger } from "@/lib/logger"
 
 // GET /api/bookings - Get user's bookings
 export async function GET(request: Request) {
@@ -58,7 +59,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ bookings: data })
   } catch (error: unknown) {
-    console.error("Error fetching bookings:", error)
+    logger.error("Error fetching bookings", error)
     return NextResponse.json(
       { error: "Failed to fetch bookings" },
       { status: 500 }
@@ -163,7 +164,7 @@ export async function POST(request: Request) {
         .in("id", equipmentIds)
 
       if (equipmentError) {
-        console.error("Error fetching equipment prices:", equipmentError)
+        logger.error("Error fetching equipment prices", equipmentError)
       }
 
       // Build a price lookup map
@@ -208,7 +209,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ booking })
   } catch (error: unknown) {
-    console.error("Error creating booking:", error)
+    logger.error("Error creating booking", error)
     return NextResponse.json(
       { error: "Failed to create booking" },
       { status: 500 }

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // DELETE /api/sessions/[id] - Remove a session (logout device)
 export async function DELETE(
@@ -21,7 +22,7 @@ export async function DELETE(
     .eq("user_id", user.id)
 
   if (error) {
-    console.error("Error deleting session:", error)
+    logger.error("Error deleting session", error, { route: "DELETE /api/sessions/[id]" })
     return NextResponse.json({ error: "Failed to delete session" }, { status: 500 })
   }
 

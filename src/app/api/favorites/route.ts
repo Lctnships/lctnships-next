@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // GET /api/favorites - Get user's favorite studios
 export async function GET(_request: Request) {
@@ -34,7 +35,7 @@ export async function GET(_request: Request) {
 
     return NextResponse.json({ favorites })
   } catch (error: unknown) {
-    console.error("Error fetching favorites:", error)
+    logger.error("Error fetching favorites", error, { route: "GET /api/favorites" })
     return NextResponse.json(
       { error: "Failed to fetch favorites" },
       { status: 500 }
@@ -97,7 +98,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ favorite }, { status: 201 })
   } catch (error: unknown) {
-    console.error("Error adding to favorites:", error)
+    logger.error("Error adding to favorites", error, { route: "POST /api/favorites" })
     return NextResponse.json(
       { error: "Failed to add to favorites" },
       { status: 500 }
@@ -143,7 +144,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ message: "Removed from favorites" })
   } catch (error: unknown) {
-    console.error("Error removing from favorites:", error)
+    logger.error("Error removing from favorites", error, { route: "DELETE /api/favorites" })
     return NextResponse.json(
       { error: "Failed to remove from favorites" },
       { status: 500 }

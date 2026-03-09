@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "next-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "/bin/zsh",
+      "runtimeArgs": ["-c", "export PATH=/Users/rivaldomacandrew/.nvm/versions/node/v22.17.0/bin:$PATH && npx next dev --port 3002"],
       "port": 3002
     }
   ]

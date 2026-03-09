@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { stripe } from "@/lib/stripe/config"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // GET /api/stripe/balance - Get available balance for payout
 export async function GET(_request: Request) {
@@ -54,7 +55,7 @@ export async function GET(_request: Request) {
       currency: "EUR",
     })
   } catch (error: unknown) {
-    console.error("Error getting balance:", error)
+    logger.error("Error getting balance", error)
     return NextResponse.json(
       { error: "Failed to get balance" },
       { status: 500 }

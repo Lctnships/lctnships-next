@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe/config"
 import { createClient } from "@/lib/supabase/server"
+import { logger } from "@/lib/logger"
 
 export async function POST(req: Request) {
   if (!stripe) {
@@ -100,7 +101,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ url: session.url })
   } catch (error: unknown) {
-    console.error("Checkout error:", error)
+    logger.error("Checkout error", error)
     return NextResponse.json({ error: "Checkout failed" }, { status: 500 })
   }
 }

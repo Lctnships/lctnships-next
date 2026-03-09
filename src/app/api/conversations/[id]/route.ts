@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -112,7 +113,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       },
     })
   } catch (error: unknown) {
-    console.error("Error fetching conversation:", error)
+    logger.error("Error fetching conversation", error)
     return NextResponse.json(
       { error: "Failed to fetch conversation" },
       { status: 500 }

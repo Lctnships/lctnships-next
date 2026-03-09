@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // POST /api/messages - Send a message
 export async function POST(request: Request) {
@@ -95,7 +96,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ message })
   } catch (error: unknown) {
-    console.error("Error sending message:", error)
+    logger.error("Error sending message", error)
     return NextResponse.json(
       { error: "Failed to send message" },
       { status: 500 }
@@ -137,7 +138,7 @@ export async function GET(_request: Request) {
 
     return NextResponse.json({ unread_count: count || 0 })
   } catch (error: unknown) {
-    console.error("Error fetching unread count:", error)
+    logger.error("Error fetching unread count", error)
     return NextResponse.json(
       { error: "Failed to fetch unread count" },
       { status: 500 }

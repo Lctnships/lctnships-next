@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies, headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { parseUserAgent } from "@/lib/utils/parse-user-agent"
+import { logger } from "@/lib/logger"
 
 // Sanitize string input to prevent XSS and SQL injection
 function sanitizeString(input: unknown): string | null {
@@ -91,12 +92,12 @@ export async function GET(request: Request) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (error) {
-      console.error("Auth callback: code exchange failed:", error.message)
+      logger.error("Auth callback: code exchange failed", error.message)
       return NextResponse.redirect(`${origin}/login?error=auth`)
     }
 
     if (!data.user) {
-      console.error("Auth callback: no user returned after code exchange")
+      logger.error("Auth callback: no user returned after code exchange")
       return NextResponse.redirect(`${origin}/login?error=auth`)
     }
 
@@ -123,7 +124,7 @@ export async function GET(request: Request) {
       })
 
       if (profileError) {
-        console.error("Auth callback: profile creation failed:", profileError.message)
+        logger.error("Auth callback: profile creation failed", profileError.message)
       }
     }
 
@@ -148,13 +149,13 @@ export async function GET(request: Request) {
       })
     } catch (sessionError) {
       // Non-critical: don't block login if session tracking fails
-      console.error("Auth callback: session tracking failed:", sessionError)
+      logger.error("Auth callback: session tracking failed", sessionError)
     }
 
     return NextResponse.redirect(`${origin}${redirect}`)
   }
 
-  console.error("Auth callback: no code parameter in URL")
+  logger.error("Auth callback: no code parameter in URL")
   // Return the user to an error page with instructions
   return NextResponse.redirect(`${origin}/login?error=auth`)
 }

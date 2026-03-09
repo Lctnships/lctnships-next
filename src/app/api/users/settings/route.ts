@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // GET /api/users/settings - Get user settings
 export async function GET(_request: Request) {
@@ -27,7 +28,7 @@ export async function GET(_request: Request) {
 
     return NextResponse.json({ settings })
   } catch (error: unknown) {
-    console.error("Error fetching settings:", error)
+    logger.error("Error fetching settings", error, { route: "GET /api/users/settings" })
     return NextResponse.json(
       { error: "Failed to fetch settings" },
       { status: 500 }
@@ -97,7 +98,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({ settings })
   } catch (error: unknown) {
-    console.error("Error updating settings:", error)
+    logger.error("Error updating settings", error, { route: "PATCH /api/users/settings" })
     return NextResponse.json(
       { error: "Failed to update settings" },
       { status: 500 }
