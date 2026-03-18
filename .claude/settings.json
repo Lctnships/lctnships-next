@@ -1,0 +1,73 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.env'; then echo 'BLOCKED: Do not edit .env files — they contain secrets' >&2; exit 1; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml)$'; then echo 'BLOCKED: Lock files should only be changed via package manager' >&2; exit 1; fi"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then cd /Users/rivaldomacandrew/lctnships-next && npx next lint --fix --file \"$CLAUDE_FILE_PATH\" 2>/dev/null; exit 0; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx)$'; then cd /Users/rivaldomacandrew/lctnships-next && npx tsc --noEmit --pretty 2>&1 | head -20; exit 0; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/rivaldomacandrew/lctnships-next && if [ \"$CLAUDE_FILE_PATH\" != \"CLAUDE.md\" ] && echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx|json|sql|md)$'; then claude -p 'Read CLAUDE.md and the recent git diff (git diff HEAD). If any structural changes were made (new routes, new API endpoints, new components, new dependencies, changed config, new env vars, or architecture changes), update CLAUDE.md to reflect them. Only update if there are meaningful structural changes — do NOT update for minor code edits, bug fixes, or style changes. Keep the file concise.' --allowedTools Read,Edit,Bash 2>/dev/null & fi; exit 0"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Ping.aiff"
+          }
+        ]
+      },
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude wacht op je input\" with title \"Claude Code\"' && afplay /System/Library/Sounds/Tink.aiff"
+          }
+        ]
+      }
+    ]
+  }
+}
