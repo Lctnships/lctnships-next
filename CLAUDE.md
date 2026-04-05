@@ -24,7 +24,7 @@ npx playwright test tests/smoke.spec.ts --project=chromium  # Run single test fi
 - **Styling:** Tailwind CSS v4 (new `@theme` syntax), shadcn/ui (new-york style)
 - **Database:** Supabase (PostgreSQL) — no ORM, raw Supabase client queries
 - **Auth:** Supabase Auth (OAuth + email/password), session managed via middleware cookies
-- **Payments:** Stripe + Stripe Connect (15% platform fee), webhooks at `/api/stripe/webhook`
+- **Payments:** Stripe + Stripe Connect (15% platform fee, 85/15 split — renter pays listing price, no visible service fee). Webhooks at `/api/stripe/webhook`. Cancel flow is atomic (Stripe refund first → DB update → emails). `refund_application_fee: true` on all refunds.
 - **i18n:** next-intl — locales: `nl` (default), `en`, `es`, `fr`, `de`
 - **Email:** Resend with React Email templates in `src/emails/`
 - **State:** Zustand (client), React Context via UserProvider (auth user)
@@ -62,7 +62,7 @@ Route groups `(public)`, `(auth)`, `(dashboard)`, `(host)`, etc. each have their
 RESTful endpoints: `studios`, `bookings`, `stripe/*`, `auth/*`, `upload`, `conversations`, `payouts`, `notifications`, `equipment`, `reviews`, `calendar`, `credits`, `blog`.
 
 ### Middleware (`src/middleware.ts`)
-Runs on every request (except static assets, sitemap.xml, robots.txt). For API routes: rate limiting + Supabase session refresh. For page routes: next-intl locale handling + session refresh. **Skips heavy work on RSC/prefetch requests** (detected via `rsc` header, `next-router-prefetch` header, or `?_rsc=` query) — these already come from an authenticated tab, so we pass through to avoid serial network calls.
+Runs on every request (except static assets, sitemap.xml, robots.txt). For API routes: rate limiting + Supabase session refresh. For page routes: next-intl locale handling + session refresh. **RSC/prefetch requests** still go through next-intl (needed for locale routing) but skip `updateSession` (the expensive `auth.getUser()` call) for faster navigation.
 
 ### Supabase clients (`src/lib/supabase/`)
 - `client.ts` — browser-side singleton (`createBrowserClient`)
