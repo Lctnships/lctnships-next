@@ -55,11 +55,11 @@ interface StudioData {
   longitude?: number
   price_per_hour: number
   price_per_day?: number
-  min_hours?: number
-  max_guests?: number
-  instant_book?: boolean
+  minimum_hours?: number
+  capacity?: number
+  is_instant_book?: boolean
   is_superhost?: boolean
-  studio_type?: string
+  type?: string
   size_sqm?: number
   rating?: number
   avg_rating?: number
@@ -116,7 +116,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   const [activeTab, setActiveTab] = useState<TabType>("photos")
   const [showAllPhotos, setShowAllPhotos] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [bookingHours, setBookingHours] = useState(studio.min_hours || 2)
+  const [bookingHours, setBookingHours] = useState(studio.minimum_hours || 2)
   const [startTime, setStartTime] = useState("09:00")
   const [crewSize, setCrewSize] = useState(1)
   const [showDatePicker, setShowDatePicker] = useState(false)
@@ -328,7 +328,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   // Calculate pricing
   const pricePerHour = studio.price_per_hour || 75
   const pricePerDay = studio.price_per_day || pricePerHour * 8
-  const minHours = studio.min_hours || 2
+  const minHours = studio.minimum_hours || 2
   const equipmentTotal = equipment
     .filter((item: StudioEquipmentItem) => !item.included && selectedEquipment.has(item.id))
     .reduce((sum: number, item: StudioEquipmentItem) => sum + (item.price || 0), 0)
@@ -467,7 +467,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                     {t("superhost")}
                   </span>
                 )}
-                <span className="text-gray-500 text-sm capitalize">{studio.studio_type || "Daylight"} Studio</span>
+                <span className="text-gray-500 text-sm capitalize">{studio.type || "Daylight"} Studio</span>
               </div>
               <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">{studio.title}</h1>
               <div className="flex items-center gap-4 text-sm">
@@ -516,10 +516,10 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                       <span className="material-symbols-outlined text-black">square_foot</span>
                       <span>{studio.size_sqm}m²</span>
                     </div>
-                    {studio.max_guests && (
+                    {studio.capacity && (
                       <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-black">group</span>
-                        <span>{t("upToGuests", { count: studio.max_guests })}</span>
+                        <span>{t("upToGuests", { count: studio.capacity })}</span>
                       </div>
                     )}
                   </div>
@@ -918,7 +918,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                     </button>
                     <span className="font-bold text-lg">{crewSize} {crewSize === 1 ? t("person") : t("people")}</span>
                     <button
-                      onClick={() => setCrewSize(Math.min(studio.max_guests || 20, crewSize + 1))}
+                      onClick={() => setCrewSize(Math.min(studio.capacity || 20, crewSize + 1))}
                       className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"
                     >
                       <span className="material-symbols-outlined">add</span>
@@ -1245,7 +1245,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                   </button>
                   <span className="font-bold text-lg">{crewSize} {crewSize === 1 ? t("person") : t("people")}</span>
                   <button
-                    onClick={() => setCrewSize(Math.min(studio.max_guests || 20, crewSize + 1))}
+                    onClick={() => setCrewSize(Math.min(studio.capacity || 20, crewSize + 1))}
                     className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"
                   >
                     <span className="material-symbols-outlined">add</span>

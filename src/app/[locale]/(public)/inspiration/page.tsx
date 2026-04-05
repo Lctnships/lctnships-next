@@ -24,7 +24,7 @@ export default async function InspirationPage() {
 
   const { data: studios } = await supabase
     .from("studios")
-    .select("id, title, images, studio_type, location")
+    .select("id, title, images, type, location")
     .eq("status", "active")
     .not("images", "is", null)
     .order("created_at", { ascending: false })

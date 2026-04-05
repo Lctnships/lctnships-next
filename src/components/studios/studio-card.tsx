@@ -64,7 +64,7 @@ export function StudioCard({ studio, isFavorite, onToggleFavorite }: StudioCardP
 
         {/* Badges */}
         <div className="absolute bottom-2 left-2 flex gap-2">
-          {studio.instant_book && (
+          {studio.is_instant_book && (
             <Badge variant="secondary" className="bg-white/90">
               Instant Book
             </Badge>

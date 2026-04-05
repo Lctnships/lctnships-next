@@ -19,7 +19,7 @@ function CalendarPageContent() {
   const [minDuration, setMinDuration] = useState(() => {
     if (typeof window === 'undefined') return "2"
     const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
-    return draft.min_booking_hours ? String(draft.min_booking_hours) : "2"
+    return draft.minimum_hours ? String(draft.minimum_hours) : "2"
   })
   const [prepTime, setPrepTime] = useState(() => {
     if (typeof window === 'undefined') return "30"
@@ -34,7 +34,7 @@ function CalendarPageContent() {
   const [instantBook, setInstantBook] = useState(() => {
     if (typeof window === 'undefined') return true
     const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
-    return draft.instant_book !== undefined ? draft.instant_book : true
+    return draft.is_instant_book !== undefined ? draft.is_instant_book : true
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const hasAutoPublished = useRef(false)
@@ -57,10 +57,10 @@ function CalendarPageContent() {
       const updatedDraft = {
         ...currentDraft,
         available_days: availableDays,
-        min_booking_hours: parseInt(minDuration),
+        minimum_hours: parseInt(minDuration),
         prep_time_minutes: parseInt(prepTime),
         booking_notice_hours: parseInt(bookingNotice),
-        instant_book: instantBook,
+        is_instant_book: instantBook,
       }
       localStorage.setItem("studio_draft", JSON.stringify(updatedDraft))
 

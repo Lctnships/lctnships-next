@@ -92,7 +92,7 @@ export async function POST(request: Request) {
     // Get studio details including hourly rate for server-side price verification
     const { data: studio, error: studioError } = await supabase
       .from("studios")
-      .select("host_id, instant_book, title, hourly_rate")
+      .select("host_id, is_instant_book, title, hourly_rate")
       .eq("id", studio_id)
       .single()
 
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
         service_fee: calculatedServiceFee,
         total_amount: calculatedTotal,
         host_payout: calculatedHostPayout,
-        status: studio.instant_book ? "confirmed" : "pending",
+        status: studio.is_instant_book ? "confirmed" : "pending",
         payment_status: "pending",
         notes,
         production_type,
@@ -194,7 +194,7 @@ export async function POST(request: Request) {
     await supabase.rpc("create_notification", {
       p_user_id: studio.host_id,
       p_type: "booking_request",
-      p_title: studio.instant_book ? "New Booking Confirmed" : "New Booking Request",
+      p_title: studio.is_instant_book ? "New Booking Confirmed" : "New Booking Request",
       p_message: `You have a new booking for ${studio.title}`,
       p_link: `/host/bookings/${booking.id}`,
     })

@@ -167,15 +167,15 @@ export function BookingCard({ studio }: BookingCardProps) {
           className="w-full"
           size="lg"
           onClick={handleBooking}
-          disabled={!canCalculate || (calculation?.totalHours || 0) < studio.min_booking_hours}
+          disabled={!canCalculate || (calculation?.totalHours || 0) < studio.minimum_hours}
         >
-          {studio.instant_book ? "Direct boeken" : "Boekingsverzoek"}
+          {studio.is_instant_book ? "Direct boeken" : "Boekingsverzoek"}
         </Button>
       </CardFooter>
 
-      {studio.min_booking_hours > 1 && (
+      {studio.minimum_hours > 1 && (
         <p className="text-xs text-muted-foreground text-center pb-4">
-          Minimaal {studio.min_booking_hours} uur boeking
+          Minimaal {studio.minimum_hours} uur boeking
         </p>
       )}
     </Card>

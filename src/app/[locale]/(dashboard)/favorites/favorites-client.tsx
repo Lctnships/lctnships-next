@@ -13,7 +13,7 @@ interface Studio {
   images?: string[]
   studio_images?: { url: string }[]
   is_featured?: boolean
-  studio_type?: string
+  type?: string
 }
 
 interface FavoritesClientProps {
@@ -82,7 +82,7 @@ export function FavoritesClient({ studios, totalCount, isEmpty }: FavoritesClien
   let filteredStudios = studios.filter(studio => {
     const matchesSearch = studio.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (studio.location || studio.city || "").toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesType = filterType === "all" || studio.studio_type === filterType
+    const matchesType = filterType === "all" || studio.type === filterType
     return matchesSearch && matchesType
   })
 

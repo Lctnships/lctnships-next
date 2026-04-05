@@ -31,7 +31,7 @@ interface BookStudio {
   title: string
   city: string
   price_per_hour: number
-  instant_book?: boolean
+  is_instant_book?: boolean
   host?: { id: string }
   studio_images?: StudioImage[]
 }
@@ -122,7 +122,7 @@ export default function BookPage({ params }: BookPageProps) {
         service_fee: calculation.serviceFee,
         total_amount: calculation.totalAmount,
         host_payout: calculation.hostPayout,
-        status: studio.instant_book ? "confirmed" : "pending",
+        status: studio.is_instant_book ? "confirmed" : "pending",
         payment_status: "pending",
         notes: notes || null,
       }
@@ -138,7 +138,7 @@ export default function BookPage({ params }: BookPageProps) {
       // TODO: Redirect to Stripe checkout
       // For now, redirect to booking confirmation
       toast.success(
-        studio.instant_book
+        studio.is_instant_book
           ? "Boeking bevestigd!"
           : "Boekingsaanvraag verstuurd!"
       )
@@ -273,11 +273,11 @@ export default function BookPage({ params }: BookPageProps) {
                 ) : (
                   <CreditCard className="mr-2 h-4 w-4" />
                 )}
-                {studio.instant_book ? "Betalen en boeken" : "Aanvraag versturen"}
+                {studio.is_instant_book ? "Betalen en boeken" : "Aanvraag versturen"}
               </Button>
 
               <p className="text-xs text-muted-foreground text-center">
-                {studio.instant_book
+                {studio.is_instant_book
                   ? "Je boeking wordt direct bevestigd na betaling"
                   : "De host moet je aanvraag nog accepteren"}
               </p>

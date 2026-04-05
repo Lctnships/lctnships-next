@@ -63,7 +63,7 @@ export type Database = {
           host_id: string
           title: string
           description: string | null
-          studio_type: 'photo' | 'video' | 'podcast' | 'music' | 'dance' | 'creative'
+          type: 'photo' | 'video' | 'podcast' | 'music' | 'dance' | 'creative'
           address: string | null
           city: string | null
           postal_code: string | null
@@ -71,12 +71,12 @@ export type Database = {
           latitude: number | null
           longitude: number | null
           price_per_hour: number
-          min_booking_hours: number
-          max_guests: number | null
-          square_meters: number | null
+          minimum_hours: number
+          capacity: number | null
+          size_sqm: number | null
           rules: string | null
           cancellation_policy: 'flexible' | 'moderate' | 'strict'
-          instant_book: boolean
+          is_instant_book: boolean
           is_published: boolean
           is_verified: boolean
           avg_rating: number
@@ -90,7 +90,7 @@ export type Database = {
           host_id: string
           title: string
           description?: string | null
-          studio_type: 'photo' | 'video' | 'podcast' | 'music' | 'dance' | 'creative'
+          type: 'photo' | 'video' | 'podcast' | 'music' | 'dance' | 'creative'
           address?: string | null
           city?: string | null
           postal_code?: string | null
@@ -98,12 +98,12 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           price_per_hour: number
-          min_booking_hours?: number
-          max_guests?: number | null
-          square_meters?: number | null
+          minimum_hours?: number
+          capacity?: number | null
+          size_sqm?: number | null
           rules?: string | null
           cancellation_policy?: 'flexible' | 'moderate' | 'strict'
-          instant_book?: boolean
+          is_instant_book?: boolean
           is_published?: boolean
           is_verified?: boolean
           avg_rating?: number
@@ -117,7 +117,7 @@ export type Database = {
           host_id?: string
           title?: string
           description?: string | null
-          studio_type?: 'photo' | 'video' | 'podcast' | 'music' | 'dance' | 'creative'
+          type?: 'photo' | 'video' | 'podcast' | 'music' | 'dance' | 'creative'
           address?: string | null
           city?: string | null
           postal_code?: string | null
@@ -125,12 +125,12 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           price_per_hour?: number
-          min_booking_hours?: number
-          max_guests?: number | null
-          square_meters?: number | null
+          minimum_hours?: number
+          capacity?: number | null
+          size_sqm?: number | null
           rules?: string | null
           cancellation_policy?: 'flexible' | 'moderate' | 'strict'
-          instant_book?: boolean
+          is_instant_book?: boolean
           is_published?: boolean
           is_verified?: boolean
           avg_rating?: number

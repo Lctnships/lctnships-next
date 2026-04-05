@@ -41,7 +41,7 @@ async function StudiosContent({ searchParams }: StudiosPageProps) {
   }
 
   if (params.type) {
-    query = query.eq("studio_type", params.type)
+    query = query.eq("type", params.type)
   }
 
   if (params.city) {

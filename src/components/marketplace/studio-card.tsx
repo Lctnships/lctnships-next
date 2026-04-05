@@ -13,7 +13,7 @@ interface Studio {
   location: string
   price_per_hour: number
   images?: string[]
-  studio_type?: string
+  type?: string
   rating?: number
 }
 
@@ -96,10 +96,10 @@ export function StudioCard({ studio }: StudioCardProps) {
             favorite
           </span>
         </button>
-        {studio.studio_type && (
+        {studio.type && (
           <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4">
             <span className="bg-white/90 backdrop-blur-sm text-gray-900 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2 py-1 sm:px-3 sm:py-1.5 rounded-full">
-              {studio.studio_type}
+              {studio.type}
             </span>
           </div>
         )}

@@ -9,7 +9,7 @@ interface StudioInfoProps {
 }
 
 export function StudioInfo({ studio }: StudioInfoProps) {
-  const studioType = STUDIO_TYPES.find((t) => t.value === studio.studio_type)
+  const studioType = STUDIO_TYPES.find((t) => t.value === studio.type)
 
   return (
     <div className="space-y-6">
@@ -23,7 +23,7 @@ export function StudioInfo({ studio }: StudioInfoProps) {
               Geverifieerd
             </Badge>
           )}
-          {studio.instant_book && (
+          {studio.is_instant_book && (
             <Badge variant="secondary">Instant Book</Badge>
           )}
         </div>
@@ -38,21 +38,21 @@ export function StudioInfo({ studio }: StudioInfoProps) {
 
       {/* Quick stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {studio.max_guests && (
+        {studio.capacity && (
           <div className="flex items-center gap-2">
             <Users className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-sm text-muted-foreground">Max gasten</p>
-              <p className="font-medium">{studio.max_guests} personen</p>
+              <p className="font-medium">{studio.capacity} personen</p>
             </div>
           </div>
         )}
-        {studio.square_meters && (
+        {studio.size_sqm && (
           <div className="flex items-center gap-2">
             <Ruler className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-sm text-muted-foreground">Oppervlakte</p>
-              <p className="font-medium">{studio.square_meters} m²</p>
+              <p className="font-medium">{studio.size_sqm} m²</p>
             </div>
           </div>
         )}
@@ -60,7 +60,7 @@ export function StudioInfo({ studio }: StudioInfoProps) {
           <Clock className="h-5 w-5 text-muted-foreground" />
           <div>
             <p className="text-sm text-muted-foreground">Min. boeking</p>
-            <p className="font-medium">{studio.min_booking_hours} uur</p>
+            <p className="font-medium">{studio.minimum_hours} uur</p>
           </div>
         </div>
       </div>

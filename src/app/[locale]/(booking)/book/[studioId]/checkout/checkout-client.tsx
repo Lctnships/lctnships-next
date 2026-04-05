@@ -17,7 +17,7 @@ interface Studio {
   title: string
   city?: string
   price_per_hour: number
-  instant_book?: boolean
+  is_instant_book?: boolean
   host_id?: string
   studio_images?: { image_url: string; is_cover: boolean }[]
 }
