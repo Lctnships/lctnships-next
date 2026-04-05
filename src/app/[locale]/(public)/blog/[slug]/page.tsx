@@ -5,6 +5,7 @@ import { getArticleBySlug, getRelatedArticles } from "@/lib/supabase/blog"
 import { Button } from "@/components/ui/button"
 import { BlogProgressBar } from "./blog-progress-bar"
 import { getTranslations, getLocale } from "next-intl/server"
+import DOMPurify from "isomorphic-dompurify"
 
 interface BlogArticlePageProps {
   params: Promise<{ slug: string }>
@@ -122,15 +123,12 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
                 prose-blockquote:border-l-4 prose-blockquote:border-black prose-blockquote:pl-8 prose-blockquote:py-2 prose-blockquote:my-12
                 prose-blockquote:text-2xl prose-blockquote:font-medium prose-blockquote:italic prose-blockquote:not-italic
               "
-              dangerouslySetInnerHTML={{ __html: (() => {
-                const DOMPurify = require("isomorphic-dompurify")
-                return DOMPurify.sanitize(article.content, {
-                  ALLOWED_TAGS: ["p", "h1", "h2", "h3", "h4", "strong", "em", "a", "ul", "ol", "li", "blockquote", "br", "img", "figure", "figcaption", "span", "div"],
-                  ALLOWED_ATTR: ["href", "target", "rel", "src", "alt"],
-                  ADD_ATTR: ["noopener", "noreferrer"],
-                  ALLOW_DATA_ATTR: false,
-                })
-              })() }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content, {
+                ALLOWED_TAGS: ["p", "h1", "h2", "h3", "h4", "strong", "em", "a", "ul", "ol", "li", "blockquote", "br", "img", "figure", "figcaption", "span", "div"],
+                ALLOWED_ATTR: ["href", "target", "rel", "src", "alt"],
+                ADD_ATTR: ["noopener", "noreferrer"],
+                ALLOW_DATA_ATTR: false,
+              }) }}
             />
 
             {/* Tags */}
