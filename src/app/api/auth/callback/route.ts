@@ -3,6 +3,7 @@ import { cookies, headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { parseUserAgent } from "@/lib/utils/parse-user-agent"
 import { logger } from "@/lib/logger"
+import { SITE_URL } from "@/lib/seo"
 
 // Sanitize string input to prevent XSS and SQL injection
 function sanitizeString(input: unknown): string | null {
@@ -58,7 +59,20 @@ function getOrigin(request: Request): string {
   const forwardedProto = request.headers.get("x-forwarded-proto") || "https"
 
   if (forwardedHost) {
-    return `${forwardedProto}://${forwardedHost}`
+    // Validate forwardedHost against the configured SITE_URL to prevent host header injection
+    try {
+      const siteHost = new URL(SITE_URL).host
+      if (forwardedHost === siteHost) {
+        return `${forwardedProto}://${forwardedHost}`
+      }
+      // Also allow Vercel preview URLs (*.vercel.app)
+      if (forwardedHost.endsWith(".vercel.app")) {
+        return `${forwardedProto}://${forwardedHost}`
+      }
+      logger.warn("Rejected untrusted x-forwarded-host", { forwardedHost, siteHost })
+    } catch {
+      // Invalid SITE_URL, fall through to origin
+    }
   }
   return origin
 }

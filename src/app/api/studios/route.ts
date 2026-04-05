@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { logger } from "@/lib/logger"
 import { getFromCache, setInCache, createCacheKey, cacheTTL, invalidateCache } from "@/lib/cache"
+import { encryptStudioSecrets } from "@/lib/encryption"
 
 // GET /api/studios - List studios with filtering and search
 export async function GET(request: Request) {
@@ -84,9 +85,16 @@ export async function GET(request: Request) {
 
     // Search filter - use text search for better performance
     if (search) {
-      query = query.or(
-        `title.ilike.%${search}%,description.ilike.%${search}%,city.ilike.%${search}%`
-      )
+      // Sanitize: strip PostgREST special chars and limit length
+      const sanitized = search
+        .replace(/[,.*()\\]/g, "")
+        .trim()
+        .slice(0, 200)
+      if (sanitized) {
+        query = query.or(
+          `title.ilike.%${sanitized}%,description.ilike.%${sanitized}%,city.ilike.%${sanitized}%`
+        )
+      }
     }
 
     // City filter
@@ -247,9 +255,11 @@ export async function POST(request: Request) {
         amenities: amenities || [],
         rules: rules || [],
         cancellation_policy: cancellation_policy || "flexible",
-        entry_code,
-        wifi_password,
-        access_instructions,
+        ...encryptStudioSecrets({
+          entry_code,
+          wifi_password,
+          access_instructions,
+        }),
         is_published: false,
       })
       .select("id, title, type, city, price_per_hour, is_published, created_at")

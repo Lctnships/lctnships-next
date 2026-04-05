@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { invalidateCache } from "@/lib/cache"
 import { logger } from "@/lib/logger"
+import { encryptStudioSecrets, decryptStudioSecrets } from "@/lib/encryption"
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -80,11 +81,21 @@ export async function GET(request: Request, { params }: RouteParams) {
       }
     }
 
-    // Remove sensitive fields if user is not authorized
+    // Remove sensitive fields if user is not authorized, decrypt if authorized
     if (!canSeeSensitiveInfo) {
       delete studio.entry_code
       delete studio.wifi_password
       delete studio.access_instructions
+    } else {
+      // Decrypt the encrypted secrets for authorized users
+      const decrypted = decryptStudioSecrets({
+        entry_code: studio.entry_code,
+        wifi_password: studio.wifi_password,
+        access_instructions: studio.access_instructions,
+      })
+      studio.entry_code = decrypted.entry_code
+      studio.wifi_password = decrypted.wifi_password
+      studio.access_instructions = decrypted.access_instructions
     }
 
     // Get availability for next 30 days
@@ -162,11 +173,24 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       "access_instructions",
     ]
 
+    const sensitiveFields = ["entry_code", "wifi_password", "access_instructions"]
     const updateData: Record<string, unknown> = {}
     for (const field of allowedFields) {
       if (body[field] !== undefined) {
         updateData[field] = body[field]
       }
+    }
+
+    // Encrypt sensitive fields before saving
+    if (sensitiveFields.some(f => updateData[f] !== undefined)) {
+      const encrypted = encryptStudioSecrets({
+        entry_code: updateData.entry_code as string | undefined,
+        wifi_password: updateData.wifi_password as string | undefined,
+        access_instructions: updateData.access_instructions as string | undefined,
+      })
+      if (updateData.entry_code !== undefined) updateData.entry_code = encrypted.entry_code
+      if (updateData.wifi_password !== undefined) updateData.wifi_password = encrypted.wifi_password
+      if (updateData.access_instructions !== undefined) updateData.access_instructions = encrypted.access_instructions
     }
 
     if (Object.keys(updateData).length === 0) {
