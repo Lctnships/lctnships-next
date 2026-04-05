@@ -252,10 +252,6 @@ export default function BookPage({ params }: BookPageProps) {
                 </span>
                 <span>{formatCurrency(calculation.subtotal)}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Servicekosten</span>
-                <span>{formatCurrency(calculation.serviceFee)}</span>
-              </div>
               <Separator />
               <div className="flex justify-between font-semibold text-lg">
                 <span>Totaal</span>

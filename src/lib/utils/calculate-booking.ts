@@ -1,4 +1,6 @@
-const SERVICE_FEE_PERCENTAGE = 0.15 // 15% platform fee
+// 15% platform fee, split from the listing price (not added on top).
+// Renter pays subtotal. Platform keeps 15%, host gets 85%.
+const PLATFORM_FEE_PERCENTAGE = 0.15
 
 export interface BookingCalculation {
   totalHours: number
@@ -17,9 +19,9 @@ export function calculateBooking(
   const totalHours = Math.ceil(diffMs / (1000 * 60 * 60))
 
   const subtotal = pricePerHour * totalHours
-  const serviceFee = subtotal * SERVICE_FEE_PERCENTAGE
-  const totalAmount = subtotal + serviceFee
-  const hostPayout = subtotal - (subtotal * SERVICE_FEE_PERCENTAGE)
+  const totalAmount = subtotal
+  const serviceFee = subtotal * PLATFORM_FEE_PERCENTAGE
+  const hostPayout = subtotal * (1 - PLATFORM_FEE_PERCENTAGE)
 
   return {
     totalHours,

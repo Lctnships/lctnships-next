@@ -94,11 +94,9 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
     { name: "Avalon VT-737sp Preamp", included: true },
   ]
 
-  // Calculate gear price from booking data
-  const gearPrice = (booking.subtotal && booking.service_fee)
-    ? Math.max(0, booking.total_amount - booking.subtotal - booking.service_fee)
-    : 0
-  const studioPrice = booking.subtotal || (booking.total_amount - booking.service_fee - gearPrice)
+  // Renter sees only the studio price + any equipment. No platform fee breakdown.
+  const gearPrice = 0
+  const studioPrice = booking.subtotal ?? booking.total_amount
 
   return (
     <div className="min-h-screen bg-[#f6f6f8]">
@@ -324,10 +322,6 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">{t("premiumEquipmentPackage")}</span>
                     <span>${gearPrice.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{t("serviceFee")}</span>
-                    <span>${booking.service_fee.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between pt-4 border-t border-[#e7ebf3] font-bold text-lg">
                     <span>{t("totalPaid")}</span>

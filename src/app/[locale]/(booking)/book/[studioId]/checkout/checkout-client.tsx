@@ -80,10 +80,9 @@ export function CheckoutClient({
       return sum + (item?.price_per_day || 0) * qty
     }, 0)
     const subtotal = studioTotal + equipmentTotal
-    const serviceFee = Math.round(subtotal * 0.10)
-    const total = subtotal + serviceFee
+    const total = subtotal
 
-    return { studioTotal, equipmentTotal, subtotal, serviceFee, total }
+    return { studioTotal, equipmentTotal, subtotal, total }
   }, [studio.price_per_hour, bookingDetails.duration, equipmentSelections, equipment])
 
   const endTime = useMemo(() => {
@@ -123,9 +122,9 @@ export function CheckoutClient({
           end_datetime: endDateTime.toISOString(),
           total_hours: bookingDetails.duration,
           subtotal: calculations.subtotal,
-          service_fee: calculations.serviceFee,
+          service_fee: Math.round(calculations.subtotal * 0.15 * 100) / 100,
           total_amount: calculations.total,
-          host_payout: calculations.subtotal - Math.round(calculations.subtotal * 0.15),
+          host_payout: Math.round(calculations.subtotal * 0.85 * 100) / 100,
           status: "pending",
           payment_status: "awaiting_payment",
           notes: formData.specialRequests || null,
@@ -384,10 +383,6 @@ export function CheckoutClient({
                     </div>
                   )
                 })}
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Servicekosten</span>
-                  <span>€{calculations.serviceFee}</span>
-                </div>
               </div>
 
               {/* Total */}

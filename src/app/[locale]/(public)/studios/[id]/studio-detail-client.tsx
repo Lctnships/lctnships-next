@@ -333,8 +333,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
     .filter((item: StudioEquipmentItem) => !item.included && selectedEquipment.has(item.id))
     .reduce((sum: number, item: StudioEquipmentItem) => sum + (item.price || 0), 0)
   const subtotal = bookingHours * pricePerHour + equipmentTotal
-  const serviceFee = Math.round(subtotal * 0.12)
-  const total = subtotal + serviceFee
+  const total = subtotal
 
   // Generate time slots (6:00 - 22:00)
   const timeSlots = Array.from({ length: 17 }, (_, i) => {
@@ -938,10 +937,6 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                       <span>€{equipmentTotal}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{t("serviceFees")}</span>
-                    <span>€{serviceFee}</span>
-                  </div>
                   <div className="flex justify-between font-bold text-lg pt-3">
                     <span>{t("total")}</span>
                     <span>€{total}</span>
@@ -1265,10 +1260,6 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                     <span>€{equipmentTotal}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{t("serviceFees")}</span>
-                  <span>€{serviceFee}</span>
-                </div>
                 <div className="flex justify-between font-bold text-lg pt-2 border-t border-gray-200">
                   <span>{t("total")}</span>
                   <span>€{total}</span>

@@ -107,11 +107,13 @@ export async function POST(request: Request) {
     const calculatedHours = Math.max(1, Math.round((durationMs / (1000 * 60 * 60)) * 100) / 100)
     const hourlyRate = studio.hourly_rate || 0
 
+    // Renter pays the listing price (subtotal). Platform keeps 15%, host gets 85%.
+    // No separate service fee shown to the renter.
+    const PLATFORM_FEE_PERCENTAGE = 0.15
     const calculatedSubtotal = Math.round(calculatedHours * hourlyRate * 100) / 100
-    const SERVICE_FEE_PERCENTAGE = 0.10 // 10% service fee
-    const calculatedServiceFee = Math.round(calculatedSubtotal * SERVICE_FEE_PERCENTAGE * 100) / 100
-    const calculatedTotal = Math.round((calculatedSubtotal + calculatedServiceFee) * 100) / 100
-    const calculatedHostPayout = Math.round(calculatedSubtotal * 100) / 100
+    const calculatedTotal = calculatedSubtotal
+    const calculatedServiceFee = Math.round(calculatedSubtotal * PLATFORM_FEE_PERCENTAGE * 100) / 100
+    const calculatedHostPayout = Math.round(calculatedSubtotal * (1 - PLATFORM_FEE_PERCENTAGE) * 100) / 100
 
     // Verify client-supplied prices are within acceptable tolerance (2% for rounding)
     const tolerance = 0.02

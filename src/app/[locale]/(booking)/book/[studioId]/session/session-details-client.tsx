@@ -68,10 +68,9 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
       return sum + (item?.price_per_day || 0) * qty
     }, 0)
     const subtotal = studioTotal + equipmentTotal
-    const serviceFee = Math.round(subtotal * 0.10)
-    const total = subtotal + serviceFee
+    const total = subtotal
 
-    return { studioTotal, equipmentTotal, subtotal, serviceFee, total }
+    return { studioTotal, equipmentTotal, subtotal, total }
   }, [studio.price_per_hour, selectedDuration, selectedEquipment, equipment])
 
   const handleContinue = () => {
@@ -305,10 +304,6 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
                     </div>
                   )
                 })}
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Servicekosten</span>
-                  <span>€{calculations.serviceFee}</span>
-                </div>
                 <div className="flex justify-between pt-4 border-t border-gray-100 text-lg font-semibold">
                   <span>Totaal</span>
                   <span>€{calculations.total}</span>
