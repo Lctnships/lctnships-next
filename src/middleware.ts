@@ -109,19 +109,12 @@ if (typeof setInterval !== 'undefined') {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // RSC prefetch/navigation requests: skip heavy work.
-  // These come from Next.js <Link> after the user is already authenticated
-  // for the current tab. Running next-intl + supabase.auth.getUser() on every
-  // prefetch/RSC fetch turns fast client navigation into serial network calls
-  // and can cause 503s when Supabase auth is slow. The server component that
-  // renders the RSC payload still does its own auth check via getUser().
+  // Detect RSC/prefetch requests — these still need next-intl locale routing
+  // but can skip the expensive supabase.auth.getUser() session refresh.
   const isRscRequest =
     request.headers.get('rsc') === '1' ||
     request.headers.get('next-router-prefetch') === '1' ||
     request.nextUrl.searchParams.has('_rsc')
-  if (isRscRequest && !pathname.startsWith('/api')) {
-    return NextResponse.next()
-  }
 
   // API routes: rate limiting + session update only (no locale handling)
   if (pathname.startsWith('/api')) {
@@ -183,12 +176,17 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  // For non-API routes: handle locale detection + session update
-  // First, let next-intl handle locale detection and redirects
+  // For non-API routes: always run next-intl for locale detection/redirects
   const intlResponse = intlMiddleware(request)
 
-  // Then update the Supabase session on the response
-  // We need to update cookies on the intl response
+  // Skip Supabase session refresh on RSC/prefetch requests.
+  // The server component still validates auth via getUser() — we just avoid
+  // the extra network round-trip in middleware that was causing 503s/slowness.
+  if (isRscRequest) {
+    return intlResponse
+  }
+
+  // Full page loads: also refresh the Supabase session
   const sessionResponse = await updateSession(request)
 
   // Copy session cookies from the session response to the intl response
