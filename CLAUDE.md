@@ -40,27 +40,29 @@ npx playwright test tests/smoke.spec.ts --project=chromium  # Run single test fi
 ### Route structure (`src/app/`)
 ```
 src/app/
-├── layout.tsx                          # Root layout (fonts, metadata)
+├── layout.tsx                          # Root layout (fonts, metadata, OG tags)
+├── sitemap.ts                          # Dynamic sitemap (static + studios + blog × 5 locales)
+├── robots.ts                           # Robots directives (blocks /api, auth, dashboard paths)
 ├── [locale]/                           # Dynamic locale prefix
-│   ├── layout.tsx                      # Main app layout with UserProvider
+│   ├── layout.tsx                      # Main app layout with UserProvider + hreflang alternates
 │   ├── (public)/                       # Public pages: homepage, explore, studios, help, blog
 │   ├── (auth)/                         # Login, signup (with shared auth layout)
 │   ├── (auth-standalone)/              # Forgot/reset password (no shared auth chrome)
-│   ├── (dashboard)/                    # Renter dashboard: bookings, favorites, messages, settings
-│   ├── (host)/                         # Host dashboard: earnings, payouts, calendar, studios
+│   ├── (dashboard)/                    # Renter dashboard + loading.tsx skeleton
+│   ├── (host)/                         # Host dashboard + loading.tsx skeleton
 │   ├── (booking)/                      # Booking flow pages
 │   ├── (onboarding)/                   # Host onboarding flow
 │   └── host/onboarding/               # Additional onboarding routes
 └── api/                                # API routes (not under [locale])
 ```
 
-Route groups `(public)`, `(auth)`, `(dashboard)`, `(host)`, etc. each have their own layout providing role-specific chrome (navbars, sidebars).
+Route groups `(public)`, `(auth)`, `(dashboard)`, `(host)`, etc. each have their own layout providing role-specific chrome (navbars, sidebars). `(dashboard)` and `(host)` have `loading.tsx` skeletons for navigation feedback.
 
 ### API routes (`src/app/api/`)
 RESTful endpoints: `studios`, `bookings`, `stripe/*`, `auth/*`, `upload`, `conversations`, `payouts`, `notifications`, `equipment`, `reviews`, `calendar`, `credits`, `blog`.
 
 ### Middleware (`src/middleware.ts`)
-Runs on every request (except static assets). For API routes: rate limiting + Supabase session refresh. For page routes: next-intl locale handling + session refresh.
+Runs on every request (except static assets, sitemap.xml, robots.txt). For API routes: rate limiting + Supabase session refresh. For page routes: next-intl locale handling + session refresh. **Skips heavy work on RSC/prefetch requests** (detected via `rsc` header, `next-router-prefetch` header, or `?_rsc=` query) — these already come from an authenticated tab, so we pass through to avoid serial network calls.
 
 ### Supabase clients (`src/lib/supabase/`)
 - `client.ts` — browser-side singleton (`createBrowserClient`)
@@ -69,7 +71,15 @@ Runs on every request (except static assets). For API routes: rate limiting + Su
 - Admin client uses `SUPABASE_SERVICE_ROLE_KEY` for elevated operations
 
 ### Database
-Types generated to `src/types/database.types.ts`. Migrations in `supabase/migrations/`. Key tables: `users`, `studios`, `bookings`, `favorites`, `conversations`, `messages`, `reviews`, `credits`, `payouts`, `notifications`, `calendar_availability`, `equipment`, `blog_posts`.
+Types generated to `src/types/database.types.ts` (blocked from hand-edit by a PreToolUse hook). Migrations in `supabase/migrations/`. Key tables: `users`, `studios`, `bookings`, `favorites`, `conversations`, `messages`, `reviews`, `credits`, `payouts`, `notifications`, `calendar_availability`, `equipment`, `blog_posts`, `projects`.
+
+Migration conventions:
+- `bookings.requires_manual_payout_reversal` flags refunds issued after a host payout went out — operator must handle manually.
+- Composite indexes on `(renter_id, status, start_datetime)`, `(host_id, status, start_datetime)` etc. live in migration 006.
+
+### Shared lib helpers
+- `src/lib/auth.ts` — `getUser()` + `getProfile()` wrapped in `React.cache()` for per-request dedupe. Use these in server components instead of calling `supabase.auth.getUser()` directly.
+- `src/lib/seo.ts` — `SITE_URL`, `SITE_NAME`, `buildAlternateLanguages()` for hreflang.
 
 ### i18n
 Translation files in `messages/{locale}.json`. Use `next-intl` `useTranslations()` hook in client components and `getTranslations()` in server components. Default locale is `nl` (Dutch). Locale config in `src/i18n/config.ts`, routing in `src/i18n/routing.ts`.
@@ -80,4 +90,4 @@ Translation files in `messages/{locale}.json`. Use `next-intl` `useTranslations(
 - `providers/` — context providers (user, theme)
 
 ### Environment variables
-See `.env.example`. Required: Supabase (URL, anon key, service role key), Stripe (secret, publishable, webhook secret), Google Places API key, Encryption key, Resend API key. Optional: Upstash Redis for rate limiting.
+See `.env.example`. Required: Supabase (URL, anon key, service role key), Stripe (secret, publishable, webhook secret), Google Places API key, Encryption key, Resend API key, `NEXT_PUBLIC_SITE_URL` (used for metadataBase, sitemap, robots, OG tags — set to `https://www.lctnships.com` on Vercel). Optional: Upstash Redis for rate limiting.
