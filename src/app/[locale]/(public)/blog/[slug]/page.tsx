@@ -126,7 +126,8 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
                 const DOMPurify = require("isomorphic-dompurify")
                 return DOMPurify.sanitize(article.content, {
                   ALLOWED_TAGS: ["p", "h1", "h2", "h3", "h4", "strong", "em", "a", "ul", "ol", "li", "blockquote", "br", "img", "figure", "figcaption", "span", "div"],
-                  ALLOWED_ATTR: ["href", "target", "rel", "src", "alt", "class"],
+                  ALLOWED_ATTR: ["href", "target", "rel", "src", "alt"],
+                  ADD_ATTR: ["noopener", "noreferrer"],
                   ALLOW_DATA_ATTR: false,
                 })
               })() }}

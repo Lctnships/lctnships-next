@@ -54,8 +54,8 @@ export function encrypt(plaintext: string): string {
 
   const authTag = cipher.getAuthTag()
 
-  // Combine IV, auth tag, and ciphertext
-  return `${iv.toString("base64")}:${authTag.toString("base64")}:${encrypted}`
+  // Combine prefix, IV, auth tag, and ciphertext
+  return `${ENCRYPTION_PREFIX}${iv.toString("base64")}:${authTag.toString("base64")}:${encrypted}`
 }
 
 /**
@@ -64,17 +64,22 @@ export function encrypt(plaintext: string): string {
  * @returns Decrypted plaintext string
  */
 export function decrypt(encryptedData: string): string {
-  if (!encryptedData || !encryptedData.includes(":")) {
-    // Return as-is if not encrypted (for backwards compatibility)
+  if (!encryptedData) return encryptedData
+
+  // Support both prefixed (new) and legacy (old) formats
+  let payload = encryptedData
+  if (encryptedData.startsWith(ENCRYPTION_PREFIX)) {
+    payload = encryptedData.slice(ENCRYPTION_PREFIX.length)
+  } else if (!encryptedData.includes(":") || encryptedData.split(":").length !== 3) {
+    // Not encrypted, return as-is
     return encryptedData
   }
 
   try {
     const key = getEncryptionKey()
-    const parts = encryptedData.split(":")
+    const parts = payload.split(":")
 
     if (parts.length !== 3) {
-      // Not in expected format, return as-is
       return encryptedData
     }
 
@@ -101,10 +106,11 @@ export function decrypt(encryptedData: string): string {
  * @param value - The string to check
  * @returns true if the string appears to be encrypted
  */
+const ENCRYPTION_PREFIX = "enc:v1:"
+
 export function isEncrypted(value: string): boolean {
   if (!value) return false
-  const parts = value.split(":")
-  return parts.length === 3 && parts.every(p => p.length > 0)
+  return value.startsWith(ENCRYPTION_PREFIX)
 }
 
 /**

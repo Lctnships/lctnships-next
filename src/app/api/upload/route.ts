@@ -23,8 +23,11 @@ export async function POST(request: Request) {
 
     const formData = await request.formData()
     const file = formData.get("file") as File | null
-    const bucket = (formData.get("bucket") as string) || "images"
-    const folder = (formData.get("folder") as string) || "uploads"
+    const ALLOWED_BUCKETS = ["images", "avatars", "documents", "studio-images"]
+    const rawBucket = (formData.get("bucket") as string) || "images"
+    const rawFolder = (formData.get("folder") as string) || "uploads"
+    const bucket = ALLOWED_BUCKETS.includes(rawBucket) ? rawBucket : "images"
+    const folder = rawFolder.replace(/\.\./g, "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 100) || "uploads"
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })

@@ -76,8 +76,8 @@ export async function POST(request: NextRequest) {
         }
       }
       // Handle booking payment
-      else if (paymentType === "booking_payment" || session.metadata?.bookingId) {
-        const bookingId = session.metadata?.bookingId
+      else if (paymentType === "booking_payment" || session.metadata?.bookingId || session.metadata?.booking_id) {
+        const bookingId = session.metadata?.bookingId ?? session.metadata?.booking_id
         const platformFee = parseInt(session.metadata?.platformFee || "0")
 
         if (bookingId && bookingId !== "" && !bookingId.startsWith("temp_")) {

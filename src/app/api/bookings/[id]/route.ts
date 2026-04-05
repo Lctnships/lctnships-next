@@ -93,6 +93,23 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     const allowedFields = isHost ? hostAllowedFields : isRenter ? renterAllowedFields : []
 
+    // Validate host status transitions
+    const VALID_HOST_TRANSITIONS: Record<string, string[]> = {
+      pending: ["confirmed", "cancelled"],
+      confirmed: ["completed", "cancelled"],
+    }
+    if (isHost && "status" in body) {
+      const currentStatus = existingBooking.status
+      const newStatus = body.status
+      const allowed = VALID_HOST_TRANSITIONS[currentStatus] || []
+      if (!allowed.includes(newStatus)) {
+        return NextResponse.json(
+          { error: `Cannot change status from '${currentStatus}' to '${newStatus}'` },
+          { status: 400 }
+        )
+      }
+    }
+
     // Filter body to only include allowed fields
     const sanitizedUpdate: Record<string, unknown> = {}
     for (const field of allowedFields) {

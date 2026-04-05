@@ -69,7 +69,7 @@ export async function POST(request: Request) {
       },
       {
         stripeAccount: profile.stripe_account_id,
-        idempotencyKey: `payout-${user.id}-${Math.round(amount * 100)}-${new Date().toISOString().slice(0, 10)}`,
+        idempotencyKey: `payout-${user.id}-${Math.round(amount * 100)}-${Date.now()}`,
       }
     )
 
