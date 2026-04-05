@@ -53,7 +53,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd /Users/rivaldomacandrew/lctnships-next && if [ \"$CLAUDE_FILE_PATH\" != \"CLAUDE.md\" ] && echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx|json|sql|md)$'; then claude -p 'Read CLAUDE.md and the recent git diff (git diff HEAD). If any structural changes were made (new routes, new API endpoints, new components, new dependencies, changed config, new env vars, or architecture changes), update CLAUDE.md to reflect them. Only update if there are meaningful structural changes — do NOT update for minor code edits, bug fixes, or style changes. Keep the file concise.' --allowedTools Read,Edit,Bash 2>/dev/null & fi; exit 0"
+            "command": "cd /Users/rivaldomacandrew/lctnships-next && mkdir -p .claude/logs && if echo \"$CLAUDE_FILE_PATH\" | grep -qE '(supabase/migrations/|src/app/api/.*/route\\.(ts|js)$|src/middleware\\.ts$|package\\.json$|\\.env\\.example$|src/i18n/|src/lib/stripe/|src/lib/supabase/)'; then LOG=.claude/logs/claude-md-update.log; echo \"[$(date '+%Y-%m-%d %H:%M:%S')] triggered by $CLAUDE_FILE_PATH\" >> $LOG; (claude -p 'Read CLAUDE.md and run: git diff HEAD~3 HEAD -- supabase/migrations src/app/api src/middleware.ts package.json .env.example src/i18n src/lib. If the diff contains structural changes (new API routes, schema changes, new env vars, middleware changes, new libraries), update CLAUDE.md to reflect them in the existing style. Keep it concise. Do not update for small bug fixes.' --allowedTools Read,Edit,Bash >> $LOG 2>&1 && echo \"[done $(date '+%H:%M:%S')]\" >> $LOG) & fi; exit 0"
           }
         ]
       }

@@ -49,3 +49,4 @@ next-env.d.ts
 # Accidental nested clone
 /lctnships-next
 /lctnships-next.code-workspace
+.claude/logs/
