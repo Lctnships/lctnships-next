@@ -88,11 +88,7 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.studio.address)}`
     : "#"
 
-  // Mock equipment if not provided
-  const equipment = booking.equipment || [
-    { name: "Neumann U87 Microphone", included: true },
-    { name: "Avalon VT-737sp Preamp", included: true },
-  ]
+  const equipment = booking.equipment || []
 
   // Renter sees only the studio price + any equipment. No platform fee breakdown.
   const gearPrice = 0

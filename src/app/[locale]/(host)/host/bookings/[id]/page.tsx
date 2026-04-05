@@ -38,7 +38,7 @@ export default async function BookingDetailPage({
     totalBookings: 0,
     avgRating: 0,
     cancelRate: 0,
-    responseTime: "< 1hr",
+    responseTime: "-",
   }
 
   if (booking.renter) {
@@ -69,7 +69,7 @@ export default async function BookingDetailPage({
       cancelRate: bookingsCount && cancelledCount
         ? Math.round((cancelledCount / (bookingsCount + cancelledCount)) * 100)
         : 0,
-      responseTime: "< 1hr",
+      responseTime: "-",
     }
   }
 
