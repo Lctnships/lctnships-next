@@ -119,22 +119,50 @@ export async function POST(_request: Request) {
       )
     }
 
-    // Mark payouts as processing
     const payoutIds = pendingPayouts.map(p => p.id)
     const totalAmount = pendingPayouts.reduce((sum, p) => sum + p.amount, 0)
 
-    const { error: updateError } = await supabase
+    // Verify Stripe balance before processing
+    if (userDetails.stripe_account_id) {
+      try {
+        const { stripe: stripeLib } = await import("@/lib/stripe/config")
+        if (stripeLib) {
+          const balance = await stripeLib.balance.retrieve({
+            stripeAccount: userDetails.stripe_account_id,
+          })
+          const available = balance.available.reduce((sum, b) => sum + b.amount, 0) / 100
+          if (available < totalAmount) {
+            return NextResponse.json(
+              { error: `Insufficient Stripe balance (€${available.toFixed(2)} available, €${totalAmount.toFixed(2)} requested)` },
+              { status: 400 }
+            )
+          }
+        }
+      } catch (balanceError) {
+        logger.error("Failed to verify Stripe balance", balanceError)
+        return NextResponse.json(
+          { error: "Could not verify Stripe balance. Try again later." },
+          { status: 503 }
+        )
+      }
+    }
+
+    // Mark payouts as processing (idempotency: only update pending rows)
+    const { error: updateError, count } = await supabase
       .from("payouts")
       .update({ status: "processing" })
       .in("id", payoutIds)
+      .eq("status", "pending")
 
     if (updateError) throw updateError
 
-    // TODO: Integrate with Stripe Connect for actual payout
-    // For now, we just mark them as processing
-    // In production, you would:
-    // 1. Create a Stripe Transfer to the connected account
-    // 2. Or trigger a bank transfer via your payment provider
+    // Guard: if no rows were updated, another request already processed them
+    if (count === 0) {
+      return NextResponse.json(
+        { error: "Payouts already being processed" },
+        { status: 409 }
+      )
+    }
 
     return NextResponse.json({
       message: "Payout request submitted",

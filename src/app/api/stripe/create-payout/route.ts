@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create payout
+    // Create payout with idempotency key to prevent duplicate payouts on retry
     const payout = await stripe.payouts.create(
       {
         amount: Math.round(amount * 100), // Convert to cents
@@ -69,6 +69,7 @@ export async function POST(request: Request) {
       },
       {
         stripeAccount: profile.stripe_account_id,
+        idempotencyKey: `payout-${user.id}-${Math.round(amount * 100)}-${new Date().toISOString().slice(0, 10)}`,
       }
     )
 

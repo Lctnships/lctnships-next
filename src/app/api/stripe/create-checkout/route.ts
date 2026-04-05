@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       .from("bookings")
       .select(`
         *,
-        studio:studios (title, host_id),
+        studio:studios (title, host_id, hourly_rate, price_per_hour),
         renter:users!bookings_renter_id_fkey (email, stripe_customer_id)
       `)
       .eq("id", bookingId)
@@ -66,6 +66,11 @@ export async function POST(req: Request) {
       .eq("id", booking.studio?.host_id)
       .single()
 
+    // Server-side price recalculation — never trust DB amount (renter could PATCH via Supabase REST)
+    const hourlyRate = booking.studio?.hourly_rate || booking.studio?.price_per_hour || 0
+    const recalculatedAmount = Math.round(booking.total_hours * hourlyRate * 100) // cents
+    const platformFee = Math.round(recalculatedAmount * 0.15)
+
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -78,7 +83,7 @@ export async function POST(req: Request) {
               name: `Boeking: ${booking.studio?.title}`,
               description: `${booking.total_hours} uur - ${new Date(booking.start_datetime).toLocaleDateString("nl-NL")}`,
             },
-            unit_amount: Math.round(booking.total_amount * 100), // Convert to cents
+            unit_amount: recalculatedAmount,
           },
           quantity: 1,
         },
@@ -89,15 +94,17 @@ export async function POST(req: Request) {
       metadata: {
         booking_id: bookingId,
       },
-      // If host has Stripe Connect, use transfer
+      // If host has Stripe Connect, use transfer with server-calculated fee
       ...(host?.stripe_account_id && {
         payment_intent_data: {
-          application_fee_amount: Math.round(booking.service_fee * 100),
+          application_fee_amount: platformFee,
           transfer_data: {
             destination: host.stripe_account_id,
           },
         },
       }),
+    }, {
+      idempotencyKey: `checkout-${bookingId}`,
     })
 
     return NextResponse.json({ url: session.url })

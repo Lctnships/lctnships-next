@@ -18,23 +18,25 @@ const rateLimits = {
 }
 
 function getClientIP(request: NextRequest): string {
-  const forwarded = request.headers.get('x-forwarded-for')
-  const realIp = request.headers.get('x-real-ip')
-  const cfConnectingIp = request.headers.get('cf-connecting-ip')
-
-  if (cfConnectingIp) {
-    return cfConnectingIp.trim()
+  // On Vercel, request.ip is the real client IP and cannot be spoofed.
+  // Do NOT trust x-forwarded-for or cf-connecting-ip — these are user-controllable
+  // headers that attackers rotate to bypass rate limiting.
+  if ('ip' in request && typeof request.ip === 'string' && request.ip) {
+    return request.ip
   }
 
+  // Vercel also sets x-vercel-forwarded-for which is trusted (set by their edge)
+  const vercelIp = request.headers.get('x-vercel-forwarded-for')
+  if (vercelIp) {
+    const firstIp = vercelIp.split(',')[0]?.trim()
+    if (firstIp && isValidIP(firstIp)) return firstIp
+  }
+
+  // Fallback for local dev — use x-forwarded-for last
+  const forwarded = request.headers.get('x-forwarded-for')
   if (forwarded) {
     const firstIp = forwarded.split(',')[0]?.trim()
-    if (firstIp && isValidIP(firstIp)) {
-      return firstIp
-    }
-  }
-
-  if (realIp && isValidIP(realIp.trim())) {
-    return realIp.trim()
+    if (firstIp && isValidIP(firstIp)) return firstIp
   }
 
   const userAgent = request.headers.get('user-agent') || ''
