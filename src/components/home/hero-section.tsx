@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Image from "next/image"
 import { useRouter } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
 import { useLocale } from "next-intl"
@@ -168,12 +169,18 @@ export function HeroSection() {
     <section className="px-6 py-4">
       <div className="relative min-h-[640px] rounded-[32px] flex flex-col items-center justify-center p-8">
         {/* Background image layer with overflow-hidden so it respects rounded corners */}
-        <div
-          className="absolute inset-0 rounded-[32px] overflow-hidden bg-cover bg-center"
-          style={{
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.4)), url('/hero-photo-studio.jpeg')`,
-          }}
-        />
+        <div className="absolute inset-0 rounded-[32px] overflow-hidden">
+          <Image
+            src="/hero-photo-studio.jpeg"
+            alt=""
+            fill
+            priority
+            fetchPriority="high"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1280px"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/15 to-black/40" />
+        </div>
 
         <div className="relative z-10 w-full max-w-4xl text-center">
           <h1 className="text-white text-4xl md:text-7xl font-extrabold tracking-tight mb-8 drop-shadow-sm text-center">
