@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/seo"
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe/config"
 import { createClient } from "@/lib/supabase/server"
@@ -83,8 +84,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/bookings/${bookingId}?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/bookings/${bookingId}?canceled=true`,
+      success_url: `${SITE_URL}/bookings/${bookingId}?success=true`,
+      cancel_url: `${SITE_URL}/bookings/${bookingId}?canceled=true`,
       metadata: {
         booking_id: bookingId,
       },

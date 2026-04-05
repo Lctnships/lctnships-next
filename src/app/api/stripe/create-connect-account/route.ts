@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/seo"
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe/config"
 import { createClient } from "@/lib/supabase/server"
@@ -28,8 +29,8 @@ export async function POST() {
       // Create account link for existing account
       const accountLink = await stripe.accountLinks.create({
         account: profile.stripe_account_id,
-        refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/host/dashboard?stripe=refresh`,
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/host/dashboard?stripe=success`,
+        refresh_url: `${SITE_URL}/host/dashboard?stripe=refresh`,
+        return_url: `${SITE_URL}/host/dashboard?stripe=success`,
         type: "account_onboarding",
       })
 
@@ -64,8 +65,8 @@ export async function POST() {
     // Create account link
     const accountLink = await stripe.accountLinks.create({
       account: account.id,
-      refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/host/dashboard?stripe=refresh`,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/host/dashboard?stripe=success`,
+      refresh_url: `${SITE_URL}/host/dashboard?stripe=refresh`,
+      return_url: `${SITE_URL}/host/dashboard?stripe=success`,
       type: "account_onboarding",
     })
 

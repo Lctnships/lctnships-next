@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/seo"
 import { createClient } from "@/lib/supabase/server"
 import { stripe } from "@/lib/stripe/config"
 import { NextResponse } from "next/server"
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
     }
 
     // Create onboarding link
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || ""
+    const appUrl = SITE_URL
     const { searchParams } = new URL(request.url)
 
     // Validate redirect URLs against app domain to prevent open-redirect attacks

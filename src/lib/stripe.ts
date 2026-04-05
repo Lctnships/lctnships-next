@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/seo"
 import Stripe from "stripe"
 
 // Lazy initialization to prevent build-time errors
@@ -76,8 +77,8 @@ export async function createBookingPayment({
       platformFee: applicationFee.toString(),
       hours: hours.toString(),
     },
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking/cancel`,
+    success_url: `${SITE_URL}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${SITE_URL}/booking/cancel`,
   })
 
   return session
@@ -129,8 +130,8 @@ export async function createCreditPurchase({
       userId,
       credits: credits.toString(),
     },
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/credits/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/credits`,
+    success_url: `${SITE_URL}/credits/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${SITE_URL}/credits`,
   })
 
   return session
