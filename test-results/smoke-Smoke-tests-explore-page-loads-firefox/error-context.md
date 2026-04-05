@@ -1,0 +1,149 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "lctnships" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "lctnships" [ref=e6]
+        - navigation [ref=e7]:
+          - link "Vind een Studio" [ref=e8] [cursor=pointer]:
+            - /url: /studios
+          - link "Inspiratie" [ref=e9] [cursor=pointer]:
+            - /url: /inspiration
+          - link "Blog" [ref=e10] [cursor=pointer]:
+            - /url: /blog
+        - generic [ref=e11]:
+          - button "Taal" [ref=e13]:
+            - img
+            - generic [ref=e14]: Taal
+          - generic [ref=e15]:
+            - link "Verhuur je Studio" [ref=e16] [cursor=pointer]:
+              - /url: /host/onboarding
+              - button "Verhuur je Studio" [ref=e17]
+            - link "Inloggen" [ref=e18] [cursor=pointer]:
+              - /url: /login
+              - button "Inloggen" [ref=e19]
+    - main [ref=e20]:
+      - main [ref=e22]:
+        - generic [ref=e23]:
+          - heading "Vind de perfecte ruimte in jouw stad" [level=1] [ref=e24]
+          - paragraph [ref=e25]: Ontdek premium creatieve studio's, productieruimtes en werkplekken voor de moderne creator.
+        - generic [ref=e26]:
+          - link "Nederland" [ref=e27] [cursor=pointer]:
+            - /url: /explore/netherlands
+            - heading "Nederland" [level=2] [ref=e28]: Nederland
+          - generic [ref=e30]:
+            - link "Amsterdam 42 Studio's Amsterdam" [ref=e31] [cursor=pointer]:
+              - /url: /studios?city=amsterdam
+              - img "Amsterdam" [ref=e33]
+              - generic [ref=e36]: 42 Studio's
+              - heading "Amsterdam" [level=3] [ref=e38]
+            - link "Rotterdam 28 Studio's Rotterdam" [ref=e39] [cursor=pointer]:
+              - /url: /studios?city=rotterdam
+              - img "Rotterdam" [ref=e41]
+              - generic [ref=e44]: 28 Studio's
+              - heading "Rotterdam" [level=3] [ref=e46]
+            - link "Utrecht 15 Studio's Utrecht" [ref=e47] [cursor=pointer]:
+              - /url: /studios?city=utrecht
+              - img "Utrecht" [ref=e49]
+              - generic [ref=e52]: 15 Studio's
+              - heading "Utrecht" [level=3] [ref=e54]
+        - generic [ref=e55]:
+          - link "Duitsland" [ref=e56] [cursor=pointer]:
+            - /url: /explore/germany
+            - heading "Duitsland" [level=2] [ref=e57]: Duitsland
+          - link "Berlin 56 Studio's Berlin" [ref=e60] [cursor=pointer]:
+            - /url: /studios?city=berlin
+            - img "Berlin" [ref=e62]
+            - generic [ref=e65]: 56 Studio's
+            - heading "Berlin" [level=3] [ref=e67]
+        - generic [ref=e68]:
+          - link "Frankrijk" [ref=e69] [cursor=pointer]:
+            - /url: /explore/france
+            - heading "Frankrijk" [level=2] [ref=e70]: Frankrijk
+          - link "Paris 39 Studio's Paris" [ref=e73] [cursor=pointer]:
+            - /url: /studios?city=paris
+            - img "Paris" [ref=e75]
+            - generic [ref=e78]: 39 Studio's
+            - heading "Paris" [level=3] [ref=e80]
+        - generic [ref=e81]:
+          - link "Verenigd Koninkrijk" [ref=e82] [cursor=pointer]:
+            - /url: /explore/united-kingdom
+            - heading "Verenigd Koninkrijk" [level=2] [ref=e83]: Verenigd Koninkrijk
+          - link "Londen 64 Studio's Londen" [ref=e86] [cursor=pointer]:
+            - /url: /studios?city=london
+            - img "Londen" [ref=e88]
+            - generic [ref=e91]: 64 Studio's
+            - heading "Londen" [level=3] [ref=e93]
+        - generic [ref=e94]:
+          - heading "Stel een stad voor" [level=2] [ref=e95]
+          - paragraph [ref=e96]: Zie je jouw stad er nog niet bij? Laat ons weten waar we als volgende moeten uitbreiden.
+          - generic [ref=e97]:
+            - generic [ref=e98]:
+              - img [ref=e100]
+              - textbox "Voer je stad in..." [ref=e103]
+            - button "Verzoek Indienen" [ref=e104]
+    - contentinfo [ref=e105]:
+      - generic [ref=e106]:
+        - generic [ref=e107]:
+          - generic [ref=e108]:
+            - link "lctnships" [ref=e109] [cursor=pointer]:
+              - /url: /
+              - img "lctnships" [ref=e110]
+            - paragraph [ref=e111]: Het platform voor creatievelingen om unieke studioruimtes te vinden en te boeken.
+          - generic [ref=e112]:
+            - heading "Ontdekken" [level=4] [ref=e113]
+            - list [ref=e114]:
+              - listitem [ref=e115]:
+                - link "Vind een Studio" [ref=e116] [cursor=pointer]:
+                  - /url: /studios
+              - listitem [ref=e117]:
+                - link "Steden" [ref=e118] [cursor=pointer]:
+                  - /url: /cities
+              - listitem [ref=e119]:
+                - link "Studio Types" [ref=e120] [cursor=pointer]:
+                  - /url: /studio-types
+          - generic [ref=e121]:
+            - heading "Ondersteuning" [level=4] [ref=e122]
+            - list [ref=e123]:
+              - listitem [ref=e124]:
+                - link "Helpcentrum" [ref=e125] [cursor=pointer]:
+                  - /url: /help
+              - listitem [ref=e126]:
+                - link "Veiligheid" [ref=e127] [cursor=pointer]:
+                  - /url: /safety
+              - listitem [ref=e128]:
+                - link "Annulering" [ref=e129] [cursor=pointer]:
+                  - /url: /cancellation
+          - generic [ref=e130]:
+            - heading "Volg Ons" [level=4] [ref=e131]
+            - generic [ref=e132]:
+              - link "TikTok" [ref=e133] [cursor=pointer]:
+                - /url: https://www.tiktok.com/@lctnships
+                - img [ref=e134]
+              - link "Instagram" [ref=e136] [cursor=pointer]:
+                - /url: https://www.instagram.com/lctnships
+                - img [ref=e137]
+              - link "Facebook" [ref=e139] [cursor=pointer]:
+                - /url: https://www.facebook.com/lctnships
+                - img [ref=e140]
+        - generic [ref=e142]:
+          - paragraph [ref=e143]: © 2026 lctnships Creative Studio Rental. Alle rechten voorbehouden.
+          - generic [ref=e144]:
+            - button "Taal" [ref=e145]:
+              - img
+              - generic [ref=e146]: Taal
+            - link "Privacybeleid" [ref=e147] [cursor=pointer]:
+              - /url: /privacy
+            - link "Algemene Voorwaarden" [ref=e148] [cursor=pointer]:
+              - /url: /terms
+            - link "Cookies" [ref=e149] [cursor=pointer]:
+              - /url: /cookies
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e155] [cursor=pointer]:
+    - img [ref=e156]
+  - alert [ref=e160]
+```

@@ -1,0 +1,260 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "lctnships" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "lctnships" [ref=e6]
+        - navigation [ref=e7]:
+          - link "Vind een Studio" [ref=e8] [cursor=pointer]:
+            - /url: /studios
+          - link "Inspiratie" [ref=e9] [cursor=pointer]:
+            - /url: /inspiration
+          - link "Blog" [ref=e10] [cursor=pointer]:
+            - /url: /blog
+        - generic [ref=e11]:
+          - button "Taal" [ref=e13]:
+            - img
+            - generic [ref=e14]: Taal
+          - generic [ref=e15]:
+            - link "Verhuur je Studio" [ref=e16] [cursor=pointer]:
+              - /url: /host/onboarding
+              - button "Verhuur je Studio" [ref=e17]
+            - link "Inloggen" [ref=e18] [cursor=pointer]:
+              - /url: /login
+              - button "Inloggen" [ref=e19]
+    - main [ref=e20]:
+      - generic [ref=e25]:
+        - heading "Jouw volgende meesterwerk begint hier" [level=1] [ref=e26]:
+          - text: Jouw volgende meesterwerk
+          - text: begint hier
+        - generic [ref=e27]:
+          - button "search Activiteit Wat ga je maken? expand_more" [ref=e29]:
+            - generic [ref=e30]: search
+            - generic [ref=e31]:
+              - generic [ref=e32]: Activiteit
+              - generic [ref=e33]: Wat ga je maken?
+            - generic [ref=e34]: expand_more
+          - generic [ref=e36]:
+            - generic [ref=e37]: location_on
+            - generic [ref=e38]:
+              - generic [ref=e39]: Locatie
+              - textbox "Typ een stad..." [ref=e40]
+          - generic [ref=e42] [cursor=pointer]:
+            - generic [ref=e43]: calendar_today
+            - generic [ref=e44]:
+              - generic [ref=e45]: Datum
+              - generic [ref=e46]: Kies een datum
+          - button "search" [ref=e47]:
+            - generic [ref=e48]: search
+      - generic [ref=e50]:
+        - link "photo_camera Fotografie" [ref=e51] [cursor=pointer]:
+          - /url: /studios?type=photo
+          - button "photo_camera Fotografie" [ref=e52]:
+            - generic [ref=e53]: photo_camera
+            - generic [ref=e54]: Fotografie
+        - link "videocam Video" [ref=e55] [cursor=pointer]:
+          - /url: /studios?type=video
+          - button "videocam Video" [ref=e56]:
+            - generic [ref=e57]: videocam
+            - generic [ref=e58]: Video
+        - link "mic Podcast" [ref=e59] [cursor=pointer]:
+          - /url: /studios?type=podcast
+          - button "mic Podcast" [ref=e60]:
+            - generic [ref=e61]: mic
+            - generic [ref=e62]: Podcast
+        - link "music_note Muziek" [ref=e63] [cursor=pointer]:
+          - /url: /studios?type=music
+          - button "music_note Muziek" [ref=e64]:
+            - generic [ref=e65]: music_note
+            - generic [ref=e66]: Muziek
+        - link "settings_accessibility Dans" [ref=e67] [cursor=pointer]:
+          - /url: /studios?type=dance
+          - button "settings_accessibility Dans" [ref=e68]:
+            - generic [ref=e69]: settings_accessibility
+            - generic [ref=e70]: Dans
+        - link "palette Creatieve Ruimtes" [ref=e71] [cursor=pointer]:
+          - /url: /studios?type=creative
+          - button "palette Creatieve Ruimtes" [ref=e72]:
+            - generic [ref=e73]: palette
+            - generic [ref=e74]: Creatieve Ruimtes
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - heading "Uitgelichte Studio's" [level=2] [ref=e77]
+          - paragraph [ref=e78]: Geselecteerde ruimtes voor jouw volgende project
+          - link "Bekijk alle studio's arrow_forward" [ref=e79] [cursor=pointer]:
+            - /url: /studios
+            - text: Bekijk alle studio's
+            - generic [ref=e80]: arrow_forward
+        - generic [ref=e81]:
+          - link "Silver Screen Studios favorite Silver Screen Studios Amsterdam Zuid star 5.0 Vanaf €150/u" [ref=e82] [cursor=pointer]:
+            - /url: /studios/a178b8cc-3970-4f2c-9b67-afeb63788e49
+            - generic [ref=e83]:
+              - img "Silver Screen Studios" [ref=e84]
+              - button "favorite" [ref=e85]:
+                - generic [ref=e86]: favorite
+            - generic [ref=e87]:
+              - generic [ref=e88]:
+                - heading "Silver Screen Studios" [level=3] [ref=e89]
+                - paragraph [ref=e90]: Amsterdam Zuid
+              - generic [ref=e91]:
+                - generic [ref=e92]: star
+                - generic [ref=e93]: "5.0"
+            - paragraph [ref=e94]: Vanaf €150/u
+          - link "CineCraft Studios favorite CineCraft Studios Amsterdam West star 4.9 Vanaf €95/u" [ref=e95] [cursor=pointer]:
+            - /url: /studios/1e32c6b9-7955-4102-a0c7-fff4e5d7fe35
+            - generic [ref=e96]:
+              - img "CineCraft Studios" [ref=e97]
+              - button "favorite" [ref=e98]:
+                - generic [ref=e99]: favorite
+            - generic [ref=e100]:
+              - generic [ref=e101]:
+                - heading "CineCraft Studios" [level=3] [ref=e102]
+                - paragraph [ref=e103]: Amsterdam West
+              - generic [ref=e104]:
+                - generic [ref=e105]: star
+                - generic [ref=e106]: "4.9"
+            - paragraph [ref=e107]: Vanaf €95/u
+          - link "Neon Studio Central favorite Neon Studio Central Rotterdam Centrum star 4.9 Vanaf €70/u" [ref=e108] [cursor=pointer]:
+            - /url: /studios/64524713-db2e-4045-b200-e15509a61750
+            - generic [ref=e109]:
+              - img "Neon Studio Central" [ref=e110]
+              - button "favorite" [ref=e111]:
+                - generic [ref=e112]: favorite
+            - generic [ref=e113]:
+              - generic [ref=e114]:
+                - heading "Neon Studio Central" [level=3] [ref=e115]
+                - paragraph [ref=e116]: Rotterdam Centrum
+              - generic [ref=e117]:
+                - generic [ref=e118]: star
+                - generic [ref=e119]: "4.9"
+            - paragraph [ref=e120]: Vanaf €70/u
+          - link "Urban Flow Dance favorite Urban Flow Dance Amsterdam Centrum star 4.8 Vanaf €45/u" [ref=e121] [cursor=pointer]:
+            - /url: /studios/5f67a8b6-b2ad-4e2b-9e13-ac73b3c0ba21
+            - generic [ref=e122]:
+              - img "Urban Flow Dance" [ref=e123]
+              - button "favorite" [ref=e124]:
+                - generic [ref=e125]: favorite
+            - generic [ref=e126]:
+              - generic [ref=e127]:
+                - heading "Urban Flow Dance" [level=3] [ref=e128]
+                - paragraph [ref=e129]: Amsterdam Centrum
+              - generic [ref=e130]:
+                - generic [ref=e131]: star
+                - generic [ref=e132]: "4.8"
+            - paragraph [ref=e133]: Vanaf €45/u
+      - generic [ref=e134]:
+        - heading "Gemaakt voor Creatievelingen" [level=2] [ref=e135]
+        - generic [ref=e136]:
+          - generic [ref=e137]:
+            - generic [ref=e139]: verified
+            - heading "Geverifieerde Studio's" [level=3] [ref=e140]
+            - paragraph [ref=e141]: Elke ruimte wordt persoonlijk gecontroleerd door ons team om professionele kwaliteit te garanderen.
+          - generic [ref=e142]:
+            - generic [ref=e144]: bolt
+            - heading "Direct Boeken" [level=3] [ref=e145]
+            - paragraph [ref=e146]: Eenvoudig plannen en veilig betalen, zodat jij je kunt focussen op je creatieve visie.
+          - generic [ref=e147]:
+            - generic [ref=e149]: camera
+            - heading "Professionele Apparatuur" [level=3] [ref=e150]
+            - paragraph [ref=e151]: Toegang tot hoogwaardige belichting, achtergronden en technische apparatuur op elke locatie.
+      - generic [ref=e152]:
+        - generic [ref=e153]:
+          - heading "Made with lctnships" [level=2] [ref=e154]
+          - paragraph [ref=e155]: Werk gemaakt door onze community in onze partnerstudio's
+        - generic [ref=e156]:
+          - generic [ref=e157]:
+            - img "Editorial Shoot" [ref=e159]
+            - paragraph [ref=e161]: Editorial Shoot
+          - generic [ref=e162]:
+            - img "Blackkstarr Editorial" [ref=e164]
+            - paragraph [ref=e166]: Blackkstarr Editorial
+          - generic [ref=e167]:
+            - img "Portrait Session" [ref=e169]
+            - paragraph [ref=e171]: Portrait Session
+          - generic [ref=e172]:
+            - img "Crown Series" [ref=e174]
+            - paragraph [ref=e176]: Crown Series
+          - generic [ref=e177]:
+            - img "Couple Shoot" [ref=e179]
+            - paragraph [ref=e181]: Couple Shoot
+          - generic [ref=e182]:
+            - img "Portrait Photography" [ref=e184]
+            - paragraph [ref=e186]: Portrait Photography
+          - generic [ref=e187]:
+            - img "Headshot Session" [ref=e189]
+            - paragraph [ref=e191]: Headshot Session
+          - generic [ref=e192]:
+            - img "Creative Portrait" [ref=e194]
+            - paragraph [ref=e196]: Creative Portrait
+      - generic [ref=e198]:
+        - img "Ontdek creatieve studio ruimtes" [ref=e199]
+        - generic [ref=e200]:
+          - heading "Verhuur je studio en verdien geld" [level=2] [ref=e201]
+          - link "Plan een gesprek" [ref=e202] [cursor=pointer]:
+            - /url: /become-host
+            - button "Plan een gesprek" [ref=e203]
+    - contentinfo [ref=e204]:
+      - generic [ref=e205]:
+        - generic [ref=e206]:
+          - generic [ref=e207]:
+            - link "lctnships" [ref=e208] [cursor=pointer]:
+              - /url: /
+              - img "lctnships" [ref=e209]
+            - paragraph [ref=e210]: Het platform voor creatievelingen om unieke studioruimtes te vinden en te boeken.
+          - generic [ref=e211]:
+            - heading "Ontdekken" [level=4] [ref=e212]
+            - list [ref=e213]:
+              - listitem [ref=e214]:
+                - link "Vind een Studio" [ref=e215] [cursor=pointer]:
+                  - /url: /studios
+              - listitem [ref=e216]:
+                - link "Steden" [ref=e217] [cursor=pointer]:
+                  - /url: /cities
+              - listitem [ref=e218]:
+                - link "Studio Types" [ref=e219] [cursor=pointer]:
+                  - /url: /studio-types
+          - generic [ref=e220]:
+            - heading "Ondersteuning" [level=4] [ref=e221]
+            - list [ref=e222]:
+              - listitem [ref=e223]:
+                - link "Helpcentrum" [ref=e224] [cursor=pointer]:
+                  - /url: /help
+              - listitem [ref=e225]:
+                - link "Veiligheid" [ref=e226] [cursor=pointer]:
+                  - /url: /safety
+              - listitem [ref=e227]:
+                - link "Annulering" [ref=e228] [cursor=pointer]:
+                  - /url: /cancellation
+          - generic [ref=e229]:
+            - heading "Volg Ons" [level=4] [ref=e230]
+            - generic [ref=e231]:
+              - link "TikTok" [ref=e232] [cursor=pointer]:
+                - /url: https://www.tiktok.com/@lctnships
+                - img [ref=e233]
+              - link "Instagram" [ref=e235] [cursor=pointer]:
+                - /url: https://www.instagram.com/lctnships
+                - img [ref=e236]
+              - link "Facebook" [ref=e238] [cursor=pointer]:
+                - /url: https://www.facebook.com/lctnships
+                - img [ref=e239]
+        - generic [ref=e241]:
+          - paragraph [ref=e242]: © 2026 lctnships Creative Studio Rental. Alle rechten voorbehouden.
+          - generic [ref=e243]:
+            - button "Taal" [ref=e244]:
+              - img
+              - generic [ref=e245]: Taal
+            - link "Privacybeleid" [ref=e246] [cursor=pointer]:
+              - /url: /privacy
+            - link "Algemene Voorwaarden" [ref=e247] [cursor=pointer]:
+              - /url: /terms
+            - link "Cookies" [ref=e248] [cursor=pointer]:
+              - /url: /cookies
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e254] [cursor=pointer]:
+    - img [ref=e255]
+  - alert [ref=e258]
+```

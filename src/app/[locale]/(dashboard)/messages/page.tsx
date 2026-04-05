@@ -50,29 +50,26 @@ export default async function MessagesPage({
     .eq("user_id", user.id)
     .order("conversation(updated_at)", { ascending: false })
 
-  // Bulk fetch all related data outside the loop to avoid N+1 queries
   const conversationIds = (participations || []).map((p) => p.conversation_id)
 
-  // Bulk fetch: all other participants
-  const { data: allOtherParticipants } = conversationIds.length > 0
-    ? await supabase
-        .from("conversation_participants")
-        .select(`
-          conversation_id,
-          user:users (id, full_name, avatar_url)
-        `)
-        .in("conversation_id", conversationIds)
-        .neq("user_id", user.id)
-    : { data: [] }
-
-  // Bulk fetch: all messages for all conversations
-  const { data: allMessages } = conversationIds.length > 0
-    ? await supabase
-        .from("messages")
-        .select("*")
-        .in("conversation_id", conversationIds)
-        .order("created_at", { ascending: true })
-    : { data: [] }
+  // Bulk fetch participants + messages in parallel
+  const [{ data: allOtherParticipants }, { data: allMessages }] = conversationIds.length > 0
+    ? await Promise.all([
+        supabase
+          .from("conversation_participants")
+          .select(`
+            conversation_id,
+            user:users (id, full_name, avatar_url)
+          `)
+          .in("conversation_id", conversationIds)
+          .neq("user_id", user.id),
+        supabase
+          .from("messages")
+          .select("*")
+          .in("conversation_id", conversationIds)
+          .order("created_at", { ascending: true }),
+      ])
+    : [{ data: [] }, { data: [] }]
 
   // Combine results in-memory
   const conversationsWithDetails = (participations || []).map((p) => {

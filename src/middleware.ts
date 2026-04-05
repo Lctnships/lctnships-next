@@ -109,6 +109,20 @@ if (typeof setInterval !== 'undefined') {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // RSC prefetch/navigation requests: skip heavy work.
+  // These come from Next.js <Link> after the user is already authenticated
+  // for the current tab. Running next-intl + supabase.auth.getUser() on every
+  // prefetch/RSC fetch turns fast client navigation into serial network calls
+  // and can cause 503s when Supabase auth is slow. The server component that
+  // renders the RSC payload still does its own auth check via getUser().
+  const isRscRequest =
+    request.headers.get('rsc') === '1' ||
+    request.headers.get('next-router-prefetch') === '1' ||
+    request.nextUrl.searchParams.has('_rsc')
+  if (isRscRequest && !pathname.startsWith('/api')) {
+    return NextResponse.next()
+  }
+
   // API routes: rate limiting + session update only (no locale handling)
   if (pathname.startsWith('/api')) {
     const clientIP = getClientIP(request)

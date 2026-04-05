@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { FavoritesClient } from "./favorites-client"
 import { getTranslations } from "next-intl/server"
@@ -9,10 +10,10 @@ export async function generateMetadata() {
 }
 
 export default async function FavoritesPage() {
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
   if (!user) redirect("/login")
+
+  const supabase = await createClient()
 
   const { data: favorites } = await supabase
     .from("favorites")
