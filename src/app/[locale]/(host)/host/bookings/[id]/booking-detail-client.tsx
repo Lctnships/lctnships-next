@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 import { createClient } from "@/lib/supabase/client"
+import { CancelBookingModal } from "@/components/booking/cancel-booking-modal"
 
 interface Renter {
   id: string
@@ -57,6 +58,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
   const [isProcessing, setIsProcessing] = useState(false)
   const [showDeclineModal, setShowDeclineModal] = useState(false)
   const [declineReason, setDeclineReason] = useState("")
+  const [showCancelModal, setShowCancelModal] = useState(false)
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("nl-NL", {
@@ -369,7 +371,22 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                 <span className="material-symbols-outlined">event</span>
                 Toevoegen aan Agenda
               </a>
+              <button
+                onClick={() => setShowCancelModal(true)}
+                className="w-full py-4 bg-white border border-red-200 text-red-600 rounded-full font-bold hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined">cancel</span>
+                Boeking Annuleren
+              </button>
             </div>
+          )}
+
+          {showCancelModal && (
+            <CancelBookingModal
+              bookingId={booking.id}
+              studioTitle={booking.studio.title}
+              onClose={() => setShowCancelModal(false)}
+            />
           )}
 
           {/* Help */}
