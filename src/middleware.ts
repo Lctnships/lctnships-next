@@ -203,6 +203,9 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // Exclude Next.js internals, image optimisation, static assets, and
+    // SEO files (sitemap.xml, robots.txt, manifest.json, ads.txt) which
+    // must bypass next-intl so they serve raw content at the root path.
+    '/((?!_next/static|_next/image|favicon.ico|sitemap\\.xml|robots\\.txt|manifest\\.json|ads\\.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)',
   ],
 }
