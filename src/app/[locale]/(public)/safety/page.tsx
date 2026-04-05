@@ -125,14 +125,14 @@ export default function SafetyPage() {
             Your Security is Our Priority
           </span>
           <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mt-3 sm:mt-4 text-gray-900 dark:text-white">
-            Safety & Trust at lcntships
+            Safety & Trust at lctnships
           </h1>
           <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base md:text-lg font-medium leading-relaxed mt-3 sm:mt-4">
             Building a secure, transparent environment where studio hosts and creative renters can flourish with complete peace of mind.
           </p>
           <div className="mt-5 sm:mt-8">
             <a
-              href="mailto:support@lcntships.com?subject=Transparency%20Report%20Request"
+              href="mailto:support@lctnships.com?subject=Transparency%20Report%20Request"
               className="inline-flex items-center justify-center rounded-full h-12 px-6 bg-black text-white text-base font-bold transition-transform hover:scale-105"
             >
               Contact Us
@@ -219,7 +219,7 @@ export default function SafetyPage() {
           </div>
           <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
             <a
-              href="mailto:support@lcntships.com?subject=Safety%20Report"
+              href="mailto:support@lctnships.com?subject=Safety%20Report"
               className="flex min-w-[180px] cursor-pointer items-center justify-center rounded-full h-12 px-6 bg-white text-gray-900 text-base font-bold transition-all hover:bg-gray-200 gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -67,7 +67,7 @@ export function CookieConsent({ onAcceptAll, onSavePreferences }: CookieConsentP
             Cookie-instellingen
           </h1>
           <p className="text-gray-500 text-center text-base font-normal max-w-lg mx-auto leading-relaxed">
-            Bij lcntships respecteren we je privacy. Beheer hier je voorkeuren voor een optimale
+            Bij lctnships respecteren we je privacy. Beheer hier je voorkeuren voor een optimale
             ervaring in onze creatieve community.
           </p>
         </div>

@@ -379,7 +379,7 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
       <footer className="mt-20 border-t border-[#e7ebf3] py-10 px-6">
         <div className="max-w-[1200px] mx-auto text-center">
           <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} lcntships. {t("allRightsReserved")} •{" "}
+            © {new Date().getFullYear()} lctnships. {t("allRightsReserved")} •{" "}
             <Link href="/terms" className="hover:underline">{t("bookingPolicy")}</Link> •{" "}
             <Link href="/help" className="hover:underline">{t("helpCenter")}</Link>
           </p>

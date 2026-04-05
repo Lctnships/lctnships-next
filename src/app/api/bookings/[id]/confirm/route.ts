@@ -96,7 +96,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       : undefined
 
     await getResend().emails.send({
-      from: "lcntships <noreply@lcntships.com>",
+      from: "lctnships <noreply@lctnships.com>",
       to: renter?.email,
       subject: `Your session at ${studio?.title} is confirmed!`,
       react: BookingConfirmedEmail({

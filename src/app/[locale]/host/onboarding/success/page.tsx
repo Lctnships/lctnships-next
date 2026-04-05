@@ -38,7 +38,7 @@ export default async function OnboardingSuccessPage({
               />
             </svg>
           </div>
-          <h2 className="text-gray-900 text-lg font-bold leading-tight tracking-tight">lcntships</h2>
+          <h2 className="text-gray-900 text-lg font-bold leading-tight tracking-tight">lctnships</h2>
         </Link>
         <div className="flex items-center gap-9">
           <Link href="/host/dashboard" className="text-sm font-medium hover:text-black transition-colors">

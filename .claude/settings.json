@@ -18,6 +18,15 @@
             "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml)$'; then echo 'BLOCKED: Lock files should only be changed via package manager' >&2; exit 1; fi"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE 'src/types/database\\.types\\.ts$'; then echo 'BLOCKED: database.types.ts is generated. Regenerate with: npx supabase gen types typescript --linked > src/types/database.types.ts' >&2; exit 1; fi"
+          }
+        ]
       }
     ],
     "PostToolUse": [

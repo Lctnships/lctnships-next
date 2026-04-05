@@ -33,7 +33,7 @@ export default function HostBookingConfirmedEmail({
   totalAmount = "$480.00",
   serviceFee = "$48.00",
   hostEarnings = "$432.00",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: HostBookingConfirmedEmailProps) {
   return (
     <Html>
@@ -46,7 +46,7 @@ export default function HostBookingConfirmedEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -124,7 +124,7 @@ export default function HostBookingConfirmedEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You&apos;re receiving this because you&apos;re a studio host on lcntships.
+              You&apos;re receiving this because you&apos;re a studio host on lctnships.
             </Text>
             <Text style={copyright}>
               © {new Date().getFullYear()} LCNTSHIPS STUDIO RENTALS. ALL RIGHTS

@@ -25,7 +25,7 @@ export default function BookingDeclinedEmail({
   hostName = "Sarah, Studio Owner",
   hostAvatar = "https://lh3.googleusercontent.com/aida-public/AB6AXuBErewowerDHQWrM2LeaqqFM0zUc5egClIATJoaUk5UkIag4i94oK2YEwBCVEdENhrCxeQWAUDxYhzwsRHwNQVDIjtGAekfPzElFKM1nCU1k6t5vSFObWmgwaPdJhP4r1KZEFFgXCZUIErPf0Lsz5mhONjeNwQGqGRht9t9ojOG3XIzn4mSYc1kx5h-qP5DZ_zRW2570BLpfyl-4XfaSgnm_dHa_2MoOzH8yrGUDcuX0zEif6xO9izOb2oo22VEMp1PK8M9tVIlcu8",
   hostMessage = "I'm so sorry, but the studio will be undergoing some unexpected maintenance during those days. I'd love to host you another time!",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: BookingDeclinedEmailProps) {
   return (
     <Html>
@@ -36,7 +36,7 @@ export default function BookingDeclinedEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
             <Text style={headerLabel}>Notifications</Text>
           </Section>
@@ -98,7 +98,7 @@ export default function BookingDeclinedEmail({
           <Section style={footer}>
             <Text style={footerText}>
               You&apos;re receiving this because you have an active account on
-              lcntships.
+              lctnships.
               <br />
               If you no longer wish to receive booking updates, you can{" "}
               <Link href={`${baseUrl}/notifications`} style={footerLink}>

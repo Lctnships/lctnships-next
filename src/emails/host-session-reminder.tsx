@@ -31,7 +31,7 @@ export default function HostSessionReminderEmail({
   duration = "6 hours",
   renterPhone = "+1 (555) 123-4567",
   sessionNotes = "Fashion lookbook shoot. Will bring 2 assistants and a wardrobe rack.",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: HostSessionReminderEmailProps) {
   return (
     <Html>
@@ -44,7 +44,7 @@ export default function HostSessionReminderEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -114,7 +114,7 @@ export default function HostSessionReminderEmail({
           <Section style={footer}>
             <Text style={footerText}>
               You&apos;re receiving this because you have an upcoming session at your
-              studio on lcntships.
+              studio on lctnships.
             </Text>
             <Text style={copyright}>
               © {new Date().getFullYear()} LCNTSHIPS STUDIO RENTALS. ALL RIGHTS

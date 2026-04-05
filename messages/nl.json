@@ -38,7 +38,7 @@
     "safety": "Veiligheid",
     "cancellation": "Annulering",
     "followUs": "Volg Ons",
-    "copyright": "lcntships Creative Studio Rental. Alle rechten voorbehouden.",
+    "copyright": "lctnships Creative Studio Rental. Alle rechten voorbehouden.",
     "privacyPolicy": "Privacybeleid",
     "termsConditions": "Algemene Voorwaarden",
     "cookies": "Cookies"
@@ -119,7 +119,7 @@
     "invalidResetLink": "Ongeldige of verlopen herstellink",
     "requestNewLink": "Vraag een nieuwe herstellink aan",
     "allRightsReserved": "Alle rechten voorbehouden.",
-    "copyright": "lcntships creative studio"
+    "copyright": "lctnships creative studio"
   },
   "Home": {
     "heroTitleLine1": "Jouw volgende meesterwerk",
@@ -181,7 +181,7 @@
     "citiesTitle": "Ontdek studio's bij jou in de buurt",
     "citiesSubtitle": "Vind creatieve ruimtes in de grootste steden van Nederland",
     "studioCount": "{count} studio's",
-    "portfolioTitle": "Made with lcntships",
+    "portfolioTitle": "Made with lctnships",
     "portfolioSubtitle": "Werk gemaakt door onze community in onze partnerstudio's",
     "loadingStudios": "Studios laden...",
     "loadingPlaylists": "Playlists laden..."
@@ -194,7 +194,7 @@
     "title": "Alle Studio's",
     "subtitle": "Ontdek creatieve ruimtes in heel Nederland",
     "discover": "Ontdekken",
-    "metaTitle": "Ontdek Studios | lcntships",
+    "metaTitle": "Ontdek Studios | lctnships",
     "metaDescription": "Vind en boek de perfecte creatieve studio voor jouw project",
     "filters": "Filters",
     "sortBy": "Sorteer op",
@@ -258,7 +258,7 @@
     "catDance": "Dans"
   },
   "Blog": {
-    "metaTitle": "Redactioneel | lcntships",
+    "metaTitle": "Redactioneel | lctnships",
     "metaDescription": "Verhalen, inzichten en inspiratie voor creatieve professionals.",
     "featured": "Uitgelicht",
     "readFullStory": "Lees het Volledige Verhaal",
@@ -270,11 +270,11 @@
     "emailPlaceholder": "Jouw e-mailadres",
     "subscribe": "Inschrijven",
     "privacyGuarantee": "Privacy gegarandeerd. Op elk moment uitschrijven.",
-    "articleNotFound": "Artikel Niet Gevonden | lcntships",
+    "articleNotFound": "Artikel Niet Gevonden | lctnships",
     "editorial": "Redactioneel",
     "backToEditorial": "Terug naar Redactioneel",
     "by": "Door",
-    "team": "lcntships Team",
+    "team": "lctnships Team",
     "editorRole": "Redactie",
     "recommendedReading": "Aanbevolen Lectuur",
     "viewAllArticles": "Bekijk Alle Artikelen"
@@ -348,7 +348,7 @@
     "faq": "Veelgestelde vragen"
   },
   "Explore": {
-    "metaTitle": "Ontdek Steden | lcntships",
+    "metaTitle": "Ontdek Steden | lctnships",
     "metaDescription": "Vind de perfecte creatieve ruimte in jouw stad.",
     "heroTitle": "Vind de perfecte ruimte in jouw stad",
     "heroDesc": "Ontdek premium creatieve studio's, productieruimtes en werkplekken voor de moderne creator.",
@@ -446,7 +446,7 @@
     "close": "Sluiten"
   },
   "Cities": {
-    "metaTitle": "Steden | lcntships",
+    "metaTitle": "Steden | lctnships",
     "metaDescription": "Vind de perfecte creatieve ruimte in jouw stad.",
     "heroTitle": "Vind de perfecte ruimte in jouw stad",
     "heroDesc": "Ontdek premium creatieve studio's, productieruimtes en werkplekken samengesteld voor de moderne maker.",
@@ -457,7 +457,7 @@
     "studiosLabel": "Studio's"
   },
   "StudioTypes": {
-    "metaTitle": "Studiotypes | lcntships",
+    "metaTitle": "Studiotypes | lctnships",
     "metaDescription": "Ontdek professionele omgevingen op maat van jouw unieke vak.",
     "heroTitle": "De perfecte ruimte voor elke creatieve visie.",
     "heroDesc": "Ontdek professionele omgevingen op maat van jouw unieke vak, van hoge videostages tot akoestisch behandelde podcastruimtes.",
@@ -469,7 +469,7 @@
     "getInTouch": "Neem Contact Op"
   },
   "Cancellation": {
-    "metaTitle": "Annulerings- & Terugbetalingsbeleid | lcntships",
+    "metaTitle": "Annulerings- & Terugbetalingsbeleid | lctnships",
     "metaDescription": "Duidelijk, transparant annulerings- en terugbetalingsbeleid.",
     "heroTitle": "Flexibele planning voor je creatieve reis",
     "heroDesc": "Duidelijk, transparant beleid ontworpen om vertrouwen op te bouwen en je groei te ondersteunen. Wij balanceren flexibiliteit voor huurders met betrokkenheid voor verhuurders.",
@@ -846,7 +846,7 @@
     "refund": "Terugbetaling"
   },
   "Metadata": {
-    "defaultTitle": "lcntships | Creatieve Studio Verhuur Platform",
+    "defaultTitle": "lctnships | Creatieve Studio Verhuur Platform",
     "defaultDescription": "Het premium platform voor creatievelingen om unieke studioruimtes wereldwijd te vinden en te boeken.",
     "settingsTitle": "Accountinstellingen",
     "privacyTitle": "Privacy & Meldingen",
@@ -897,7 +897,7 @@
     "createFirstProject": "Maak je eerste project"
   },
   "Credits": {
-    "metaTitle": "Strippenkaart | lcntships",
+    "metaTitle": "Strippenkaart | lctnships",
     "metaDescription": "Koop credits en bespaar op je studio boekingen",
     "title": "Strippenkaart",
     "subtitle": "Koop credits vooraf en bespaar tot 40% op je studio boekingen. Credits verlopen nooit.",
@@ -920,7 +920,7 @@
     "faqA4": "Ongebruikte credits kunnen niet worden terugbetaald, maar ze verlopen ook nooit. Je kunt ze altijd later gebruiken."
   },
   "Bookings": {
-    "metaTitle": "My Bookings | lcntships",
+    "metaTitle": "My Bookings | lctnships",
     "title": "Mijn Boekingen",
     "subtitle": "Beheer en volg je studiosessies",
     "bookStudio": "Boek een Studio",
@@ -968,7 +968,7 @@
     "cancelledStatus": "Geannuleerd"
   },
   "BookingDetail": {
-    "metaTitle": "Booking Details | lcntships",
+    "metaTitle": "Booking Details | lctnships",
     "breadcrumbMyBookings": "Mijn Boekingen",
     "breadcrumbBookingNumber": "Boeking #",
     "statusUpcoming": "Aankomend",
@@ -1430,7 +1430,7 @@
     "setRulesDesc": "Je hebt volledige controle over je agenda, uurtarieven en huisregels.",
     "startEarning": "Begin met verdienen",
     "startEarningDesc": "Ontvang veilige betalingen direct op je rekening na elke succesvolle boeking.",
-    "whyLcntships": "Waarom lcntships",
+    "whyLctnships": "Waarom lctnships",
     "commissionTitle": "De laagste commissie in de markt",
     "commissionDescription": "We bieden een van de meest concurrerende commissietarieven, zodat je meer houdt van wat je verdient. Geen verborgen kosten, geen lidmaatschapskosten, alleen groei.",
     "lowCommission": "Lage commissie",

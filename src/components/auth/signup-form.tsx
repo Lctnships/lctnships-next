@@ -98,7 +98,7 @@ export function SignupForm() {
       {/* Logo */}
       <Link href="/" className="flex items-center justify-center gap-2 mb-8">
         <Image src="/icon logo.png" alt="" width={32} height={32} className="h-8 w-8" />
-        <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-8 w-auto" />
+        <Image src="/Lctnships-cropped.png" alt="lctnships" width={140} height={62} className="h-8 w-auto" />
       </Link>
 
       {/* Header */}

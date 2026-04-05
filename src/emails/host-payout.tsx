@@ -36,7 +36,7 @@ export default function HostPayoutEmail({
   netPayout = "$1,360.00",
   paymentMethod = "Bank account ending in 4242",
   estimatedArrival = "November 3, 2023",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: HostPayoutEmailProps) {
   return (
     <Html>
@@ -49,7 +49,7 @@ export default function HostPayoutEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -117,7 +117,7 @@ export default function HostPayoutEmail({
           <Section style={footer}>
             <Text style={footerText}>
               You&apos;re receiving this because you have payouts enabled on
-              lcntships.
+              lctnships.
             </Text>
             <Text style={footerLinks}>
               <Link href={`${baseUrl}/host/payouts`} style={footerLink}>

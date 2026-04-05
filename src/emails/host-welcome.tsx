@@ -21,19 +21,19 @@ interface HostWelcomeEmailProps {
 export default function HostWelcomeEmail({
   hostName = "Jordan",
   studioName = "The Industrial Loft Studio",
-  studioUrl = "https://lcntships.com/studios/the-industrial-loft",
-  baseUrl = "https://lcntships.com",
+  studioUrl = "https://lctnships.com/studios/the-industrial-loft",
+  baseUrl = "https://lctnships.com",
 }: HostWelcomeEmailProps) {
   return (
     <Html>
       <Head />
-      <Preview>Your studio {studioName} is now live on lcntships!</Preview>
+      <Preview>Your studio {studioName} is now live on lctnships!</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -51,7 +51,7 @@ export default function HostWelcomeEmail({
                 {studioName}
               </span>{" "}
               is now published and visible to thousands of creatives on
-              lcntships.
+              lctnships.
             </Text>
 
             {/* Steps */}

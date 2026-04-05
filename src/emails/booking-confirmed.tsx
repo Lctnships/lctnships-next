@@ -29,7 +29,7 @@ export default function BookingConfirmedEmail({
   location = "123 Creative Way, Art District, NY 10001",
   hostName = "Marcus Jensen",
   hostPhone = "+1 (555) 012-3456",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: BookingConfirmedEmailProps) {
   return (
     <Html>
@@ -40,7 +40,7 @@ export default function BookingConfirmedEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -120,7 +120,7 @@ export default function BookingConfirmedEmail({
               {" • "}
               <Link href={`${baseUrl}/unsubscribe`} style={footerLink}>Unsubscribe</Link>
             </Text>
-            <Text style={footerCopyright}>© {new Date().getFullYear()} lcntships Creative Inc.</Text>
+            <Text style={footerCopyright}>© {new Date().getFullYear()} lctnships Creative Inc.</Text>
           </Section>
         </Container>
       </Body>

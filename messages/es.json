@@ -38,7 +38,7 @@
     "safety": "Seguridad",
     "cancellation": "Cancelación",
     "followUs": "Síguenos",
-    "copyright": "lcntships Creative Studio Rental. Todos los derechos reservados.",
+    "copyright": "lctnships Creative Studio Rental. Todos los derechos reservados.",
     "privacyPolicy": "Política de Privacidad",
     "termsConditions": "Términos y Condiciones",
     "cookies": "Cookies"
@@ -119,7 +119,7 @@
     "invalidResetLink": "Enlace de recuperación inválido o expirado",
     "requestNewLink": "Solicita un nuevo enlace de recuperación",
     "allRightsReserved": "Todos los derechos reservados.",
-    "copyright": "lcntships creative studio"
+    "copyright": "lctnships creative studio"
   },
   "Home": {
     "heroTitleLine1": "Tu próxima obra maestra",
@@ -181,7 +181,7 @@
     "citiesTitle": "Descubre estudios cerca de ti",
     "citiesSubtitle": "Encuentra espacios creativos en las ciudades más grandes de los Países Bajos",
     "studioCount": "{count} estudios",
-    "portfolioTitle": "Hecho con lcntships",
+    "portfolioTitle": "Hecho con lctnships",
     "portfolioSubtitle": "Trabajo creado por nuestra comunidad en nuestros estudios asociados",
     "loadingStudios": "Cargando estudios...",
     "loadingPlaylists": "Cargando playlists..."
@@ -194,7 +194,7 @@
     "title": "Todos los Estudios",
     "subtitle": "Descubre espacios creativos en los Países Bajos",
     "discover": "Descubrir",
-    "metaTitle": "Descubre Estudios | lcntships",
+    "metaTitle": "Descubre Estudios | lctnships",
     "metaDescription": "Encuentra y reserva el estudio creativo perfecto para tu proyecto",
     "filters": "Filtros",
     "sortBy": "Ordenar por",
@@ -258,7 +258,7 @@
     "catDance": "Danza"
   },
   "Blog": {
-    "metaTitle": "Editorial | lcntships",
+    "metaTitle": "Editorial | lctnships",
     "metaDescription": "Historias, ideas e inspiración para profesionales creativos.",
     "featured": "Destacado",
     "readFullStory": "Lee la Historia Completa",
@@ -270,17 +270,17 @@
     "emailPlaceholder": "Tu dirección de correo",
     "subscribe": "Suscribirse",
     "privacyGuarantee": "Privacidad garantizada. Cancela en cualquier momento.",
-    "articleNotFound": "Artículo No Encontrado | lcntships",
+    "articleNotFound": "Artículo No Encontrado | lctnships",
     "editorial": "Editorial",
     "backToEditorial": "Volver a Editorial",
     "by": "Por",
-    "team": "Equipo lcntships",
+    "team": "Equipo lctnships",
     "editorRole": "Redacción",
     "recommendedReading": "Lectura Recomendada",
     "viewAllArticles": "Ver Todos los Artículos"
   },
   "Explore": {
-    "metaTitle": "Descubre Ciudades | lcntships",
+    "metaTitle": "Descubre Ciudades | lctnships",
     "metaDescription": "Encuentra el espacio creativo perfecto en tu ciudad.",
     "heroTitle": "Encuentra el espacio perfecto en tu ciudad",
     "heroDesc": "Descubre estudios creativos premium, espacios de producción y lugares de trabajo para el creador moderno.",
@@ -378,7 +378,7 @@
     "close": "Cerrar"
   },
   "Cities": {
-    "metaTitle": "Ciudades | lcntships",
+    "metaTitle": "Ciudades | lctnships",
     "metaDescription": "Encuentra el espacio creativo perfecto en tu ciudad.",
     "heroTitle": "Encuentra el espacio perfecto en tu ciudad",
     "heroDesc": "Descubre estudios creativos premium, espacios de producción y lugares de trabajo seleccionados para el creador moderno.",
@@ -389,7 +389,7 @@
     "studiosLabel": "Estudios"
   },
   "StudioTypes": {
-    "metaTitle": "Tipos de Estudio | lcntships",
+    "metaTitle": "Tipos de Estudio | lctnships",
     "metaDescription": "Descubre entornos profesionales adaptados a tu oficio único.",
     "heroTitle": "El espacio perfecto para cada visión creativa.",
     "heroDesc": "Descubre entornos profesionales adaptados a tu oficio único, desde platós de vídeo de gran altura hasta cabinas de podcast tratadas acústicamente.",
@@ -401,7 +401,7 @@
     "getInTouch": "Contactar"
   },
   "Cancellation": {
-    "metaTitle": "Política de Cancelación y Reembolso | lcntships",
+    "metaTitle": "Política de Cancelación y Reembolso | lctnships",
     "metaDescription": "Política clara y transparente de cancelación y reembolso.",
     "heroTitle": "Planificación flexible para tu viaje creativo",
     "heroDesc": "Políticas claras y transparentes diseñadas para generar confianza y apoyar tu crecimiento. Equilibramos flexibilidad para los que reservan con compromiso para los anfitriones.",
@@ -769,7 +769,7 @@
     "articleIntroSuffix": ". Nuestro equipo ha recopilado las preguntas más frecuentes y guías paso a paso para ayudarte.",
     "gettingStarted": "Primeros Pasos",
     "followSteps": "Sigue estos sencillos pasos para empezar:",
-    "step1": "Inicia sesión en tu cuenta lcntships",
+    "step1": "Inicia sesión en tu cuenta lctnships",
     "step2": "Navega a la sección relevante en tu panel",
     "step3": "Sigue las instrucciones en pantalla",
     "step4": "Contacta con soporte si necesitas ayuda adicional",
@@ -838,7 +838,7 @@
     "refund": "Reembolso"
   },
   "Metadata": {
-    "defaultTitle": "lcntships | Plataforma de Alquiler de Estudios Creativos",
+    "defaultTitle": "lctnships | Plataforma de Alquiler de Estudios Creativos",
     "defaultDescription": "La plataforma premium para creativos para encontrar y reservar espacios de estudio únicos en todo el mundo.",
     "settingsTitle": "Configuración de la Cuenta",
     "privacyTitle": "Privacidad y Notificaciones",
@@ -889,7 +889,7 @@
     "createFirstProject": "Crea tu primer proyecto"
   },
   "Credits": {
-    "metaTitle": "Créditos | lcntships",
+    "metaTitle": "Créditos | lctnships",
     "metaDescription": "Compra créditos y ahorra en tus reservas de estudio",
     "title": "Créditos",
     "subtitle": "Compra créditos por adelantado y ahorra hasta un 40% en tus reservas de estudio. Los créditos nunca caducan.",
@@ -912,7 +912,7 @@
     "faqA4": "Los créditos no utilizados no se pueden reembolsar, pero tampoco caducan. Siempre puedes usarlos más adelante."
   },
   "Bookings": {
-    "metaTitle": "Mis Reservas | lcntships",
+    "metaTitle": "Mis Reservas | lctnships",
     "title": "Mis Reservas",
     "subtitle": "Gestiona y sigue tus sesiones de estudio",
     "bookStudio": "Reservar un Estudio",
@@ -960,7 +960,7 @@
     "cancelledStatus": "Cancelada"
   },
   "BookingDetail": {
-    "metaTitle": "Detalles de Reserva | lcntships",
+    "metaTitle": "Detalles de Reserva | lctnships",
     "breadcrumbMyBookings": "Mis Reservas",
     "breadcrumbBookingNumber": "Reserva #",
     "statusUpcoming": "Próxima",
@@ -1422,7 +1422,7 @@
     "setRulesDesc": "Tienes control total sobre tu calendario, tarifas por hora y reglas del estudio.",
     "startEarning": "Comienza a ganar",
     "startEarningDesc": "Recibe pagos seguros directamente en tu cuenta después de cada reserva exitosa.",
-    "whyLcntships": "Por qué lcntships",
+    "whyLctnships": "Por qué lctnships",
     "commissionTitle": "La comisión más baja del mercado",
     "commissionDescription": "Ofrecemos una de las tarifas de comisión más competitivas, asegurando que guardes más de lo que ganas. Sin tarifas ocultas, sin costos de membresía, solo crecimiento.",
     "lowCommission": "Comisión baja",

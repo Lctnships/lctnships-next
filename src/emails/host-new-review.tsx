@@ -27,7 +27,7 @@ export default function HostNewReviewEmail({
   studioName = "The Industrial Loft Studio",
   rating = 5,
   reviewText = "Absolutely incredible space! The natural light was perfect for our fashion shoot, and the host was super accommodating. The equipment was top-notch and the vibe was exactly what we needed. Will definitely be back!",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: HostNewReviewEmailProps) {
   const stars = "★".repeat(rating) + "☆".repeat(5 - rating)
 
@@ -42,7 +42,7 @@ export default function HostNewReviewEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -101,7 +101,7 @@ export default function HostNewReviewEmail({
           <Section style={footer}>
             <Text style={footerText}>
               You&apos;re receiving this because someone reviewed your studio on
-              lcntships.
+              lctnships.
             </Text>
             <Text style={copyright}>
               © {new Date().getFullYear()} LCNTSHIPS STUDIO RENTALS. ALL RIGHTS

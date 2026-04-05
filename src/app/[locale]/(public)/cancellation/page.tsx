@@ -173,7 +173,7 @@ export default async function CancellationPage() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
             <a
-              href="mailto:support@lcntships.com"
+              href="mailto:support@lctnships.com"
               className="bg-black text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-black/10 hover:brightness-105 transition-all text-sm sm:text-base"
             >
               {t("contactUs")}

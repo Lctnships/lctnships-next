@@ -160,9 +160,9 @@ export default function HelpPage() {
                       <p className="text-xs text-white/60">{t("emailUs")}</p>
                       <a
                         className="text-xs sm:text-sm font-bold hover:underline"
-                        href="mailto:support@lcntships.com"
+                        href="mailto:support@lctnships.com"
                       >
-                        support@lcntships.com
+                        support@lctnships.com
                       </a>
                     </div>
                   </div>

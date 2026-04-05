@@ -15,7 +15,7 @@ export default function DashboardLayout({
         {/* Mobile header - only visible below lg */}
         <div className="lg:hidden flex items-center h-14 border-b px-4 bg-background shrink-0">
           <Link href="/" className="flex items-center">
-            <Image src="/Lctnships-cropped.png" alt="lcntships" width={120} height={53} className="h-7 w-auto" />
+            <Image src="/Lctnships-cropped.png" alt="lctnships" width={120} height={53} className="h-7 w-auto" />
           </Link>
         </div>
         <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-20 lg:pb-8">{children}</main>

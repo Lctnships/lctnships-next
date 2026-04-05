@@ -60,7 +60,7 @@ export function ForgotPasswordForm() {
         <header className="w-full flex justify-center pt-12 pb-6">
           <Link href="/" className="flex items-center gap-2">
             <Image src="/icon logo.png" alt="" width={32} height={32} className="h-8 w-8" />
-            <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-8 w-auto" />
+            <Image src="/Lctnships-cropped.png" alt="lctnships" width={140} height={62} className="h-8 w-auto" />
           </Link>
         </header>
 
@@ -129,7 +129,7 @@ export function ForgotPasswordForm() {
       <header className="w-full flex justify-center pt-12 pb-6">
         <Link href="/" className="flex items-center gap-2">
           <Image src="/icon logo.png" alt="" width={32} height={32} className="h-8 w-8" />
-          <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-8 w-auto" />
+          <Image src="/Lctnships-cropped.png" alt="lctnships" width={140} height={62} className="h-8 w-auto" />
         </Link>
       </header>
 

@@ -54,7 +54,7 @@ export function MobileSidebar() {
         {/* Logo */}
         <div className="flex items-center h-16 px-6 border-b">
           <Link href="/" className="flex items-center" onClick={() => setOpen(false)}>
-            <Image src="/Lctnships-cropped.png" alt="lcntships" width={120} height={53} className="h-7 w-auto" />
+            <Image src="/Lctnships-cropped.png" alt="lctnships" width={120} height={53} className="h-7 w-auto" />
           </Link>
         </div>
 

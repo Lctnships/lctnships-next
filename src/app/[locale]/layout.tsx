@@ -1,9 +1,11 @@
+import type { Metadata } from "next"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, setRequestLocale } from "next-intl/server"
 import { notFound } from "next/navigation"
 import { routing } from "@/i18n/routing"
 import { UserProvider } from "@/components/providers/user-provider"
-import { createClient } from "@/lib/supabase/server"
+import { getUser, getProfile } from "@/lib/auth"
+import { buildAlternateLanguages, localizedPath } from "@/lib/seo"
 import { Toaster } from "@/components/ui/sonner"
 import { SetHtmlLang } from "@/components/providers/set-html-lang"
 
@@ -16,6 +18,17 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  return {
+    alternates: {
+      canonical: localizedPath(locale, "/"),
+      languages: buildAlternateLanguages("/"),
+    },
+    openGraph: { locale },
+  }
+}
+
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params
 
@@ -26,24 +39,13 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   setRequestLocale(locale)
 
-  const supabase = await createClient()
-
-  // Fetch messages and user data in parallel
-  const [messages, { data: { user } }] = await Promise.all([
+  // Fetch everything in parallel. getUser/getProfile are React.cache-wrapped,
+  // so downstream pages that call them again reuse the same promise.
+  const [messages, user, profile] = await Promise.all([
     getMessages(),
-    supabase.auth.getUser(),
+    getUser(),
+    getProfile(),
   ])
-
-  // Fetch profile only if user exists
-  let profile = null
-  if (user) {
-    const { data } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle()
-    profile = data
-  }
 
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>

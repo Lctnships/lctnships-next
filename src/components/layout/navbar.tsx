@@ -32,7 +32,7 @@ export function Navbar() {
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between relative">
         {/* Logo */}
         <Link href="/">
-          <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-8 md:h-9 w-auto" priority />
+          <Image src="/Lctnships-cropped.png" alt="lctnships" width={140} height={62} className="h-8 md:h-9 w-auto" priority />
         </Link>
 
         {/* Desktop Navigation - Absolutely centered (hidden on host dashboard pages) */}
@@ -160,7 +160,7 @@ export function Navbar() {
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                   <Link href="/" onClick={() => setMobileMenuOpen(false)}>
-                    <Image src="/Lctnships-cropped.png" alt="lcntships" width={120} height={53} className="h-7 w-auto" />
+                    <Image src="/Lctnships-cropped.png" alt="lctnships" width={120} height={53} className="h-7 w-auto" />
                   </Link>
                   <SheetClose asChild>
                     <Button variant="ghost" size="icon" className="rounded-full">

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Plus_Jakarta_Sans, Newsreader } from "next/font/google"
+import { SITE_URL, SITE_NAME } from "@/lib/seo"
 import "./globals.css"
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -18,12 +19,47 @@ const newsreader = Newsreader({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "lcntships | Creative Studio Rental Platform",
-    template: "%s | lcntships",
+    default: "lctnships | Creative Studio Rental Platform",
+    template: "%s | lctnships",
   },
   description: "The premium platform for creators to find and book unique studio spaces worldwide.",
-  keywords: ["studio rental", "creative space", "photography studio", "video studio", "podcast studio", "Netherlands"],
+  applicationName: SITE_NAME,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: "lctnships | Creative Studio Rental Platform",
+    description: "The premium platform for creators to find and book unique studio spaces worldwide.",
+    images: [
+      {
+        url: "/Lctnships.png",
+        width: 1200,
+        height: 630,
+        alt: "lctnships — Creative Studio Rental Platform",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "lctnships | Creative Studio Rental Platform",
+    description: "The premium platform for creators to find and book unique studio spaces worldwide.",
+    images: ["/Lctnships.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: "/icon-logo-transparent.png",
+  },
 }
 
 export const viewport: Viewport = {

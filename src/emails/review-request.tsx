@@ -23,7 +23,7 @@ export default function ReviewRequestEmail({
   studioName = "Loft 42",
   studioImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuB1nc2TNQMxDrm2sa-jmxBeLQOqJYHYDQgmDKwxqHKiPiX7Bck70VJSjtwPNJNR-8hEqcW4esAYzX0A9VdoqzoxmzZKUZaRIHqVJRiZgyvqLP23lLzIQ3PL8FYoOlQe9_txe8TCJGdGV5Xcr5ATaOChUtVivhRNEYUOj4H4kPuqJQJ0PPcA4zG_Vbhh7DROKS16E_05LQrcgSMdXkWpRFzfJuntniE6Q_IDhgmG7jVllhkuBn-B2oX920c3ZXuGqZvUsoZ8ei35ua8",
   sessionDate = "Yesterday, 10:00 AM — 4:00 PM",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: ReviewRequestEmailProps) {
   return (
     <Html>
@@ -34,7 +34,7 @@ export default function ReviewRequestEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -87,7 +87,7 @@ export default function ReviewRequestEmail({
           <Section style={footer}>
             <Text style={footerText}>
               You&apos;re receiving this because you booked a session through
-              lcntships.
+              lctnships.
             </Text>
             <Text style={footerLinks}>
               <Link href={`${baseUrl}/unsubscribe`} style={footerLink}>Unsubscribe</Link>

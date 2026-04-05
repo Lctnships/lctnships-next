@@ -9,7 +9,7 @@ export default function NotFound() {
         <Link href="/">
           <Image
             src="/Lctnships-cropped.png"
-            alt="lcntships"
+            alt="lctnships"
             width={140}
             height={62}
             className="h-8 w-auto"
@@ -50,7 +50,7 @@ export default function NotFound() {
       {/* Minimal footer */}
       <footer className="px-6 py-6 text-center">
         <p className="text-[10px] uppercase tracking-[0.2em] text-gray-300 font-bold">
-          &copy; {new Date().getFullYear()} lcntships
+          &copy; {new Date().getFullYear()} lctnships
         </p>
       </footer>
     </div>

@@ -38,7 +38,7 @@
     "safety": "Safety",
     "cancellation": "Cancellation",
     "followUs": "Follow Us",
-    "copyright": "lcntships Creative Studio Rental. All rights reserved.",
+    "copyright": "lctnships Creative Studio Rental. All rights reserved.",
     "privacyPolicy": "Privacy Policy",
     "termsConditions": "Terms & Conditions",
     "cookies": "Cookies"
@@ -119,7 +119,7 @@
     "invalidResetLink": "Invalid or expired reset link",
     "requestNewLink": "Request a new reset link",
     "allRightsReserved": "All rights reserved.",
-    "copyright": "lcntships creative studio"
+    "copyright": "lctnships creative studio"
   },
   "Home": {
     "heroTitleLine1": "Your next masterpiece",
@@ -181,7 +181,7 @@
     "citiesTitle": "Discover studios near you",
     "citiesSubtitle": "Find creative spaces in the biggest cities of the Netherlands",
     "studioCount": "{count} studios",
-    "portfolioTitle": "Made with lcntships",
+    "portfolioTitle": "Made with lctnships",
     "portfolioSubtitle": "Work created by our community in our partner studios",
     "loadingStudios": "Loading studios...",
     "loadingPlaylists": "Loading playlists..."
@@ -194,7 +194,7 @@
     "title": "All Studios",
     "subtitle": "Discover creative spaces across the Netherlands",
     "discover": "Discover",
-    "metaTitle": "Discover Studios | lcntships",
+    "metaTitle": "Discover Studios | lctnships",
     "metaDescription": "Find and book the perfect creative studio for your project",
     "filters": "Filters",
     "sortBy": "Sort by",
@@ -258,7 +258,7 @@
     "catDance": "Dance"
   },
   "Blog": {
-    "metaTitle": "Editorial | lcntships",
+    "metaTitle": "Editorial | lctnships",
     "metaDescription": "Stories, insights and inspiration for creative professionals.",
     "featured": "Featured",
     "readFullStory": "Read the Full Story",
@@ -270,11 +270,11 @@
     "emailPlaceholder": "Your email address",
     "subscribe": "Subscribe",
     "privacyGuarantee": "Privacy guaranteed. Unsubscribe at any time.",
-    "articleNotFound": "Article Not Found | lcntships",
+    "articleNotFound": "Article Not Found | lctnships",
     "editorial": "Editorial",
     "backToEditorial": "Back to Editorial",
     "by": "By",
-    "team": "lcntships Team",
+    "team": "lctnships Team",
     "editorRole": "Editorial",
     "recommendedReading": "Recommended Reading",
     "viewAllArticles": "View All Articles"
@@ -301,7 +301,7 @@
     "articleIntroSuffix": ". Our team has compiled the most frequently asked questions and step-by-step guides to help you.",
     "gettingStarted": "Getting Started",
     "followSteps": "Follow these simple steps to get started:",
-    "step1": "Log in to your lcntships account",
+    "step1": "Log in to your lctnships account",
     "step2": "Navigate to the relevant section in your dashboard",
     "step3": "Follow the on-screen instructions",
     "step4": "Contact support if you need extra help",
@@ -348,7 +348,7 @@
     "faq": "Frequently asked questions"
   },
   "Explore": {
-    "metaTitle": "Discover Cities | lcntships",
+    "metaTitle": "Discover Cities | lctnships",
     "metaDescription": "Find the perfect creative space in your city.",
     "heroTitle": "Find the perfect space in your city",
     "heroDesc": "Discover premium creative studios, production spaces and workplaces for the modern creator.",
@@ -446,7 +446,7 @@
     "close": "Close"
   },
   "Cities": {
-    "metaTitle": "Cities | lcntships",
+    "metaTitle": "Cities | lctnships",
     "metaDescription": "Find the perfect creative space in your city.",
     "heroTitle": "Find the perfect space in your city",
     "heroDesc": "Discover premium creative studios, production spaces and workplaces curated for the modern maker.",
@@ -457,7 +457,7 @@
     "studiosLabel": "Studios"
   },
   "StudioTypes": {
-    "metaTitle": "Studio Types | lcntships",
+    "metaTitle": "Studio Types | lctnships",
     "metaDescription": "Discover professional environments tailored to your unique craft.",
     "heroTitle": "The perfect space for every creative vision.",
     "heroDesc": "Discover professional environments tailored to your unique craft, from tall video stages to acoustically treated podcast rooms.",
@@ -469,7 +469,7 @@
     "getInTouch": "Get in Touch"
   },
   "Cancellation": {
-    "metaTitle": "Cancellation & Refund Policy | lcntships",
+    "metaTitle": "Cancellation & Refund Policy | lctnships",
     "metaDescription": "Clear, transparent cancellation and refund policy.",
     "heroTitle": "Flexible scheduling for your creative journey",
     "heroDesc": "Clear, transparent policy designed to build trust and support your growth. We balance flexibility for renters with commitment for hosts.",
@@ -846,7 +846,7 @@
     "refund": "Refund"
   },
   "Metadata": {
-    "defaultTitle": "lcntships | Creative Studio Rental Platform",
+    "defaultTitle": "lctnships | Creative Studio Rental Platform",
     "defaultDescription": "The premium platform for creatives to find and book unique studio spaces worldwide.",
     "settingsTitle": "Account Settings",
     "privacyTitle": "Privacy & Notifications",
@@ -897,7 +897,7 @@
     "createFirstProject": "Create your first project"
   },
   "Credits": {
-    "metaTitle": "Credits | lcntships",
+    "metaTitle": "Credits | lctnships",
     "metaDescription": "Buy credits and save on your studio bookings",
     "title": "Credits",
     "subtitle": "Buy credits upfront and save up to 40% on your studio bookings. Credits never expire.",
@@ -920,7 +920,7 @@
     "faqA4": "Unused credits cannot be refunded, but they never expire either. You can always use them later."
   },
   "Bookings": {
-    "metaTitle": "My Bookings | lcntships",
+    "metaTitle": "My Bookings | lctnships",
     "title": "My Bookings",
     "subtitle": "Manage and track your studio sessions",
     "bookStudio": "Book a Studio",
@@ -968,7 +968,7 @@
     "cancelledStatus": "Cancelled"
   },
   "BookingDetail": {
-    "metaTitle": "Booking Details | lcntships",
+    "metaTitle": "Booking Details | lctnships",
     "breadcrumbMyBookings": "My Bookings",
     "breadcrumbBookingNumber": "Booking #",
     "statusUpcoming": "Upcoming",
@@ -1430,7 +1430,7 @@
     "setRulesDesc": "You have full control over your calendar, hourly rates, and studio rules.",
     "startEarning": "Start earning",
     "startEarningDesc": "Receive secure payments directly to your account after every successful booking.",
-    "whyLcntships": "Why lcntships",
+    "whyLctnships": "Why lctnships",
     "commissionTitle": "The lowest commission in the market",
     "commissionDescription": "We offer one of the most competitive commission rates, ensuring you keep more of what you earn. No hidden fees, no membership costs, just growth.",
     "lowCommission": "Low commission",

@@ -33,7 +33,7 @@ export default function BookingApprovedEmail({
   hostName = "Alex Host",
   hostAvatar = "https://lh3.googleusercontent.com/aida-public/AB6AXuCxLmp320Qu1TH6Jmbn5N3Jd6oGo86un0O26F9vKo3KeYol4SZEG7Hzy-dd2xN5ktY1VTk0Jxcowpj4RUu4oH7B6_0tYju3i_Qj-nPKvtGccm_iYp6LbnjZyCe5WnMW8Wm4ocNvDK9_sk0FwxoWse2oWuuxTsoIQ7CK-XJ3LRp-99NBoKcChZFJKSHQF0kM2WJIuICQcjjk3GaoxXMK85Haw1i78T4-BP3lxd_4xWlydYzGk9SQ7LqamsxQKMhj97AxGujJzUKQyX4",
   hostMessage = "Can't wait to see what you create! The studio will be prepped with the lighting setup you requested. Let me know if you have any questions before you arrive.",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: BookingApprovedEmailProps) {
   return (
     <Html>
@@ -44,7 +44,7 @@ export default function BookingApprovedEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -116,7 +116,7 @@ export default function BookingApprovedEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerCopyright}>
-              © {new Date().getFullYear()} lcntships Inc. All rights reserved.
+              © {new Date().getFullYear()} lctnships Inc. All rights reserved.
             </Text>
             <Text style={footerLinks}>
               <Link href={`${baseUrl}/notifications`} style={footerLink}>Manage Notifications</Link>

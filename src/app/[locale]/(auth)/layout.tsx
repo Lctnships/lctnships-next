@@ -21,7 +21,7 @@ export default function AuthLayout({
         <div className="absolute bottom-12 left-12 right-12 text-white">
           <div className="flex items-center gap-3 mb-6">
             <Image src="/icon-logo-transparent.png" alt="" width={36} height={36} className="h-9 w-9 invert opacity-90" />
-            <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-8 w-auto invert opacity-90" />
+            <Image src="/Lctnships-cropped.png" alt="lctnships" width={140} height={62} className="h-8 w-auto invert opacity-90" />
           </div>
           <h2 className="text-4xl font-extrabold mb-4">Find your perfect creative space</h2>
           <p className="text-lg text-white/80">Join thousands of creators booking premium studios worldwide.</p>

@@ -32,7 +32,7 @@ export default function BookingCancelledEmail({
   refundPercentage = "100%",
   paymentMethod = "Visa ending in 4242",
   cancellationPolicy = "Since you cancelled more than 48 hours before the start time, you have been issued a full 100% refund. Please allow 3-5 business days for the funds to appear in your account.",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: BookingCancelledEmailProps) {
   return (
     <Html>
@@ -43,7 +43,7 @@ export default function BookingCancelledEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -115,7 +115,7 @@ export default function BookingCancelledEmail({
           <Section style={footer}>
             <Text style={footerText}>
               You are receiving this email because you made a booking on
-              lcntships.com.
+              lctnships.com.
             </Text>
             <Text style={footerLinks}>
               <Link href={`${baseUrl}/privacy`} style={footerLink}>Privacy Policy</Link>

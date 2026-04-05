@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DollarSign, Calendar, Building2, Star, ArrowUpRight } from "lucide-react"
@@ -12,57 +13,56 @@ export const metadata = {
 }
 
 export default async function HostDashboardPage() {
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
   if (!user) redirect("/login")
 
-  // Get studios count
-  const { count: studiosCount } = await supabase
-    .from("studios")
-    .select("*", { count: "exact", head: true })
-    .eq("host_id", user.id)
+  const supabase = await createClient()
+  const nowIso = new Date().toISOString()
 
-  // Get total earnings (completed bookings)
-  const { data: completedBookings } = await supabase
-    .from("bookings")
-    .select("host_payout")
-    .eq("host_id", user.id)
-    .eq("status", "completed")
-    .eq("payment_status", "paid")
+  // Run all dashboard queries in parallel instead of sequentially
+  const [
+    { count: studiosCount },
+    { data: completedBookings },
+    { data: pendingPayouts },
+    { data: upcomingBookings },
+    { data: reviews },
+  ] = await Promise.all([
+    supabase
+      .from("studios")
+      .select("*", { count: "exact", head: true })
+      .eq("host_id", user.id),
+    supabase
+      .from("bookings")
+      .select("host_payout")
+      .eq("host_id", user.id)
+      .eq("status", "completed")
+      .eq("payment_status", "paid"),
+    supabase
+      .from("payouts")
+      .select("amount")
+      .eq("host_id", user.id)
+      .eq("status", "pending"),
+    supabase
+      .from("bookings")
+      .select(`
+        *,
+        studio:studios (title),
+        renter:users!bookings_renter_id_fkey (full_name)
+      `)
+      .eq("host_id", user.id)
+      .gte("start_datetime", nowIso)
+      .in("status", ["confirmed", "pending"])
+      .order("start_datetime")
+      .limit(5),
+    supabase
+      .from("reviews")
+      .select("rating")
+      .eq("reviewee_id", user.id)
+      .eq("review_type", "renter_to_studio"),
+  ])
 
   const totalEarnings = completedBookings?.reduce((sum, b) => sum + b.host_payout, 0) || 0
-
-  // Get pending payouts
-  const { data: pendingPayouts } = await supabase
-    .from("payouts")
-    .select("amount")
-    .eq("host_id", user.id)
-    .eq("status", "pending")
-
   const pendingAmount = pendingPayouts?.reduce((sum, p) => sum + p.amount, 0) || 0
-
-  // Get upcoming bookings
-  const { data: upcomingBookings } = await supabase
-    .from("bookings")
-    .select(`
-      *,
-      studio:studios (title),
-      renter:users!bookings_renter_id_fkey (full_name)
-    `)
-    .eq("host_id", user.id)
-    .gte("start_datetime", new Date().toISOString())
-    .in("status", ["confirmed", "pending"])
-    .order("start_datetime")
-    .limit(5)
-
-  // Get average rating
-  const { data: reviews } = await supabase
-    .from("reviews")
-    .select("rating")
-    .eq("reviewee_id", user.id)
-    .eq("review_type", "renter_to_studio")
-
   const avgRating = reviews?.length
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0

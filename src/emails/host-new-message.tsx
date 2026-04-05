@@ -25,7 +25,7 @@ export default function HostNewMessageEmail({
   senderAvatar = "https://lh3.googleusercontent.com/aida-public/AB6AXuCp1DzLwrm-3wfiUqpNTH2aDqZR_RZ92sd13dknKecSQvInCOOdVSClLYDkdI6eco877EkpCpvuJzFy23KixiUWhwzLqB2-McLCyB0bk31kbDuPxUVgDv7VqbEHHtcBv07-Ak4rHf9RKGPKCOGT6kANEC40nlBCCpOxXMECdCp5ZQfDnaBmq5C2YQuxk8Imp5XBdRNGUuYymsur82P3p_EzUJKoT_AN2KrxbQ3fv4PCFWLXXadG9fr4_5SVLaTOrZt4i-pU84jI-fQ",
   messagePreview = "Hi! I'm interested in renting your studio for a fashion shoot next week. Do you have availability on Thursday afternoon? Also, does the space come with the lighting rigs shown in the photos?",
   studioName = "The Industrial Loft Studio",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: HostNewMessageEmailProps) {
   return (
     <Html>
@@ -38,7 +38,7 @@ export default function HostNewMessageEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -93,7 +93,7 @@ export default function HostNewMessageEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You&apos;re receiving this because you&apos;re a studio host on lcntships.
+              You&apos;re receiving this because you&apos;re a studio host on lctnships.
             </Text>
             <Text style={footerLinks}>
               <Link href={`${baseUrl}/notifications`} style={footerLink}>
@@ -108,7 +108,7 @@ export default function HostNewMessageEmail({
                 Contact Support
               </Link>
             </Text>
-            <Text style={footerCopyright}>lcntships Creative Spaces Inc.</Text>
+            <Text style={footerCopyright}>lctnships Creative Spaces Inc.</Text>
           </Section>
         </Container>
       </Body>

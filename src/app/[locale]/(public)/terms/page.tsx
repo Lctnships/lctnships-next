@@ -2,8 +2,8 @@ import { Link } from "@/i18n/routing"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Algemene Voorwaarden - lcntships",
-  description: "Algemene Voorwaarden van lcntships - het platform voor creatieve studio verhuur",
+  title: "Algemene Voorwaarden - lctnships",
+  description: "Algemene Voorwaarden van lctnships - het platform voor creatieve studio verhuur",
 }
 
 const sections = [
@@ -77,7 +77,7 @@ export default function TermsPage() {
               </p>
               <ul className="space-y-4 text-gray-600 list-none p-0">
                 <li className="flex gap-4">
-                  <span className="font-bold text-black min-w-[80px] sm:min-w-[100px]">lcntships:</span>
+                  <span className="font-bold text-black min-w-[80px] sm:min-w-[100px]">lctnships:</span>
                   <span>Het online platform dat bemiddelt tussen verhuurders van creatieve ruimtes en huurders.</span>
                 </li>
                 <li className="flex gap-4">
@@ -86,7 +86,7 @@ export default function TermsPage() {
                 </li>
                 <li className="flex gap-4">
                   <span className="font-bold text-black min-w-[80px] sm:min-w-[100px]">Huurder:</span>
-                  <span>De natuurlijke persoon of rechtspersoon die een boeking plaatst via lcntships.</span>
+                  <span>De natuurlijke persoon of rechtspersoon die een boeking plaatst via lctnships.</span>
                 </li>
               </ul>
             </section>
@@ -95,7 +95,7 @@ export default function TermsPage() {
             <section className="scroll-mt-24 mb-8 sm:mb-16" id="toepasselijkheid">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">2. Toepasselijkheid</h2>
               <p className="text-gray-600 leading-relaxed">
-                Deze voorwaarden zijn van toepassing op elk aanbod van lcntships en op elke tot stand gekomen overeenkomst tussen lcntships en de gebruiker. Door gebruik te maken van het platform stemt u uitdrukkelijk in met deze voorwaarden.
+                Deze voorwaarden zijn van toepassing op elk aanbod van lctnships en op elke tot stand gekomen overeenkomst tussen lctnships en de gebruiker. Door gebruik te maken van het platform stemt u uitdrukkelijk in met deze voorwaarden.
               </p>
             </section>
 
@@ -125,11 +125,11 @@ export default function TermsPage() {
             <section className="scroll-mt-24 mb-8 sm:mb-16" id="boekingen">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">4. Boekingen & Betalingen</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
-                Een boeking is pas definitief nadat lcntships de betaling heeft ontvangen en de verhuurder de aanvraag heeft bevestigd. Alle prijzen op het platform zijn inclusief BTW, tenzij anders vermeld.
+                Een boeking is pas definitief nadat lctnships de betaling heeft ontvangen en de verhuurder de aanvraag heeft bevestigd. Alle prijzen op het platform zijn inclusief BTW, tenzij anders vermeld.
               </p>
               <div className="border-l-4 border-black pl-6 py-2 my-6">
                 <p className="font-medium italic">
-                  &quot;Wij maken gebruik van beveiligde betalingsproviders om uw transacties te beschermen. lcntships slaat zelf geen creditcardgegevens op.&quot;
+                  &quot;Wij maken gebruik van beveiligde betalingsproviders om uw transacties te beschermen. lctnships slaat zelf geen creditcardgegevens op.&quot;
                 </p>
               </div>
             </section>
@@ -160,7 +160,7 @@ export default function TermsPage() {
             <section className="scroll-mt-24 mb-8 sm:mb-16" id="gebruiksregels">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">6. Gebruiksregels Studio</h2>
               <p className="text-gray-600 leading-relaxed">
-                De huurder verbindt zich ertoe de gehuurde ruimte als een &apos;goed huisvader&apos; te gebruiken. Dit houdt in dat de ruimte in oorspronkelijke staat wordt achtergelaten, apparatuur met zorg wordt behandeld en eventuele schade direct wordt gemeld aan de verhuurder en lcntships.
+                De huurder verbindt zich ertoe de gehuurde ruimte als een &apos;goed huisvader&apos; te gebruiken. Dit houdt in dat de ruimte in oorspronkelijke staat wordt achtergelaten, apparatuur met zorg wordt behandeld en eventuele schade direct wordt gemeld aan de verhuurder en lctnships.
               </p>
             </section>
 
@@ -168,7 +168,7 @@ export default function TermsPage() {
             <section className="scroll-mt-24 mb-8 sm:mb-16" id="aansprakelijkheid">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 border-b border-gray-100 pb-3 sm:pb-4">7. Aansprakelijkheid</h2>
               <p className="text-gray-600 leading-relaxed">
-                lcntships faciliteert enkel het platform en is niet aansprakelijk voor schade ontstaan tijdens het gebruik van een studio, noch voor geschillen tussen huurder en verhuurder. Gebruikers wordt geadviseerd een passende bedrijfsaansprakelijkheidsverzekering af te sluiten.
+                lctnships faciliteert enkel het platform en is niet aansprakelijk voor schade ontstaan tijdens het gebruik van een studio, noch voor geschillen tussen huurder en verhuurder. Gebruikers wordt geadviseerd een passende bedrijfsaansprakelijkheidsverzekering af te sluiten.
               </p>
             </section>
           </div>

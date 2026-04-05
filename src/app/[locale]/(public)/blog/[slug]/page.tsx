@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: BlogArticlePageProps) {
   }
 
   return {
-    title: `${article.title} | lcntships ${t("editorial")}`,
+    title: `${article.title} | lctnships ${t("editorial")}`,
     description: article.excerpt,
     openGraph: {
       title: article.title,

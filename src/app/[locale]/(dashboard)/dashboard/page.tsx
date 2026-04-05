@@ -1,15 +1,10 @@
 import { createClient } from "@/lib/supabase/server"
+import { getUser, getProfile } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Link } from "@/i18n/routing"
 import { formatRelativeDate } from "@/lib/utils/format-date"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { getTranslations } from "next-intl/server"
-
-interface DashboardProfile {
-  id: string
-  full_name?: string
-  [key: string]: unknown
-}
 
 interface DashboardBooking {
   id: string
@@ -34,28 +29,25 @@ export async function generateMetadata() {
 
 export default async function DashboardPage() {
   const t = await getTranslations("Dashboard")
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
   if (!user) redirect("/login")
 
-  // Fetch all data in parallel instead of sequentially
+  const supabase = await createClient()
+  const nowIso = new Date().toISOString()
+
+  // Profile is already cached by layout via getProfile(); all other queries run in parallel.
   const [
-    { data: profileData },
+    profile,
     { data: upcomingBookingsData },
     { data: activeProjectsData },
     { count: favoritesCount },
   ] = await Promise.all([
-    supabase
-      .from("users")
-      .select("*")
-      .eq("id", user.id)
-      .single(),
+    getProfile(),
     supabase
       .from("bookings")
       .select(`*, studio:studios (title, city)`)
       .eq("renter_id", user.id)
-      .gte("start_datetime", new Date().toISOString())
+      .gte("start_datetime", nowIso)
       .in("status", ["confirmed", "pending"])
       .order("start_datetime")
       .limit(3),
@@ -68,11 +60,10 @@ export default async function DashboardPage() {
       .limit(3),
     supabase
       .from("favorites")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true })
       .eq("user_id", user.id),
   ])
 
-  const profile = profileData as DashboardProfile | null
   const upcomingBookings = upcomingBookingsData as DashboardBooking[] | null
   const activeProjects = activeProjectsData as DashboardProject[] | null
 

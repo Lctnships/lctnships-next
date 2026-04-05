@@ -94,7 +94,7 @@ export default function OnboardingLayout({
         <div className="mb-12">
           <Link href="/" className="inline-flex items-center gap-2">
             <Image src="/icon logo.png" alt="" width={28} height={28} className="h-7 w-7" />
-            <Image src="/Lctnships-cropped.png" alt="lcntships" width={140} height={62} className="h-7 w-auto" />
+            <Image src="/Lctnships-cropped.png" alt="lctnships" width={140} height={62} className="h-7 w-auto" />
           </Link>
           <p className="text-xs text-gray-500 font-medium mt-1 ml-9">Host Dashboard</p>
         </div>

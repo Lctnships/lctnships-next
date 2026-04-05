@@ -1,7 +1,7 @@
 import { HeroSection } from "@/components/home/hero-section"
 import { CategoriesSection } from "@/components/home/categories-section"
 import { FeaturedStudios } from "@/components/home/featured-studios"
-import { WhyLcntships } from "@/components/home/why-lcntships"
+import { WhyLctnships } from "@/components/home/why-lctnships"
 import { PortfolioSection } from "@/components/home/portfolio-section"
 import { BecomeHostSection } from "@/components/home/become-host-section"
 import { Suspense } from "react"
@@ -27,7 +27,7 @@ export default function HomePage() {
       <Suspense fallback={<FeaturedStudiosSkeleton />}>
         <FeaturedStudios />
       </Suspense>
-      <WhyLcntships />
+      <WhyLctnships />
       <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="animate-spin h-8 w-8 border-4 border-black border-t-transparent rounded-full" /></div>}>
         <PortfolioSection />
       </Suspense>

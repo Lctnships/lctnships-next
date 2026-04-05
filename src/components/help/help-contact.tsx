@@ -29,8 +29,8 @@ export function HelpContact() {
               </div>
               <div>
                 <p className="text-xs text-white/60">Mail ons op</p>
-                <a href="mailto:support@lcntships.com" className="text-sm font-bold hover:underline">
-                  support@lcntships.com
+                <a href="mailto:support@lctnships.com" className="text-sm font-bold hover:underline">
+                  support@lctnships.com
                 </a>
               </div>
             </div>

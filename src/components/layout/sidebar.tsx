@@ -83,7 +83,7 @@ export function Sidebar() {
         <Link href="/" className="flex items-center">
           <Image
             src="/Lctnships-cropped.png"
-            alt="lcntships"
+            alt="lctnships"
             width={collapsed ? 28 : 120}
             height={collapsed ? 28 : 53}
             className={cn(collapsed ? "h-7 w-7 object-contain" : "h-8 w-auto")}

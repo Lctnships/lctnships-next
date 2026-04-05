@@ -265,7 +265,7 @@ export default async function HelpCategoryPage({ params }: PageProps) {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="mailto:support@lcntships.com"
+              href="mailto:support@lctnships.com"
               className="bg-black text-white font-bold px-8 py-3 rounded-xl hover:bg-gray-800 transition-all shadow-lg shadow-black/20"
             >
               {t("contactUs")}

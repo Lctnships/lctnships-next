@@ -164,7 +164,7 @@ export default async function BecomeHostPage() {
             <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-10">
               <div className="flex flex-col gap-3 sm:gap-4 max-w-xl">
                 <span className="inline-block px-3 sm:px-4 py-1 rounded-full bg-white/20 text-xs sm:text-sm font-semibold w-fit">
-                  {t("whyLcntships")}
+                  {t("whyLctnships")}
                 </span>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight">
                   {t("commissionTitle")}

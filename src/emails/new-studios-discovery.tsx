@@ -35,7 +35,7 @@ export default function NewStudiosDiscoveryEmail({
         "https://lh3.googleusercontent.com/aida-public/AB6AXuARAb8uQitiTP0W7PtnYwvdVB5ff6I38hdkjl4RlgSXpkRij60VVBzQqcpHLab1pvtFlAEytEJdLhZq5w_j_BfceU9l9cSQ4PsRlhiCj3x3uxLFf5VWWRMYjcoiOf8fFN-9NcJuDjmLSkpzIgeb4Fcw0mWD-qjsPGlcakyhPXEITgyk5TOV_FiBrqSNT0v1rshnWU3x-KFRVeWR6l4azuzJYGLtJ4FJgLS4E5Uzo6LHYJqQ-jAZbKZQrpZAbTAxsOkC9I6H7hczGRg",
       description:
         "Incredible floor-to-ceiling windows with north-facing light, perfect for fashion editorials and minimalist lifestyle shoots.",
-      url: "https://lcntships.com/studios/daylight-loft",
+      url: "https://lctnships.com/studios/daylight-loft",
       featured: true,
     },
     {
@@ -44,7 +44,7 @@ export default function NewStudiosDiscoveryEmail({
         "https://lh3.googleusercontent.com/aida-public/AB6AXuAIJVVVJQk0Ex5I1yDohUOpMjhX2OqncOMKj0_46sxbsms9QhIHllWXGrFarYBeh7YVCEJkTX1XUGSsFnK3SecVTTwJ7S75TyDaegfQmcEqFWg_vfq7t38AgZ72Qq4yfy17_m-5S9kwnWiTvmonqEjQQx9Ls4wePFutpEY-kMNizNbM76KB16OpnJvk6KQ4yedRvWO-jnlr1q7EeyEB6i7RRkTfAhDLcnuYxulRC2fHWNVnBu0lbwCpZNwuixT8rrBBMAyMoRTerdc",
       description:
         "Raw concrete textures and exposed brick provide a versatile, gritty backdrop for music videos and urban street photography.",
-      url: "https://lcntships.com/studios/industrial-edge",
+      url: "https://lctnships.com/studios/industrial-edge",
     },
     {
       name: "Minimalist Concrete",
@@ -52,10 +52,10 @@ export default function NewStudiosDiscoveryEmail({
         "https://lh3.googleusercontent.com/aida-public/AB6AXuCYjSG-DemThBYF4rCCHKxWwaJRw3LHIKDkPeAGL6Y1asqwLt4w_9NvzlqzyZFk6Pr8ftCmdHDL4Xy70hMCO6ltsoOPVMrVn5yQ6zbNlQ6qyCkWwB8PlahnGXWWs59jIW_QTV4XLMS-ID9o8iiSWQ3_aRgkVtj8K2sPQfKnSdVZTnhnMas0hvkwfW8KPTgKqekdYmhQ6eiR04ekwBIuKHqOBY1tKi6CaxwJNWHqNjPK6_pG0WgOQvHwLPB5S6uBGsmNFG4u5Jvhk80",
       description:
         "A brutalist masterpiece with geometric shadows and a neutral color palette for high-end product shoots.",
-      url: "https://lcntships.com/studios/minimalist-concrete",
+      url: "https://lctnships.com/studios/minimalist-concrete",
     },
   ],
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: NewStudiosDiscoveryEmailProps) {
   return (
     <Html>
@@ -68,7 +68,7 @@ export default function NewStudiosDiscoveryEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
             <Section style={navLinks}>
               <Link href={`${baseUrl}/explore`} style={navLink}>
@@ -169,7 +169,7 @@ export default function NewStudiosDiscoveryEmail({
               </Link>
             </Section>
             <Text style={copyright}>
-              © {new Date().getFullYear()} lcntships Collective. All rights
+              © {new Date().getFullYear()} lctnships Collective. All rights
               reserved.
             </Text>
           </Section>

@@ -17,19 +17,19 @@ interface PasswordResetEmailProps {
 }
 
 export default function PasswordResetEmail({
-  resetLink = "https://lcntships.com/reset-password?token=xxx",
-  baseUrl = "https://lcntships.com",
+  resetLink = "https://lctnships.com/reset-password?token=xxx",
+  baseUrl = "https://lctnships.com",
 }: PasswordResetEmailProps) {
   return (
     <Html>
       <Head />
-      <Preview>Reset your lcntships password</Preview>
+      <Preview>Reset your lctnships password</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -59,11 +59,11 @@ export default function PasswordResetEmail({
               </tr>
             </table>
 
-            <Heading style={h1}>Reset your lcntships password</Heading>
+            <Heading style={h1}>Reset your lctnships password</Heading>
 
             <Text style={bodyText}>
               Hello, we received a request to reset the password for your
-              lcntships account. Click the button below to choose a new one.
+              lctnships account. Click the button below to choose a new one.
             </Text>
 
             {/* CTA */}
@@ -107,7 +107,7 @@ export default function PasswordResetEmail({
             >
               <tr>
                 <td align="center">
-                  <Text style={teamName}>The lcntships Team</Text>
+                  <Text style={teamName}>The lctnships Team</Text>
                   <Text style={teamSubtext}>
                     Creative Studio Rentals & Management
                   </Text>

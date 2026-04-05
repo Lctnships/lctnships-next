@@ -28,7 +28,7 @@ export default function SessionReminderEmail({
   doorCode = "8842#",
   wifiName = "StudioA_HighSpeed",
   wifiPassword = "create2024",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: SessionReminderEmailProps) {
   return (
     <Html>
@@ -39,7 +39,7 @@ export default function SessionReminderEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -115,7 +115,7 @@ export default function SessionReminderEmail({
           <Section style={footer}>
             <Text style={footerText}>
               You&apos;re receiving this because you have a confirmed booking with
-              lcntships.
+              lctnships.
               <br />
               Need help?{" "}
               <Link href={`${baseUrl}/support`} style={footerLink}>
@@ -123,7 +123,7 @@ export default function SessionReminderEmail({
               </Link>
             </Text>
             <Text style={footerCopyright}>
-              © {new Date().getFullYear()} lcntships Creative Rentals Inc.
+              © {new Date().getFullYear()} lctnships Creative Rentals Inc.
             </Text>
           </Section>
         </Container>

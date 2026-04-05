@@ -38,7 +38,7 @@
     "safety": "Sicherheit",
     "cancellation": "Stornierung",
     "followUs": "Folgen Sie uns",
-    "copyright": "lcntships Creative Studio Rental. Alle Rechte vorbehalten.",
+    "copyright": "lctnships Creative Studio Rental. Alle Rechte vorbehalten.",
     "privacyPolicy": "Datenschutzerklärung",
     "termsConditions": "Allgemeine Geschäftsbedingungen",
     "cookies": "Cookies"
@@ -119,7 +119,7 @@
     "invalidResetLink": "Ungültiger oder abgelaufener Zurücksetzungslink",
     "requestNewLink": "Neuen Zurücksetzungslink anfordern",
     "allRightsReserved": "Alle Rechte vorbehalten.",
-    "copyright": "lcntships creative studio"
+    "copyright": "lctnships creative studio"
   },
   "Home": {
     "heroTitleLine1": "Ihr nächstes Meisterwerk",
@@ -181,7 +181,7 @@
     "citiesTitle": "Studios in Ihrer Nähe entdecken",
     "citiesSubtitle": "Finden Sie kreative Räume in den größten Städten der Niederlande",
     "studioCount": "{count} Studios",
-    "portfolioTitle": "Erstellt mit lcntships",
+    "portfolioTitle": "Erstellt mit lctnships",
     "portfolioSubtitle": "Arbeiten unserer Community in unseren Partnerstudios",
     "loadingStudios": "Studios werden geladen...",
     "loadingPlaylists": "Playlists werden geladen..."
@@ -194,7 +194,7 @@
     "title": "Alle Studios",
     "subtitle": "Entdecken Sie kreative Räume in den Niederlanden",
     "discover": "Entdecken",
-    "metaTitle": "Studios entdecken | lcntships",
+    "metaTitle": "Studios entdecken | lctnships",
     "metaDescription": "Finden und buchen Sie das perfekte kreative Studio für Ihr Projekt",
     "filters": "Filter",
     "sortBy": "Sortieren nach",
@@ -258,7 +258,7 @@
     "catDance": "Tanz"
   },
   "Blog": {
-    "metaTitle": "Redaktion | lcntships",
+    "metaTitle": "Redaktion | lctnships",
     "metaDescription": "Geschichten, Einblicke und Inspiration für kreative Profis.",
     "featured": "Empfohlen",
     "readFullStory": "Die ganze Geschichte lesen",
@@ -270,11 +270,11 @@
     "emailPlaceholder": "Ihre E-Mail-Adresse",
     "subscribe": "Abonnieren",
     "privacyGuarantee": "Datenschutz garantiert. Jederzeit abbestellbar.",
-    "articleNotFound": "Artikel nicht gefunden | lcntships",
+    "articleNotFound": "Artikel nicht gefunden | lctnships",
     "editorial": "Redaktion",
     "backToEditorial": "Zurück zur Redaktion",
     "by": "Von",
-    "team": "lcntships Team",
+    "team": "lctnships Team",
     "editorRole": "Redaktion",
     "recommendedReading": "Empfohlene Lektüre",
     "viewAllArticles": "Alle Artikel anzeigen"
@@ -301,7 +301,7 @@
     "articleIntroSuffix": " wissen müssen. Unser Team hat die häufigsten Fragen und Schritt-für-Schritt-Anleitungen zusammengestellt.",
     "gettingStarted": "Erste Schritte",
     "followSteps": "Folgen Sie diesen einfachen Schritten, um loszulegen:",
-    "step1": "Melden Sie sich bei Ihrem lcntships-Konto an",
+    "step1": "Melden Sie sich bei Ihrem lctnships-Konto an",
     "step2": "Navigieren Sie zum entsprechenden Bereich in Ihrem Dashboard",
     "step3": "Folgen Sie den Anweisungen auf dem Bildschirm",
     "step4": "Kontaktieren Sie den Support, wenn Sie zusätzliche Hilfe benötigen",
@@ -348,7 +348,7 @@
     "faq": "Häufig gestellte Fragen"
   },
   "Explore": {
-    "metaTitle": "Städte entdecken | lcntships",
+    "metaTitle": "Städte entdecken | lctnships",
     "metaDescription": "Finden Sie den perfekten kreativen Raum in Ihrer Stadt.",
     "heroTitle": "Finden Sie den perfekten Raum in Ihrer Stadt",
     "heroDesc": "Entdecken Sie erstklassige kreative Studios, Produktionsräume und Arbeitsplätze für moderne Kreative.",
@@ -446,7 +446,7 @@
     "close": "Schließen"
   },
   "Cities": {
-    "metaTitle": "Städte | lcntships",
+    "metaTitle": "Städte | lctnships",
     "metaDescription": "Finden Sie den perfekten kreativen Raum in Ihrer Stadt.",
     "heroTitle": "Finden Sie den perfekten Raum in Ihrer Stadt",
     "heroDesc": "Entdecken Sie erstklassige kreative Studios, Produktionsräume und Arbeitsplätze, kuratiert für moderne Kreative.",
@@ -457,7 +457,7 @@
     "studiosLabel": "Studios"
   },
   "StudioTypes": {
-    "metaTitle": "Studiotypen | lcntships",
+    "metaTitle": "Studiotypen | lctnships",
     "metaDescription": "Entdecken Sie professionelle Umgebungen, die auf Ihr einzigartiges Handwerk zugeschnitten sind.",
     "heroTitle": "Der perfekte Raum für jede kreative Vision.",
     "heroDesc": "Entdecken Sie professionelle Umgebungen, die auf Ihr einzigartiges Handwerk zugeschnitten sind – von hohen Videobühnen bis hin zu akustisch behandelten Podcast-Räumen.",
@@ -469,7 +469,7 @@
     "getInTouch": "Kontakt aufnehmen"
   },
   "Cancellation": {
-    "metaTitle": "Stornierungs- & Erstattungsrichtlinie | lcntships",
+    "metaTitle": "Stornierungs- & Erstattungsrichtlinie | lctnships",
     "metaDescription": "Klare, transparente Stornierungs- und Erstattungsrichtlinie.",
     "heroTitle": "Flexible Planung für Ihre kreative Reise",
     "heroDesc": "Klare, transparente Richtlinien, die Vertrauen aufbauen und Ihr Wachstum unterstützen. Wir balancieren Flexibilität für Mieter mit Verbindlichkeit für Gastgeber.",
@@ -843,7 +843,7 @@
     "refund": "Erstattung"
   },
   "Metadata": {
-    "defaultTitle": "lcntships | Kreative Studio-Vermietungsplattform",
+    "defaultTitle": "lctnships | Kreative Studio-Vermietungsplattform",
     "defaultDescription": "Die Premium-Plattform für Kreative, um einzigartige Studioräume weltweit zu finden und zu buchen.",
     "settingsTitle": "Kontoeinstellungen",
     "privacyTitle": "Datenschutz & Benachrichtigungen",
@@ -894,7 +894,7 @@
     "createFirstProject": "Erstellen Sie Ihr erstes Projekt"
   },
   "Credits": {
-    "metaTitle": "Guthaben | lcntships",
+    "metaTitle": "Guthaben | lctnships",
     "metaDescription": "Kaufen Sie Guthaben und sparen Sie bei Ihren Studiobuchungen",
     "title": "Guthaben",
     "subtitle": "Kaufen Sie Guthaben im Voraus und sparen Sie bis zu 40% bei Ihren Studiobuchungen. Guthaben verfällt nie.",
@@ -917,7 +917,7 @@
     "faqA4": "Ungenutztes Guthaben kann nicht erstattet werden, verfällt aber auch nie. Sie können es jederzeit später verwenden."
   },
   "Bookings": {
-    "metaTitle": "Meine Buchungen | lcntships",
+    "metaTitle": "Meine Buchungen | lctnships",
     "title": "Meine Buchungen",
     "subtitle": "Verwalten und verfolgen Sie Ihre Studiositzungen",
     "bookStudio": "Studio buchen",
@@ -965,7 +965,7 @@
     "cancelledStatus": "Storniert"
   },
   "BookingDetail": {
-    "metaTitle": "Buchungsdetails | lcntships",
+    "metaTitle": "Buchungsdetails | lctnships",
     "breadcrumbMyBookings": "Meine Buchungen",
     "breadcrumbBookingNumber": "Buchung #",
     "statusUpcoming": "Kommend",
@@ -1427,7 +1427,7 @@
     "setRulesDesc": "Sie haben die volle Kontrolle über Ihren Kalender, Stundensätze und Studioregeln.",
     "startEarning": "Verdienen Sie Geld",
     "startEarningDesc": "Erhalten Sie sichere Zahlungen direkt auf Ihr Konto nach jeder erfolgreichen Buchung.",
-    "whyLcntships": "Warum lcntships",
+    "whyLctnships": "Warum lctnships",
     "commissionTitle": "Die niedrigste Provision auf dem Markt",
     "commissionDescription": "Wir bieten einen der wettbewerbsfähigsten Provisionssätze, damit Sie mehr von Ihren Einnahmen behalten. Keine versteckten Gebühren, keine Mitgliedskosten, nur Wachstum.",
     "lowCommission": "Niedrige Provision",

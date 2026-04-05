@@ -28,7 +28,7 @@ export default function HostCancellationEmail({
   duration = "6 hours",
   refundAmount = "$480.00",
   cancellationReason = "Schedule conflict",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: HostCancellationEmailProps) {
   return (
     <Html>
@@ -41,7 +41,7 @@ export default function HostCancellationEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -101,7 +101,7 @@ export default function HostCancellationEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You&apos;re receiving this because you&apos;re a studio host on lcntships.
+              You&apos;re receiving this because you&apos;re a studio host on lctnships.
             </Text>
             <Text style={copyright}>
               © {new Date().getFullYear()} LCNTSHIPS STUDIO RENTALS. ALL RIGHTS

@@ -31,7 +31,7 @@ export default function HostBookingRequestEmail({
   duration = "6 hours",
   totalAmount = "$480.00",
   renterMessage = "Hi! I'm a fashion photographer looking to shoot a lookbook for a local designer. Love the natural light in your space!",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: HostBookingRequestEmailProps) {
   return (
     <Html>
@@ -44,7 +44,7 @@ export default function HostBookingRequestEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -110,7 +110,7 @@ export default function HostBookingRequestEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              You&apos;re receiving this because you&apos;re a studio host on lcntships.
+              You&apos;re receiving this because you&apos;re a studio host on lctnships.
             </Text>
             <Text style={copyright}>
               © {new Date().getFullYear()} LCNTSHIPS STUDIO RENTALS. ALL RIGHTS

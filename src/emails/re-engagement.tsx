@@ -43,7 +43,7 @@ export default function ReEngagementEmail({
         "https://lh3.googleusercontent.com/aida-public/AB6AXuBH8TxzZos4OQMGjPpLt0H-zvZHtQ6FJHya_Pt3DysOQuHOX5GXLrdahxirtOX5Mxl_WLD6SRprBHVNJZ3Fj0aueXxVoOvngfORcWMJXkMCXZG3vL1rSAlfkYXwX7rPF5yaWlvwhsYvlcn9HdaxiKgLsNpeH-x77UOTB2IHsFjPeaoFsAAV6edjXFkwQcRGbehyIVSa0f-J3oMO3cn2_ZsTD4kKBezNDP_xuTov78OE6SfMm8jPb92moK_GkElbuE74Nl8NvQVfQYk",
       location: "Brooklyn, NY",
       price: "$75/hr",
-      url: "https://lcntships.com/studios/daylight-loft",
+      url: "https://lctnships.com/studios/daylight-loft",
     },
     {
       name: "Aether Industrial",
@@ -51,10 +51,10 @@ export default function ReEngagementEmail({
         "https://lh3.googleusercontent.com/aida-public/AB6AXuCoyTimp6YY4WpkyMgB_OmtVF0InzKaIY88kfm8baPdOW3dXs-ehxLlDM9FLk3csQ_128IMV0rbrWTYeaY5V2KEoEKHqXzgB-jYxNfYFQIQtBVUqO0O0iP2xorTCAMFm3C1yD9lDBkVLEpU23A9THbDqIpKLC4aNt-3Wy-e3TY5GKYZxwJv0jnqz4qOwnW7Lz-zxWm01scaHrCl3yj2pgK0T_KtHgi3DueRuiSs_RDQJkjEt2fyG9eRlyDExnYZzpfyWb_OrJlczuU",
       location: "Long Island City, NY",
       price: "$90/hr",
-      url: "https://lcntships.com/studios/aether-industrial",
+      url: "https://lctnships.com/studios/aether-industrial",
     },
   ],
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: ReEngagementEmailProps) {
   return (
     <Html>
@@ -68,7 +68,7 @@ export default function ReEngagementEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -166,11 +166,11 @@ export default function ReEngagementEmail({
               </Link>
             </Section>
             <Text style={copyright}>
-              © {new Date().getFullYear()} lcntships. Designed for the nomadic
+              © {new Date().getFullYear()} lctnships. Designed for the nomadic
               creator.
             </Text>
             <Text style={footerSmall}>
-              You&apos;re receiving this because you&apos;re a member of the lcntships
+              You&apos;re receiving this because you&apos;re a member of the lctnships
               creative community.{" "}
               <Link href={`${baseUrl}/unsubscribe`} style={unsubLink}>
                 Unsubscribe

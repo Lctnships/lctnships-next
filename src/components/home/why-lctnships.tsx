@@ -6,7 +6,7 @@ const featureKeys = [
   { icon: "camera", titleKey: "whyEquipment", descKey: "whyEquipmentDesc" },
 ] as const
 
-export async function WhyLcntships() {
+export async function WhyLctnships() {
   const t = await getTranslations("Home")
 
   return (

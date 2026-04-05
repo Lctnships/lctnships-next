@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server"
 import { InspirationGallery } from "./inspiration-gallery"
 
 export const metadata = {
-  title: "Inspiratie | lcntships",
+  title: "Inspiratie | lctnships",
 }
 
 // Pinterest-style: varied aspect ratios for masonry effect

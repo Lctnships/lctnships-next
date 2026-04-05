@@ -2,8 +2,8 @@ import { Link } from "@/i18n/routing"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - lcntships",
-  description: "Privacy Policy van lcntships - hoe wij omgaan met uw persoonlijke gegevens",
+  title: "Privacy Policy - lctnships",
+  description: "Privacy Policy van lctnships - hoe wij omgaan met uw persoonlijke gegevens",
 }
 
 const sections = [
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
           <section className="scroll-mt-24" id="introduction">
             <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">1. Introduction</h2>
             <p className="text-gray-600 text-sm sm:text-lg leading-relaxed mb-4 sm:mb-6">
-              At lcntships, we value your privacy and are committed to protecting your personal data. This policy outlines how we handle information when you use our creative studio rental platform. Whether you are a studio owner listing your space or a creative professional looking for your next workspace, we ensure your data is treated with the highest standard of care.
+              At lctnships, we value your privacy and are committed to protecting your personal data. This policy outlines how we handle information when you use our creative studio rental platform. Whether you are a studio owner listing your space or a creative professional looking for your next workspace, we ensure your data is treated with the highest standard of care.
             </p>
             <div className="bg-gray-100 border border-gray-200 rounded-xl p-6 mb-4">
               <div className="flex gap-4 items-start">
@@ -190,7 +190,7 @@ export default function PrivacyPage() {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-3">
                     <span className="material-symbols-outlined text-black">mail</span>
-                    <span className="font-medium">privacy@lcntships.com</span>
+                    <span className="font-medium">privacy@lctnships.com</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="material-symbols-outlined text-black">location_on</span>

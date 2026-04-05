@@ -138,8 +138,8 @@ export const blogArticles: BlogArticle[] = [
   },
   {
     id: "4",
-    slug: "how-lcntships-changing-rental-game",
-    title: "How lcntships is Changing the Rental Game",
+    slug: "how-lctnships-changing-rental-game",
+    title: "How lctnships is Changing the Rental Game",
     excerpt: "A look at how our platform is democratizing access to premium studio spaces.",
     content: `
       <p class="text-xl italic text-primary/80 mb-10 font-medium leading-relaxed">
@@ -148,15 +148,15 @@ export const blogArticles: BlogArticle[] = [
 
       <p>For decades, accessing premium studio space meant navigating a maze of phone calls, deposits, and minimum booking requirements. Independent creators were often priced out entirely, forced to make do with makeshift setups or settle for subpar locations.</p>
 
-      <h2>The lcntships Difference</h2>
+      <h2>The lctnships Difference</h2>
 
-      <p>We built lcntships on a simple premise: beautiful spaces should be accessible to everyone with a creative vision. Our platform connects space owners with creators, streamlining the entire booking process.</p>
+      <p>We built lctnships on a simple premise: beautiful spaces should be accessible to everyone with a creative vision. Our platform connects space owners with creators, streamlining the entire booking process.</p>
 
       <p>No phone tag. No hidden fees. Just beautiful spaces, available when you need them.</p>
 
       <h2>Community First</h2>
 
-      <p>Beyond the transaction, we're building a community. Our creators share tips, collaborate on projects, and support each other's growth. That's the real magic of lcntships.</p>
+      <p>Beyond the transaction, we're building a community. Our creators share tips, collaborate on projects, and support each other's growth. That's the real magic of lctnships.</p>
     `,
     category: "Studio News",
     categorySlug: "studio-news",
@@ -224,7 +224,7 @@ export const blogArticles: BlogArticle[] = [
 
       <h2>The Rise of Hybrid Spaces</h2>
 
-      <p>Modern filmmakers need versatile locations that can transform from corporate boardroom to indie film set. That's exactly what lcntships offers—spaces that adapt to your vision.</p>
+      <p>Modern filmmakers need versatile locations that can transform from corporate boardroom to indie film set. That's exactly what lctnships offers—spaces that adapt to your vision.</p>
     `,
     category: "Interviews",
     categorySlug: "interviews",

@@ -19,12 +19,12 @@ interface WelcomeEmailProps {
 
 export default function WelcomeEmail({
   userName = "there",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: WelcomeEmailProps) {
   return (
     <Html>
       <Head />
-      <Preview>Welcome to lcntships — your creative studio journey starts here</Preview>
+      <Preview>Welcome to lctnships — your creative studio journey starts here</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Header */}
@@ -34,9 +34,9 @@ export default function WelcomeEmail({
                 src={`${baseUrl}/logo.png`}
                 width="32"
                 height="32"
-                alt="lcntships"
+                alt="lctnships"
               />
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
             <Text style={headerLabel}>Welcome Email</Text>
           </Section>
@@ -54,7 +54,7 @@ export default function WelcomeEmail({
 
           {/* Content */}
           <Section style={content}>
-            <Heading style={h1}>Welcome to lcntships, {userName}</Heading>
+            <Heading style={h1}>Welcome to lctnships, {userName}</Heading>
             <Text style={bodyText}>
               We&apos;re thrilled to have you in our community of creators. Your
               journey to finding the perfect space for your next project starts
@@ -120,7 +120,7 @@ export default function WelcomeEmail({
 
           {/* Footer */}
           <Section style={footer}>
-            <Text style={footerCompany}>lcntships Creative Rental Inc.</Text>
+            <Text style={footerCompany}>lctnships Creative Rental Inc.</Text>
             <Text style={footerText}>
               You&apos;re receiving this because you signed up for an account.{" "}
               <Link href={`${baseUrl}/unsubscribe`} style={footerLink}>

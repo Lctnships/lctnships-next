@@ -29,7 +29,7 @@ export default function BookingPendingEmail({
   time = "10:00 AM - 2:00 PM (4h)",
   location = "Brooklyn, NY",
   totalPrice = "$120.00",
-  baseUrl = "https://lcntships.com",
+  baseUrl = "https://lctnships.com",
 }: BookingPendingEmailProps) {
   return (
     <Html>
@@ -40,7 +40,7 @@ export default function BookingPendingEmail({
           {/* Header */}
           <Section style={header}>
             <Link href={baseUrl} style={logoLink}>
-              <span style={logoText}>lcntships</span>
+              <span style={logoText}>lctnships</span>
             </Link>
           </Section>
 
@@ -117,10 +117,10 @@ export default function BookingPendingEmail({
               <Link href={`${baseUrl}/terms`} style={footerLink}>Terms</Link>
             </Text>
             <Text style={footerText}>
-              Questions? Reply to this email or contact support at hello@lcntships.com
+              Questions? Reply to this email or contact support at hello@lctnships.com
             </Text>
             <Text style={footerCopyright}>
-              © {new Date().getFullYear()} lcntships, Inc.
+              © {new Date().getFullYear()} lctnships, Inc.
             </Text>
           </Section>
         </Container>

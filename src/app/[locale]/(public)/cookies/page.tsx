@@ -1,6 +1,6 @@
 export const metadata = {
   title: "Cookiebeleid | lctnships",
-  description: "Lees hoe lcntships cookies en vergelijkbare technologieën gebruikt.",
+  description: "Lees hoe lctnships cookies en vergelijkbare technologieën gebruikt.",
 }
 
 const cookieTypes = [
@@ -30,7 +30,7 @@ const cookieTypes = [
 const cookieTable = [
   {
     name: "lcnt_session",
-    provider: "lcntships",
+    provider: "lctnships",
     purpose: "Behouden van gebruikerssessie",
     expiry: "Sessie",
   },
@@ -42,7 +42,7 @@ const cookieTable = [
   },
   {
     name: "XSRF-TOKEN",
-    provider: "lcntships",
+    provider: "lctnships",
     purpose: "Beveiliging tegen cross-site forgery",
     expiry: "Sessie",
   },
@@ -128,7 +128,7 @@ export default function CookiePolicyPage() {
             <section id="inleiding">
               <h2 className="text-2xl sm:text-3xl font-extrabold pb-3 sm:pb-4 text-[#0d121b]">Inleiding</h2>
               <p className="text-[#4c669a] text-sm sm:text-lg leading-relaxed">
-                Bij lcntships streven we naar volledige transparantie over hoe we uw gegevens
+                Bij lctnships streven we naar volledige transparantie over hoe we uw gegevens
                 gebruiken. Deze pagina legt uit hoe we cookies en vergelijkbare technologieën
                 gebruiken op ons platform om de ultieme studio-boekingservaring te bieden.
               </p>

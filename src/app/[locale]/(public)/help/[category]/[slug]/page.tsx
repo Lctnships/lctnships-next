@@ -138,7 +138,7 @@ export default async function HelpArticlePage({ params }: PageProps) {
                   {t("supportAvailable")}
                 </p>
                 <a
-                  href="mailto:support@lcntships.com"
+                  href="mailto:support@lctnships.com"
                   className="w-full bg-white text-black font-bold py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors"
                 >
                   <span className="material-symbols-outlined">mail</span>

@@ -9,7 +9,7 @@ export default function RootNotFound() {
           <Link href="/">
             <Image
               src="/Lctnships-cropped.png"
-              alt="lcntships"
+              alt="lctnships"
               width={140}
               height={62}
               style={{ height: 32, width: "auto" }}
@@ -35,7 +35,7 @@ export default function RootNotFound() {
         </main>
 
         <footer>
-          <p>&copy; {new Date().getFullYear()} lcntships</p>
+          <p>&copy; {new Date().getFullYear()} lctnships</p>
         </footer>
       </div>
 
