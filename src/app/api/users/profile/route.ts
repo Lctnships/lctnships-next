@@ -68,6 +68,24 @@ export async function PATCH(request: Request) {
       }
     }
 
+    // Validate avatar_url — must be HTTPS pointing to trusted image hosts
+    if (updateData.avatar_url) {
+      try {
+        const avatarUrl = new URL(updateData.avatar_url as string)
+        const trustedHosts = [
+          "lh3.googleusercontent.com",
+          "graph.facebook.com",
+          "avatars.githubusercontent.com",
+          process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname : "",
+        ].filter(Boolean)
+        if (avatarUrl.protocol !== "https:" || !trustedHosts.some(h => avatarUrl.hostname.endsWith(h))) {
+          return NextResponse.json({ error: "Invalid avatar URL" }, { status: 400 })
+        }
+      } catch {
+        return NextResponse.json({ error: "Invalid avatar URL" }, { status: 400 })
+      }
+    }
+
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
         { error: "No valid fields to update" },

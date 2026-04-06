@@ -25,8 +25,8 @@ export async function GET(request: Request, { params }: RouteParams) {
           *,
           studio_images (image_url, is_cover)
         ),
-        host:users!bookings_host_id_fkey (*),
-        renter:users!bookings_renter_id_fkey (*),
+        host:users!bookings_host_id_fkey (id, full_name, avatar_url, email, phone, is_verified, response_rate, bio),
+        renter:users!bookings_renter_id_fkey (id, full_name, avatar_url, email, phone, is_verified, created_at),
         booking_equipment (
           *,
           equipment (*)
