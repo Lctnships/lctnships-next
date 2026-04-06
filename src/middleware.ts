@@ -96,6 +96,11 @@ function checkMemoryRateLimit(key: string, config: { limit: number; windowMs: nu
   return { allowed: true, remaining: config.limit - current.count, reset: current.resetTime }
 }
 
+// Production warning: in-memory rate limiting is ineffective on serverless (resets per cold start)
+if (process.env.NODE_ENV === 'production' && !process.env.UPSTASH_REDIS_REST_URL) {
+  console.warn('[SECURITY] Rate limiting running in-memory mode — ineffective on Vercel serverless. Set UPSTASH_REDIS_REST_URL for production rate limiting.')
+}
+
 // Cleanup old entries every 5 minutes
 if (typeof setInterval !== 'undefined') {
   setInterval(() => {

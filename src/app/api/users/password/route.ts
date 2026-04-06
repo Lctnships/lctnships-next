@@ -30,18 +30,18 @@ export async function POST(request: Request) {
       )
     }
 
-    if (new_password.length < 8) {
+    if (new_password.length < 12) {
       return NextResponse.json(
-        { error: "Password must be at least 8 characters" },
+        { error: "Password must be at least 12 characters" },
         { status: 400 }
       )
     }
 
-    // Require at least one uppercase, one lowercase, and one number
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+    // Require at least one uppercase, one lowercase, one number, and one special character
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{12,}$/
     if (!passwordRegex.test(new_password)) {
       return NextResponse.json(
-        { error: "Password must contain at least one uppercase letter, one lowercase letter, and one number" },
+        { error: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character" },
         { status: 400 }
       )
     }
