@@ -1,16 +1,17 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database.types'
 
-// Admin client with service role - use only in server-side code
+// Admin client with service role - use only in server-side code.
+// Throws at runtime if credentials are missing (never silently fallback to placeholders).
 export function createAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  // Use placeholder values during build if env vars are missing
-  const url = supabaseUrl || 'https://placeholder.supabase.co'
-  const key = serviceRoleKey || 'placeholder-key'
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error("Missing Supabase admin credentials (NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY)")
+  }
 
-  return createClient<Database>(url, key, {
+  return createClient<Database>(supabaseUrl, serviceRoleKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
