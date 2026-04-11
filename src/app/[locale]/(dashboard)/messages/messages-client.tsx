@@ -37,7 +37,7 @@ interface Studio {
   title: string
   image?: string
   images?: string[]
-  studio_images?: { url: string }[]
+  studio_images?: { image_url: string }[]
 }
 
 interface OtherUser {
@@ -226,7 +226,7 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
 
   const getStudioImage = (studio?: Studio) => {
     if (!studio) return ""
-    return studio.image || studio.images?.[0] || studio.studio_images?.[0]?.url || ""
+    return studio.image || studio.images?.[0] || studio.studio_images?.[0]?.image_url || ""
   }
 
   const getBookingTotal = (booking?: Booking | null) => {

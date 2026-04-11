@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server"
 interface ConversationRelation {
   id: string
   updated_at: string
-  studio: { id: string; title: string; images?: string[]; studio_images?: { url: string }[] } | null
+  studio: { id: string; title: string; images?: string[]; studio_images?: { image_url: string }[] } | null
   booking: { id: string; booking_number?: string; start_date?: string; end_date?: string; status: string; total_price?: number } | null
 }
 
@@ -34,7 +34,7 @@ export default async function MessagesPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  // Get conversations for this user
+  // Get 50 most recent conversations for this user
   const { data: participations } = await supabase
     .from("conversation_participants")
     .select(`
@@ -43,16 +43,18 @@ export default async function MessagesPage({
       conversation:conversations (
         id,
         updated_at,
-        studio:studios (id, title, images, studio_images(*)),
+        studio:studios (id, title, images, studio_images(image_url)),
         booking:bookings (id, booking_number, start_date, end_date, status, total_price)
       )
     `)
     .eq("user_id", user.id)
     .order("conversation(updated_at)", { ascending: false })
+    .limit(50)
 
   const conversationIds = (participations || []).map((p) => p.conversation_id)
 
-  // Bulk fetch participants + messages in parallel
+  // Bulk fetch participants + messages in parallel. Cap messages to recent
+  // history so we don't ship thousands of rows for active users.
   const [{ data: allOtherParticipants }, { data: allMessages }] = conversationIds.length > 0
     ? await Promise.all([
         supabase
@@ -65,33 +67,43 @@ export default async function MessagesPage({
           .neq("user_id", user.id),
         supabase
           .from("messages")
-          .select("*")
+          .select("id, conversation_id, content, created_at, sender_id")
           .in("conversation_id", conversationIds)
-          .order("created_at", { ascending: true }),
+          .order("created_at", { ascending: false })
+          .limit(500),
       ])
     : [{ data: [] }, { data: [] }]
 
-  // Combine results in-memory
+  // Build O(1) lookup maps once (avoids O(n²) .find()/.filter() per conversation)
+  const participantByConversation = new Map<string, typeof allOtherParticipants extends (infer U)[] | null ? U : never>()
+  for (const op of allOtherParticipants || []) {
+    if (!participantByConversation.has(op.conversation_id)) {
+      participantByConversation.set(op.conversation_id, op as never)
+    }
+  }
+
+  // Messages are DESC from DB; group then reverse so the client sees ASC
+  const messagesByConversation = new Map<string, MessageRecord[]>()
+  for (const m of (allMessages || []) as MessageRecord[]) {
+    const arr = messagesByConversation.get(m.conversation_id)
+    if (arr) arr.push(m)
+    else messagesByConversation.set(m.conversation_id, [m])
+  }
+  for (const arr of messagesByConversation.values()) arr.reverse()
+
+  // Combine results in-memory with O(1) lookups
   const conversationsWithDetails = (participations || []).map((p) => {
-    const otherParticipant = (allOtherParticipants || []).find(
-      (op) => op.conversation_id === p.conversation_id
-    )
+    const otherParticipant = participantByConversation.get(p.conversation_id) as
+      | { user?: { id: string; full_name: string; avatar_url: string | null } }
+      | undefined
+    const messages = messagesByConversation.get(p.conversation_id) || []
 
-    const messages = (allMessages || []).filter(
-      (m: MessageRecord) => m.conversation_id === p.conversation_id
-    )
-
-    // Get latest message from the already-fetched messages
-    const latestMessage = messages.length > 0
-      ? messages[messages.length - 1]
-      : null
-
-    // Count unread messages in-memory
-    const unreadCount = messages.filter(
-      (m: MessageRecord) =>
-        m.sender_id !== user.id &&
-        m.created_at > (p.last_read_at || "1970-01-01")
-    ).length
+    const latestMessage = messages.length > 0 ? messages[messages.length - 1] : null
+    const lastReadAt = p.last_read_at || "1970-01-01"
+    let unreadCount = 0
+    for (const m of messages) {
+      if (m.sender_id !== user.id && m.created_at > lastReadAt) unreadCount++
+    }
 
     return {
       id: p.conversation_id,
@@ -101,7 +113,7 @@ export default async function MessagesPage({
       latestMessage: latestMessage
         ? { content: latestMessage.content, created_at: latestMessage.created_at, sender_id: latestMessage.sender_id }
         : null,
-      messages: messages || [],
+      messages,
       unreadCount,
     }
   })
