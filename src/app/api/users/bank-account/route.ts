@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 import { encrypt, decrypt, isEncrypted } from "@/lib/encryption"
 import { logger } from "@/lib/logger"
@@ -13,7 +14,9 @@ export async function GET(_request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { data: bankAccount, error } = await supabase
+    // Admin client for bank_* columns — migration 018 revokes from authenticated.
+    const admin = createAdminClient()
+    const { data: bankAccount, error } = await admin
       .from("users")
       .select(`
         bank_account_name,
@@ -91,7 +94,9 @@ export async function POST(request: Request) {
     // Encrypt BIC before storing (if provided)
     const encryptedBic = bic ? encrypt(bic.toUpperCase().trim()) : null
 
-    const { data: bankAccount, error } = await supabase
+    // Admin client for bank column writes — authenticated cannot update them.
+    const admin = createAdminClient()
+    const { data: bankAccount, error } = await admin
       .from("users")
       .update({
         bank_account_name: account_name,
@@ -142,7 +147,8 @@ export async function DELETE(_request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { error } = await supabase
+    const admin = createAdminClient()
+    const { error } = await admin
       .from("users")
       .update({
         bank_account_name: null,

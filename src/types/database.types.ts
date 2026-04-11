@@ -24,6 +24,15 @@ export type Database = {
           onboarding_complete: boolean
           created_at: string
           updated_at: string
+          bank_account_name: string | null
+          bank_iban: string | null
+          bank_bic: string | null
+          is_verified: boolean
+          email_notifications: boolean
+          sms_notifications: boolean
+          push_notifications: boolean
+          marketing_emails: boolean
+          two_factor_enabled: boolean
         }
         Insert: {
           id: string
@@ -39,6 +48,15 @@ export type Database = {
           onboarding_complete?: boolean
           created_at?: string
           updated_at?: string
+          bank_account_name?: string | null
+          bank_iban?: string | null
+          bank_bic?: string | null
+          is_verified?: boolean
+          email_notifications?: boolean
+          sms_notifications?: boolean
+          push_notifications?: boolean
+          marketing_emails?: boolean
+          two_factor_enabled?: boolean
         }
         Update: {
           id?: string
@@ -54,6 +72,15 @@ export type Database = {
           onboarding_complete?: boolean
           created_at?: string
           updated_at?: string
+          bank_account_name?: string | null
+          bank_iban?: string | null
+          bank_bic?: string | null
+          is_verified?: boolean
+          email_notifications?: boolean
+          sms_notifications?: boolean
+          push_notifications?: boolean
+          marketing_emails?: boolean
+          two_factor_enabled?: boolean
         }
         Relationships: []
       }

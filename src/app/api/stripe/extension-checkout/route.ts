@@ -2,6 +2,7 @@ import { SITE_URL } from "@/lib/seo"
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe/config"
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { logger } from "@/lib/logger"
 
 export async function POST(req: Request) {
@@ -10,7 +11,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { booking_id, extension_id, amount } = await req.json()
+    const { booking_id, extension_id } = await req.json()
 
     if (!booking_id || !extension_id) {
       return NextResponse.json({ error: "Missing booking_id or extension_id" }, { status: 400 })
@@ -23,13 +24,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    // Fetch extension WITHOUT sensitive user columns; those go via admin client below.
     const { data: extension, error: extensionError } = await supabase
       .from("booking_extensions")
       .select(`
         *,
         booking:bookings (
-          studio:studios (title, host_id),
-          renter:users!bookings_renter_id_fkey (email, stripe_customer_id)
+          studio:studios (title, host_id)
         )
       `)
       .eq("id", extension_id)
@@ -44,18 +45,32 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    let customerId = extension.booking?.renter?.stripe_customer_id
+    // Admin client for sensitive user reads — migration 018 revokes these
+    // columns from authenticated. Authorization already verified above.
+    const admin = createAdminClient()
 
-    if (!customerId && extension.booking?.renter?.email) {
+    const { data: renter } = await admin
+      .from("users")
+      .select("email, stripe_customer_id")
+      .eq("id", user.id)
+      .single()
+
+    let customerId = renter?.stripe_customer_id
+
+    if (!customerId && renter?.email) {
       const customer = await stripe.customers.create({
-        email: extension.booking.renter.email,
+        email: renter.email,
         metadata: { user_id: extension.renter_id },
       })
       customerId = customer.id
-      await supabase.from("users").update({ stripe_customer_id: customerId }).eq("id", extension.renter_id)
+      await admin.from("users").update({ stripe_customer_id: customerId }).eq("id", extension.renter_id)
     }
 
-    const { data: host } = await supabase.from("users").select("stripe_account_id").eq("id", extension.host_id).single()
+    const { data: host } = await admin
+      .from("users")
+      .select("stripe_account_id")
+      .eq("id", extension.host_id)
+      .single()
 
     const amountInCents = Math.round(extension.total_extension_price * 100)
     const platformFee = Math.round(amountInCents * 0.15)

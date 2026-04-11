@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getStripe, PLATFORM_FEE_PERCENT } from "@/lib/stripe"
 import { createClient, createServiceClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { logger } from "@/lib/logger"
 
 export async function POST(request: NextRequest) {
@@ -31,18 +32,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Get studio details including owner's Stripe account and hourly rate
+    // Get studio details (no users join — host stripe_account_id via admin client).
     const { data: studio, error: studioError } = await supabase
       .from("studios")
       .select(`
         id,
         title,
         host_id,
-        hourly_rate,
-        host:users!studios_host_id_fkey (
-          stripe_account_id,
-          email
-        )
+        hourly_rate
       `)
       .eq("id", studioId)
       .single()
@@ -71,7 +68,16 @@ export async function POST(request: NextRequest) {
     }
 
     const email = user.email
-    const studioOwnerStripeId = (studio.host as { stripe_account_id?: string; email?: string } | null)?.stripe_account_id
+
+    // Fetch host's stripe_account_id via admin client — cross-user read
+    // of a sensitive column that migration 018 blocks from authenticated.
+    const admin = createAdminClient()
+    const { data: studioOwner } = await admin
+      .from("users")
+      .select("stripe_account_id")
+      .eq("id", studio.host_id)
+      .single()
+    const studioOwnerStripeId = studioOwner?.stripe_account_id
 
     // Verify the host's Stripe Connect account is actually able to receive
     // charges before we build the session with transfer_data. If not, we fall

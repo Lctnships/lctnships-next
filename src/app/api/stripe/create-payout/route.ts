@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { stripe } from "@/lib/stripe/config"
 import { NextResponse } from "next/server"
 import { logger } from "@/lib/logger"
@@ -30,8 +31,10 @@ export async function POST(request: Request) {
       )
     }
 
-    // Get user's Stripe account
-    const { data: profile } = await supabase
+    // Get user's Stripe account via admin client — migration 018 blocks
+    // authenticated from reading stripe_account_id.
+    const admin = createAdminClient()
+    const { data: profile } = await admin
       .from("users")
       .select("stripe_account_id")
       .eq("id", user.id)

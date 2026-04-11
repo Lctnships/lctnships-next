@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { getResend } from "@/lib/resend"
 import BookingConfirmedEmail from "@/emails/booking-confirmed"
 import { NextResponse } from "next/server"
@@ -19,14 +20,13 @@ export async function POST(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Get booking and verify host
+    // Get booking and verify host. No users join — sensitive columns
+    // (email, phone) go via admin client below after authorization passes.
     const { data: booking, error: fetchError } = await supabase
       .from("bookings")
       .select(`
         *,
-        studio:studios(title, address, images),
-        renter:users!bookings_renter_id_fkey(full_name, email),
-        host:users!bookings_host_id_fkey(full_name, phone)
+        studio:studios(title, address, images)
       `)
       .eq("id", id)
       .eq("host_id", user.id)
@@ -71,10 +71,23 @@ export async function POST(request: Request, { params }: RouteParams) {
       p_link: `/bookings/${id}`,
     })
 
-    // Send confirmation email to renter
+    // Send confirmation email to renter. Fetch renter + host contact via
+    // admin client — migration 018 blocks these columns from authenticated.
+    const admin = createAdminClient()
+    const [{ data: renter }, { data: host }] = await Promise.all([
+      admin
+        .from("users")
+        .select("full_name, email")
+        .eq("id", booking.renter_id)
+        .single(),
+      admin
+        .from("users")
+        .select("full_name, phone")
+        .eq("id", booking.host_id)
+        .single(),
+    ])
+
     const studio = booking.studio as { title?: string; address?: string; images?: string[] } | null
-    const renter = booking.renter as { full_name?: string; email?: string } | null
-    const host = booking.host as { full_name?: string; phone?: string } | null
 
     const startDate = new Date(booking.start_datetime)
     const endDate = new Date(booking.end_datetime)
@@ -95,19 +108,21 @@ export async function POST(request: Request, { params }: RouteParams) {
       ? studio.images[0]
       : undefined
 
-    await getResend().emails.send({
-      from: "lctnships <noreply@lctnships.com>",
-      to: renter?.email,
-      subject: `Your session at ${studio?.title} is confirmed!`,
-      react: BookingConfirmedEmail({
-        studioName: studio?.title,
-        studioImage,
-        dateTime: dateTimeStr,
-        location: studio?.address,
-        hostName: host?.full_name,
-        hostPhone: host?.phone,
-      }),
-    })
+    if (renter?.email) {
+      await getResend().emails.send({
+        from: "lctnships <noreply@lctnships.com>",
+        to: renter.email,
+        subject: `Your session at ${studio?.title} is confirmed!`,
+        react: BookingConfirmedEmail({
+          studioName: studio?.title,
+          studioImage,
+          dateTime: dateTimeStr,
+          location: studio?.address,
+          hostName: host?.full_name ?? undefined,
+          hostPhone: host?.phone ?? undefined,
+        }),
+      })
+    }
 
     return NextResponse.json({
       message: "Booking confirmed successfully",

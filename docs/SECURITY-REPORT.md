@@ -15,9 +15,35 @@ production Supabase state was queried directly via the Management API
 rather than relying on local migration files, which had drifted from
 reality.
 
-**Findings:** 5 CRITICAL + 7 HIGH + 14 MEDIUM. All remediated in three
-phases committed separately for review: `783fab6` (P0), `746947d` (P1),
-`37dc504` (P2). Migrations `011`, `012`, and `013` applied to production.
+**Findings:** 5 CRITICAL + 7 HIGH + 14 MEDIUM + 5 LOW + Phase D (column
+grants). All remediated across four phases committed separately for
+review: `783fab6` (P0), `746947d` (P1), `37dc504` (P2), and the Phase D
+closeout commit. Migrations `011`, `012`, `013`, `016`, `017`, and `018`
+applied to production.
+
+## 2026-04-11 closeout — Phase D + LOW findings
+
+After the initial P0/P1/P2 fixes, the remaining LOW findings and the
+deferred Phase D (authenticated column REVOKE on `users`) were closed:
+
+| Fix | What | Location |
+|---|---|---|
+| **L5** | Reschedule route accepted new datetimes without recalculating `total_amount`/`host_payout`, allowing a renter to reschedule a 1-hour booking to 10 hours at the 1-hour price. Now requires new duration to match the original (enforced with 1-minute rounding tolerance). | `api/bookings/[id]/reschedule/route.ts` |
+| **L3** | `cancel` route refund amount was calculated from `booking.total_amount` (DB), not the actual Stripe charge. Rounding drift could trigger `amount_too_large` refund errors. Now retrieves PaymentIntent + latest_charge, computes refund from `amount_received`, and caps at `amount_received − already_refunded`. | `api/bookings/[id]/cancel/route.ts` |
+| **L2** | `create-connect-account` race condition could leave orphan Stripe accounts on concurrent double-clicks. Migration 016 adds `UNIQUE INDEX` on `users.stripe_account_id` (NULL-aware). Route uses atomic conditional UPDATE (`WHERE stripe_account_id IS NULL`); losing request deletes its orphan via `stripe.accounts.del()`. | migration 016 + `api/stripe/create-connect-account/route.ts` |
+| **L4** | Two separate Stripe client initializations (`lib/stripe.ts` and `lib/stripe/config.ts`) risked divergence in API version / config. The config module is now a thin back-compat re-export over the `getStripe()` singleton — there is exactly one `new Stripe()` call in the codebase. | `lib/stripe/config.ts` |
+| **L1** | Storage bucket INSERT policy on `storage.objects` required only `auth.role() = 'authenticated'` — an authenticated user could upload objects into another user's folder (avatar hijack). Migration 017 replaces it with a policy that enforces `(storage.foldername(name))[1] = auth.uid()::text`, matching the existing UPDATE/DELETE policies. | migration 017 |
+| **Phase D** | The authenticated role could still `GET /rest/v1/users?select=phone,stripe_account_id,bank_iban` and harvest every user's PII. Migration 011 had only closed anon; authenticated was deferred pending migration of 12 server files from user-scoped to admin client. Phase D completes that migration: `stripe/balance`, `stripe/connect`, `stripe/create-connect-account`, `stripe/create-payout`, `stripe/create-checkout`, `stripe/checkout`, `stripe/extension-checkout`, `bookings/[id]`, `bookings/[id]/confirm`, `payouts`, `users/bank-account`, `users/settings`, `host/payouts/page.tsx`, `host/bookings/[id]/page.tsx`, `host/settings/security/page.tsx`, `dashboard/settings/security/page.tsx`. Migration 018 then `REVOKE`s table-level SELECT/UPDATE/INSERT from `authenticated` and re-grants only the 9 safe public-profile columns. | migration 018 + 16 server files |
+
+**Verified post-closeout via live production:**
+
+- `GET /rest/v1/users?select=stripe_account_id` (anon) → `permission denied for table users`
+- `GET /rest/v1/users?select=phone` (anon) → `permission denied for table users`
+- `GET /rest/v1/users?select=id,full_name` (anon) → returns rows correctly
+- Column grants on authenticated role verified to contain only 9 safe columns (`id`, `full_name`, `avatar_url`, `bio`, `location`, `user_type`, `is_verified`, `created_at`, `updated_at`)
+
+**Status:** The 2026-04-11 assessment cycle is fully closed. Zero remaining
+open findings across all severity levels.
 
 **Verified against live production via PostgREST:**
 

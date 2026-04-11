@@ -1,5 +1,7 @@
 import { createServiceClient } from "@/lib/supabase/server"
 import { NextRequest, NextResponse } from "next/server"
+import { getResend } from "@/lib/resend"
+import { ExtensionReminderEmail } from "@/emails/extension-reminder"
 import { logger } from "@/lib/logger"
 
 export const runtime = "nodejs"
@@ -65,7 +67,7 @@ export async function POST(request: NextRequest) {
         .gte("created_at", new Date(now.getTime() - 35 * 60 * 1000).toISOString())
         .single()
 
-      if (minutesUntilEnd <= 30 && minutesUntilEnd > 10 && !existingNotification) {
+       if (minutesUntilEnd <= 30 && minutesUntilEnd > 10 && !existingNotification) {
         await supabase.from("notifications").insert({
           user_id: booking.renter_id,
           type: "extension_reminder_30",
@@ -73,6 +75,33 @@ export async function POST(request: NextRequest) {
           message: `Je sessie bij ${(booking.studio as { title?: string })?.title || 'de studio'} eindigt over 30 minuten. Wil je verlengen?`,
           link: `/bookings/${booking.id}/extend`,
         })
+        
+        // Send email reminder
+        try {
+          const { data: renterData } = await supabase
+            .from("users")
+            .select("email, full_name")
+            .eq("id", booking.renter_id)
+            .single()
+            
+          if (renterData?.email) {
+            const resend = getResend()
+            await resend.emails.send({
+              from: "Lctnships <notifications@lctnships.com>",
+              to: renterData.email,
+              subject: "Je sessie eindigt binnenkort - Verleng nu!",
+              react: ExtensionReminderEmail({
+                studioName: (booking.studio as { title?: string })?.title || "Onbekende studio",
+                renterName: renterData.full_name || "Gebruiker",
+                minutesLeft: 30,
+                extendLink: `${process.env.NEXT_PUBLIC_SITE_URL}/bookings/${booking.id}/extend`
+              })
+            })
+          }
+        } catch (emailError) {
+          logger.error("Failed to send extension reminder email", emailError)
+        }
+        
         notificationsSent++
         logger.info("Sent 30-min extension reminder", { bookingId: booking.id })
       }
@@ -95,6 +124,33 @@ export async function POST(request: NextRequest) {
             message: `Nog 10 minuten! Verleng je sessie bij ${(booking.studio as { title?: string })?.title || 'de studio'} nu.`,
             link: `/bookings/${booking.id}/extend`,
           })
+          
+          // Send email reminder for 10-minute warning
+          try {
+            const { data: renterData } = await supabase
+              .from("users")
+              .select("email, full_name")
+              .eq("id", booking.renter_id)
+              .single()
+              
+            if (renterData?.email) {
+              const resend = getResend()
+              await resend.emails.send({
+                from: "Lctnships <notifications@lctnships.com>",
+                to: renterData.email,
+                subject: "Laatste kans! Je sessie eindigt bijna - Verleng nu!",
+                react: ExtensionReminderEmail({
+                  studioName: (booking.studio as { title?: string })?.title || "Onbekende studio",
+                  renterName: renterData.full_name || "Gebruiker",
+                  minutesLeft: 10,
+                  extendLink: `${process.env.NEXT_PUBLIC_SITE_URL}/bookings/${booking.id}/extend`
+                })
+              })
+            }
+          } catch (emailError) {
+            logger.error("Failed to send 10-min extension reminder email", emailError)
+          }
+          
           notificationsSent++
           logger.info("Sent 10-min extension reminder", { bookingId: booking.id })
         }

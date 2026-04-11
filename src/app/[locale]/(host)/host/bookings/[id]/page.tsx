@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect, notFound } from "next/navigation"
 import { BookingDetailClient } from "./booking-detail-client"
 
@@ -17,13 +18,13 @@ export default async function BookingDetailPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  // Try to get real booking
+  // Try to get real booking. Renter contact details fetched separately
+  // via admin client — migration 018 blocks email/phone from authenticated.
   const { data: booking } = await supabase
     .from("bookings")
     .select(`
       *,
-      studio:studios (id, title, location, images, studio_images(*)),
-      renter:users!bookings_renter_id_fkey (id, full_name, avatar_url, email, phone, created_at, is_verified)
+      studio:studios (id, title, location, images, studio_images(*))
     `)
     .eq("id", id)
     .eq("host_id", user.id)
@@ -33,6 +34,15 @@ export default async function BookingDetailPage({
     notFound()
   }
 
+  const admin = createAdminClient()
+  const { data: renter } = await admin
+    .from("users")
+    .select("id, full_name, avatar_url, email, phone, created_at, is_verified")
+    .eq("id", booking.renter_id)
+    .single()
+
+  const bookingWithRenter = { ...booking, renter }
+
   // Get renter stats
   let renterStats = {
     totalBookings: 0,
@@ -41,22 +51,22 @@ export default async function BookingDetailPage({
     responseTime: "-",
   }
 
-  if (booking.renter) {
+  if (renter) {
     const { count: bookingsCount } = await supabase
       .from("bookings")
       .select("*", { count: "exact", head: true })
-      .eq("renter_id", booking.renter.id)
+      .eq("renter_id", renter.id)
       .eq("status", "completed")
 
     const { data: reviews } = await supabase
       .from("reviews")
       .select("rating")
-      .eq("reviewee_id", booking.renter.id)
+      .eq("reviewee_id", renter.id)
 
     const { count: cancelledCount } = await supabase
       .from("bookings")
       .select("*", { count: "exact", head: true })
-      .eq("renter_id", booking.renter.id)
+      .eq("renter_id", renter.id)
       .eq("status", "cancelled")
 
     const avgRating = reviews?.length
@@ -81,7 +91,7 @@ export default async function BookingDetailPage({
   return (
     <BookingDetailClient
       booking={{
-        ...booking,
+        ...bookingWithRenter,
         studio: {
           ...booking.studio,
           images: studioImages,

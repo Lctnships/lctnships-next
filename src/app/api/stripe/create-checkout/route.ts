@@ -2,6 +2,7 @@ import { SITE_URL } from "@/lib/seo"
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe/config"
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { logger } from "@/lib/logger"
 
 export async function POST(req: Request) {
@@ -20,13 +21,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Get booking details
+    // Get booking details. No users join — sensitive user columns go via
+    // the admin client below after we verify the caller owns the booking.
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .select(`
         *,
-        studio:studios (title, host_id, hourly_rate, price_per_hour),
-        renter:users!bookings_renter_id_fkey (email, stripe_customer_id)
+        studio:studios (title, host_id, hourly_rate, price_per_hour)
       `)
       .eq("id", bookingId)
       .single()
@@ -40,31 +41,44 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Forbidden: you are not the renter of this booking" }, { status: 403 })
     }
 
-    // Get or create Stripe customer
-    let customerId = booking.renter?.stripe_customer_id
+    // Admin client for sensitive user columns (stripe_customer_id, email,
+    // stripe_account_id) — migration 018 revokes these from authenticated.
+    const admin = createAdminClient()
+
+    // Get or create Stripe customer for the renter
+    const { data: renter } = await admin
+      .from("users")
+      .select("email, stripe_customer_id")
+      .eq("id", user.id)
+      .single()
+
+    let customerId = renter?.stripe_customer_id
 
     if (!customerId) {
       const customer = await stripe.customers.create({
-        email: booking.renter?.email,
+        email: renter?.email ?? undefined,
         metadata: {
           user_id: booking.renter_id,
         },
       })
       customerId = customer.id
 
-      // Save customer ID to user
-      await supabase
+      // Save customer ID back via admin client
+      await admin
         .from("users")
         .update({ stripe_customer_id: customerId })
         .eq("id", booking.renter_id)
     }
 
-    // Get host's Stripe account for Connect
-    const { data: host } = await supabase
-      .from("users")
-      .select("stripe_account_id")
-      .eq("id", booking.studio?.host_id)
-      .single()
+    // Get host's Stripe account for Connect (admin client — cross-user read)
+    const hostId = (booking.studio as { host_id?: string } | null)?.host_id
+    const { data: host } = hostId
+      ? await admin
+          .from("users")
+          .select("stripe_account_id")
+          .eq("id", hostId)
+          .single()
+      : { data: null as { stripe_account_id: string | null } | null }
 
     // Server-side price recalculation — never trust DB amount (renter could PATCH via Supabase REST)
     const hourlyRate = booking.studio?.hourly_rate || booking.studio?.price_per_hour || 0

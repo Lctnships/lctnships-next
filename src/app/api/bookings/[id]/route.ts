@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 import { logger } from "@/lib/logger"
 
@@ -22,6 +23,10 @@ export async function GET(request: Request, { params }: RouteParams) {
     // access_instructions to the renter before the booking is confirmed
     // and paid. Those sensitive fields belong on a dedicated endpoint that
     // checks payment_status === 'paid' first.
+    //
+    // Renter + host user details (email, phone) come from a separate admin
+    // query below after authorization passes — migration 018 blocks
+    // authenticated from reading those columns directly.
     const { data: booking, error } = await supabase
       .from("bookings")
       .select(`
@@ -48,8 +53,6 @@ export async function GET(request: Request, { params }: RouteParams) {
           is_published,
           studio_images (image_url, is_cover)
         ),
-        host:users!bookings_host_id_fkey (id, full_name, avatar_url, email, phone, is_verified, bio),
-        renter:users!bookings_renter_id_fkey (id, full_name, avatar_url, email, phone, is_verified, created_at),
         booking_equipment (
           id,
           quantity,
@@ -67,7 +70,25 @@ export async function GET(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 })
     }
 
-    return NextResponse.json({ booking })
+    // Fetch counterparty contact details via admin client — user is either
+    // renter or host of this booking, so they may legitimately see both.
+    const admin = createAdminClient()
+    const [{ data: host }, { data: renter }] = await Promise.all([
+      admin
+        .from("users")
+        .select("id, full_name, avatar_url, email, phone, is_verified, bio")
+        .eq("id", booking.host_id)
+        .single(),
+      admin
+        .from("users")
+        .select("id, full_name, avatar_url, email, phone, is_verified, created_at")
+        .eq("id", booking.renter_id)
+        .single(),
+    ])
+
+    return NextResponse.json({
+      booking: { ...booking, host, renter },
+    })
   } catch (error: unknown) {
     logger.error("Error fetching booking", error)
     return NextResponse.json(

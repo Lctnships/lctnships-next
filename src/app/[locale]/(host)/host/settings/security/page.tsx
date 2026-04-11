@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 import { SecuritySettingsClient } from "@/app/[locale]/(dashboard)/settings/security/security-settings-client"
 import { getTranslations } from "next-intl/server"
@@ -14,8 +15,9 @@ export default async function HostSecuritySettingsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  // Get two_factor_enabled from users table
-  const { data: userData } = await supabase
+  // Admin client for two_factor_enabled — migration 018 blocks it from authenticated.
+  const admin = createAdminClient()
+  const { data: userData } = await admin
     .from("users")
     .select("two_factor_enabled")
     .eq("id", user.id)

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 import { logger } from "@/lib/logger"
 
@@ -12,7 +13,9 @@ export async function GET(_request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { data: settings, error } = await supabase
+    // Admin client for notification/security prefs — authenticated cannot SELECT these.
+    const admin = createAdminClient()
+    const { data: settings, error } = await admin
       .from("users")
       .select(`
         email_notifications,
@@ -74,7 +77,9 @@ export async function PATCH(request: Request) {
 
     updateData.updated_at = new Date().toISOString()
 
-    const { error } = await supabase
+    // Admin client writes the updated settings.
+    const admin = createAdminClient()
+    const { error } = await admin
       .from("users")
       .update(updateData)
       .eq("id", user.id)
@@ -82,7 +87,7 @@ export async function PATCH(request: Request) {
     if (error) throw error
 
     // Fetch updated settings separately to avoid .single() coercion issues
-    const { data: settings, error: fetchError } = await supabase
+    const { data: settings, error: fetchError } = await admin
       .from("users")
       .select(`
         email_notifications,

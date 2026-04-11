@@ -2,6 +2,7 @@ import { SITE_URL } from "@/lib/seo"
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe/config"
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { logger } from "@/lib/logger"
 
 export async function POST() {
@@ -17,8 +18,10 @@ export async function POST() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Get user profile
-    const { data: profile } = await supabase
+    // Admin client for sensitive user fields — migration 018 blocks
+    // authenticated from reading email/stripe_account_id directly.
+    const admin = createAdminClient()
+    const { data: profile } = await admin
       .from("users")
       .select("email, stripe_account_id")
       .eq("id", user.id)
@@ -53,12 +56,11 @@ export async function POST() {
       },
     })
 
-    // Atomic link: only write stripe_account_id if it is still NULL. If a
-    // concurrent request already linked a different account, this UPDATE
-    // returns zero rows and we delete the orphan account we just created.
-    // Migration 016 enforces a UNIQUE constraint on stripe_account_id as
-    // a second line of defense.
-    const { data: claimed, error: claimError } = await supabase
+    // Atomic link via admin client: only write stripe_account_id if it is
+    // still NULL. If a concurrent request already linked a different account,
+    // this UPDATE returns zero rows and we delete the orphan we just created.
+    // Migration 016 adds a UNIQUE constraint as second line of defense.
+    const { data: claimed, error: claimError } = await admin
       .from("users")
       .update({
         stripe_account_id: account.id,
@@ -85,7 +87,7 @@ export async function POST() {
       }
 
       // Re-read the account we lost the race to and return onboarding link
-      const { data: existingProfile } = await supabase
+      const { data: existingProfile } = await admin
         .from("users")
         .select("stripe_account_id")
         .eq("id", user.id)

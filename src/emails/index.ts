@@ -22,3 +22,5 @@ export { default as HostNewMessageEmail } from "./host-new-message"
 // Marketing emails
 export { default as NewStudiosDiscoveryEmail } from "./new-studios-discovery"
 export { default as ReEngagementEmail } from "./re-engagement"
+
+export { ExtensionReminderEmail } from "./extension-reminder"

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { stripe } from "@/lib/stripe/config"
 import { NextResponse } from "next/server"
 import { logger } from "@/lib/logger"
@@ -20,7 +21,11 @@ export async function GET(_request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { data: profile } = await supabase
+    // Use admin client to read stripe_account_id — migration 018 revokes
+    // this column from authenticated role. Authorization already verified
+    // via getUser() above, so admin read is scoped to the session user.
+    const admin = createAdminClient()
+    const { data: profile } = await admin
       .from("users")
       .select("stripe_account_id")
       .eq("id", user.id)

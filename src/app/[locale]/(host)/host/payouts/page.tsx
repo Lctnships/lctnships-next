@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 import { PayoutsClient } from "./payouts-client"
 
@@ -13,8 +14,10 @@ export default async function PayoutsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  // Get user's payout settings
-  const { data: profile } = await supabase
+  // Admin client for sensitive bank / stripe fields — migration 018 blocks
+  // authenticated from reading these. Authorization already verified above.
+  const admin = createAdminClient()
+  const { data: profile } = await admin
     .from("users")
     .select("stripe_account_id, bank_account_name, bank_iban, bank_bic")
     .eq("id", user.id)

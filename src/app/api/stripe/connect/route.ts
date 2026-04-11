@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/lib/seo"
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { stripe } from "@/lib/stripe/config"
 import { NextResponse } from "next/server"
 import { logger } from "@/lib/logger"
@@ -21,8 +22,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Get user profile
-    const { data: profile } = await supabase
+    // Admin client for sensitive user fields (stripe_account_id, email).
+    // Authorization already verified via getUser() above.
+    const admin = createAdminClient()
+    const { data: profile } = await admin
       .from("users")
       .select("stripe_account_id, full_name, email")
       .eq("id", user.id)
@@ -48,8 +51,8 @@ export async function POST(request: Request) {
 
       accountId = account.id
 
-      // Save account ID to user profile
-      await supabase
+      // Save account ID via admin client (authenticated cannot write stripe_account_id)
+      await admin
         .from("users")
         .update({ stripe_account_id: accountId })
         .eq("id", user.id)
@@ -118,7 +121,8 @@ export async function GET(_request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { data: profile } = await supabase
+    const admin = createAdminClient()
+    const { data: profile } = await admin
       .from("users")
       .select("stripe_account_id")
       .eq("id", user.id)

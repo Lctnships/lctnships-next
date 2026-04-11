@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 import { logger } from "@/lib/logger"
 
@@ -89,8 +90,10 @@ export async function POST(_request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Check if user has bank details
-    const { data: userDetails } = await supabase
+    // Check if user has bank details via admin client — migration 018 blocks
+    // authenticated from reading bank_iban / stripe_account_id.
+    const admin = createAdminClient()
+    const { data: userDetails } = await admin
       .from("users")
       .select("bank_iban, stripe_account_id")
       .eq("id", user.id)
