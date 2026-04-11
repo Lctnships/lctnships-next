@@ -84,13 +84,64 @@ export async function POST(request: Request, { params }: RouteParams) {
     const body = await request.json()
     const { ical_url } = body
 
-    if (!ical_url) {
+    if (!ical_url || typeof ical_url !== "string") {
       return NextResponse.json({ error: "iCal URL is required" }, { status: 400 })
     }
 
-    // Validate URL
-    if (!ical_url.startsWith("http://") && !ical_url.startsWith("https://")) {
+    // SSRF protection: restrict the fetched URL to HTTPS + trusted Wix hosts.
+    // Without this guard an authenticated host could submit any URL (including
+    // http://169.254.169.254/ for AWS metadata, localhost services, or private
+    // network addresses) and the server would fetch it with its trusted
+    // network context. We only allow Wix-owned domains that serve iCal feeds.
+    const TRUSTED_ICAL_HOSTS = [
+      "wix.com",
+      "wixapps.net",
+      "wixsite.com",
+      "wixstatic.com",
+      "parastorage.com",
+    ]
+    let parsedUrl: URL
+    try {
+      parsedUrl = new URL(ical_url)
+    } catch {
       return NextResponse.json({ error: "Invalid URL format" }, { status: 400 })
+    }
+
+    if (parsedUrl.protocol !== "https:") {
+      return NextResponse.json(
+        { error: "URL must use HTTPS" },
+        { status: 400 }
+      )
+    }
+
+    const hostname = parsedUrl.hostname.toLowerCase()
+    const isTrustedHost = TRUSTED_ICAL_HOSTS.some(
+      (h) => hostname === h || hostname.endsWith(`.${h}`)
+    )
+    if (!isTrustedHost) {
+      return NextResponse.json(
+        { error: "URL must point to a supported Wix calendar host" },
+        { status: 400 }
+      )
+    }
+
+    // Belt-and-braces: block private/loopback/link-local even if DNS resolves
+    // a "trusted" hostname to an internal IP (DNS rebinding mitigation).
+    if (
+      hostname === "localhost" ||
+      hostname === "0.0.0.0" ||
+      hostname.startsWith("127.") ||
+      hostname.startsWith("10.") ||
+      hostname.startsWith("192.168.") ||
+      hostname.startsWith("169.254.") ||
+      /^172\.(1[6-9]|2\d|3[01])\./.test(hostname) ||
+      hostname === "::1" ||
+      hostname.startsWith("fe80:")
+    ) {
+      return NextResponse.json(
+        { error: "URL must point to a public host" },
+        { status: 400 }
+      )
     }
 
     // Fetch the iCal feed
@@ -100,6 +151,9 @@ export async function POST(request: Request, { params }: RouteParams) {
         headers: {
           "User-Agent": "LCTNSHIPS/1.0",
         },
+        // Cap the fetch time so a slow attacker-controlled endpoint can't
+        // tie up server resources.
+        signal: AbortSignal.timeout(10_000),
       })
 
       if (!response.ok) {
