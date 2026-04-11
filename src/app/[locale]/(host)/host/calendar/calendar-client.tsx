@@ -27,6 +27,7 @@ interface Studio {
   location?: string
   image?: string
   images?: string[]
+  wix_calendar_url?: string | null
 }
 
 interface PendingPayout {
@@ -68,6 +69,11 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
   const [showSyncDialog, setShowSyncDialog] = useState(false)
   const [copied, setCopied] = useState(false)
 
+  // Wix calendar state
+  const [wixUrl, setWixUrl] = useState("")
+  const [wixConnected, setWixConnected] = useState(false)
+  const [wixLoading, setWixLoading] = useState(false)
+
   const icalUrl = typeof window !== "undefined"
     ? `${window.location.origin}/api/calendar/ical/${studio.id}`
     : ""
@@ -88,6 +94,11 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
   useEffect(() => {
     fetchBlockedDates()
   }, [fetchBlockedDates])
+
+  // Initialize Wix connection state from studio prop
+  useEffect(() => {
+    setWixConnected(!!studio.wix_calendar_url)
+  }, [studio.wix_calendar_url])
 
   const handleBlockDates = async () => {
     if (!blockStartDate) return
@@ -567,12 +578,81 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
             >
-              <span className="material-symbols-outlined text-black">open_in_new</span>
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
+                <path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0zm-1.5 18.5h3V10.5h-3v8zm-1.5-9h3c1.105 0 2 .895 2 2v5h-3v-1.5h-1.5v-1.5h.5V10.5zm4.5 4.5h1.5v1.5h-1.5V14z" fill="#4285F4"/>
+              </svg>
               <div>
                 <p className="font-bold text-sm">{t("googleCalendarTitle")}</p>
                 <p className="text-xs text-gray-500">{t("googleCalendarDesc")}</p>
               </div>
             </a>
+
+            {/* Wix Calendar Import */}
+            <div className="p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-3 mb-3">
+                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
+                  <rect x="3" y="3" width="18" height="18" rx="2" stroke="#000" strokeWidth="1.5"/>
+                  <path d="M7 8h4M7 12h10M7 16h6" stroke="#000" strokeWidth="1.5"/>
+                </svg>
+                <div>
+                  <p className="font-bold text-sm">{t("wixCalendarTitle")}</p>
+                  <p className="text-xs text-gray-500">{t("wixCalendarDesc")}</p>
+                </div>
+              </div>
+              {wixConnected ? (
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-green-600">check_circle</span>
+                    <span className="text-sm font-medium text-green-700">{t("wixConnected")}</span>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      const res = await fetch(`/api/calendar/import/${studio.id}`, { method: "DELETE" })
+                      if (res.ok) setWixConnected(false)
+                    }}
+                    className="text-xs text-red-600 hover:text-red-700 font-medium"
+                  >
+                    {t("disconnectWix")}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <input
+                    type="url"
+                    value={wixUrl}
+                    onChange={(e) => setWixUrl(e.target.value)}
+                    placeholder={t("wixCalendarUrlPlaceholder")}
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-xs"
+                  />
+                  <p className="text-xs text-gray-500">{t("wixCalendarInstructions")}</p>
+                  <button
+                    onClick={async () => {
+                      if (!wixUrl) return
+                      setWixLoading(true)
+                      try {
+                        const res = await fetch(`/api/calendar/import/${studio.id}`, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ ical_url: wixUrl })
+                        })
+                        if (res.ok) {
+                          setWixConnected(true)
+                          setWixUrl("")
+                        }
+                      } catch (err) {
+                        console.error("Failed to connect Wix calendar:", err)
+                      } finally {
+                        setWixLoading(false)
+                      }
+                    }}
+                    disabled={!wixUrl || wixLoading}
+                    className="w-full px-4 py-2 rounded-lg bg-black text-white text-xs font-bold hover:bg-black/90 transition-colors disabled:opacity-50"
+                  >
+                    {wixLoading ? "..." : t("connectWixCalendar")}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <DialogFooter>
             <button
