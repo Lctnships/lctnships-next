@@ -119,6 +119,40 @@ export async function POST(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "No events found in iCal feed" }, { status: 400 })
     }
 
+    // Delete existing Wix-sourced blocked dates for this studio
+    await supabase
+      .from("studio_blocked_dates")
+      .delete()
+      .eq("studio_id", studioId)
+      .like("reason", "Wix:%")
+
+    // Convert iCal events to blocked dates
+    const now = new Date()
+    const wixBlockedDates: { studio_id: string; blocked_date: string; reason: string }[] = []
+
+    for (const event of events) {
+      // Only block dates in the future or very recent past (within 7 days)
+      if (event.start >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)) {
+        const dateStr = event.start.toISOString().split("T")[0]
+        wixBlockedDates.push({
+          studio_id: studioId,
+          blocked_date: dateStr,
+          reason: `Wix: ${event.summary}`
+        })
+      }
+    }
+
+    // Insert new blocked dates (batch insert)
+    if (wixBlockedDates.length > 0) {
+      const { error: insertError } = await supabase
+        .from("studio_blocked_dates")
+        .upsert(wixBlockedDates, { onConflict: "studio_id,blocked_date" })
+
+      if (insertError) {
+        logger.error("Failed to insert blocked dates", insertError)
+      }
+    }
+
     // Save the URL to the studio
     await supabase
       .from("studios")
@@ -127,8 +161,8 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({
       success: true,
-      message: `Connected! Found ${events.length} events in your calendar.`,
-      eventCount: events.length
+      message: `Connected! ${wixBlockedDates.length} datums geblokkeerd vanuit je Wix agenda.`,
+      blockedDatesCount: wixBlockedDates.length
     })
 
   } catch (error) {
@@ -156,6 +190,13 @@ export async function DELETE(request: Request, { params }: RouteParams) {
     if (!studio || studio.host_id !== user.id) {
       return NextResponse.json({ error: "Studio not found or unauthorized" }, { status: 404 })
     }
+
+    // Delete Wix-sourced blocked dates when disconnecting
+    await supabase
+      .from("studio_blocked_dates")
+      .delete()
+      .eq("studio_id", studioId)
+      .like("reason", "Wix:%")
 
     await supabase
       .from("studios")
