@@ -114,22 +114,57 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     // Issue #1 + #2 — Stripe refund MUST succeed before we touch the DB.
     // reverse_application_fee: true returns our 15% Connect fee to the renter too.
+    //
+    // Source-of-truth for the refund ceiling is the PaymentIntent, NOT our
+    // booking.total_amount in the DB. The DB value may have been written
+    // from a client-side calculation that drifted by a few cents, which
+    // would cause Stripe to reject the refund as "amount_too_large". We
+    // retrieve the PaymentIntent, compute the refund based on the actual
+    // amount_received, and cap at what can still be refunded (accounting
+    // for any prior partial refunds).
+    let actualRefundAmountCents = Math.round(refundAmount * 100)
     if (booking.payment_status === "paid" && booking.stripe_payment_id && refundAmount > 0) {
       if (!stripe) {
         logger.error("Stripe not configured, cannot process refund", { bookingId: id })
         return NextResponse.json({ error: "Payment system unavailable" }, { status: 503 })
       }
       try {
-        await stripe.refunds.create({
-          payment_intent: booking.stripe_payment_id,
-          amount: Math.round(refundAmount * 100),
-          refund_application_fee: true,
-          metadata: {
-            booking_id: id,
-            cancelled_by: isHost ? "host" : "renter",
-            cancelled_by_user_id: user.id,
-          },
-        })
+        const paymentIntent = await stripe.paymentIntents.retrieve(
+          booking.stripe_payment_id,
+          { expand: ["latest_charge"] },
+        )
+        const amountReceived = paymentIntent.amount_received || 0
+        const latestCharge = paymentIntent.latest_charge
+        const alreadyRefunded =
+          latestCharge && typeof latestCharge === "object" && "amount_refunded" in latestCharge
+            ? (latestCharge.amount_refunded as number) || 0
+            : 0
+        const refundableCents = amountReceived - alreadyRefunded
+
+        // Recompute the refund from the Stripe charge so policy math applies
+        // to what the renter actually paid, not what we said they paid.
+        const policyPctRefundCents = Math.round((amountReceived * refundPercentage) / 100)
+        actualRefundAmountCents = Math.min(policyPctRefundCents, refundableCents)
+
+        if (actualRefundAmountCents <= 0) {
+          logger.warn("Cancel flow computed non-positive refund after Stripe reconciliation", {
+            bookingId: id,
+            policyPctRefundCents,
+            refundableCents,
+            amountReceived,
+          })
+        } else {
+          await stripe.refunds.create({
+            payment_intent: booking.stripe_payment_id,
+            amount: actualRefundAmountCents,
+            refund_application_fee: true,
+            metadata: {
+              booking_id: id,
+              cancelled_by: isHost ? "host" : "renter",
+              cancelled_by_user_id: user.id,
+            },
+          })
+        }
       } catch (stripeError: unknown) {
         logger.error("Stripe refund failed — booking NOT cancelled", {
           bookingId: id,

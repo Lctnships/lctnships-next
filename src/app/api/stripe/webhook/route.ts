@@ -162,6 +162,71 @@ export async function POST(request: NextRequest) {
           logger.info("Payment received without booking", { sessionId: session.id })
         }
       }
+      // Handle extension payment
+      else if (paymentType === "extension_payment" && session.metadata?.extension_id) {
+        const extensionId = session.metadata.extension_id
+        const bookingId = session.metadata.booking_id
+
+        try {
+          await supabase
+            .from("booking_extensions")
+            .update({
+              payment_status: "paid",
+              stripe_payment_id: session.payment_intent as string,
+            })
+            .eq("id", extensionId)
+
+          const { data: extension } = await supabase
+            .from("booking_extensions")
+            .select("booking_id, extra_hours, total_extension_price, host_payout, host_id, studio_id")
+            .eq("id", extensionId)
+            .single()
+
+          if (extension && bookingId) {
+            const { data: originalBooking } = await supabase
+              .from("bookings")
+              .select("end_datetime, original_end_datetime, total_hours")
+              .eq("id", extension.booking_id)
+              .single()
+
+            const currentEnd = new Date(originalBooking?.end_datetime || new Date())
+            const newEnd = new Date(currentEnd.getTime() + extension.extra_hours * 60 * 60 * 1000)
+
+            await supabase
+              .from("bookings")
+              .update({
+                end_datetime: newEnd.toISOString(),
+                total_hours: extension.extra_hours + (originalBooking?.total_hours || 0),
+              })
+              .eq("id", extension.booking_id)
+
+            await supabase.from("transactions").insert({
+              booking_id: extension.booking_id,
+              type: "extension_payment",
+              amount: extension.total_extension_price,
+              platform_fee: extension.total_extension_price - extension.host_payout,
+              status: "completed",
+              stripe_session_id: session.id,
+              description: `Session extension: +${extension.extra_hours} hours`,
+            })
+
+            const { data: studio } = await supabase.from("studios").select("title").eq("id", extension.studio_id).single()
+            const { data: renter } = await supabase.from("users").select("full_name").eq("id", session.metadata?.user_id).single()
+
+            await supabase.from("notifications").insert({
+              user_id: extension.host_id,
+              type: "booking_extension",
+              title: "Sessie verlengd",
+              message: `${renter?.full_name || 'Een huurder'} heeft de sessie verlengd met ${extension.extra_hours} uur`,
+              link: `/host/bookings/${extension.booking_id}`,
+            })
+
+            logger.info("Extension payment processed", { extensionId, bookingId })
+          }
+        } catch (error) {
+          logger.error("Failed to process extension payment", error)
+        }
+      }
       break
     }
 

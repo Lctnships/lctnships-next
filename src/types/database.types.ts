@@ -82,6 +82,9 @@ export type Database = {
           avg_rating: number
           total_reviews: number
           total_bookings: number
+          allow_extensions: boolean
+          max_extension_hours: number | null
+          extension_premium_rate: number | null
           created_at: string
           updated_at: string
         }
@@ -109,6 +112,9 @@ export type Database = {
           avg_rating?: number
           total_reviews?: number
           total_bookings?: number
+          allow_extensions?: boolean
+          max_extension_hours?: number | null
+          extension_premium_rate?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -136,6 +142,9 @@ export type Database = {
           avg_rating?: number
           total_reviews?: number
           total_bookings?: number
+          allow_extensions?: boolean
+          max_extension_hours?: number | null
+          extension_premium_rate?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -256,6 +265,7 @@ export type Database = {
           cancelled_by: string | null
           cancelled_at: string | null
           notes: string | null
+          original_end_datetime: string | null
           created_at: string
           updated_at: string
         }
@@ -280,6 +290,7 @@ export type Database = {
           cancelled_by?: string | null
           cancelled_at?: string | null
           notes?: string | null
+          original_end_datetime?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -306,6 +317,96 @@ export type Database = {
           notes?: string | null
           created_at?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      booking_extensions: {
+        Row: {
+          id: string
+          booking_id: string
+          renter_id: string
+          host_id: string
+          studio_id: string
+          extra_hours: number
+          studio_extension_price: number
+          equipment_extension_price: number
+          total_extension_price: number
+          commission_amount: number
+          host_payout: number
+          payment_status: 'pending' | 'paid' | 'failed'
+          stripe_payment_id: string | null
+          status: 'active' | 'cancelled'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          booking_id: string
+          renter_id: string
+          host_id: string
+          studio_id: string
+          extra_hours: number
+          studio_extension_price: number
+          equipment_extension_price?: number
+          total_extension_price: number
+          commission_amount: number
+          host_payout: number
+          payment_status?: 'pending' | 'paid' | 'failed'
+          stripe_payment_id?: string | null
+          status?: 'active' | 'cancelled'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          booking_id?: string
+          renter_id?: string
+          host_id?: string
+          studio_id?: string
+          extra_hours?: number
+          studio_extension_price?: number
+          equipment_extension_price?: number
+          total_extension_price?: number
+          commission_amount?: number
+          host_payout?: number
+          payment_status?: 'pending' | 'paid' | 'failed'
+          stripe_payment_id?: string | null
+          status?: 'active' | 'cancelled'
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      booking_extension_items: {
+        Row: {
+          id: string
+          extension_id: string
+          equipment_id: string
+          equipment_name: string
+          price_per_hour: number
+          hours: number
+          subtotal: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          extension_id: string
+          equipment_id: string
+          equipment_name: string
+          price_per_hour: number
+          hours: number
+          subtotal: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          extension_id?: string
+          equipment_id?: string
+          equipment_name?: string
+          price_per_hour?: number
+          hours?: number
+          subtotal?: number
+          created_at?: string
         }
         Relationships: []
       }

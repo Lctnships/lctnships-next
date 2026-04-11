@@ -78,20 +78,42 @@ export async function POST(request: Request, { params }: RouteParams) {
       )
     }
 
-    // Calculate new duration
+    // Calculate new duration and enforce it matches the original booking.
+    // Allowing a different duration without recalculating total_amount,
+    // service_fee, and host_payout lets a renter reschedule a 1-hour booking
+    // to 10 hours at the 1-hour price. Duration changes require a charge or
+    // refund flow, which is a separate feature — we reject them here.
     const newStart = new Date(new_start_datetime)
     const newEnd = new Date(new_end_datetime)
-    const totalHours = (newEnd.getTime() - newStart.getTime()) / (1000 * 60 * 60)
+    const newTotalHours = (newEnd.getTime() - newStart.getTime()) / (1000 * 60 * 60)
 
-    // Update booking
+    if (newTotalHours <= 0) {
+      return NextResponse.json(
+        { error: "New end time must be after new start time" },
+        { status: 400 }
+      )
+    }
+
+    // Allow a small rounding tolerance (1 minute) on the duration match.
+    const durationDiffHours = Math.abs(newTotalHours - (booking.total_hours || 0))
+    if (durationDiffHours > 1 / 60) {
+      return NextResponse.json(
+        {
+          error:
+            "Reschedule must keep the same duration. Duration changes are not supported yet — cancel and create a new booking instead.",
+        },
+        { status: 400 }
+      )
+    }
+
+    // Update only datetime fields; total_hours is preserved (already equal).
+    // Financial columns (total_amount, service_fee, host_payout) stay untouched
+    // which matches the enforced same-duration constraint above.
     const { data: updatedBooking, error: updateError } = await supabase
       .from("bookings")
       .update({
         start_datetime: new_start_datetime,
         end_datetime: new_end_datetime,
-        total_hours: totalHours,
-        original_start_datetime: booking.original_start_datetime || booking.start_datetime,
-        original_end_datetime: booking.original_end_datetime || booking.end_datetime,
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)

@@ -53,14 +53,59 @@ export async function POST() {
       },
     })
 
-    // Save account ID to user
-    await supabase
+    // Atomic link: only write stripe_account_id if it is still NULL. If a
+    // concurrent request already linked a different account, this UPDATE
+    // returns zero rows and we delete the orphan account we just created.
+    // Migration 016 enforces a UNIQUE constraint on stripe_account_id as
+    // a second line of defense.
+    const { data: claimed, error: claimError } = await supabase
       .from("users")
       .update({
         stripe_account_id: account.id,
-        user_type: "both", // Upgrade to host
+        user_type: "both",
       })
       .eq("id", user.id)
+      .is("stripe_account_id", null)
+      .select("stripe_account_id")
+      .single()
+
+    if (claimError || !claimed) {
+      // Another request already linked an account. Clean up the orphan.
+      try {
+        await stripe.accounts.del(account.id)
+        logger.warn("Deleted orphan Stripe account from lost race", {
+          userId: user.id,
+          orphanAccountId: account.id,
+        })
+      } catch (deleteErr) {
+        logger.error("Failed to delete orphan Stripe account", {
+          orphanAccountId: account.id,
+          error: deleteErr,
+        })
+      }
+
+      // Re-read the account we lost the race to and return onboarding link
+      const { data: existingProfile } = await supabase
+        .from("users")
+        .select("stripe_account_id")
+        .eq("id", user.id)
+        .single()
+
+      if (!existingProfile?.stripe_account_id) {
+        return NextResponse.json(
+          { error: "Could not link Stripe account. Please try again." },
+          { status: 500 },
+        )
+      }
+
+      const accountLink = await stripe.accountLinks.create({
+        account: existingProfile.stripe_account_id,
+        refresh_url: `${SITE_URL}/host/dashboard?stripe=refresh`,
+        return_url: `${SITE_URL}/host/dashboard?stripe=success`,
+        type: "account_onboarding",
+      })
+      return NextResponse.json({ url: accountLink.url })
+    }
 
     // Create account link
     const accountLink = await stripe.accountLinks.create({

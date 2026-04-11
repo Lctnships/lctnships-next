@@ -54,7 +54,9 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
 
   const startDate = new Date(booking.start_datetime)
   const endDate = new Date(booking.end_datetime)
-  const isUpcoming = startDate > new Date()
+  const now = new Date()
+  const isUpcoming = startDate > now
+  const isOngoing = startDate <= now && endDate > now && booking.status === 'confirmed'
 
   const formattedDate = startDate.toLocaleDateString(dateLocale, {
     weekday: "long",
@@ -272,6 +274,15 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
                   <span className="material-symbols-outlined text-sm">schedule</span>
                   {t("rescheduleSession")}
                 </button>
+              )}
+              {isOngoing && (
+                <Link
+                  href={`/bookings/${booking.id}/extend`}
+                  className="w-full flex items-center justify-center gap-2 bg-[#0f49bd] text-white px-8 py-4 rounded-xl font-bold hover:opacity-90 transition-all"
+                >
+                  <span className="material-symbols-outlined">add_circle</span>
+                  {t("extendSession") || " Verleng sessie"}
+                </Link>
               )}
             </div>
           </div>

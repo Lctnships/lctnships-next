@@ -32,6 +32,12 @@ interface StudioImage {
   order_index: number
 }
 
+interface BookingBlock {
+  duration_hours: number
+  price: number
+  sort_order: number
+}
+
 interface Studio {
   id: string
   title: string
@@ -49,6 +55,11 @@ interface Studio {
   is_instant_book: boolean | null
   cancellation_policy: string | null
   studio_images: StudioImage[]
+  booking_mode?: 'flexible' | 'fixed_blocks'
+  booking_blocks?: BookingBlock[]
+  allow_extensions?: boolean
+  max_extension_hours?: number | null
+  extension_premium_rate?: number | null
 }
 
 export function StudioEditClient({ studio }: { studio: Studio }) {
@@ -72,6 +83,13 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
   const [isPublished, setIsPublished] = useState(studio.is_published ?? false)
   const [isInstantBook, setIsInstantBook] = useState(studio.is_instant_book ?? false)
   const [cancellationPolicy, setCancellationPolicy] = useState(studio.cancellation_policy || "flexible")
+  const [bookingMode, setBookingMode] = useState<'flexible' | 'fixed_blocks'>(studio.booking_mode || 'flexible')
+  const [bookingBlocks, setBookingBlocks] = useState<BookingBlock[]>(
+    Array.isArray(studio.booking_blocks) ? studio.booking_blocks : []
+  )
+  const [allowExtensions, setAllowExtensions] = useState(studio.allow_extensions ?? true)
+  const [maxExtensionHours, setMaxExtensionHours] = useState(studio.max_extension_hours || 8)
+  const [extensionPremiumRate, setExtensionPremiumRate] = useState<number | null>(studio.extension_premium_rate || null)
 
   // Photo state
   const [images, setImages] = useState<StudioImage[]>(
@@ -198,6 +216,11 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
         is_published: isPublished,
         is_instant_book: isInstantBook,
         cancellation_policy: cancellationPolicy,
+        booking_mode: bookingMode,
+        booking_blocks: bookingMode === 'fixed_blocks' ? bookingBlocks : null,
+        allow_extensions: allowExtensions,
+        max_extension_hours: allowExtensions ? maxExtensionHours : null,
+        extension_premium_rate: extensionPremiumRate,
         updated_at: new Date().toISOString(),
       })
       .eq("id", studio.id)
@@ -544,6 +567,59 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
             Toevoegen
           </button>
         </div>
+      </section>
+
+      {/* Extension Settings */}
+      <section className="bg-white rounded-xl border p-6 space-y-4">
+        <h2 className="text-lg font-bold">Verlengingen</h2>
+        <div className="flex items-center justify-between py-3 border-b">
+          <div>
+            <p className="font-medium">Sta verlengingen toe</p>
+            <p className="text-sm text-muted-foreground">Huurders kunnen hun sessie verlengen tijdens de booking</p>
+          </div>
+          <button
+            onClick={() => setAllowExtensions(!allowExtensions)}
+            className={`relative w-12 h-7 rounded-full transition-colors ${
+              allowExtensions ? "bg-black" : "bg-gray-300"
+            }`}
+          >
+            <span className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full transition-transform shadow ${
+              allowExtensions ? "translate-x-5" : ""
+            }`} />
+          </button>
+        </div>
+        
+        {allowExtensions && (
+          <div className="grid grid-cols-2 gap-4 pt-2">
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Maximaal uren</label>
+              <select
+                value={maxExtensionHours}
+                onChange={(e) => setMaxExtensionHours(Number(e.target.value))}
+                className="w-full border rounded-lg h-12 px-4 focus:ring-2 focus:ring-black focus:border-black bg-white"
+              >
+                {[2, 4, 6, 8, 12, 24].map(h => (
+                  <option key={h} value={h}>{h} uur</option>
+                ))}
+              </select>
+              <p className="text-xs text-gray-500 mt-1">Maximale verlengingsduur per sessie</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Premium tarief (optioneel)</label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">€</span>
+                <input
+                  type="number"
+                  value={extensionPremiumRate || ''}
+                  onChange={(e) => setExtensionPremiumRate(e.target.value ? Number(e.target.value) : null)}
+                  placeholder="Normaal tarief"
+                  className="w-full border rounded-lg h-12 pl-8 pr-4 focus:ring-2 focus:ring-black focus:border-black"
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Extra uurprijs voor last-minute verlengingen</p>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Publishing */}
