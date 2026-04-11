@@ -429,7 +429,9 @@ function BookingCard({
                 ) : (
                   <div className="flex items-center gap-1.5 bg-amber-50 text-amber-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
                     <span className="material-symbols-outlined text-base sm:text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    <span className="font-bold text-xs sm:text-sm">{booking.review_rating || 5}.0</span>
+                    {booking.review_rating != null && (
+                      <span className="font-bold text-xs sm:text-sm">{booking.review_rating.toFixed(1)}</span>
+                    )}
                     <span className="text-[9px] sm:text-[10px] font-bold ml-0.5 opacity-70 uppercase tracking-wider">{t("reviewed")}</span>
                   </div>
                 )}

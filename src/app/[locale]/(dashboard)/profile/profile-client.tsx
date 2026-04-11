@@ -303,15 +303,8 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
                     <span className="text-sm font-medium">{t("sidebarAvgRating")}</span>
                   </div>
                   <span className="font-bold text-lg">
-                    {stats.avgRating > 0 ? stats.avgRating.toFixed(1) : "5.0"}
+                    {stats.avgRating > 0 ? stats.avgRating.toFixed(1) : "—"}
                   </span>
-                </div>
-                <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-black">timer</span>
-                    <span className="text-sm font-medium">{t("sidebarResponseTime")}</span>
-                  </div>
-                  <span className="font-bold text-lg">&lt; 1hr</span>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50">
                   <div className="flex items-center gap-3">

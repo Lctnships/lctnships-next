@@ -51,7 +51,6 @@ type ViewType = "month" | "week" | "day"
 export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClientProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [viewType, setViewType] = useState<ViewType>("month")
-  const [showNotification, setShowNotification] = useState(true)
 
   // Block dates state
   const [showBlockDialog, setShowBlockDialog] = useState(false)
@@ -467,25 +466,6 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
       </aside>
 
       {/* New Booking Notification */}
-      {showNotification && (
-        <div className="fixed bottom-10 right-10 z-50 animate-bounce">
-          <Link href="/host/bookings" onClick={() => setShowNotification(false)}>
-            <div className="bg-white rounded-2xl shadow-2xl border-l-4 border-black p-5 flex items-center gap-4 max-w-sm cursor-pointer hover:shadow-xl transition-shadow">
-              <div className="size-12 rounded-full bg-black/10 flex items-center justify-center text-black">
-                <span className="material-symbols-outlined text-2xl">celebration</span>
-              </div>
-              <div>
-                <p className="text-sm font-bold">Nieuw Boekingsverzoek!</p>
-                <p className="text-xs text-gray-500">Harper&apos;s Bazaar &bull; 24 Okt</p>
-              </div>
-              <span className="ml-auto text-black">
-                <span className="material-symbols-outlined">chevron_right</span>
-              </span>
-            </div>
-          </Link>
-        </div>
-      )}
-
       {/* Block Dates Dialog */}
       <Dialog open={showBlockDialog} onOpenChange={setShowBlockDialog}>
         <DialogContent>

@@ -8,15 +8,16 @@ export async function generateMetadata() {
   return { title: t("metaTitle") }
 }
 
-// Mock notification settings
-const mockNotificationSettings = {
+// Defaults for users who haven't saved settings yet. These are real defaults,
+// not mock data — the user sees these on first visit until they change something.
+const DEFAULT_NOTIFICATION_SETTINGS = {
   newBookings: { email: true, sms: true, push: false },
   messages: { email: true, sms: false, push: true },
   platformUpdates: { email: true, sms: false, push: false },
   reviews: { email: true, sms: false, push: true },
 }
 
-const mockPrivacySettings = {
+const DEFAULT_PRIVACY_SETTINGS = {
   profileVisibility: "marketplace",
   showPortfolioToUnregistered: true,
 }
@@ -33,8 +34,8 @@ export default async function HostPrivacySettingsPage() {
     .eq("user_id", user.id)
     .single()
 
-  const notificationSettings = userSettings?.notification_preferences || mockNotificationSettings
-  const privacySettings = userSettings?.privacy_settings || mockPrivacySettings
+  const notificationSettings = userSettings?.notification_preferences || DEFAULT_NOTIFICATION_SETTINGS
+  const privacySettings = userSettings?.privacy_settings || DEFAULT_PRIVACY_SETTINGS
 
   return (
     <PrivacySettingsClient
