@@ -82,23 +82,25 @@ export async function POST(request: Request, { params }: RouteParams) {
     }
 
     const body = await request.json()
-    const { ical_url } = body
+    const { ical_url, provider } = body
 
     if (!ical_url || typeof ical_url !== "string") {
       return NextResponse.json({ error: "iCal URL is required" }, { status: 400 })
     }
 
-    // SSRF protection: restrict the fetched URL to HTTPS + trusted Wix hosts.
-    // Without this guard an authenticated host could submit any URL (including
-    // http://169.254.169.254/ for AWS metadata, localhost services, or private
-    // network addresses) and the server would fetch it with its trusted
-    // network context. We only allow Wix-owned domains that serve iCal feeds.
+    const selectedProvider = provider === "meetingpackage" ? "meetingpackage" : "wix"
+
+    // SSRF protection: restrict the fetched URL to HTTPS + trusted calendar hosts.
     const TRUSTED_ICAL_HOSTS = [
+      // Wix
       "wix.com",
       "wixapps.net",
       "wixsite.com",
       "wixstatic.com",
       "parastorage.com",
+      // MeetingPackage
+      "meetingpackage.com",
+      "meetingpackage.io",
     ]
     let parsedUrl: URL
     try {
@@ -120,7 +122,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     )
     if (!isTrustedHost) {
       return NextResponse.json(
-        { error: "URL must point to a supported Wix calendar host" },
+        { error: `URL must point to a supported ${selectedProvider} calendar host` },
         { status: 400 }
       )
     }
@@ -173,34 +175,35 @@ export async function POST(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "No events found in iCal feed" }, { status: 400 })
     }
 
-    // Delete existing Wix-sourced blocked dates for this studio
+    // Delete existing external calendar blocked dates for this studio
     await supabase
       .from("studio_blocked_dates")
       .delete()
       .eq("studio_id", studioId)
-      .like("reason", "Wix:%")
+      .or("reason.like.Wix:%,reason.like.MeetingPackage:%")
 
     // Convert iCal events to blocked dates
     const now = new Date()
-    const wixBlockedDates: { studio_id: string; blocked_date: string; reason: string }[] = []
+    const blockedDates: { studio_id: string; blocked_date: string; reason: string }[] = []
 
     for (const event of events) {
       // Only block dates in the future or very recent past (within 7 days)
       if (event.start >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)) {
         const dateStr = event.start.toISOString().split("T")[0]
-        wixBlockedDates.push({
+        const providerLabel = selectedProvider === "wix" ? "Wix" : "MeetingPackage"
+        blockedDates.push({
           studio_id: studioId,
           blocked_date: dateStr,
-          reason: `Wix: ${event.summary}`
+          reason: `${providerLabel}: ${event.summary}`
         })
       }
     }
 
     // Insert new blocked dates (batch insert)
-    if (wixBlockedDates.length > 0) {
+    if (blockedDates.length > 0) {
       const { error: insertError } = await supabase
         .from("studio_blocked_dates")
-        .upsert(wixBlockedDates, { onConflict: "studio_id,blocked_date" })
+        .upsert(blockedDates, { onConflict: "studio_id,blocked_date" })
 
       if (insertError) {
         logger.error("Failed to insert blocked dates", insertError)
@@ -208,15 +211,19 @@ export async function POST(request: Request, { params }: RouteParams) {
     }
 
     // Save the URL to the studio
+    const updateData = selectedProvider === "wix" 
+      ? { wix_calendar_url: ical_url }
+      : { meetingpackage_calendar_url: ical_url }
+    
     await supabase
       .from("studios")
-      .update({ wix_calendar_url: ical_url })
+      .update(updateData)
       .eq("id", studioId)
 
     return NextResponse.json({
       success: true,
-      message: `Connected! ${wixBlockedDates.length} datums geblokkeerd vanuit je Wix agenda.`,
-      blockedDatesCount: wixBlockedDates.length
+      message: `Connected! ${blockedDates.length} datums geblokkeerd vanuit je ${selectedProvider} agenda.`,
+      blockedDatesCount: blockedDates.length
     })
 
   } catch (error) {
@@ -245,19 +252,22 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Studio not found or unauthorized" }, { status: 404 })
     }
 
-    // Delete Wix-sourced blocked dates when disconnecting
+    // Delete external calendar sourced blocked dates when disconnecting
     await supabase
       .from("studio_blocked_dates")
       .delete()
       .eq("studio_id", studioId)
-      .like("reason", "Wix:%")
+      .or("reason.like.Wix:%,reason.like.MeetingPackage:%")
 
     await supabase
       .from("studios")
-      .update({ wix_calendar_url: null })
+      .update({ 
+        wix_calendar_url: null,
+        meetingpackage_calendar_url: null 
+      })
       .eq("id", studioId)
 
-    return NextResponse.json({ success: true, message: "Wix calendar disconnected" })
+    return NextResponse.json({ success: true, message: "Calendar disconnected" })
 
   } catch (error) {
     logger.error("Error disconnecting Wix calendar", error)

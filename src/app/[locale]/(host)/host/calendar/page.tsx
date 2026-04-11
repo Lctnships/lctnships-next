@@ -16,7 +16,7 @@ export default async function CalendarPage() {
   // Get user's studios
   const { data: studios } = await supabase
     .from("studios")
-    .select("id, title, location, images, wix_calendar_url")
+    .select("id, title, location, images, wix_calendar_url, meetingpackage_calendar_url")
     .eq("host_id", user.id)
     .limit(1)
     .single()
