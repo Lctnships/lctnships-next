@@ -12,6 +12,12 @@ interface Equipment {
   price_per_day: number
 }
 
+interface BookingBlock {
+  duration_hours: number
+  price: number
+  sort_order: number
+}
+
 interface Studio {
   id: string
   title: string
@@ -20,6 +26,8 @@ interface Studio {
   is_instant_book?: boolean
   host_id?: string
   studio_images?: { image_url: string; is_cover: boolean }[]
+  booking_mode?: 'flexible' | 'fixed_blocks'
+  booking_blocks?: BookingBlock[]
 }
 
 interface Profile {
@@ -74,7 +82,13 @@ export function CheckoutClient({
   const coverImage = studio.studio_images?.find((img) => img.is_cover) || studio.studio_images?.[0]
 
   const calculations = useMemo(() => {
-    const studioTotal = studio.price_per_hour * bookingDetails.duration
+    let studioTotal: number
+    if (studio.booking_mode === 'fixed_blocks' && studio.booking_blocks) {
+      const selectedBlock = studio.booking_blocks.find(b => b.duration_hours === bookingDetails.duration)
+      studioTotal = selectedBlock?.price || studio.price_per_hour * bookingDetails.duration
+    } else {
+      studioTotal = studio.price_per_hour * bookingDetails.duration
+    }
     const equipmentTotal = Object.entries(equipmentSelections).reduce((sum, [id, qty]) => {
       const item = equipment.find(e => e.id === id)
       return sum + (item?.price_per_day || 0) * qty
@@ -83,7 +97,7 @@ export function CheckoutClient({
     const total = subtotal
 
     return { studioTotal, equipmentTotal, subtotal, total }
-  }, [studio.price_per_hour, bookingDetails.duration, equipmentSelections, equipment])
+  }, [studio.price_per_hour, studio.booking_mode, studio.booking_blocks, bookingDetails.duration, equipmentSelections, equipment])
 
   const endTime = useMemo(() => {
     const [hours, minutes] = bookingDetails.startTime.split(":").map(Number)

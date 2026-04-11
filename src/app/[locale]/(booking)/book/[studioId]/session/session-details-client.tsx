@@ -12,12 +12,20 @@ interface Equipment {
   image_url?: string | null
 }
 
+interface BookingBlock {
+  duration_hours: number
+  price: number
+  sort_order: number
+}
+
 interface Studio {
   id: string
   title: string
   city?: string
   price_per_hour: number
   studio_images?: { image_url: string; is_cover: boolean }[]
+  booking_mode?: 'flexible' | 'fixed_blocks'
+  booking_blocks?: BookingBlock[]
 }
 
 interface SessionDetailsClientProps {
@@ -62,7 +70,13 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
   }
 
   const calculations = useMemo(() => {
-    const studioTotal = studio.price_per_hour * selectedDuration
+    let studioTotal: number
+    if (studio.booking_mode === 'fixed_blocks' && studio.booking_blocks) {
+      const selectedBlock = studio.booking_blocks.find(b => b.duration_hours === selectedDuration)
+      studioTotal = selectedBlock?.price || studio.price_per_hour * selectedDuration
+    } else {
+      studioTotal = studio.price_per_hour * selectedDuration
+    }
     const equipmentTotal = Object.entries(selectedEquipment).reduce((sum, [id, qty]) => {
       const item = equipment.find(e => e.id === id)
       return sum + (item?.price_per_day || 0) * qty
@@ -71,7 +85,7 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
     const total = subtotal
 
     return { studioTotal, equipmentTotal, subtotal, total }
-  }, [studio.price_per_hour, selectedDuration, selectedEquipment, equipment])
+  }, [studio.price_per_hour, studio.booking_mode, studio.booking_blocks, selectedDuration, selectedEquipment, equipment])
 
   const handleContinue = () => {
     const params = new URLSearchParams({
@@ -125,31 +139,65 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
             {/* Duration Selection */}
             <div className="bg-white rounded-[2rem] p-8">
               <h2 className="text-xl font-semibold mb-2">Sessieduur</h2>
-              <p className="text-gray-500 mb-6">Kies hoe lang je de studio nodig hebt</p>
+              <p className="text-gray-500 mb-6">
+                {studio.booking_mode === 'fixed_blocks' 
+                  ? "Kies een van de beschikbare tijdsblokken"
+                  : "Kies hoe lang je de studio nodig hebt"}
+              </p>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {DURATION_OPTIONS.map((option) => (
-                  <button
-                    key={option.hours}
-                    onClick={() => setSelectedDuration(option.hours)}
-                    className={`p-4 rounded-2xl border-2 transition-all text-center ${
-                      selectedDuration === option.hours
-                        ? "border-black bg-black text-white"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
-                  >
-                    <div className="font-semibold">{option.label}</div>
-                    {option.sublabel && (
-                      <div className={`text-sm ${selectedDuration === option.hours ? "text-gray-300" : "text-gray-500"}`}>
-                        {option.sublabel}
+              {studio.booking_mode === 'fixed_blocks' && studio.booking_blocks && studio.booking_blocks.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {studio.booking_blocks.map((block, index) => {
+                    const isSelected = selectedDuration === block.duration_hours
+                    const label = block.duration_hours >= 8 ? "Hele dag" : 
+                                  block.duration_hours === 4 ? "Halve dag" : 
+                                  `${block.duration_hours} uur`
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedDuration(block.duration_hours)}
+                        className={`p-4 rounded-2xl border-2 transition-all text-center ${
+                          isSelected
+                            ? "border-black bg-black text-white"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <div className="font-semibold">{label}</div>
+                        <div className={`text-sm ${isSelected ? "text-gray-300" : "text-gray-500"}`}>
+                          {block.duration_hours} uur
+                        </div>
+                        <div className={`text-lg font-bold mt-2 ${isSelected ? "text-white" : "text-black"}`}>
+                          €{block.price}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {DURATION_OPTIONS.map((option) => (
+                    <button
+                      key={option.hours}
+                      onClick={() => setSelectedDuration(option.hours)}
+                      className={`p-4 rounded-2xl border-2 transition-all text-center ${
+                        selectedDuration === option.hours
+                          ? "border-black bg-black text-white"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="font-semibold">{option.label}</div>
+                      {option.sublabel && (
+                        <div className={`text-sm ${selectedDuration === option.hours ? "text-gray-300" : "text-gray-500"}`}>
+                          {option.sublabel}
+                        </div>
+                      )}
+                      <div className={`text-lg font-bold mt-2 ${selectedDuration === option.hours ? "text-white" : "text-black"}`}>
+                        €{studio.price_per_hour * option.hours}
                       </div>
-                    )}
-                    <div className={`text-lg font-bold mt-2 ${selectedDuration === option.hours ? "text-white" : "text-black"}`}>
-                      €{studio.price_per_hour * option.hours}
-                    </div>
-                  </button>
-                ))}
-              </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Time Selection */}

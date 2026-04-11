@@ -89,10 +89,14 @@ export async function POST(request: Request) {
       equipment_selections,
     } = body
 
-    // Get studio details including hourly rate for server-side price verification
+    // Get studio details for server-side price verification.
+    // price_per_hour is the canonical column — all 12 prod studios have it set;
+    // hourly_rate is legacy and NULL for every row. We keep hourly_rate as a
+    // defensive fallback in case a future studio is created with only that
+    // column populated, but new code should write price_per_hour.
     const { data: studio, error: studioError } = await supabase
       .from("studios")
-      .select("host_id, is_instant_book, title, hourly_rate")
+      .select("host_id, is_instant_book, title, price_per_hour, hourly_rate, booking_mode, booking_blocks")
       .eq("id", studio_id)
       .single()
 
@@ -105,12 +109,29 @@ export async function POST(request: Request) {
     const endTime = new Date(end_datetime)
     const durationMs = endTime.getTime() - startTime.getTime()
     const calculatedHours = Math.max(1, Math.round((durationMs / (1000 * 60 * 60)) * 100) / 100)
-    const hourlyRate = studio.hourly_rate || 0
+    const hourlyRate = studio.price_per_hour || studio.hourly_rate || 0
+
+    // Price depends on the studio's booking_mode:
+    //  - 'fixed_blocks': price is the block entry matching the requested
+    //    duration (host-defined — NOT hourly × hours).
+    //  - 'flexible' (or legacy null): standard hourly × hours math.
+    // If a renter requests a duration that doesn't match any configured block
+    // in fixed_blocks mode, we fall back to hourly × hours so the booking
+    // still succeeds — but the client UI should only allow matching durations
+    // when the studio is in fixed_blocks mode.
+    let calculatedSubtotal: number
+    if (studio.booking_mode === "fixed_blocks" && Array.isArray(studio.booking_blocks)) {
+      const blocks = studio.booking_blocks as Array<{ duration_hours: number; price: number }>
+      const matchingBlock = blocks.find((b) => b.duration_hours === calculatedHours)
+      calculatedSubtotal = matchingBlock ? matchingBlock.price : calculatedHours * hourlyRate
+    } else {
+      calculatedSubtotal = calculatedHours * hourlyRate
+    }
+    calculatedSubtotal = Math.round(calculatedSubtotal * 100) / 100
 
     // Renter pays the listing price (subtotal). Platform keeps 15%, host gets 85%.
     // No separate service fee shown to the renter.
     const PLATFORM_FEE_PERCENTAGE = 0.15
-    const calculatedSubtotal = Math.round(calculatedHours * hourlyRate * 100) / 100
     const calculatedTotal = calculatedSubtotal
     const calculatedServiceFee = Math.round(calculatedSubtotal * PLATFORM_FEE_PERCENTAGE * 100) / 100
     const calculatedHostPayout = Math.round(calculatedSubtotal * (1 - PLATFORM_FEE_PERCENTAGE) * 100) / 100

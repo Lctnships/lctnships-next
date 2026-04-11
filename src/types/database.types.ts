@@ -112,6 +112,10 @@ export type Database = {
           allow_extensions: boolean
           max_extension_hours: number | null
           extension_premium_rate: number | null
+          booking_mode: 'flexible' | 'fixed_blocks'
+          booking_blocks: Array<{ duration_hours: number; price: number; sort_order: number }> | null
+          hourly_rate: number | null
+          wix_calendar_url: string | null
           created_at: string
           updated_at: string
         }
@@ -142,6 +146,10 @@ export type Database = {
           allow_extensions?: boolean
           max_extension_hours?: number | null
           extension_premium_rate?: number | null
+          booking_mode?: 'flexible' | 'fixed_blocks'
+          booking_blocks?: Array<{ duration_hours: number; price: number; sort_order: number }> | null
+          hourly_rate?: number | null
+          wix_calendar_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -172,6 +180,10 @@ export type Database = {
           allow_extensions?: boolean
           max_extension_hours?: number | null
           extension_premium_rate?: number | null
+          booking_mode?: 'flexible' | 'fixed_blocks'
+          booking_blocks?: Array<{ duration_hours: number; price: number; sort_order: number }> | null
+          hourly_rate?: number | null
+          wix_calendar_url?: string | null
           created_at?: string
           updated_at?: string
         }
