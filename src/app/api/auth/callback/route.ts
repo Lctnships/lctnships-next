@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import { parseUserAgent } from "@/lib/utils/parse-user-agent"
 import { logger } from "@/lib/logger"
 import { SITE_URL } from "@/lib/seo"
+import { validateRedirectPath } from "@/lib/redirect"
 
 // Sanitize string input to prevent XSS and SQL injection
 function sanitizeString(input: unknown): string | null {
@@ -37,19 +38,6 @@ function sanitizeAvatarUrl(input: unknown): string | null {
     // Invalid URL
   }
   return null
-}
-
-// Validate redirect path to prevent open redirects
-function validateRedirectPath(input: string): string {
-  // Only allow internal paths starting with /
-  if (!input.startsWith("/")) return "/dashboard"
-  // Block protocol-relative URLs and external redirects
-  if (input.startsWith("//") || input.includes("://")) return "/dashboard"
-  // Block javascript: and data: schemes
-  if (input.toLowerCase().includes("javascript:") || input.toLowerCase().includes("data:")) {
-    return "/dashboard"
-  }
-  return input
 }
 
 // Get the correct origin for redirects, handling Vercel's forwarded host

@@ -97,7 +97,16 @@ export async function POST(request: NextRequest) {
       // Handle booking payment
       else if (paymentType === "booking_payment" || session.metadata?.bookingId || session.metadata?.booking_id) {
         const bookingId = session.metadata?.bookingId ?? session.metadata?.booking_id
-        const platformFee = parseInt(session.metadata?.platformFee || "0")
+        // Compute platform fee server-side from the actual session amount.
+        // Previously this read session.metadata.platformFee, which was set to
+        // "0" whenever the upstream route forgot to include it, silently
+        // corrupting the transactions audit log. Metadata is still used as a
+        // preference when present and consistent, but amount_total * 15% is
+        // the source of truth.
+        const amountTotalCents = session.amount_total || 0
+        const computedFeeCents = Math.round(amountTotalCents * 0.15)
+        const metaFeeCents = parseInt(session.metadata?.platformFee || "0")
+        const platformFee = metaFeeCents > 0 ? metaFeeCents : computedFeeCents
 
         if (bookingId && bookingId !== "" && !bookingId.startsWith("temp_")) {
           try {

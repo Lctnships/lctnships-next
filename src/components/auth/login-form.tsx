@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import { validateRedirectPath } from "@/lib/redirect"
 import Image from "next/image"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
@@ -16,7 +17,7 @@ export function LoginForm() {
   const [isSocialLoading, setIsSocialLoading] = useState<string | null>(null)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirect = searchParams.get("redirect") || "/dashboard"
+  const redirect = validateRedirectPath(searchParams.get("redirect"))
   const authError = searchParams.get("error")
   const supabase = createClient()
   const t = useTranslations("Auth")

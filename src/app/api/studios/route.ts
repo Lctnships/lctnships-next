@@ -54,7 +54,14 @@ export async function GET(request: Request) {
     const pageNum = parseInt(page)
     const limitNum = parseInt(limit)
 
-    // Optimized select - only fetch needed fields
+    // Optimized select - only fetch needed fields.
+    // SECURITY: middleware sets Cache-Control public on this endpoint, so the
+    // response (including the host join) may be stored in shared caches.
+    // The host join MUST only include columns that are explicitly granted to
+    // the anon role (migration 011 / C2). Do NOT add phone, stripe_account_id,
+    // bank_*, email, etc. to this join — those are blocked at the DB column
+    // grant level but adding them here would surface a 500 at runtime rather
+    // than leaking, so keep this select whitelisted.
     let query = supabase
       .from("studios")
       .select(

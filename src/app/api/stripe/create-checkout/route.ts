@@ -71,6 +71,26 @@ export async function POST(req: Request) {
     const recalculatedAmount = Math.round(booking.total_hours * hourlyRate * 100) // cents
     const platformFee = Math.round(recalculatedAmount * 0.15)
 
+    // Verify host Stripe account is actually ready to receive charges.
+    // If not, fall through to platform-holds-funds flow to avoid failing
+    // the checkout session creation when the host's onboarding is incomplete.
+    let useConnect = false
+    if (host?.stripe_account_id) {
+      try {
+        const account = await stripe.accounts.retrieve(host.stripe_account_id)
+        if (account.charges_enabled) {
+          useConnect = true
+        } else {
+          logger.warn("Host Stripe account not ready for charges, falling back", {
+            hostId: booking.studio?.host_id,
+            accountId: host.stripe_account_id,
+          })
+        }
+      } catch (err) {
+        logger.warn("Failed to retrieve host Stripe account", { accountId: host.stripe_account_id, err })
+      }
+    }
+
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -92,10 +112,16 @@ export async function POST(req: Request) {
       success_url: `${SITE_URL}/bookings/${bookingId}?success=true`,
       cancel_url: `${SITE_URL}/bookings/${bookingId}?canceled=true`,
       metadata: {
+        type: "booking_payment",
+        bookingId: bookingId,
         booking_id: bookingId,
+        // Persist server-computed fee so the webhook can reconcile. The
+        // webhook also recomputes this from amount_total as a safety net
+        // if metadata is ever missing (see webhook/route.ts).
+        platformFee: platformFee.toString(),
       },
-      // If host has Stripe Connect, use transfer with server-calculated fee
-      ...(host?.stripe_account_id && {
+      // If host's Connect account is active, use transfer with server-calculated fee
+      ...(useConnect && host?.stripe_account_id && {
         payment_intent_data: {
           application_fee_amount: platformFee,
           transfer_data: {

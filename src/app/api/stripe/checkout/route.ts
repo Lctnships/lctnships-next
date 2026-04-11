@@ -51,14 +51,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Studio not found" }, { status: 404 })
     }
 
-    // Server-side price recalculation to prevent client-side price manipulation
+    // Server-side price recalculation to prevent client-side price manipulation.
+    // Compute in cents in a single step — never go through an intermediate euro
+    // rounding, which would be lossy and could make platform_fee differ from
+    // what the webhook records.
     const hourlyRate = studio.hourly_rate || 0
-    const amount = Math.round(hourlyRate * hours * 100) / 100
+    const amountInCents = Math.round(hourlyRate * hours * 100)
 
     // Verify client-supplied total is within acceptable tolerance (2% for rounding)
     if (totalAmount) {
-      const tolerance = 0.02
-      if (Math.abs(amount - totalAmount) / Math.max(amount, 1) > tolerance) {
+      const clientCents = Math.round(totalAmount * 100)
+      const toleranceCents = Math.max(1, Math.ceil(amountInCents * 0.02))
+      if (Math.abs(amountInCents - clientCents) > toleranceCents) {
         return NextResponse.json(
           { error: "Price mismatch detected. Please refresh and try again." },
           { status: 400 }
@@ -69,15 +73,38 @@ export async function POST(request: NextRequest) {
     const email = user.email
     const studioOwnerStripeId = (studio.host as { stripe_account_id?: string; email?: string } | null)?.stripe_account_id
 
+    // Verify the host's Stripe Connect account is actually able to receive
+    // charges before we build the session with transfer_data. If not, we fall
+    // through to the platform-holds-funds path and log the host for manual
+    // follow-up — this prevents failing checkouts at pay time due to a host
+    // whose onboarding lapsed or account was restricted.
+    const stripe = getStripe()
+    let useConnect = false
+    if (studioOwnerStripeId) {
+      try {
+        const account = await stripe.accounts.retrieve(studioOwnerStripeId)
+        if (account.charges_enabled) {
+          useConnect = true
+        } else {
+          logger.warn("Host Stripe account not ready for charges, falling back to platform flow", {
+            hostId: studio.host_id,
+            accountId: studioOwnerStripeId,
+            chargesEnabled: account.charges_enabled,
+            detailsSubmitted: account.details_submitted,
+          })
+        }
+      } catch (err) {
+        logger.warn("Failed to retrieve host Stripe account", { accountId: studioOwnerStripeId, err })
+      }
+    }
+
     const origin = request.nextUrl.origin
     const effectiveBookingId = bookingId || `temp_${Date.now()}`
     const successUrl = `${origin}/book/${studioId}/success?booking=${effectiveBookingId}&session_id={CHECKOUT_SESSION_ID}`
     const cancelUrl = `${origin}/book/${studioId}/checkout?date=${date || ""}&start=${startTime || ""}&duration=${hours}`
 
-    // If studio owner has Stripe Connect, use commission flow
-    if (studioOwnerStripeId) {
-      const stripe = getStripe()
-      const amountInCents = Math.round(amount * 100)
+    // If studio owner has an active Stripe Connect account, use commission flow
+    if (useConnect && studioOwnerStripeId) {
       const applicationFee = Math.round(amountInCents * (PLATFORM_FEE_PERCENT / 100))
 
       const session = await stripe.checkout.sessions.create({
@@ -135,10 +162,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Fallback: no Connect account, simple checkout (platform receives all)
-    const stripe = getStripe()
-    const amountInCents = Math.round(amount * 100)
-
+    // Fallback: no Connect account or charges not enabled — platform holds funds
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "ideal", "sepa_debit", "bancontact"],
       line_items: [

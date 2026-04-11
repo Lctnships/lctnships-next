@@ -58,11 +58,32 @@ export async function POST(request: Request, { params }: RouteParams) {
     const body = await request.json()
     const { image_url, is_cover, display_order } = body
 
-    if (!image_url) {
+    if (!image_url || typeof image_url !== "string") {
       return NextResponse.json(
         { error: "Image URL is required" },
         { status: 400 }
       )
+    }
+
+    // Validate image_url against the Supabase storage host. Without this guard
+    // a host could store javascript:..., data:..., or an HTTP URL pointing to
+    // internal infrastructure (e.g. http://169.254.169.254/ AWS metadata),
+    // which would then be rendered server-side by next/image for every
+    // visitor of the studio page — that is an SSRF primitive.
+    try {
+      const parsed = new URL(image_url)
+      const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
+        ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+        : ""
+      const trustedHosts = [supabaseHost].filter(Boolean)
+      if (parsed.protocol !== "https:" || !trustedHosts.some((h) => parsed.hostname.endsWith(h))) {
+        return NextResponse.json(
+          { error: "Image URL must be an HTTPS URL on the Supabase storage host" },
+          { status: 400 }
+        )
+      }
+    } catch {
+      return NextResponse.json({ error: "Invalid image URL" }, { status: 400 })
     }
 
     // If this is being set as cover, remove cover from other images
