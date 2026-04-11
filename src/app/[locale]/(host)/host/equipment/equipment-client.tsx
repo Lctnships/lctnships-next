@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react"
 import { Link, useRouter } from "@/i18n/routing"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 
 interface Studio {
@@ -30,26 +31,27 @@ interface EquipmentClientProps {
 
 type ConditionType = "new" | "used" | "good"
 
-const categories = [
-  { id: "cameras", label: "Camera's", icon: "videocam" },
-  { id: "lighting", label: "Belichting", icon: "light" },
-  { id: "lenses", label: "Lenzen", icon: "camera" },
-  { id: "grip", label: "Grip & Elektra", icon: "electrical_services" },
-  { id: "audio", label: "Audio", icon: "mic" },
-  { id: "monitors", label: "Monitoren", icon: "desktop_windows" },
-  { id: "accessories", label: "Accessoires", icon: "handyman" },
-]
-
-function getCategoryLabel(id: string) {
-  return categories.find(c => c.id === id)?.label || id
-}
+// Category ids + icons are static — the label comes from translations.
+const CATEGORY_META = [
+  { id: "cameras", labelKey: "catCameras", icon: "videocam" },
+  { id: "lighting", labelKey: "catLighting", icon: "light" },
+  { id: "lenses", labelKey: "catLenses", icon: "camera" },
+  { id: "grip", labelKey: "catGrip", icon: "electrical_services" },
+  { id: "audio", labelKey: "catAudio", icon: "mic" },
+  { id: "monitors", labelKey: "catMonitors", icon: "desktop_windows" },
+  { id: "accessories", labelKey: "catAccessories", icon: "handyman" },
+] as const
 
 function getCategoryIcon(id: string) {
-  return categories.find(c => c.id === id)?.icon || "inventory_2"
+  return CATEGORY_META.find(c => c.id === id)?.icon || "inventory_2"
 }
 
 export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
   const router = useRouter()
+  const t = useTranslations("HostEquipment")
+
+  const categories = CATEGORY_META.map(c => ({ id: c.id, label: t(c.labelKey), icon: c.icon }))
+  const getCategoryLabel = (id: string) => categories.find(c => c.id === id)?.label || id
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [view, setView] = useState<"list" | "add">(equipment.length > 0 ? "list" : "add")
   const [filterCategory, setFilterCategory] = useState("")
@@ -74,7 +76,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return
     if (images.length + files.length > 5) {
-      setError("Maximaal 5 foto's toegestaan")
+      setError(t("maxPhotosError"))
       return
     }
 
@@ -94,7 +96,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
 
         if (!response.ok) {
           const data = await response.json()
-          throw new Error(data.error || "Upload mislukt")
+          throw new Error(data.error || t("uploadFailed"))
         }
 
         const data = await response.json()
@@ -104,7 +106,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
       const uploadedUrls = await Promise.all(uploadPromises)
       setImages((prev) => [...prev, ...uploadedUrls])
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
+      setError(err instanceof Error ? err.message : t("genericError"))
     } finally {
       setIsUploading(false)
     }
@@ -119,12 +121,12 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
     setError(null)
 
     if (!name || !category || !dailyPrice) {
-      setError("Vul alle verplichte velden in")
+      setError(t("requiredFieldsError"))
       return
     }
 
     if (!selectedStudio) {
-      setError("Selecteer een studio")
+      setError(t("selectStudioError"))
       return
     }
 
@@ -149,30 +151,30 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Apparatuur toevoegen mislukt")
+        throw new Error(data.error || t("addFailed"))
       }
 
       router.push("/host/equipment")
       router.refresh()
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
+      setError(err instanceof Error ? err.message : t("genericError"))
     } finally {
       setIsSubmitting(false)
     }
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Weet je zeker dat je dit item wilt verwijderen?")) return
+    if (!confirm(t("confirmDelete"))) return
     setDeletingId(id)
     try {
       const response = await fetch(`/api/equipment/${id}`, { method: "DELETE" })
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.error || "Verwijderen mislukt")
+        throw new Error(data.error || t("deleteFailed"))
       }
       router.refresh()
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
+      setError(err instanceof Error ? err.message : t("genericError"))
     } finally {
       setDeletingId(null)
     }
@@ -187,11 +189,11 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
       })
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.error || "Bijwerken mislukt")
+        throw new Error(data.error || t("updateFailed"))
       }
       router.refresh()
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
+      setError(err instanceof Error ? err.message : t("genericError"))
     }
   }
 
@@ -213,17 +215,15 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-2">Mijn Inventaris</h1>
-            <p className="text-gray-500 text-lg">
-              {equipment.length} {equipment.length === 1 ? "item" : "items"} in je collectie
-            </p>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-2">{t("breadcrumbInventory")}</h1>
+            <p className="text-gray-500 text-lg">{t("itemsCount", { count: equipment.length })}</p>
           </div>
           <button
             onClick={() => { resetForm(); setView("add") }}
             className="flex items-center gap-2 bg-black text-white font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform shadow-lg"
           >
             <span className="material-symbols-outlined text-xl">add</span>
-            Toevoegen
+            {t("addButton")}
           </button>
         </div>
 
@@ -235,7 +235,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
               !filterCategory ? "bg-black text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            Alles
+            {t("allCategories")}
           </button>
           {categories.map(cat => {
             const count = equipment.filter(e => e.category === cat.id).length
@@ -294,7 +294,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
                       ? "bg-green-100 text-green-700"
                       : "bg-gray-200 text-gray-500"
                   }`}>
-                    {item.is_available ? "Beschikbaar" : "Niet beschikbaar"}
+                    {item.is_available ? t("available") : t("unavailable")}
                   </div>
                 </div>
               </Link>
@@ -305,7 +305,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="font-bold text-lg leading-tight hover:underline">{item.name}</h3>
                     <span className="text-lg font-black whitespace-nowrap">
-                      €{item.price_per_day}<span className="text-xs text-gray-400 font-medium">/dag</span>
+                      €{item.price_per_day}<span className="text-xs text-gray-400 font-medium">{t("perDayShort")}</span>
                     </span>
                   </div>
                 </Link>
@@ -318,7 +318,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
                   <span className="material-symbols-outlined text-sm">{getCategoryIcon(item.category)}</span>
                   <span>{getCategoryLabel(item.category)}</span>
                   <span className="mx-1">·</span>
-                  <span>{item.studios?.title || "Geen studio"}</span>
+                  <span>{item.studios?.title || t("noStudio")}</span>
                 </div>
 
                 {/* Actions */}
@@ -331,7 +331,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
                         : "bg-black text-white hover:bg-gray-800"
                     }`}
                   >
-                    {item.is_available ? "Deactiveren" : "Activeren"}
+                    {item.is_available ? t("deactivate") : t("activate")}
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
@@ -353,19 +353,17 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
           <div className="text-center py-20">
             <span className="material-symbols-outlined text-6xl text-gray-200 mb-4 block">inventory_2</span>
             <h3 className="text-xl font-bold mb-2">
-              {filterCategory ? "Geen items in deze categorie" : "Nog geen apparatuur"}
+              {filterCategory ? t("emptyCategoryTitle") : t("emptyTitle")}
             </h3>
             <p className="text-gray-400 mb-6">
-              {filterCategory
-                ? "Probeer een andere categorie of voeg nieuw materiaal toe."
-                : "Voeg je eerste apparatuur toe om te beginnen met verhuren."}
+              {filterCategory ? t("emptyCategoryDesc") : t("emptyDesc")}
             </p>
             {!filterCategory && (
               <button
                 onClick={() => { resetForm(); setView("add") }}
                 className="bg-black text-white font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform"
               >
-                Eerste Item Toevoegen
+                {t("addFirstItem")}
               </button>
             )}
           </div>
@@ -380,32 +378,28 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 mb-8 text-sm font-medium text-gray-500">
         <Link href="/host/dashboard" className="hover:text-black transition-colors">
-          Host Dashboard
+          {t("breadcrumbDashboard")}
         </Link>
         <span className="material-symbols-outlined text-xs">chevron_right</span>
         <button onClick={() => setView("list")} className="hover:text-black transition-colors">
-          Mijn Inventaris
+          {t("breadcrumbInventory")}
         </button>
         <span className="material-symbols-outlined text-xs">chevron_right</span>
-        <span className="text-gray-900">Nieuw Materiaal Toevoegen</span>
+        <span className="text-gray-900">{t("breadcrumbNew")}</span>
       </nav>
 
       {/* Page Heading */}
       <div className="mb-12">
-        <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">Toevoegen aan Inventaris</h1>
-        <p className="text-gray-500 text-lg">
-          Plaats je professionele apparatuur voor de creatieve community.
-        </p>
+        <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">{t("title")}</h1>
+        <p className="text-gray-500 text-lg">{t("subtitle")}</p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-16 items-start">
         {/* Left Column: Upload Area */}
         <div className="space-y-6">
           <div className="flex flex-col gap-1">
-            <h3 className="text-xl font-bold">Materiaal Foto&apos;s</h3>
-            <p className="text-sm text-gray-500">
-              Upload maximaal 5 foto&apos;s in hoge resolutie van je apparatuur.
-            </p>
+            <h3 className="text-xl font-bold">{t("photosTitle")}</h3>
+            <p className="text-sm text-gray-500">{t("photosSubtitle")}</p>
           </div>
 
           {/* Upload Zone */}
@@ -425,15 +419,15 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
               {isUploading ? (
                 <>
                   <span className="material-symbols-outlined text-black text-4xl animate-spin">progress_activity</span>
-                  <p className="text-lg font-bold mt-4">Uploaden...</p>
+                  <p className="text-lg font-bold mt-4">{t("uploading")}</p>
                 </>
               ) : (
                 <>
                   <div className="size-20 rounded-full bg-black/10 flex items-center justify-center mb-6">
                     <span className="material-symbols-outlined text-black text-4xl">cloud_upload</span>
                   </div>
-                  <p className="text-lg font-bold mb-1">Sleep je foto&apos;s hierheen</p>
-                  <p className="text-sm text-gray-400">of klik om bestanden te kiezen</p>
+                  <p className="text-lg font-bold mb-1">{t("dragPhotos")}</p>
+                  <p className="text-sm text-gray-400">{t("orClickToChoose")}</p>
                 </>
               )}
             </div>
@@ -472,21 +466,21 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
               {/* Name Field */}
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-bold uppercase tracking-wider text-gray-400 px-2">
-                  Naam Apparatuur
+                  {t("equipmentName")}
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full rounded-full border-gray-200 bg-gray-50 px-6 py-4 focus:ring-black focus:border-black placeholder:text-gray-300 transition-all"
-                  placeholder="bijv. ARRI Alexa Mini LF"
+                  placeholder={t("equipmentNamePlaceholder")}
                 />
               </div>
 
               {/* Category Dropdown */}
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-bold uppercase tracking-wider text-gray-400 px-2">
-                  Categorie
+                  {t("category")}
                 </label>
                 <div className="relative">
                   <select
@@ -494,7 +488,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full appearance-none rounded-full border-gray-200 bg-gray-50 px-6 py-4 focus:ring-black focus:border-black transition-all"
                   >
-                    <option value="">Selecteer een categorie</option>
+                    <option value="">{t("selectCategory")}</option>
                     {categories.map((cat) => (
                       <option key={cat.id} value={cat.id}>
                         {cat.label}
@@ -511,7 +505,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
               {studios.length > 0 && (
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-bold uppercase tracking-wider text-gray-400 px-2">
-                    Toewijzen aan Studio
+                    {t("assignToStudio")}
                   </label>
                   <div className="relative">
                     <select
@@ -519,7 +513,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
                       onChange={(e) => setSelectedStudio(e.target.value)}
                       className="w-full appearance-none rounded-full border-gray-200 bg-gray-50 px-6 py-4 focus:ring-black focus:border-black transition-all"
                     >
-                      <option value="">Selecteer een studio</option>
+                      <option value="">{t("selectStudio")}</option>
                       {studios.map((studio) => (
                         <option key={studio.id} value={studio.id}>
                           {studio.title}
@@ -537,7 +531,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-bold uppercase tracking-wider text-gray-400 px-2">
-                    Dagprijs (€)
+                    {t("dailyPrice")}
                   </label>
                   <input
                     type="number"
@@ -549,7 +543,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-bold uppercase tracking-wider text-gray-400 px-2">
-                    Staat
+                    {t("condition")}
                   </label>
                   <div className="flex bg-gray-50 p-1 rounded-full border border-gray-200">
                     {(["new", "used", "good"] as ConditionType[]).map((cond) => (
@@ -563,7 +557,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
                             : "hover:bg-gray-200"
                         }`}
                       >
-                        {cond === "new" ? "Nieuw" : cond === "used" ? "Gebruikt" : "Goed"}
+                        {cond === "new" ? t("conditionNew") : cond === "used" ? t("conditionUsed") : t("conditionGood")}
                       </button>
                     ))}
                   </div>
@@ -573,14 +567,14 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
               {/* Description Box */}
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-bold uppercase tracking-wider text-gray-400 px-2">
-                  Beschrijving
+                  {t("description")}
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
                   className="w-full rounded-2xl border-gray-200 bg-gray-50 px-6 py-4 focus:ring-black focus:border-black placeholder:text-gray-300 transition-all resize-none"
-                  placeholder="Vermeld accessoires, specificaties of gebruiksvereisten..."
+                  placeholder={t("descriptionPlaceholder")}
                 />
               </div>
             </div>
@@ -603,11 +597,11 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
                 {isSubmitting ? (
                   <>
                     <span className="material-symbols-outlined animate-spin">progress_activity</span>
-                    <span>Toevoegen...</span>
+                    <span>{t("adding")}</span>
                   </>
                 ) : (
                   <>
-                    <span>Toevoegen aan Inventaris</span>
+                    <span>{t("addToInventory")}</span>
                     <span className="material-symbols-outlined">arrow_forward</span>
                   </>
                 )}
@@ -617,7 +611,7 @@ export function EquipmentClient({ studios, equipment }: EquipmentClientProps) {
                 onClick={() => setView("list")}
                 className="text-gray-400 hover:text-gray-600 transition-colors text-sm font-bold"
               >
-                Annuleren
+                {t("cancelAction")}
               </button>
             </div>
           </form>

@@ -2,8 +2,10 @@
 
 import { useState } from "react"
 import { Link, useRouter } from "@/i18n/routing"
+import { useTranslations, useLocale } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 import { CancelBookingModal } from "@/components/booking/cancel-booking-modal"
+import { formatCurrency as fmtCurrency, formatDate as fmtDate, formatTime as fmtTime } from "@/lib/format-locale"
 
 interface Renter {
   id: string
@@ -55,33 +57,21 @@ interface BookingDetailClientProps {
 
 export function BookingDetailClient({ booking, renterStats }: BookingDetailClientProps) {
   const router = useRouter()
+  const t = useTranslations("HostBookingDetail")
+  const locale = useLocale()
   const [isProcessing, setIsProcessing] = useState(false)
   const [showDeclineModal, setShowDeclineModal] = useState(false)
   const [declineReason, setDeclineReason] = useState("")
   const [showCancelModal, setShowCancelModal] = useState(false)
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("nl-NL", {
-      style: "currency",
-      currency: "EUR",
-    }).format(amount)
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("nl-NL", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    })
-  }
-
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString("nl-NL", {
-      hour: "numeric",
-      minute: "2-digit",
-    })
-  }
+  const formatCurrency = (amount: number) => fmtCurrency(amount, locale)
+  const formatDate = (dateString: string) => fmtDate(dateString, locale, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  })
+  const formatTime = (dateString: string) => fmtTime(dateString, locale)
 
   const handleAccept = async () => {
     setIsProcessing(true)
@@ -147,7 +137,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">Boekingsverzoek</h1>
+            <h1 className="text-2xl font-bold">{t("bookingRequest")}</h1>
             <span
               className={`px-3 py-1 rounded-full text-xs font-bold ${
                 booking.status === "pending"
@@ -159,7 +149,13 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                   : "bg-gray-100 text-gray-700"
               }`}
             >
-              {booking.status === "pending" ? "In Afwachting" : booking.status === "confirmed" ? "Bevestigd" : booking.status === "completed" ? "Voltooid" : "Geannuleerd"}
+              {booking.status === "pending"
+                ? t("statusPending")
+                : booking.status === "confirmed"
+                ? t("statusConfirmed")
+                : booking.status === "completed"
+                ? t("statusCompleted")
+                : t("statusCancelled")}
             </span>
           </div>
           {booking.booking_number && (
@@ -186,11 +182,11 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">Datum</p>
+                    <p className="text-sm text-gray-500">{t("date")}</p>
                     <p className="font-bold">{formatDate(booking.start_datetime)}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Tijd</p>
+                    <p className="text-sm text-gray-500">{t("time")}</p>
                     <p className="font-bold">
                       {formatTime(booking.start_datetime)} - {formatTime(booking.end_datetime)}
                     </p>
@@ -205,7 +201,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
               <h3 className="font-bold mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-black">chat</span>
-                Bericht van Gast
+                {t("guestMessage")}
               </h3>
               <p className="text-gray-700 leading-relaxed">{booking.notes}</p>
             </div>
@@ -215,7 +211,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
             <h3 className="font-bold mb-6 flex items-center gap-2">
               <span className="material-symbols-outlined text-black">person</span>
-              Gastprofiel
+              {t("guestProfile")}
             </h3>
             <div className="flex flex-col md:flex-row md:items-start gap-6">
               <div className="flex items-center gap-4">
@@ -244,28 +240,28 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                 </div>
                 <div>
                   <h4 className="text-lg font-bold">{booking.renter?.full_name}</h4>
-                  <p className="text-sm text-gray-500">Lid sinds {memberSince}</p>
+                  <p className="text-sm text-gray-500">{t("memberSince", { year: memberSince })}</p>
                 </div>
               </div>
 
               <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 bg-gray-50 rounded-2xl text-center">
                   <p className="text-2xl font-bold text-black">{renterStats.totalBookings}</p>
-                  <p className="text-xs text-gray-500">Boekingen</p>
+                  <p className="text-xs text-gray-500">{t("bookings")}</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-2xl text-center">
                   <p className="text-2xl font-bold text-black">
                     {renterStats.avgRating > 0 ? renterStats.avgRating.toFixed(1) : "—"}
                   </p>
-                  <p className="text-xs text-gray-500">Beoordeling</p>
+                  <p className="text-xs text-gray-500">{t("rating")}</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-2xl text-center">
                   <p className="text-2xl font-bold text-black">{renterStats.cancelRate}%</p>
-                  <p className="text-xs text-gray-500">Annuleringspercentage</p>
+                  <p className="text-xs text-gray-500">{t("cancelRate")}</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-2xl text-center">
                   <p className="text-2xl font-bold text-black">{renterStats.responseTime}</p>
-                  <p className="text-xs text-gray-500">Reactietijd</p>
+                  <p className="text-xs text-gray-500">{t("responseTime")}</p>
                 </div>
               </div>
             </div>
@@ -292,26 +288,29 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
         <div className="space-y-6">
           {/* Price Breakdown */}
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-            <h3 className="font-bold mb-6">Prijsoverzicht</h3>
+            <h3 className="font-bold mb-6">{t("priceBreakdown")}</h3>
             <div className="space-y-4">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">
-                  {formatCurrency(booking.hourly_rate || 0)} × {booking.total_hours} uur
+                  {t("ratePerHour", {
+                    rate: formatCurrency(booking.hourly_rate || 0),
+                    hours: booking.total_hours,
+                  })}
                 </span>
                 <span>{formatCurrency(booking.subtotal || booking.total_price)}</span>
               </div>
               {booking.service_fee && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Servicekosten</span>
+                  <span className="text-gray-500">{t("serviceFee")}</span>
                   <span>{formatCurrency(booking.service_fee)}</span>
                 </div>
               )}
               <div className="pt-4 border-t border-gray-100 flex justify-between">
-                <span className="font-bold">Gast betaalt</span>
+                <span className="font-bold">{t("guestPays")}</span>
                 <span className="font-bold">{formatCurrency(booking.total_price)}</span>
               </div>
               <div className="flex justify-between text-black">
-                <span className="font-bold">Jouw verdiensten</span>
+                <span className="font-bold">{t("yourEarnings")}</span>
                 <span className="font-bold text-lg">{formatCurrency(booking.host_payout)}</span>
               </div>
             </div>
@@ -324,10 +323,8 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                 <span className="material-symbols-outlined text-green-600">verified</span>
               </div>
               <div>
-                <p className="font-bold text-green-800">Betaling Beveiligd</p>
-                <p className="text-sm text-green-600">
-                  Gelden worden 24 uur na uitchecken vrijgegeven
-                </p>
+                <p className="font-bold text-green-800">{t("paymentSecured")}</p>
+                <p className="text-sm text-green-600">{t("fundsReleased")}</p>
               </div>
             </div>
           </div>
@@ -341,7 +338,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                 className="w-full py-4 bg-black text-white rounded-full font-bold text-lg hover:bg-black/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">check</span>
-                Boeking Accepteren
+                {t("acceptBooking")}
               </button>
               <button
                 onClick={() => setShowDeclineModal(true)}
@@ -349,7 +346,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                 className="w-full py-4 bg-white border border-gray-200 rounded-full font-bold text-lg hover:bg-gray-50 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">close</span>
-                Verzoek Afwijzen
+                {t("declineRequest")}
               </button>
             </div>
           )}
@@ -361,7 +358,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                 className="w-full py-4 bg-black text-white rounded-full font-bold hover:bg-black/90 transition-colors flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">chat</span>
-                Bericht Gast
+                {t("messageGuest")}
               </button>
               <a
                 href={`/api/calendar/ical/${booking.studio.id}`}
@@ -369,14 +366,14 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                 className="w-full py-4 bg-white border border-gray-200 rounded-full font-bold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">event</span>
-                Toevoegen aan Agenda
+                {t("addToCalendar")}
               </a>
               <button
                 onClick={() => setShowCancelModal(true)}
                 className="w-full py-4 bg-white border border-red-200 text-red-600 rounded-full font-bold hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">cancel</span>
-                Boeking Annuleren
+                {t("declineRequest")}
               </button>
             </div>
           )}
@@ -391,15 +388,13 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
 
           {/* Help */}
           <div className="bg-gray-50 rounded-3xl p-6">
-            <h4 className="font-bold mb-2">Hulp Nodig?</h4>
-            <p className="text-sm text-gray-500 mb-4">
-              Neem contact op met ons supportteam voor vragen over deze boeking.
-            </p>
+            <h4 className="font-bold mb-2">{t("needHelp")}</h4>
+            <p className="text-sm text-gray-500 mb-4">{t("helpDesc")}</p>
             <Link
               href="/help"
               className="text-black font-bold text-sm hover:underline flex items-center gap-1"
             >
-              Ondersteuning
+              {t("support")}
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
           </div>
@@ -410,15 +405,12 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
       {showDeclineModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl p-8 max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4">Boekingsverzoek Afwijzen</h3>
-            <p className="text-gray-500 mb-6">
-              Geef een reden op voor het afwijzen van dit boekingsverzoek. Dit wordt gedeeld met
-              de gast.
-            </p>
+            <h3 className="text-xl font-bold mb-4">{t("declineTitle")}</h3>
+            <p className="text-gray-500 mb-6">{t("declineDesc")}</p>
             <textarea
               value={declineReason}
               onChange={(e) => setDeclineReason(e.target.value)}
-              placeholder="Voer je reden in..."
+              placeholder={t("declineReasonPlaceholder")}
               rows={4}
               className="w-full px-4 py-3 bg-gray-50 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-black/20 mb-6"
             />
@@ -427,14 +419,14 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                 onClick={() => setShowDeclineModal(false)}
                 className="flex-1 py-3 bg-white border border-gray-200 rounded-full font-bold hover:bg-gray-50 transition-colors"
               >
-                Annuleren
+                {t("cancel")}
               </button>
               <button
                 onClick={handleDecline}
                 disabled={isProcessing || !declineReason.trim()}
                 className="flex-1 py-3 bg-red-500 text-white rounded-full font-bold hover:bg-red-600 transition-colors disabled:opacity-50"
               >
-                {isProcessing ? "Afwijzen..." : "Verzoek Afwijzen"}
+                {isProcessing ? t("declining") : t("declineRequest")}
               </button>
             </div>
           </div>

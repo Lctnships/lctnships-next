@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { Link } from "@/i18n/routing"
+import { useTranslations, useLocale } from "next-intl"
+import { formatCurrency as fmtCurrency, formatDate as fmtDate } from "@/lib/format-locale"
 import {
   Dialog,
   DialogContent,
@@ -49,6 +51,8 @@ interface CalendarClientProps {
 type ViewType = "month" | "week" | "day"
 
 export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClientProps) {
+  const t = useTranslations("HostCalendar")
+  const locale = useLocale()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [viewType, setViewType] = useState<ViewType>("month")
 
@@ -137,19 +141,18 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
     return blockedDates.some((bd) => bd.blocked_date === dateStr)
   }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("nl-NL", {
-      style: "currency",
-      currency: "EUR",
-    }).format(amount)
-  }
+  const formatCurrency = (amount: number) => fmtCurrency(amount, locale)
 
   const monthNames = [
-    "Januari", "Februari", "Maart", "April", "Mei", "Juni",
-    "Juli", "Augustus", "September", "Oktober", "November", "December"
+    t("monthJanuary"), t("monthFebruary"), t("monthMarch"), t("monthApril"),
+    t("monthMay"), t("monthJune"), t("monthJuly"), t("monthAugust"),
+    t("monthSeptember"), t("monthOctober"), t("monthNovember"), t("monthDecember"),
   ]
 
-  const dayNames = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"]
+  const dayNames = [
+    t("daySun"), t("dayMon"), t("dayTue"), t("dayWed"),
+    t("dayThu"), t("dayFri"), t("daySat"),
+  ]
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear()
@@ -212,11 +215,11 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
 
   const getTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
-      editorial: "Redactionele Shoot",
-      music_video: "Muziekvideo",
-      commercial: "Commercieel",
-      photoshoot: "Fotoshoot",
-      booking: "Boeking",
+      editorial: t("editorial"),
+      music_video: t("musicVideo"),
+      commercial: t("commercial"),
+      photoshoot: t("photoshoot"),
+      booking: t("booking"),
     }
     return labels[type] || type
   }
@@ -245,7 +248,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
               {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h1>
             <p className="text-gray-500 text-sm">
-              {bookings.length} geplande producties deze maand
+              {t("scheduledProductions", { count: bookings.length })}
             </p>
           </div>
           <div className="flex bg-white p-1 rounded-full border border-gray-200">
@@ -259,7 +262,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
                     : "text-gray-500 hover:text-gray-900"
                 }`}
               >
-                {{ month: "Maand", week: "Week", day: "Dag" }[view]}
+                {{ month: t("monthView"), week: t("weekView"), day: t("dayView") }[view]}
               </button>
             ))}
           </div>
@@ -277,7 +280,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
             onClick={() => setCurrentDate(new Date())}
             className="px-4 py-2 text-sm font-bold text-black hover:bg-black/10 rounded-full transition-colors"
           >
-            Vandaag
+            {t("today")}
           </button>
           <button
             onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}
@@ -327,7 +330,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
                     <div className="bg-red-100 border-l-4 border-red-400 p-1.5 rounded-r-lg">
                       <p className="text-[10px] font-bold text-red-600 flex items-center gap-1">
                         <span className="material-symbols-outlined text-[10px]">block</span>
-                        Geblokkeerd
+                        {t("blockedDayLabel")}
                       </p>
                     </div>
                   )}
@@ -347,7 +350,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
                   })}
                   {dayBookings.length > (blocked ? 1 : 2) && (
                     <p className="text-[10px] text-gray-400 font-bold px-2">
-                      +{dayBookings.length - (blocked ? 1 : 2)} meer
+                      {t("moreEvents", { count: dayBookings.length - (blocked ? 1 : 2) })}
                     </p>
                   )}
                 </div>
@@ -361,28 +364,28 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
       <aside className="w-80 flex flex-col gap-6">
         {/* Quick Actions */}
         <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-          <h4 className="text-lg font-bold mb-4">Snelle Acties</h4>
+          <h4 className="text-lg font-bold mb-4">{t("quickActions")}</h4>
           <div className="flex flex-col gap-3">
             <button
               onClick={() => setShowBlockDialog(true)}
               className="flex items-center gap-3 w-full p-4 rounded-xl bg-black text-white font-bold hover:shadow-lg hover:shadow-black/20 transition-all"
             >
               <span className="material-symbols-outlined">block</span>
-              <span>Datums Blokkeren</span>
+              <span>{t("blockDates")}</span>
             </button>
             <button
               onClick={() => setShowSyncDialog(true)}
               className="flex items-center gap-3 w-full p-4 rounded-xl bg-gray-100 font-bold hover:bg-gray-200 transition-all"
             >
               <span className="material-symbols-outlined">sync</span>
-              <span>Agenda Synchroniseren</span>
+              <span>{t("syncCalendar")}</span>
             </button>
             <Link
               href="/host/equipment"
               className="flex items-center gap-3 w-full p-4 rounded-xl bg-gray-100 font-bold hover:bg-gray-200 transition-all"
             >
               <span className="material-symbols-outlined">inventory_2</span>
-              <span>Apparatuur Bijwerken</span>
+              <span>{t("updateEquipment")}</span>
             </Link>
           </div>
         </div>
@@ -390,13 +393,13 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
         {/* Blocked Dates Summary */}
         {blockedDates.length > 0 && (
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-            <h4 className="text-lg font-bold mb-4">Geblokkeerde Datums</h4>
+            <h4 className="text-lg font-bold mb-4">{t("blockedDatesHeader")}</h4>
             <div className="flex flex-col gap-2 max-h-40 overflow-y-auto">
               {blockedDates.slice(0, 5).map((bd) => (
                 <div key={bd.id} className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-red-400 text-sm">block</span>
-                    <span>{new Date(bd.blocked_date).toLocaleDateString("nl-NL", { day: "numeric", month: "short" })}</span>
+                    <span>{fmtDate(bd.blocked_date, locale, { day: "numeric", month: "short" })}</span>
                   </div>
                   <button
                     onClick={() => handleRemoveBlock(bd.id)}
@@ -407,7 +410,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
                 </div>
               ))}
               {blockedDates.length > 5 && (
-                <p className="text-xs text-gray-400">+{blockedDates.length - 5} meer</p>
+                <p className="text-xs text-gray-400">{t("moreEvents", { count: blockedDates.length - 5 })}</p>
               )}
             </div>
           </div>
@@ -416,9 +419,9 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
         {/* Studio Image */}
         <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-lg font-bold">Studiofoto</h4>
+            <h4 className="text-lg font-bold">{t("studioPhoto")}</h4>
             <Link href={`/host/studios/${studio.id}`} className="text-black text-xs font-bold">
-              Bewerken
+              {t("edit")}
             </Link>
           </div>
           <div className="relative group cursor-pointer overflow-hidden rounded-xl aspect-video bg-gray-100">
@@ -442,14 +445,14 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
         <div className="bg-gradient-to-br from-gray-900 to-gray-700 rounded-3xl p-6 text-white shadow-xl shadow-black/10">
           <div className="flex justify-between items-start mb-6">
             <div>
-              <p className="text-white/70 text-xs font-bold uppercase tracking-wider">In Afwachting</p>
+              <p className="text-white/70 text-xs font-bold uppercase tracking-wider">{t("pendingLabel")}</p>
               <h4 className="text-3xl font-black">{formatCurrency(pendingPayout.amount)}</h4>
             </div>
             <span className="material-symbols-outlined text-3xl opacity-40">account_balance_wallet</span>
           </div>
           <div className="bg-white/10 backdrop-blur-md rounded-lg p-3">
             <div className="flex justify-between text-[11px] mb-1">
-              <span>Volgende uitbetaling</span>
+              <span>{t("nextPayout")}</span>
               <span className="font-bold">{pendingPayout.nextPayoutDate}</span>
             </div>
             <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
@@ -460,7 +463,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
             href="/host/earnings"
             className="w-full mt-4 text-center text-xs font-bold bg-white text-black py-2 rounded-full block hover:bg-gray-100 transition-colors"
           >
-            Bekijk Details
+            {t("viewDetails")}
           </Link>
         </div>
       </aside>
@@ -470,15 +473,13 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
       <Dialog open={showBlockDialog} onOpenChange={setShowBlockDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Datums Blokkeren</DialogTitle>
+            <DialogTitle>{t("blockDates")}</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-gray-500 mb-4">
-            Selecteer datums waarop je studio niet beschikbaar is.
-          </p>
+          <p className="text-sm text-gray-500 mb-4">{t("blockDatesSubtitle")}</p>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold">Startdatum</label>
+                <label className="text-sm font-bold">{t("blockStartDate")}</label>
                 <input
                   type="date"
                   value={blockStartDate}
@@ -487,7 +488,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold">Einddatum</label>
+                <label className="text-sm font-bold">{t("blockEndDate")}</label>
                 <input
                   type="date"
                   value={blockEndDate}
@@ -498,11 +499,11 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
               </div>
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-bold">Reden (optioneel)</label>
+              <label className="text-sm font-bold">{t("blockReason")}</label>
               <textarea
                 value={blockReason}
                 onChange={(e) => setBlockReason(e.target.value)}
-                placeholder="bijv. Onderhoud, privé-gebruik..."
+                placeholder={t("blockReasonPlaceholder")}
                 rows={2}
                 className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:ring-2 focus:ring-black focus:border-black resize-none"
               />
@@ -513,14 +514,14 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
               onClick={() => setShowBlockDialog(false)}
               className="px-6 py-2.5 rounded-full border border-gray-200 font-bold text-sm hover:bg-gray-50 transition-colors"
             >
-              Annuleren
+              {t("cancel")}
             </button>
             <button
               onClick={handleBlockDates}
               disabled={!blockStartDate || isBlocking}
               className="px-6 py-2.5 rounded-full bg-black text-white font-bold text-sm hover:bg-black/90 transition-colors disabled:opacity-50"
             >
-              {isBlocking ? "Blokkeren..." : "Blokkeren"}
+              {isBlocking ? t("blocking") : t("block")}
             </button>
           </DialogFooter>
         </DialogContent>
@@ -530,19 +531,17 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
       <Dialog open={showSyncDialog} onOpenChange={setShowSyncDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Agenda Synchroniseren</DialogTitle>
+            <DialogTitle>{t("syncCalendar")}</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-gray-500 mb-6">
-            Synchroniseer je boekingen met je favoriete agenda-app.
-          </p>
+          <p className="text-sm text-gray-500 mb-6">{t("syncDialogSubtitle")}</p>
           <div className="space-y-4">
             {/* iCal Export */}
             <div className="p-4 bg-gray-50 rounded-xl">
               <div className="flex items-center gap-3 mb-3">
                 <span className="material-symbols-outlined text-black">calendar_month</span>
                 <div>
-                  <p className="font-bold text-sm">iCal / Apple Calendar</p>
-                  <p className="text-xs text-gray-500">Kopieer de URL en voeg toe als abonnement</p>
+                  <p className="font-bold text-sm">{t("icalTitle")}</p>
+                  <p className="text-xs text-gray-500">{t("icalDesc")}</p>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -556,7 +555,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
                   onClick={handleCopyIcal}
                   className="px-4 py-2 rounded-lg bg-black text-white text-xs font-bold hover:bg-black/90 transition-colors whitespace-nowrap"
                 >
-                  {copied ? "Gekopieerd!" : "Kopiëren"}
+                  {copied ? t("copied") : t("copy")}
                 </button>
               </div>
             </div>
@@ -570,8 +569,8 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
             >
               <span className="material-symbols-outlined text-black">open_in_new</span>
               <div>
-                <p className="font-bold text-sm">Google Calendar</p>
-                <p className="text-xs text-gray-500">Voeg automatisch toe aan Google Calendar</p>
+                <p className="font-bold text-sm">{t("googleCalendarTitle")}</p>
+                <p className="text-xs text-gray-500">{t("googleCalendarDesc")}</p>
               </div>
             </a>
           </div>
@@ -580,7 +579,7 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
               onClick={() => setShowSyncDialog(false)}
               className="px-6 py-2.5 rounded-full border border-gray-200 font-bold text-sm hover:bg-gray-50 transition-colors"
             >
-              Sluiten
+              {t("close")}
             </button>
           </DialogFooter>
         </DialogContent>

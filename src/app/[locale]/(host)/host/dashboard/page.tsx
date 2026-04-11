@@ -7,14 +7,18 @@ import { Link } from "@/i18n/routing"
 import { formatCurrency } from "@/lib/utils/format-currency"
 import { formatRelativeDate } from "@/lib/utils/format-date"
 import { StatusBadge } from "@/components/shared/status-badge"
+import { getTranslations } from "next-intl/server"
 
-export const metadata = {
-  title: "Host Dashboard",
+export async function generateMetadata() {
+  const t = await getTranslations("HostDashboard")
+  return { title: t("pageTitle") }
 }
 
 export default async function HostDashboardPage() {
   const user = await getUser()
   if (!user) redirect("/login")
+
+  const t = await getTranslations("HostDashboard")
 
   const supabase = await createClient()
   const nowIso = new Date().toISOString()
@@ -71,10 +75,8 @@ export default async function HostDashboardPage() {
     <div className="space-y-5 md:space-y-8">
       {/* Header — compact on mobile */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground text-sm md:text-base mt-0.5">
-          Overzicht van je studio&apos;s en boekingen
-        </p>
+        <h1 className="text-2xl md:text-3xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground text-sm md:text-base mt-0.5">{t("subtitle")}</p>
       </div>
 
       {/* Stats — 2x2 grid on mobile */}
@@ -83,7 +85,7 @@ export default async function HostDashboardPage() {
           <CardContent className="p-4 md:p-6">
             <div className="flex items-start justify-between">
               <div className="min-w-0">
-                <p className="text-xs md:text-sm text-muted-foreground">Inkomsten</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{t("totalEarnings")}</p>
                 <p className="text-lg md:text-2xl font-bold mt-0.5 truncate">{formatCurrency(totalEarnings)}</p>
               </div>
               <div className="p-2 md:p-3 rounded-full bg-green-100 flex-shrink-0">
@@ -92,7 +94,7 @@ export default async function HostDashboardPage() {
             </div>
             {pendingAmount > 0 && (
               <p className="text-xs text-muted-foreground mt-1.5 truncate">
-                +{formatCurrency(pendingAmount)} pending
+                {t("pendingAmount", { amount: formatCurrency(pendingAmount) })}
               </p>
             )}
           </CardContent>
@@ -102,7 +104,7 @@ export default async function HostDashboardPage() {
           <CardContent className="p-4 md:p-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs md:text-sm text-muted-foreground">Boekingen</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{t("upcomingBookings")}</p>
                 <p className="text-lg md:text-2xl font-bold mt-0.5">{upcomingBookings?.length || 0}</p>
               </div>
               <div className="p-2 md:p-3 rounded-full bg-blue-100 flex-shrink-0">
@@ -116,7 +118,7 @@ export default async function HostDashboardPage() {
           <CardContent className="p-4 md:p-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs md:text-sm text-muted-foreground">Studio&apos;s</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{t("studios")}</p>
                 <p className="text-lg md:text-2xl font-bold mt-0.5">{studiosCount || 0}</p>
               </div>
               <div className="p-2 md:p-3 rounded-full bg-purple-100 flex-shrink-0">
@@ -130,7 +132,7 @@ export default async function HostDashboardPage() {
           <CardContent className="p-4 md:p-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs md:text-sm text-muted-foreground">Rating</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{t("avgRating")}</p>
                 <div className="flex items-center gap-1 mt-0.5">
                   <p className="text-lg md:text-2xl font-bold">
                     {avgRating > 0 ? avgRating.toFixed(1) : "-"}
@@ -146,7 +148,7 @@ export default async function HostDashboardPage() {
             </div>
             {reviews && reviews.length > 0 && (
               <p className="text-xs text-muted-foreground mt-1.5">
-                {reviews.length} reviews
+                {t("reviewsCount", { count: reviews.length })}
               </p>
             )}
           </CardContent>
@@ -157,18 +159,18 @@ export default async function HostDashboardPage() {
       <Card className="shadow-none border">
         <CardHeader className="flex flex-row items-center justify-between px-4 md:px-6 py-4 md:py-6">
           <div>
-            <CardTitle className="text-base md:text-lg">Aankomende boekingen</CardTitle>
-            <CardDescription className="text-xs md:text-sm">Boekingen voor je studio&apos;s</CardDescription>
+            <CardTitle className="text-base md:text-lg">{t("upcomingBookingsTitle")}</CardTitle>
+            <CardDescription className="text-xs md:text-sm">{t("bookingsForStudios")}</CardDescription>
           </div>
           <Link href="/host/bookings" className="text-xs md:text-sm text-black hover:underline flex items-center flex-shrink-0">
-            Bekijk alles
+            {t("viewAll")}
             <ArrowUpRight className="h-3.5 w-3.5 ml-0.5" />
           </Link>
         </CardHeader>
         <CardContent className="px-4 md:px-6 pb-4 md:pb-6 pt-0">
           {!upcomingBookings || upcomingBookings.length === 0 ? (
             <div className="text-center py-6 text-muted-foreground text-sm">
-              Geen aankomende boekingen
+              {t("noUpcomingBookings")}
             </div>
           ) : (
             <div className="space-y-2 md:space-y-4">

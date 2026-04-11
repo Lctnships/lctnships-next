@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Building2, Star, Calendar, Settings, Eye, EyeOff, LayoutGrid, List } from "lucide-react"
 import { Link } from "@/i18n/routing"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 import { formatCurrency } from "@/lib/utils/format-currency"
 import { cn } from "@/lib/utils"
@@ -67,6 +68,7 @@ export function StudiosListClient({ studios }: { studios: Studio[] }) {
 }
 
 function GridCard({ studio }: { studio: Studio }) {
+  const t = useTranslations("HostStudios")
   const coverImage = studio.studio_images?.find((img) => img.is_cover) || studio.studio_images?.[0]
 
   return (
@@ -90,9 +92,9 @@ function GridCard({ studio }: { studio: Studio }) {
           variant={studio.is_published ? "default" : "secondary"}
         >
           {studio.is_published ? (
-            <><Eye className="h-3 w-3 mr-1" /> Gepubliceerd</>
+            <><Eye className="h-3 w-3 mr-1" /> {t("published")}</>
           ) : (
-            <><EyeOff className="h-3 w-3 mr-1" /> Concept</>
+            <><EyeOff className="h-3 w-3 mr-1" /> {t("draft")}</>
           )}
         </Badge>
       </div>
@@ -102,7 +104,7 @@ function GridCard({ studio }: { studio: Studio }) {
         <p className="text-xs md:text-sm text-muted-foreground">{studio.city}</p>
 
         <div className="flex items-center gap-3 mt-2 text-xs md:text-sm">
-          <span className="font-semibold">{formatCurrency(studio.price_per_hour)}/uur</span>
+          <span className="font-semibold">{formatCurrency(studio.price_per_hour)}{t("perHour")}</span>
           {studio.avg_rating > 0 && (
             <span className="flex items-center">
               <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 mr-0.5" />
@@ -119,7 +121,7 @@ function GridCard({ studio }: { studio: Studio }) {
           <Link href={`/host/studios/${studio.id}/edit`} className="flex-1">
             <Button variant="outline" className="w-full h-8 text-xs md:text-sm" size="sm">
               <Settings className="h-3.5 w-3.5 mr-1.5" />
-              Bewerken
+              {t("editStudio")}
             </Button>
           </Link>
           <Link href="/host/calendar">
@@ -139,6 +141,7 @@ function GridCard({ studio }: { studio: Studio }) {
 }
 
 function ListRow({ studio }: { studio: Studio }) {
+  const t = useTranslations("HostStudios")
   const coverImage = studio.studio_images?.find((img) => img.is_cover) || studio.studio_images?.[0]
 
   return (
@@ -174,13 +177,13 @@ function ListRow({ studio }: { studio: Studio }) {
                   variant={studio.is_published ? "default" : "secondary"}
                   className="text-[10px] flex-shrink-0"
                 >
-                  {studio.is_published ? "Live" : "Concept"}
+                  {studio.is_published ? t("published") : t("draft")}
                 </Badge>
               </div>
 
               <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
                 <span className="font-semibold text-foreground">
-                  {formatCurrency(studio.price_per_hour)}/uur
+                  {formatCurrency(studio.price_per_hour)}{t("perHour")}
                 </span>
                 {studio.avg_rating > 0 && (
                   <span className="flex items-center">
@@ -190,7 +193,7 @@ function ListRow({ studio }: { studio: Studio }) {
                 )}
                 <span className="flex items-center">
                   <Calendar className="h-3 w-3 mr-0.5" />
-                  {studio.total_bookings} boekingen
+                  {t("bookingsCount", { count: studio.total_bookings })}
                 </span>
               </div>
             </div>
