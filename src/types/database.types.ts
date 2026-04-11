@@ -116,6 +116,7 @@ export type Database = {
           booking_blocks: Array<{ duration_hours: number; price: number; sort_order: number }> | null
           hourly_rate: number | null
           wix_calendar_url: string | null
+          meetingpackage_calendar_url: string | null
           created_at: string
           updated_at: string
         }
@@ -150,6 +151,7 @@ export type Database = {
           booking_blocks?: Array<{ duration_hours: number; price: number; sort_order: number }> | null
           hourly_rate?: number | null
           wix_calendar_url?: string | null
+          meetingpackage_calendar_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -184,6 +186,7 @@ export type Database = {
           booking_blocks?: Array<{ duration_hours: number; price: number; sort_order: number }> | null
           hourly_rate?: number | null
           wix_calendar_url?: string | null
+          meetingpackage_calendar_url?: string | null
           created_at?: string
           updated_at?: string
         }

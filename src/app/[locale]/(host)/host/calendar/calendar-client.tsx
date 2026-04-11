@@ -28,6 +28,7 @@ interface Studio {
   image?: string
   images?: string[]
   wix_calendar_url?: string | null
+  meetingpackage_calendar_url?: string | null
 }
 
 interface PendingPayout {
@@ -69,10 +70,11 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
   const [showSyncDialog, setShowSyncDialog] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  // Wix calendar state
-  const [wixUrl, setWixUrl] = useState("")
-  const [wixConnected, setWixConnected] = useState(false)
-  const [wixLoading, setWixLoading] = useState(false)
+  // External calendar state
+  const [externalCalendarUrl, setExternalCalendarUrl] = useState("")
+  const [externalCalendarConnected, setExternalCalendarConnected] = useState(false)
+  const [externalCalendarLoading, setExternalCalendarLoading] = useState(false)
+  const [selectedExternalProvider, setSelectedExternalProvider] = useState<"wix" | "meetingpackage">("wix")
 
   const icalUrl = typeof window !== "undefined"
     ? `${window.location.origin}/api/calendar/ical/${studio.id}`
@@ -95,10 +97,10 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
     fetchBlockedDates()
   }, [fetchBlockedDates])
 
-  // Initialize Wix connection state from studio prop
+  // Initialize external calendar connection state from studio prop
   useEffect(() => {
-    setWixConnected(!!studio.wix_calendar_url)
-  }, [studio.wix_calendar_url])
+    setExternalCalendarConnected(!!studio.wix_calendar_url || !!studio.meetingpackage_calendar_url)
+  }, [studio.wix_calendar_url, studio.meetingpackage_calendar_url])
 
   const handleBlockDates = async () => {
     if (!blockStartDate) return
@@ -595,60 +597,92 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
                   <path d="M7 8h4M7 12h10M7 16h6" stroke="#000" strokeWidth="1.5"/>
                 </svg>
                 <div>
-                  <p className="font-bold text-sm">{t("wixCalendarTitle")}</p>
-                  <p className="text-xs text-gray-500">{t("wixCalendarDesc")}</p>
+                  <p className="font-bold text-sm">{selectedExternalProvider === "wix" ? t("wixCalendarTitle") : t("meetingpackageCalendarTitle")}</p>
+                  <p className="text-xs text-gray-500">{selectedExternalProvider === "wix" ? t("wixCalendarDesc") : t("meetingpackageCalendarDesc")}</p>
                 </div>
               </div>
-              {wixConnected ? (
+              
+              {/* Provider selector */}
+              <div className="flex gap-2 mb-3">
+                <button
+                  onClick={() => setSelectedExternalProvider("wix")}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    selectedExternalProvider === "wix" 
+                      ? "bg-black text-white" 
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  Wix
+                </button>
+                <button
+                  onClick={() => setSelectedExternalProvider("meetingpackage")}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    selectedExternalProvider === "meetingpackage" 
+                      ? "bg-black text-white" 
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  MeetingPackage
+                </button>
+              </div>
+
+              {externalCalendarConnected ? (
                 <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                   <div className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-green-600">check_circle</span>
-                    <span className="text-sm font-medium text-green-700">{t("wixConnected")}</span>
+                    <span className="text-sm font-medium text-green-700">
+                      {selectedExternalProvider === "wix" ? t("wixConnected") : t("meetingpackageConnected")}
+                    </span>
                   </div>
                   <button
                     onClick={async () => {
                       const res = await fetch(`/api/calendar/import/${studio.id}`, { method: "DELETE" })
-                      if (res.ok) setWixConnected(false)
+                      if (res.ok) setExternalCalendarConnected(false)
                     }}
                     className="text-xs text-red-600 hover:text-red-700 font-medium"
                   >
-                    {t("disconnectWix")}
+                    {selectedExternalProvider === "wix" ? t("disconnectWix") : t("disconnectMeetingpackage")}
                   </button>
                 </div>
               ) : (
                 <div className="space-y-2">
                   <input
                     type="url"
-                    value={wixUrl}
-                    onChange={(e) => setWixUrl(e.target.value)}
-                    placeholder={t("wixCalendarUrlPlaceholder")}
+                    value={externalCalendarUrl}
+                    onChange={(e) => setExternalCalendarUrl(e.target.value)}
+                    placeholder={selectedExternalProvider === "wix" ? t("wixCalendarUrlPlaceholder") : t("meetingpackageCalendarUrlPlaceholder")}
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-xs"
                   />
-                  <p className="text-xs text-gray-500">{t("wixCalendarInstructions")}</p>
+                  <p className="text-xs text-gray-500">
+                    {selectedExternalProvider === "wix" ? t("wixCalendarInstructions") : t("meetingpackageCalendarInstructions")}
+                  </p>
                   <button
                     onClick={async () => {
-                      if (!wixUrl) return
-                      setWixLoading(true)
+                      if (!externalCalendarUrl) return
+                      setExternalCalendarLoading(true)
                       try {
                         const res = await fetch(`/api/calendar/import/${studio.id}`, {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ ical_url: wixUrl })
+                          body: JSON.stringify({ 
+                            ical_url: externalCalendarUrl,
+                            provider: selectedExternalProvider
+                          })
                         })
                         if (res.ok) {
-                          setWixConnected(true)
-                          setWixUrl("")
+                          setExternalCalendarConnected(true)
+                          setExternalCalendarUrl("")
                         }
                       } catch (err) {
-                        console.error("Failed to connect Wix calendar:", err)
+                        console.error("Failed to connect calendar:", err)
                       } finally {
-                        setWixLoading(false)
+                        setExternalCalendarLoading(false)
                       }
                     }}
-                    disabled={!wixUrl || wixLoading}
+                    disabled={!externalCalendarUrl || externalCalendarLoading}
                     className="w-full px-4 py-2 rounded-lg bg-black text-white text-xs font-bold hover:bg-black/90 transition-colors disabled:opacity-50"
                   >
-                    {wixLoading ? "..." : t("connectWixCalendar")}
+                    {externalCalendarLoading ? "..." : (selectedExternalProvider === "wix" ? t("connectWixCalendar") : t("connectMeetingpackageCalendar"))}
                   </button>
                 </div>
               )}
