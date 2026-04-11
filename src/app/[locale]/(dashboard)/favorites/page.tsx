@@ -22,11 +22,12 @@ export default async function FavoritesPage() {
       created_at,
       studio:studios (
         *,
-        studio_images (*)
+        studio_images (image_url, is_cover)
       )
     `)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
+    .limit(50)
 
   const studios = favorites?.map((f) => ({
     ...f.studio,

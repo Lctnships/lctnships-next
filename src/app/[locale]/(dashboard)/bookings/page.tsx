@@ -32,7 +32,8 @@ export default async function BookingsPage() {
         )
       `)
       .eq("renter_id", user.id)
-      .order("start_datetime", { ascending: false }),
+      .order("start_datetime", { ascending: false })
+      .limit(100),
     supabase
       .from("favorites")
       .select(`
