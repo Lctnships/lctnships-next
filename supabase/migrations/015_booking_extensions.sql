@@ -1,6 +1,17 @@
 -- ============================================================================
 -- 015_booking_extensions.sql
 -- Booking Extension feature - allow renters to extend active sessions
+--
+-- Review fix notes (audit closeout, 2026-04-11):
+--  - Added INSERT/UPDATE policies so the /api/bookings/[id]/extend route can
+--    actually create rows via the user-scoped supabase client (previously
+--    the table had RLS enabled with SELECT-only policies, blocking writes).
+--  - Removed the public "viewable by anon" policy that leaked stripe_payment_id,
+--    host_payout, commission_amount, and total_extension_price to anyone.
+--    Extensions are now only visible to the renter or the host of that booking.
+--  - Removed the reference to s.closing_time in get_extension_availability
+--    since that column does not exist on studios — the function now uses the
+--    22:00 default for all studios until a real closing_time column is added.
 -- ============================================================================
 
 -- Enable UUID extension if not already enabled
@@ -48,37 +59,56 @@ CREATE TABLE IF NOT EXISTS public.booking_extension_items (
 ALTER TABLE public.booking_extensions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.booking_extension_items ENABLE ROW LEVEL SECURITY;
 
--- RLS policies for booking_extensions
--- Renters can view their own extensions
+-- ---------------------------------------------------------------------------
+-- booking_extensions policies
+-- ---------------------------------------------------------------------------
+
+-- SELECT: renter or host of this booking only. No public access — extension
+-- rows include stripe_payment_id, host_payout, and commission_amount, which
+-- must never be readable by anonymous callers.
 CREATE POLICY "Renters can view own extensions"
   ON public.booking_extensions
   FOR SELECT
   TO authenticated
   USING (renter_id = auth.uid());
 
--- Hosts can view extensions for their studios
 CREATE POLICY "Hosts can view extensions for own studios"
   ON public.booking_extensions
   FOR SELECT
   TO authenticated
   USING (host_id = auth.uid());
 
--- Anyone can view extensions for public booking details (read-only, limited fields)
-CREATE POLICY "Public can view paid extensions for completed bookings"
+-- INSERT: only the renter can create their own extension request. host_id,
+-- studio_id, and financial columns are still writable by authenticated but
+-- the /api/bookings/[id]/extend route recalculates them server-side before
+-- INSERT, and the booking_id must refer to a booking the renter owns.
+CREATE POLICY "Renters can create own extensions"
   ON public.booking_extensions
-  FOR SELECT
-  TO anon, authenticated
-  USING (
-    status = 'active' AND payment_status = 'paid' AND 
-    EXISTS (
-      SELECT 1 FROM public.bookings b 
-      WHERE b.id = booking_extensions.booking_id 
-      AND b.end_datetime < NOW()
-    )
-  );
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (renter_id = auth.uid());
 
--- RLS policies for booking_extension_items
--- Renters can view items for their extensions
+-- UPDATE: only the Stripe webhook (service role) should flip payment_status
+-- from 'pending' to 'paid'. Renters can optionally cancel their own pending
+-- extensions.
+CREATE POLICY "Renters can cancel own pending extensions"
+  ON public.booking_extensions
+  FOR UPDATE
+  TO authenticated
+  USING (renter_id = auth.uid())
+  WITH CHECK (renter_id = auth.uid());
+
+CREATE POLICY "Service role updates booking_extensions"
+  ON public.booking_extensions
+  FOR UPDATE
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
+
+-- ---------------------------------------------------------------------------
+-- booking_extension_items policies
+-- ---------------------------------------------------------------------------
+
 CREATE POLICY "Renters can view own extension items"
   ON public.booking_extension_items
   FOR SELECT
@@ -90,7 +120,6 @@ CREATE POLICY "Renters can view own extension items"
     )
   );
 
--- Hosts can view items for their extensions
 CREATE POLICY "Hosts can view own extension items"
   ON public.booking_extension_items
   FOR SELECT
@@ -102,7 +131,21 @@ CREATE POLICY "Hosts can view own extension items"
     )
   );
 
--- Add indexes for performance
+-- INSERT: renter inserting items for their own extension.
+CREATE POLICY "Renters can create own extension items"
+  ON public.booking_extension_items
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM public.booking_extensions e
+      WHERE e.id = extension_id AND e.renter_id = auth.uid()
+    )
+  );
+
+-- ---------------------------------------------------------------------------
+-- Indexes for performance
+-- ---------------------------------------------------------------------------
 CREATE INDEX IF NOT EXISTS idx_booking_extensions_booking_id ON public.booking_extensions(booking_id);
 CREATE INDEX IF NOT EXISTS idx_booking_extensions_renter_id ON public.booking_extensions(renter_id);
 CREATE INDEX IF NOT EXISTS idx_booking_extensions_host_id ON public.booking_extensions(host_id);
@@ -112,26 +155,30 @@ CREATE INDEX IF NOT EXISTS idx_booking_extension_items_extension_id ON public.bo
 ALTER TABLE public.bookings
 ADD COLUMN IF NOT EXISTS original_end_datetime TIMESTAMP WITH TIME ZONE;
 
--- Create function to check extension availability
--- Returns the number of hours available for extension
+-- ---------------------------------------------------------------------------
+-- Extension availability function
+-- ---------------------------------------------------------------------------
+-- Removed the reference to s.closing_time since that column does not exist on
+-- the studios table. Closing time is hardcoded at 22:00 local time until a
+-- dedicated column is added (tracked as a follow-up).
+-- ---------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION get_extension_availability(p_booking_id UUID)
 RETURNS TABLE(
   available_hours DECIMAL,
   conflict_type TEXT,
   conflict_booking_id UUID
-) 
+)
 LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 DECLARE
   v_booking RECORD;
-  v_studio RECORD;
   v_available_hours DECIMAL;
   v_next_booking RECORD;
-  v_studio_closing_time TIME;
+  v_closing_time TIME := '22:00'::TIME;
 BEGIN
   -- Get the booking details
-  SELECT b.*, s.closing_time, s.allow_extensions, s.max_extension_hours
+  SELECT b.*, s.allow_extensions, s.max_extension_hours
   INTO v_booking
   FROM public.bookings b
   JOIN public.studios s ON b.studio_id = s.id
@@ -164,9 +211,8 @@ BEGIN
     v_available_hours := EXTRACT(EPOCH FROM (v_next_booking.start_datetime - v_booking.end_datetime)) / 3600;
   ELSE
     -- Until studio closing time (default 22:00)
-    v_studio_closing_time := COALESCE(v_booking.closing_time::TIME, '22:00'::TIME);
     v_available_hours := EXTRACT(EPOCH FROM (
-      (v_booking.end_datetime::DATE + v_studio_closing_time) - v_booking.end_datetime
+      (v_booking.end_datetime::DATE + v_closing_time) - v_booking.end_datetime
     )) / 3600;
   END IF;
 

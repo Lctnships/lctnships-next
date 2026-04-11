@@ -50,3 +50,6 @@ next-env.d.ts
 /lctnships-next
 /lctnships-next.code-workspace
 .claude/logs/
+
+# Supabase CLI local state
+supabase/.temp/

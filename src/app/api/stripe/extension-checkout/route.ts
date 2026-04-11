@@ -108,6 +108,7 @@ export async function POST(req: Request) {
         type: "extension_payment",
         booking_id,
         extension_id,
+        user_id: user.id,
         platformFee: platformFee.toString(),
       },
       ...(useConnect && host?.stripe_account_id && {

@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
   try {
     const now = new Date()
     const thirtyMinutesFromNow = new Date(now.getTime() + 30 * 60 * 1000)
-    const tenMinutesFromNow = new Date(now.getTime() + 10 * 60 * 1000)
 
     const { data: studiosWithExtensions } = await supabase
       .from("studios")
@@ -58,16 +57,20 @@ export async function POST(request: NextRequest) {
       const endTime = new Date(booking.end_datetime)
       const minutesUntilEnd = Math.floor((endTime.getTime() - now.getTime()) / 60000)
 
-      const existingNotification = await supabase
+      // Note: .maybeSingle() returns { data: null } on 0 rows (no error).
+      // Using .single() + checking `!response` is a bug — the response object
+      // is always truthy, so the `!` check never fires and reminders never
+      // send. We need to destructure the data property explicitly.
+      const { data: existing30 } = await supabase
         .from("notifications")
         .select("id")
         .eq("user_id", booking.renter_id)
         .eq("type", "extension_reminder_30")
         .eq("link", `/bookings/${booking.id}`)
         .gte("created_at", new Date(now.getTime() - 35 * 60 * 1000).toISOString())
-        .single()
+        .maybeSingle()
 
-       if (minutesUntilEnd <= 30 && minutesUntilEnd > 10 && !existingNotification) {
+      if (minutesUntilEnd <= 30 && minutesUntilEnd > 10 && !existing30) {
         await supabase.from("notifications").insert({
           user_id: booking.renter_id,
           type: "extension_reminder_30",
@@ -107,16 +110,16 @@ export async function POST(request: NextRequest) {
       }
 
       if (minutesUntilEnd <= 10 && minutesUntilEnd > 5) {
-        const reminder10 = await supabase
+        const { data: existing10 } = await supabase
           .from("notifications")
           .select("id")
           .eq("user_id", booking.renter_id)
           .eq("type", "extension_reminder_10")
           .eq("link", `/bookings/${booking.id}`)
           .gte("created_at", new Date(now.getTime() - 15 * 60 * 1000).toISOString())
-          .single()
+          .maybeSingle()
 
-        if (!reminder10) {
+        if (!existing10) {
           await supabase.from("notifications").insert({
             user_id: booking.renter_id,
             type: "extension_reminder_10",
