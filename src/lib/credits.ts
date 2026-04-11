@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import type { SupabaseClient } from "@supabase/supabase-js"
 
 export interface CreditPackage {
   id: string
@@ -71,14 +72,20 @@ export async function getUserCreditsRecord(
   return data
 }
 
-// Add credits to user account (after purchase)
+// Add credits to user account (after purchase).
+// Accepts an optional supabase client so server-side flows like the Stripe
+// webhook can pass their service-role client. Migration 011 restricted the
+// user_credits / credit_transactions policies to service_role only, so
+// without the service client this function will fail at runtime in webhook
+// context.
 export async function addCredits(
   userId: string,
   credits: number,
   packageId: string,
-  stripeSessionId: string
+  stripeSessionId: string,
+  client?: SupabaseClient
 ): Promise<number> {
-  const supabase = await createClient()
+  const supabase = client ?? (await createClient())
 
   // Get existing credits
   const { data: existing } = await supabase

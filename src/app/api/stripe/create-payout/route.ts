@@ -61,15 +61,19 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create payout with idempotency key to prevent duplicate payouts on retry
+    // Create payout with idempotency key to prevent duplicate payouts on retry.
+    // The key MUST be deterministic for the same logical request — Date.now()
+    // was previously included here, which defeated idempotency because a retry
+    // would compute a fresh timestamp and Stripe would treat it as a new payout.
+    const amountInCents = Math.round(amount * 100)
     const payout = await stripe.payouts.create(
       {
-        amount: Math.round(amount * 100), // Convert to cents
+        amount: amountInCents,
         currency: "eur",
       },
       {
         stripeAccount: profile.stripe_account_id,
-        idempotencyKey: `payout-${user.id}-${Math.round(amount * 100)}-${Date.now()}`,
+        idempotencyKey: `payout-${user.id}-${amountInCents}`,
       }
     )
 

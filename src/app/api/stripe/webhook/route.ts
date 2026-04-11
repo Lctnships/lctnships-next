@@ -39,15 +39,32 @@ export async function POST(request: NextRequest) {
   // Use service client for webhook operations (elevated permissions)
   const supabase = await createServiceClient()
 
+  // Idempotency guard. Stripe delivers events at-least-once; a transient 500
+  // or network drop triggers a retry. Insert first with the event id as PK —
+  // if we already processed this event, the unique constraint fires and we
+  // bail out before any side effects run.
+  const { error: idempotencyError } = await supabase
+    .from("processed_webhook_events")
+    .insert({ stripe_event_id: event.id, event_type: event.type })
+
+  if (idempotencyError) {
+    // 23505 = unique_violation = event already processed on a previous attempt
+    if (idempotencyError.code === "23505") {
+      logger.info("Webhook event already processed, skipping", { eventId: event.id, eventType: event.type })
+      return NextResponse.json({ received: true, duplicate: true })
+    }
+    logger.error("Failed to record webhook event for idempotency", idempotencyError)
+    return NextResponse.json({ error: "Failed to record event" }, { status: 500 })
+  }
+
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session
       const paymentType = session.metadata?.type
 
-      console.log("Checkout completed:", {
+      logger.info("Checkout completed", {
         sessionId: session.id,
         type: paymentType,
-        amountTotal: session.amount_total,
       })
 
       // Handle credit purchase
@@ -58,8 +75,10 @@ export async function POST(request: NextRequest) {
 
         if (userId && packageId && credits > 0) {
           try {
-            await addCredits(userId, credits, packageId, session.id)
-            console.log(`Added ${credits} credits for user ${userId}`)
+            // Pass the service client so addCredits runs with elevated perms —
+            // migration 011 locked user_credits/credit_transactions to service_role.
+            await addCredits(userId, credits, packageId, session.id, supabase)
+            logger.info("Added credits for user", { userId, credits })
 
             // Log to transactions table
             await supabase.from("transactions").insert({
@@ -120,17 +139,12 @@ export async function POST(request: NextRequest) {
               })
             }
 
-            console.log(`Booking ${bookingId} confirmed with payment`)
+            logger.info("Booking confirmed with payment", { bookingId })
           } catch (error) {
             logger.error("Failed to update booking", error)
           }
         } else {
-          // Log standalone payment (no booking ID)
-          console.log("Payment received without booking:", {
-            sessionId: session.id,
-            studioId: session.metadata?.studioId,
-            amount: session.amount_total,
-          })
+          logger.info("Payment received without booking", { sessionId: session.id })
         }
       }
       break
@@ -147,13 +161,16 @@ export async function POST(request: NextRequest) {
           .eq("id", bookingId)
       }
 
-      console.log("Checkout session expired:", session.id)
+      logger.info("Checkout session expired", { sessionId: session.id })
       break
     }
 
     case "payment_intent.payment_failed": {
       const paymentIntent = event.data.object as Stripe.PaymentIntent
-      console.log("Payment failed:", paymentIntent.id, paymentIntent.last_payment_error?.message)
+      logger.warn("Payment failed", {
+        paymentIntentId: paymentIntent.id,
+        reason: paymentIntent.last_payment_error?.message,
+      })
 
       // Update any associated booking
       const { data: booking } = await supabase
@@ -173,16 +190,12 @@ export async function POST(request: NextRequest) {
 
     case "transfer.created": {
       const transfer = event.data.object as Stripe.Transfer
-      console.log("Transfer created:", {
-        id: transfer.id,
-        amount: transfer.amount,
-        destination: transfer.destination,
-      })
+      logger.info("Transfer created", { transferId: transfer.id })
       break
     }
 
     default:
-      console.log(`Unhandled event type: ${event.type}`)
+      logger.info("Unhandled webhook event type", { type: event.type })
   }
 
   return NextResponse.json({ received: true })
