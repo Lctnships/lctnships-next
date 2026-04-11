@@ -1,10 +1,65 @@
 # Security Assessment Report — lctnships
 
 **Platform:** lctnships.com — Creative Studio Rental Marketplace
-**Assessment date:** 2026-04-06
+**Last assessment:** 2026-04-11 (fresh vulnerability test, second cycle)
+**Previous assessment:** 2026-04-06 (baseline OWASP Top 10 + pen test)
 **Assessor:** Automated security review (Claude Code) + manual code audit
 **Scope:** Full application stack (Next.js 16, Supabase, Stripe Connect)
-**Status:** All critical, high, and medium findings remediated.
+**Status:** All critical, high, and medium findings remediated in both cycles.
+
+## 2026-04-11 cycle — summary
+
+A fresh vulnerability assessment was performed using three parallel
+specialized reviewers (OWASP/auth, Stripe Connect, Supabase RLS). The
+production Supabase state was queried directly via the Management API
+rather than relying on local migration files, which had drifted from
+reality.
+
+**Findings:** 5 CRITICAL + 7 HIGH + 14 MEDIUM. All remediated in three
+phases committed separately for review: `783fab6` (P0), `746947d` (P1),
+`37dc504` (P2). Migrations `011`, `012`, and `013` applied to production.
+
+**Verified against live production via PostgREST:**
+
+| Attack | Pre-fix | Post-fix |
+|--------|---------|----------|
+| `PATCH /rest/v1/user_credits` with forged user_id | succeeded | `42501 row-level security policy violation` |
+| `POST /rest/v1/credit_transactions` with forged record | succeeded | `42501 row-level security policy violation` |
+| `GET /rest/v1/users?select=stripe_account_id` as anon | returned all rows | `42501 permission denied for table users` |
+| `PATCH /rest/v1/bookings?id=eq.X` with `total_amount=0.01` | succeeded | column UPDATE grant removed |
+| `?redirect=https://evil.com` on /login | email/pw path phished | OAuth + email/pw both routed through `validateRedirectPath` |
+| `POST /api/studios/X/images` with `javascript:` URL | stored → SSRF via next/image | rejected at API, Supabase host allowlist |
+
+**Key issues found that the 2026-04-06 cycle missed:**
+
+1. `user_credits` and `credit_transactions` policies were scoped `TO public`
+   (no role restriction) despite being named "Service can manage credits".
+   Any authenticated user could grant themselves unlimited credits — the
+   worst finding of the cycle.
+2. `users` table SELECT policy was `USING(true)` and lacked column-level
+   grants, so an anonymous attacker with just the anon key could harvest
+   every host's `stripe_account_id`, `phone`, and bank data in a single
+   REST call.
+3. `bookings` UPDATE policies had `USING` but no `WITH CHECK`, allowing
+   direct PostgREST patches of `total_amount` and `payment_status`.
+4. `create-payout` idempotency key included `Date.now()`, which defeated
+   idempotency entirely — a network retry would double-pay the host.
+5. The Stripe webhook had no duplicate-event guard. Stripe's at-least-
+   once delivery would re-run `addCredits()` and re-insert transactions
+   on any transient 500.
+6. `studio_availability`, `payment_methods`, and all six `project_*`
+   sub-tables had RLS enabled with zero policies, silently breaking
+   every user-scoped query against them (the root cause of the dashboard
+   projects feature rendering empty in production).
+
+See `supabase/migrations/011_security_hardening_p0.sql`,
+`012_payouts_policies.sql`, and `013_missing_rls_policies.sql` for the
+full fix SQL, and commit messages `783fab6`, `746947d`, `37dc504` for
+the code diffs.
+
+---
+
+## 2026-04-06 cycle (baseline)
 
 ---
 
