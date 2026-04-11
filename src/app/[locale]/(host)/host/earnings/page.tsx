@@ -27,36 +27,44 @@ export default async function EarningsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  // Get real earnings data
-  const { data: completedBookings } = await supabase
-    .from("bookings")
-    .select("host_payout, created_at, start_datetime")
-    .eq("host_id", user.id)
-    .eq("status", "completed")
-    .eq("payment_status", "paid")
-
-  // Get pending payouts
-  const { data: pendingPayouts } = await supabase
-    .from("payouts")
-    .select("amount")
-    .eq("host_id", user.id)
-    .eq("status", "pending")
-
-  // Get recent transactions
-  const { data: recentBookings } = await supabase
-    .from("bookings")
-    .select(`
-      id,
-      host_payout,
-      status,
-      payment_status,
-      created_at,
-      studio:studios (title),
-      renter:users!bookings_renter_id_fkey (full_name)
-    `)
-    .eq("host_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(10)
+  // Run all independent queries in parallel. completedBookings includes
+  // studio data so we don't need a separate studioEarnings query below.
+  const [
+    { data: completedBookings },
+    { data: pendingPayouts },
+    { data: recentBookings },
+  ] = await Promise.all([
+    supabase
+      .from("bookings")
+      .select(`
+        host_payout,
+        created_at,
+        start_datetime,
+        studio:studios (id, title, images, studio_images(image_url))
+      `)
+      .eq("host_id", user.id)
+      .eq("status", "completed")
+      .eq("payment_status", "paid"),
+    supabase
+      .from("payouts")
+      .select("amount")
+      .eq("host_id", user.id)
+      .eq("status", "pending"),
+    supabase
+      .from("bookings")
+      .select(`
+        id,
+        host_payout,
+        status,
+        payment_status,
+        created_at,
+        studio:studios (title),
+        renter:users!bookings_renter_id_fkey (full_name)
+      `)
+      .eq("host_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(10),
+  ])
 
   // Calculate real earnings
   const totalEarnings = completedBookings?.reduce((sum, b) => sum + (b.host_payout || 0), 0) || 0
@@ -122,20 +130,9 @@ export default async function EarningsPage() {
     return { month, earnings: monthEarnings }
   })
 
-  // Get studio earnings breakdown
-  const { data: studioEarnings } = await supabase
-    .from("bookings")
-    .select(`
-      host_payout,
-      studio:studios (id, title, images, studio_images(*))
-    `)
-    .eq("host_id", user.id)
-    .eq("status", "completed")
-    .eq("payment_status", "paid")
-
-  // Aggregate by studio
+  // Aggregate by studio from the already-fetched completedBookings
   const studioMap = new Map<string, { id: string; title: string; earnings: number; bookings: number; image: string }>()
-  studioEarnings?.forEach((b) => {
+  completedBookings?.forEach((b) => {
     const studio = b.studio as unknown as EarningsStudioRelation | null
     if (!studio) return
     const existing = studioMap.get(studio.id)
