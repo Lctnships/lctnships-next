@@ -17,19 +17,44 @@ export async function GET(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    // Explicit column allowlist on the studios sub-join. Never use SELECT *
+    // here — it would return the encrypted entry_code / wifi_password /
+    // access_instructions to the renter before the booking is confirmed
+    // and paid. Those sensitive fields belong on a dedicated endpoint that
+    // checks payment_status === 'paid' first.
     const { data: booking, error } = await supabase
       .from("bookings")
       .select(`
         *,
         studio:studios (
-          *,
+          id,
+          title,
+          description,
+          type,
+          city,
+          address,
+          country,
+          latitude,
+          longitude,
+          price_per_hour,
+          hourly_rate,
+          daily_rate,
+          minimum_hours,
+          maximum_hours,
+          amenities,
+          rules,
+          cancellation_policy,
+          host_id,
+          is_published,
           studio_images (image_url, is_cover)
         ),
-        host:users!bookings_host_id_fkey (id, full_name, avatar_url, email, phone, is_verified, response_rate, bio),
+        host:users!bookings_host_id_fkey (id, full_name, avatar_url, email, phone, is_verified, bio),
         renter:users!bookings_renter_id_fkey (id, full_name, avatar_url, email, phone, is_verified, created_at),
         booking_equipment (
-          *,
-          equipment (*)
+          id,
+          quantity,
+          price_per_unit,
+          equipment (id, name, description, image_url, price_per_day)
         )
       `)
       .eq("id", id)

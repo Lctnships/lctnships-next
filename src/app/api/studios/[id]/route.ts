@@ -15,10 +15,54 @@ export async function GET(request: Request, { params }: RouteParams) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
+    // Explicit column allowlist — never fetch the encrypted secrets
+    // (entry_code, wifi_password, access_instructions) in this query. A
+    // separate authorized-only query below fetches them when the caller
+    // is the owner or has a confirmed booking. This way the sensitive
+    // ciphertexts never touch the response for unauthorized callers, and
+    // we don't rely on a JS `delete` that a future refactor could skip.
     const { data: studio, error } = await supabase
       .from("studios")
       .select(`
-        *,
+        id,
+        owner_id,
+        host_id,
+        title,
+        description,
+        short_description,
+        type,
+        location,
+        address,
+        city,
+        country,
+        latitude,
+        longitude,
+        price_per_hour,
+        hourly_rate,
+        capacity,
+        size_sqm,
+        images,
+        amenities,
+        rules,
+        is_featured,
+        is_instant_book,
+        rating,
+        avg_rating,
+        review_count,
+        total_reviews,
+        playlists,
+        playlist_position,
+        status,
+        is_published,
+        minimum_hours,
+        maximum_hours,
+        cancellation_policy,
+        wifi_network_name,
+        parking_info,
+        check_in_time,
+        check_out_time,
+        created_at,
+        updated_at,
         studio_images (id, image_url, is_cover, display_order),
         host:users!studios_host_id_fkey (
           id,
@@ -59,15 +103,14 @@ export async function GET(request: Request, { params }: RouteParams) {
       throw error
     }
 
-    // Check if user is authorized to see sensitive access info
+    // Only fetch + decrypt sensitive access info when the caller is
+    // authorized: the studio owner, or a renter with a confirmed/in-progress
+    // booking. A renter who is merely browsing cannot see these values.
     let canSeeSensitiveInfo = false
-
     if (user) {
-      // Host can always see their own studio's access info
       if (studio.host_id === user.id) {
         canSeeSensitiveInfo = true
       } else {
-        // Check if user has an active/confirmed booking for this studio
         const { data: activeBooking } = await supabase
           .from("bookings")
           .select("id")
@@ -76,26 +119,27 @@ export async function GET(request: Request, { params }: RouteParams) {
           .in("status", ["confirmed", "in_progress"])
           .limit(1)
           .single()
-
         canSeeSensitiveInfo = !!activeBooking
       }
     }
 
-    // Remove sensitive fields if user is not authorized, decrypt if authorized
-    if (!canSeeSensitiveInfo) {
-      delete studio.entry_code
-      delete studio.wifi_password
-      delete studio.access_instructions
-    } else {
-      // Decrypt the encrypted secrets for authorized users
-      const decrypted = decryptStudioSecrets({
-        entry_code: studio.entry_code,
-        wifi_password: studio.wifi_password,
-        access_instructions: studio.access_instructions,
-      })
-      studio.entry_code = decrypted.entry_code
-      studio.wifi_password = decrypted.wifi_password
-      studio.access_instructions = decrypted.access_instructions
+    if (canSeeSensitiveInfo) {
+      const { data: secretsRow } = await supabase
+        .from("studios")
+        .select("entry_code, wifi_password, access_instructions")
+        .eq("id", id)
+        .single()
+
+      if (secretsRow) {
+        const decrypted = decryptStudioSecrets({
+          entry_code: secretsRow.entry_code,
+          wifi_password: secretsRow.wifi_password,
+          access_instructions: secretsRow.access_instructions,
+        })
+        ;(studio as Record<string, unknown>).entry_code = decrypted.entry_code
+        ;(studio as Record<string, unknown>).wifi_password = decrypted.wifi_password
+        ;(studio as Record<string, unknown>).access_instructions = decrypted.access_instructions
+      }
     }
 
     // Get availability for next 30 days

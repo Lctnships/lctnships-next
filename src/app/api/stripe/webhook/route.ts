@@ -5,6 +5,12 @@ import { createServiceClient } from "@/lib/supabase/server"
 import Stripe from "stripe"
 import { logger } from "@/lib/logger"
 
+// Force Node.js runtime. The Stripe SDK uses Node APIs (crypto for signature
+// verification, TLS) that are not available in the Edge runtime. Without this
+// pin, a future Vercel config change could silently route the webhook through
+// Edge and break signature verification.
+export const runtime = "nodejs"
+
 export async function POST(request: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
 
@@ -200,6 +206,61 @@ export async function POST(request: NextRequest) {
     case "transfer.created": {
       const transfer = event.data.object as Stripe.Transfer
       logger.info("Transfer created", { transferId: transfer.id })
+      break
+    }
+
+    case "payout.failed": {
+      // A previously initiated payout to the host's bank account bounced.
+      // Mark the payout row as failed so the host sees it in their dashboard
+      // and can retry. Stripe will also notify them directly.
+      const payout = event.data.object as Stripe.Payout
+      logger.error("Stripe payout failed", {
+        payoutId: payout.id,
+        amount: payout.amount,
+        failureCode: payout.failure_code,
+        failureMessage: payout.failure_message,
+      })
+      await supabase
+        .from("payouts")
+        .update({ status: "failed" })
+        .eq("stripe_payout_id", payout.id)
+      break
+    }
+
+    case "charge.dispute.created": {
+      // A renter filed a chargeback/dispute. Funds are held by Stripe; we
+      // must flag the booking so the host and ops are aware before the
+      // next payout runs.
+      const dispute = event.data.object as Stripe.Dispute
+      logger.error("Stripe dispute filed", {
+        disputeId: dispute.id,
+        chargeId: dispute.charge,
+        amount: dispute.amount,
+        reason: dispute.reason,
+      })
+      const chargeId = typeof dispute.charge === "string" ? dispute.charge : dispute.charge?.id
+      if (chargeId) {
+        // Look up the booking by its payment intent or session id via charge.
+        // We may not have a direct mapping from charge_id — try paymentIntent.
+        const stripeClient = getStripe()
+        try {
+          const charge = await stripeClient.charges.retrieve(chargeId)
+          const paymentIntentId = typeof charge.payment_intent === "string"
+            ? charge.payment_intent
+            : charge.payment_intent?.id
+          if (paymentIntentId) {
+            await supabase
+              .from("bookings")
+              .update({
+                requires_manual_payout_reversal: true,
+                payment_status: "disputed",
+              })
+              .eq("stripe_payment_intent", paymentIntentId)
+          }
+        } catch (err) {
+          logger.error("Failed to resolve dispute to booking", err)
+        }
+      }
       break
     }
 

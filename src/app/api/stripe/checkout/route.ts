@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getStripe, PLATFORM_FEE_PERCENT } from "@/lib/stripe"
-import { createClient } from "@/lib/supabase/server"
+import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { logger } from "@/lib/logger"
 
 export async function POST(request: NextRequest) {
@@ -144,13 +144,23 @@ export async function POST(request: NextRequest) {
         cancel_url: cancelUrl,
       })
 
-      // Update booking with session ID if booking exists
+      // Update booking with session ID + overwrite financial columns with
+      // server-recalculated values. The client originally inserted these
+      // columns from its own math, which is untrusted — here we correct the
+      // row so the DB matches what the renter actually pays via Stripe.
+      // This requires the service role because migration 011 blocks
+      // authenticated users from touching financial columns on bookings.
       if (bookingId) {
-        await supabase
+        const adminSupabase = await createServiceClient()
+        const hostPayoutCents = amountInCents - applicationFee
+        await adminSupabase
           .from("bookings")
           .update({
             stripe_session_id: session.id,
             payment_status: "pending",
+            total_amount: amountInCents / 100,
+            service_fee: applicationFee / 100,
+            host_payout: hostPayoutCents / 100,
           })
           .eq("id", bookingId)
       }
@@ -192,13 +202,16 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Update booking with session ID if booking exists
+    // Update booking with session ID + overwrite financial columns with
+    // server-recalculated values. Same rationale as the Connect path above.
     if (bookingId) {
-      await supabase
+      const adminSupabase = await createServiceClient()
+      await adminSupabase
         .from("bookings")
         .update({
           stripe_session_id: session.id,
           payment_status: "pending",
+          total_amount: amountInCents / 100,
         })
         .eq("id", bookingId)
     }

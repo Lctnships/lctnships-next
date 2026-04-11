@@ -36,13 +36,20 @@ export async function POST(request: Request) {
 
   const body = await request.json()
 
+  // Derive IP server-side. Never trust a client-supplied ip_address — an
+  // attacker could spoof their location to look like they logged in from a
+  // whitelisted IP, defeating the device-session security monitoring feature.
+  const vercelIp = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim()
+  const forwardedIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+  const ipAddress = vercelIp || forwardedIp || null
+
   const { error } = await supabase.from("user_sessions").insert({
     user_id: user.id,
     device_name: body.device_name,
     device_type: body.device_type,
     browser: body.browser,
     os: body.os,
-    ip_address: body.ip_address || null,
+    ip_address: ipAddress,
     location: body.location || null,
     user_agent: body.user_agent,
     is_current: true,
