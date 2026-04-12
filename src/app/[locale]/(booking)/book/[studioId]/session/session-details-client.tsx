@@ -26,6 +26,7 @@ interface Studio {
   studio_images?: { image_url: string; is_cover: boolean }[]
   booking_mode?: 'flexible' | 'fixed_blocks'
   booking_blocks?: BookingBlock[]
+  booking_lead_time_hours?: number
 }
 
 interface SessionDetailsClientProps {
@@ -56,6 +57,16 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
   const [selectedEquipment, setSelectedEquipment] = useState<Record<string, number>>(initialEquipment || {})
 
   const coverImage = studio.studio_images?.find((img) => img.is_cover) || studio.studio_images?.[0]
+  const leadTimeHours = studio.booking_lead_time_hours || 0
+
+  const isTimeSlotDisabled = (time: string) => {
+    if (leadTimeHours <= 0) return false
+    const [h, m] = time.split(":").map(Number)
+    const slotDate = new Date(selectedDate)
+    slotDate.setHours(h, m, 0, 0)
+    const hoursUntil = (slotDate.getTime() - Date.now()) / (1000 * 60 * 60)
+    return hoursUntil < leadTimeHours
+  }
 
   const handleEquipmentChange = (equipmentId: string, delta: number) => {
     setSelectedEquipment(prev => {
@@ -208,20 +219,32 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
               </p>
 
               <div className="flex flex-wrap gap-3">
-                {TIME_SLOTS.map((time) => (
-                  <button
-                    key={time}
-                    onClick={() => setSelectedTime(time)}
-                    className={`px-5 py-3 rounded-full font-medium transition-all ${
-                      selectedTime === time
-                        ? "bg-black text-white"
-                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {time}
-                  </button>
-                ))}
+                {TIME_SLOTS.map((time) => {
+                  const disabled = isTimeSlotDisabled(time)
+                  return (
+                    <button
+                      key={time}
+                      onClick={() => !disabled && setSelectedTime(time)}
+                      disabled={disabled}
+                      className={`px-5 py-3 rounded-full font-medium transition-all ${
+                        disabled
+                          ? "bg-gray-100 text-gray-300 cursor-not-allowed line-through"
+                          : selectedTime === time
+                          ? "bg-black text-white"
+                          : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      {time}
+                    </button>
+                  )
+                })}
               </div>
+              {leadTimeHours > 0 && (
+                <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                  <span className="material-symbols-outlined text-sm">schedule</span>
+                  Deze studio vereist minimaal {leadTimeHours} uur voorbereidingstijd
+                </p>
+              )}
             </div>
 
             {/* Equipment Add-ons */}

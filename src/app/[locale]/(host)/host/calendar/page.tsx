@@ -13,15 +13,18 @@ export default async function CalendarPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  // Get user's studios
-  const { data: studios } = await supabase
+  // Get ALL user's studios (not just the first one)
+  const { data: allStudios } = await supabase
     .from("studios")
     .select("id, title, location, images, wix_calendar_url, meetingpackage_calendar_url")
     .eq("host_id", user.id)
-    .limit(1)
-    .single()
+    .order("created_at", { ascending: false })
 
-  // Get bookings for calendar
+  // Use the first studio as the "active" one for the calendar sidebar.
+  // Future: add a studio selector dropdown in the calendar UI.
+  const studios = allStudios?.[0] ?? null
+
+  // Get bookings for ALL studios (not just one)
   const { data: bookings } = await supabase
     .from("bookings")
     .select(`
@@ -33,12 +36,13 @@ export default async function CalendarPage() {
       renter:users!bookings_renter_id_fkey (full_name)
     `)
     .eq("host_id", user.id)
-    .gte("start_datetime", new Date().toISOString())
+    .in("status", ["pending", "confirmed"])
+    .gte("start_datetime", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
     .order("start_datetime", { ascending: true })
 
   const calendarBookings = (bookings || []).map((b) => ({
     id: b.id,
-    title: (b.renter as { full_name?: string })?.full_name || "Guest",
+    title: `${(b.renter as { full_name?: string })?.full_name || "Guest"} — ${(b.studio as { title?: string })?.title || "Studio"}`,
     type: "booking",
     date: new Date(b.start_datetime),
     endDate: b.end_datetime ? new Date(b.end_datetime) : undefined,

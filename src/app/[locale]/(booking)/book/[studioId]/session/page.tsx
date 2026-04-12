@@ -49,18 +49,10 @@ export default async function SessionPage({ params, searchParams }: SessionPageP
     .eq("studio_id", studioId)
     .eq("is_available", true)
 
-  // Mock equipment if none exists
-  const mockEquipment = [
-    { id: "eq1", name: "Professional Lighting Kit", description: "3-point lighting setup with softboxes", price_per_day: 45, image_url: null },
-    { id: "eq2", name: "Seamless Paper Backdrop", description: "White, black, or gray options available", price_per_day: 25, image_url: null },
-    { id: "eq3", name: "Studio Assistant", description: "Experienced assistant for your shoot", price_per_day: 75, image_url: null },
-    { id: "eq4", name: "Catering Pack", description: "Snacks, drinks, and lunch for your team", price_per_day: 55, image_url: null },
-  ]
-
   return (
     <SessionDetailsClient
       studio={studio}
-      equipment={equipment && equipment.length > 0 ? equipment : mockEquipment}
+      equipment={equipment || []}
       initialDate={date}
       initialTime={start}
       initialDuration={duration ? parseInt(duration) : undefined}

@@ -1,22 +1,24 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EmptyState } from "@/components/shared/empty-state"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { UserAvatar } from "@/components/shared/user-avatar"
-import { Calendar, Check, X } from "lucide-react"
+import { Calendar } from "lucide-react"
 import { Link } from "@/i18n/routing"
 import { formatDateRange } from "@/lib/utils/format-date"
 import { formatCurrency } from "@/lib/utils/format-currency"
+import { getTranslations } from "next-intl/server"
 
-export const metadata = {
-  title: "Boekingen Beheren",
+export async function generateMetadata() {
+  const t = await getTranslations("HostBookings")
+  return { title: t("pageTitle") }
 }
 
 export default async function HostBookingsPage() {
   const supabase = await createClient()
+  const t = await getTranslations("HostBookings")
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
@@ -38,22 +40,20 @@ export default async function HostBookingsPage() {
   return (
     <div className="space-y-4 md:space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold">Boekingen</h1>
-        <p className="text-muted-foreground text-sm md:text-base mt-0.5">
-          Bekijk en beheer boekingsaanvragen
-        </p>
+        <h1 className="text-2xl md:text-3xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground text-sm md:text-base mt-0.5">{t("subtitle")}</p>
       </div>
 
       <Tabs defaultValue="pending">
         <TabsList className="w-full md:w-auto overflow-x-auto">
           <TabsTrigger value="pending" className="text-xs md:text-sm">
-            Openstaand ({pendingBookings.length})
+            {t("pendingTab", { count: pendingBookings.length })}
           </TabsTrigger>
           <TabsTrigger value="confirmed" className="text-xs md:text-sm">
-            Bevestigd ({confirmedBookings.length})
+            {t("confirmedTab", { count: confirmedBookings.length })}
           </TabsTrigger>
           <TabsTrigger value="history" className="text-xs md:text-sm">
-            Geschiedenis ({completedBookings.length})
+            {t("historyTab", { count: completedBookings.length })}
           </TabsTrigger>
         </TabsList>
 
@@ -61,8 +61,8 @@ export default async function HostBookingsPage() {
           {pendingBookings.length === 0 ? (
             <EmptyState
               icon={Calendar}
-              title="Geen openstaande aanvragen"
-              description="Nieuwe boekingsaanvragen verschijnen hier"
+              title={t("noPending")}
+              description={t("noPendingDesc")}
             />
           ) : (
             <div className="space-y-3 md:space-y-4">
@@ -77,8 +77,8 @@ export default async function HostBookingsPage() {
           {confirmedBookings.length === 0 ? (
             <EmptyState
               icon={Calendar}
-              title="Geen bevestigde boekingen"
-              description="Bevestigde boekingen verschijnen hier"
+              title={t("noConfirmed")}
+              description={t("noConfirmedDesc")}
             />
           ) : (
             <div className="space-y-3 md:space-y-4">
@@ -93,8 +93,8 @@ export default async function HostBookingsPage() {
           {completedBookings.length === 0 ? (
             <EmptyState
               icon={Calendar}
-              title="Geen geschiedenis"
-              description="Voltooide en geannuleerde boekingen verschijnen hier"
+              title={t("noHistory")}
+              description={t("noHistoryDesc")}
             />
           ) : (
             <div className="space-y-3 md:space-y-4">
@@ -152,15 +152,11 @@ function BookingRequestCard({ booking, showActions }: { booking: BookingWithRela
               </div>
 
               {showActions && (
-                <div className="flex gap-2 mt-3">
-                  <Button size="sm" variant="outline" className="text-red-600 flex-1 md:flex-none h-8 text-xs md:text-sm">
-                    <X className="h-3.5 w-3.5 mr-1" />
-                    Afwijzen
-                  </Button>
-                  <Button size="sm" className="flex-1 md:flex-none h-8 text-xs md:text-sm">
-                    <Check className="h-3.5 w-3.5 mr-1" />
-                    Accepteren
-                  </Button>
+                <div className="flex items-center gap-2 mt-3">
+                  <StatusBadge status={booking.status} />
+                  <span className="text-xs text-muted-foreground ml-auto flex items-center gap-1">
+                    →
+                  </span>
                 </div>
               )}
             </div>
@@ -169,7 +165,7 @@ function BookingRequestCard({ booking, showActions }: { booking: BookingWithRela
           {booking.notes && (
             <div className="mt-3 p-2.5 md:p-3 bg-muted rounded-lg">
               <p className="text-xs md:text-sm text-muted-foreground">
-                <span className="font-medium">Notitie:</span> {booking.notes}
+                <span className="font-medium">{booking.notes}</span>
               </p>
             </div>
           )}

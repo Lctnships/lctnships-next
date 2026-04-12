@@ -478,6 +478,100 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
               <p className="text-xs text-gray-500 mt-1">Minimale boekingsduur voor huurders</p>
             </div>
           </div>
+
+          {/* Booking Mode — Flexible vs Fixed Blocks */}
+          <div className="py-3 border-t">
+            <label className="text-sm font-medium text-gray-700 mb-2 block">Prijsmodus</label>
+            <div className="flex gap-2 mb-3">
+              <button
+                type="button"
+                onClick={() => setBookingMode("flexible")}
+                className={`flex-1 py-3 px-4 rounded-lg border text-sm font-bold transition-all ${
+                  bookingMode === "flexible"
+                    ? "bg-black text-white border-black"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                }`}
+              >
+                Flexibel (per uur)
+              </button>
+              <button
+                type="button"
+                onClick={() => setBookingMode("fixed_blocks")}
+                className={`flex-1 py-3 px-4 rounded-lg border text-sm font-bold transition-all ${
+                  bookingMode === "fixed_blocks"
+                    ? "bg-black text-white border-black"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                }`}
+              >
+                Vaste blokken
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mb-3">
+              {bookingMode === "flexible"
+                ? "Huurders kiezen zelf het aantal uren. Prijs = uurtarief × uren."
+                : "Stel vaste tijdblokken in met een eigen prijs per blok."}
+            </p>
+
+            {bookingMode === "fixed_blocks" && (
+              <div className="space-y-3">
+                {bookingBlocks.map((block, index) => (
+                  <div key={index} className="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+                    <div className="flex-1">
+                      <label className="text-xs text-gray-500 block mb-1">Duur (uren)</label>
+                      <input
+                        type="number"
+                        min={1}
+                        step={0.5}
+                        value={block.duration_hours}
+                        onChange={(e) => {
+                          const updated = [...bookingBlocks]
+                          updated[index] = { ...updated[index], duration_hours: Number(e.target.value) }
+                          setBookingBlocks(updated)
+                        }}
+                        className="w-full border rounded-lg h-10 px-3 text-sm focus:ring-2 focus:ring-black focus:border-black"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="text-xs text-gray-500 block mb-1">Prijs (€)</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={block.price}
+                        onChange={(e) => {
+                          const updated = [...bookingBlocks]
+                          updated[index] = { ...updated[index], price: Number(e.target.value) }
+                          setBookingBlocks(updated)
+                        }}
+                        className="w-full border rounded-lg h-10 px-3 text-sm focus:ring-2 focus:ring-black focus:border-black"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setBookingBlocks(bookingBlocks.filter((_, i) => i !== index))}
+                      className="mt-5 size-10 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-lg">delete</span>
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setBookingBlocks([
+                      ...bookingBlocks,
+                      { duration_hours: 2, price: Math.round(pricePerHour * 2), sort_order: bookingBlocks.length },
+                    ])
+                  }
+                  className="w-full py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-sm font-bold text-gray-500 hover:border-black hover:text-black transition-colors flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-lg">add</span>
+                  Blok toevoegen
+                </button>
+              </div>
+            )}
+          </div>
+
           <div>
             <label className="text-sm font-medium text-gray-700 mb-1 block">Annuleringsbeleid</label>
             <select
