@@ -2,18 +2,19 @@
 
 import { useState, useRef, KeyboardEvent } from "react"
 import { useRouter } from "@/i18n/routing"
+import { useTranslations } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 import Image from "next/image"
 import { Building2, ArrowLeft, Save, Loader2, Upload, X, Star, ImagePlus, Plus } from "lucide-react"
 
-const studioTypes = [
-  { id: "Photography", icon: "photo_camera", title: "Fotostudio" },
-  { id: "Video", icon: "videocam", title: "Videostudio" },
-  { id: "Podcast", icon: "mic", title: "Podcast Studio" },
-  { id: "Music", icon: "music_note", title: "Muziekstudio" },
-  { id: "Dance", icon: "directions_run", title: "Dansstudio" },
-  { id: "Creative", icon: "palette", title: "Galerie" },
-]
+const STUDIO_TYPE_META = [
+  { id: "Photography", icon: "photo_camera", labelKey: "typePhoto" },
+  { id: "Video", icon: "videocam", labelKey: "typeVideo" },
+  { id: "Podcast", icon: "mic", labelKey: "typePodcast" },
+  { id: "Music", icon: "music_note", labelKey: "typeMusic" },
+  { id: "Dance", icon: "directions_run", labelKey: "typeDance" },
+  { id: "Creative", icon: "palette", labelKey: "typeArt" },
+] as const
 
 const allAmenities = [
   "WiFi", "Lighting Equipment", "Green Screen", "Changing Room",
@@ -65,6 +66,8 @@ interface Studio {
 
 export function StudioEditClient({ studio }: { studio: Studio }) {
   const router = useRouter()
+  const t = useTranslations("StudioEdit")
+  const tOnboarding = useTranslations("Onboarding")
   const supabase = createClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -274,7 +277,7 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
             ) : (
               <Upload className="h-4 w-4" />
             )}
-            {uploading ? "Uploaden..." : "Foto's Toevoegen"}
+            {uploading ? t("uploadingPhotos") : t("uploadPhotos")}
           </button>
           <input
             ref={fileInputRef}
@@ -346,18 +349,18 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
 
       {/* Studio Type */}
       <section className="bg-white rounded-xl border p-6 space-y-4">
-        <h2 className="text-lg font-bold">Type Studio</h2>
+        <h2 className="text-lg font-bold">{t("studioType")}</h2>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-          {studioTypes.map((t) => (
+          {STUDIO_TYPE_META.map((st) => (
             <button
-              key={t.id}
-              onClick={() => setType(t.id)}
+              key={st.id}
+              onClick={() => setType(st.id)}
               className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all ${
-                type === t.id ? "border-black bg-black/5" : "border-transparent hover:border-gray-200"
+                type === st.id ? "border-black bg-black/5" : "border-transparent hover:border-gray-200"
               }`}
             >
-              <span className="material-symbols-outlined text-2xl mb-2">{t.icon}</span>
-              <span className="text-xs font-medium">{t.title}</span>
+              <span className="material-symbols-outlined text-2xl mb-2">{st.icon}</span>
+              <span className="text-xs font-medium">{tOnboarding(st.labelKey)}</span>
             </button>
           ))}
         </div>
@@ -365,10 +368,10 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
 
       {/* Basic Info */}
       <section className="bg-white rounded-xl border p-6 space-y-4">
-        <h2 className="text-lg font-bold">Basisinformatie</h2>
+        <h2 className="text-lg font-bold">{t("titleLabel")}</h2>
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-1 block">Studionaam</label>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">{t("titleLabel")}</label>
             <input
               type="text"
               value={title}
@@ -492,7 +495,7 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
                     : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
                 }`}
               >
-                Flexibel (per uur)
+                {t("pricingFlexible")}
               </button>
               <button
                 type="button"
@@ -503,13 +506,11 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
                     : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
                 }`}
               >
-                Vaste blokken
+                {t("pricingFixedBlocks")}
               </button>
             </div>
             <p className="text-xs text-gray-500 mb-3">
-              {bookingMode === "flexible"
-                ? "Huurders kiezen zelf het aantal uren. Prijs = uurtarief × uren."
-                : "Stel vaste tijdblokken in met een eigen prijs per blok."}
+              {bookingMode === "flexible" ? t("pricingFlexibleDesc") : t("pricingFixedDesc")}
             </p>
 
             {bookingMode === "fixed_blocks" && (
@@ -566,28 +567,28 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
                   className="w-full py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-sm font-bold text-gray-500 hover:border-black hover:text-black transition-colors flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined text-lg">add</span>
-                  Blok toevoegen
+                  {t("addBlock")}
                 </button>
               </div>
             )}
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-1 block">Annuleringsbeleid</label>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">{t("cancellationPolicy")}</label>
             <select
               value={cancellationPolicy}
               onChange={(e) => setCancellationPolicy(e.target.value)}
               className="w-full border rounded-lg h-12 px-4 focus:ring-2 focus:ring-black focus:border-black bg-white"
             >
-              <option value="flexible">Flexibel - Gratis annuleren tot 24 uur van tevoren</option>
-              <option value="moderate">Gemiddeld - Gratis annuleren tot 5 dagen van tevoren</option>
-              <option value="strict">Streng - 50% terugbetaling tot 7 dagen van tevoren</option>
+              <option value="flexible">{t("cancellationFlexible")}</option>
+              <option value="moderate">{t("cancellationModerate")}</option>
+              <option value="strict">{t("cancellationStrict")}</option>
             </select>
           </div>
           <div className="flex items-center justify-between py-3 border-t">
             <div>
-              <p className="font-medium">Direct Boeken</p>
-              <p className="text-sm text-muted-foreground">Gasten kunnen direct boeken zonder goedkeuring</p>
+              <p className="font-medium">{t("instantBook")}</p>
+              <p className="text-sm text-muted-foreground">{t("instantBookDesc")}</p>
             </div>
             <button
               onClick={() => setIsInstantBook(!isInstantBook)}
@@ -601,17 +602,15 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
             </button>
           </div>
           <div className="py-3 border-t">
-            <label className="text-sm font-medium text-gray-700 mb-1 block">Voorbereidingstijd</label>
-            <p className="text-sm text-muted-foreground mb-2">
-              Minimum aantal uren tussen het boeken en de start van de sessie. Voorkomt last-minute boekingen.
-            </p>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">{t("leadTimeLabel")}</label>
+            <p className="text-sm text-muted-foreground mb-2">{t("leadTimeDesc")}</p>
             <div className="flex items-center gap-3">
               <select
                 value={bookingLeadTimeHours}
                 onChange={(e) => setBookingLeadTimeHours(parseInt(e.target.value))}
                 className="border rounded-lg h-12 px-4 focus:ring-2 focus:ring-black focus:border-black bg-white"
               >
-                <option value={0}>Geen minimum</option>
+                <option value={0}>{t("leadTimeNone")}</option>
                 <option value={1}>1 uur</option>
                 <option value={2}>2 uur</option>
                 <option value={4}>4 uur</option>
@@ -622,7 +621,7 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
                 <option value={72}>72 uur (3 dagen)</option>
                 <option value={168}>1 week</option>
               </select>
-              <span className="text-sm text-gray-500">voor aanvang sessie</span>
+              <span className="text-sm text-gray-500">{t("leadTimeBefore")}</span>
             </div>
           </div>
         </div>
@@ -630,7 +629,7 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
 
       {/* Amenities */}
       <section className="bg-white rounded-xl border p-6 space-y-4">
-        <h2 className="text-lg font-bold">Voorzieningen & Apparatuur</h2>
+        <h2 className="text-lg font-bold">{t("amenitiesTitle")}</h2>
         <div className="flex flex-wrap gap-2">
           {allAmenities.map((amenity) => (
             <button
@@ -773,13 +772,13 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
             onClick={() => router.push("/host/studios")}
             className="px-6 py-3 rounded-full font-medium text-gray-500 hover:text-gray-900 transition-colors"
           >
-            Annuleren
+            {t("cancel")}
           </button>
           <div className="flex items-center gap-3">
             {saved && (
               <span className="text-sm text-green-600 font-medium flex items-center gap-1">
                 <span className="material-symbols-outlined text-sm">check_circle</span>
-                Opgeslagen
+                {t("saved")}
               </span>
             )}
             <button
@@ -792,7 +791,7 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
               ) : (
                 <Save className="h-4 w-4" />
               )}
-              {saving ? "Opslaan..." : "Wijzigingen Opslaan"}
+              {saving ? t("saving") : t("saveChanges")}
             </button>
           </div>
         </div>
