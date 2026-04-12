@@ -1525,5 +1525,27 @@
     "payoutsDesc": "Beheer je bankrekening en Stripe Connect account",
     "manageBankAccount": "Bankrekening beheren",
     "manageStripeConnect": "Stripe Connect beheren"
+  },
+  "SessionDetails": {
+    "back": "Terug",
+    "stepDetails": "Details",
+    "stepPayment": "Betaling",
+    "stepConfirm": "Bevestigen",
+    "sessionDuration": "Sessieduur",
+    "chooseBlockSubtitle": "Kies een van de beschikbare tijdsblokken",
+    "chooseDurationSubtitle": "Kies hoe lang je de studio nodig hebt",
+    "halfDay": "Halve Dag",
+    "fullDay": "Hele Dag",
+    "hours": "{count} uur",
+    "availableStartTimes": "Beschikbare Starttijden",
+    "leadTimeWarning": "Deze studio vereist minimaal {hours} uur voorbereidingstijd",
+    "addEquipment": "Apparatuur Toevoegen",
+    "addEquipmentSubtitle": "Verbeter je sessie met professionele apparatuur",
+    "date": "Datum",
+    "time": "Tijd",
+    "duration": "Duur",
+    "total": "Totaal",
+    "continueToPayment": "Doorgaan naar Betaling",
+    "studioPrice": "Studio ({hours}h × €{rate})"
   }
 }

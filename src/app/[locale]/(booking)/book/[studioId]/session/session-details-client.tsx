@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react"
 import Image from "next/image"
 import { Link, useRouter } from "@/i18n/routing"
+import { useTranslations, useLocale } from "next-intl"
+import { formatDate as fmtDate } from "@/lib/format-locale"
 
 interface Equipment {
   id: string
@@ -38,12 +40,7 @@ interface SessionDetailsClientProps {
   initialEquipment?: Record<string, number>
 }
 
-const DURATION_OPTIONS = [
-  { hours: 1, label: "1 uur" },
-  { hours: 2, label: "2 uur" },
-  { hours: 4, label: "Halve Dag", sublabel: "4 uur" },
-  { hours: 8, label: "Hele Dag", sublabel: "8 uur" },
-]
+const DURATION_HOURS = [1, 2, 4, 8] as const
 
 const TIME_SLOTS = [
   "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"
@@ -51,6 +48,8 @@ const TIME_SLOTS = [
 
 export function SessionDetailsClient({ studio, equipment, initialDate, initialTime, initialDuration, initialEquipment }: SessionDetailsClientProps) {
   const router = useRouter()
+  const t = useTranslations("SessionDetails")
+  const locale = useLocale()
   const [selectedDuration, setSelectedDuration] = useState(initialDuration || 2)
   const [selectedTime, setSelectedTime] = useState(initialTime || "10:00")
   const [selectedDate, _setSelectedDate] = useState(initialDate || new Date().toISOString().split("T")[0])
@@ -120,22 +119,22 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
           <div className="flex items-center justify-between">
             <Link href={`/studios/${studio.id}`} className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
               <span className="material-symbols-outlined text-xl">arrow_back</span>
-              <span>Terug</span>
+              <span>{t("back")}</span>
             </Link>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-sm font-semibold">1</div>
-                <span className="text-sm font-medium">Details</span>
+                <span className="text-sm font-medium">{t("stepDetails")}</span>
               </div>
               <div className="w-8 h-px bg-gray-300"></div>
               <div className="flex items-center gap-1">
                 <div className="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-sm font-semibold">2</div>
-                <span className="text-sm text-gray-500">Betaling</span>
+                <span className="text-sm text-gray-500">{t("stepPayment")}</span>
               </div>
               <div className="w-8 h-px bg-gray-300"></div>
               <div className="flex items-center gap-1">
                 <div className="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-sm font-semibold">3</div>
-                <span className="text-sm text-gray-500">Bevestigen</span>
+                <span className="text-sm text-gray-500">{t("stepConfirm")}</span>
               </div>
             </div>
             <div className="w-20"></div>
@@ -149,20 +148,20 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
           <div className="lg:col-span-2 space-y-8">
             {/* Duration Selection */}
             <div className="bg-white rounded-[2rem] p-8">
-              <h2 className="text-xl font-semibold mb-2">Sessieduur</h2>
+              <h2 className="text-xl font-semibold mb-2">{t("sessionDuration")}</h2>
               <p className="text-gray-500 mb-6">
-                {studio.booking_mode === 'fixed_blocks' 
-                  ? "Kies een van de beschikbare tijdsblokken"
-                  : "Kies hoe lang je de studio nodig hebt"}
+                {studio.booking_mode === 'fixed_blocks'
+                  ? t("chooseBlockSubtitle")
+                  : t("chooseDurationSubtitle")}
               </p>
 
               {studio.booking_mode === 'fixed_blocks' && studio.booking_blocks && studio.booking_blocks.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {studio.booking_blocks.map((block, index) => {
                     const isSelected = selectedDuration === block.duration_hours
-                    const label = block.duration_hours >= 8 ? "Hele dag" : 
-                                  block.duration_hours === 4 ? "Halve dag" : 
-                                  `${block.duration_hours} uur`
+                    const label = block.duration_hours >= 8 ? t("fullDay") :
+                                  block.duration_hours === 4 ? t("halfDay") :
+                                  t("hours", { count: block.duration_hours })
                     return (
                       <button
                         key={index}
@@ -175,7 +174,7 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
                       >
                         <div className="font-semibold">{label}</div>
                         <div className={`text-sm ${isSelected ? "text-gray-300" : "text-gray-500"}`}>
-                          {block.duration_hours} uur
+                          {t("hours", { count: block.duration_hours })}
                         </div>
                         <div className={`text-lg font-bold mt-2 ${isSelected ? "text-white" : "text-black"}`}>
                           €{block.price}
@@ -186,36 +185,35 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
                 </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {DURATION_OPTIONS.map((option) => (
-                    <button
-                      key={option.hours}
-                      onClick={() => setSelectedDuration(option.hours)}
-                      className={`p-4 rounded-2xl border-2 transition-all text-center ${
-                        selectedDuration === option.hours
-                          ? "border-black bg-black text-white"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <div className="font-semibold">{option.label}</div>
-                      {option.sublabel && (
-                        <div className={`text-sm ${selectedDuration === option.hours ? "text-gray-300" : "text-gray-500"}`}>
-                          {option.sublabel}
+                  {DURATION_HOURS.map((hours) => {
+                    const label = hours >= 8 ? t("fullDay") : hours === 4 ? t("halfDay") : t("hours", { count: hours })
+                    const isSelected = selectedDuration === hours
+                    return (
+                      <button
+                        key={hours}
+                        onClick={() => setSelectedDuration(hours)}
+                        className={`p-4 rounded-2xl border-2 transition-all text-center ${
+                          isSelected
+                            ? "border-black bg-black text-white"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <div className="font-semibold">{label}</div>
+                        <div className={`text-lg font-bold mt-2 ${isSelected ? "text-white" : "text-black"}`}>
+                          €{studio.price_per_hour * hours}
                         </div>
-                      )}
-                      <div className={`text-lg font-bold mt-2 ${selectedDuration === option.hours ? "text-white" : "text-black"}`}>
-                        €{studio.price_per_hour * option.hours}
-                      </div>
-                    </button>
-                  ))}
+                      </button>
+                    )
+                  })}
                 </div>
               )}
             </div>
 
             {/* Time Selection */}
             <div className="bg-white rounded-[2rem] p-8">
-              <h2 className="text-xl font-semibold mb-2">Beschikbare Starttijden</h2>
+              <h2 className="text-xl font-semibold mb-2">{t("availableStartTimes")}</h2>
               <p className="text-gray-500 mb-6">
-                {new Date(selectedDate).toLocaleDateString("nl-NL", { weekday: "long", month: "long", day: "numeric" })}
+                {fmtDate(selectedDate, locale, { weekday: "long", month: "long", day: "numeric" })}
               </p>
 
               <div className="flex flex-wrap gap-3">
@@ -242,15 +240,15 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
               {leadTimeHours > 0 && (
                 <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
                   <span className="material-symbols-outlined text-sm">schedule</span>
-                  Deze studio vereist minimaal {leadTimeHours} uur voorbereidingstijd
+                  {t("leadTimeWarning", { hours: leadTimeHours })}
                 </p>
               )}
             </div>
 
             {/* Equipment Add-ons */}
             <div className="bg-white rounded-[2rem] p-8">
-              <h2 className="text-xl font-semibold mb-2">Apparatuur Toevoegen</h2>
-              <p className="text-gray-500 mb-6">Verbeter je sessie met professionele apparatuur</p>
+              <h2 className="text-xl font-semibold mb-2">{t("addEquipment")}</h2>
+              <p className="text-gray-500 mb-6">{t("addEquipmentSubtitle")}</p>
 
               <div className="space-y-4">
                 {equipment.map((item) => (
@@ -325,12 +323,7 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
                   <h3 className="font-semibold">{studio.title}</h3>
                   <div className="flex items-center text-sm text-gray-500 mt-1">
                     <span className="material-symbols-outlined text-base mr-1">location_on</span>
-                    {studio.city || "Amsterdam"}
-                  </div>
-                  <div className="flex items-center text-sm mt-1">
-                    <span className="material-symbols-outlined text-yellow-500 text-base mr-1">star</span>
-                    <span className="font-medium">4.9</span>
-                    <span className="text-gray-400 ml-1">(128)</span>
+                    {studio.city || ""}
                   </div>
                 </div>
               </div>
@@ -338,13 +331,13 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
               {/* Session Details */}
               <div className="py-6 border-b border-gray-100 space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Datum</span>
+                  <span className="text-gray-600">{t("date")}</span>
                   <span className="font-medium">
-                    {new Date(selectedDate).toLocaleDateString("nl-NL", { month: "short", day: "numeric", year: "numeric" })}
+                    {fmtDate(selectedDate, locale)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Tijd</span>
+                  <span className="text-gray-600">{t("time")}</span>
                   <span className="font-medium">{selectedTime} - {
                     (() => {
                       const [hours, minutes] = selectedTime.split(":").map(Number)
@@ -354,8 +347,8 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
                   }</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Duur</span>
-                  <span className="font-medium">{selectedDuration} uur</span>
+                  <span className="text-gray-600">{t("duration")}</span>
+                  <span className="font-medium">{t("hours", { count: selectedDuration })}</span>
                 </div>
               </div>
 
@@ -376,7 +369,7 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
                   )
                 })}
                 <div className="flex justify-between pt-4 border-t border-gray-100 text-lg font-semibold">
-                  <span>Totaal</span>
+                  <span>{t("total")}</span>
                   <span>€{calculations.total}</span>
                 </div>
               </div>
@@ -386,7 +379,7 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
                 onClick={handleContinue}
                 className="w-full bg-black text-white py-4 rounded-full font-semibold hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
               >
-                Doorgaan naar Betaling
+                {t("continueToPayment")}
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
             </div>

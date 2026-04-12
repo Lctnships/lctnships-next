@@ -1525,5 +1525,27 @@
     "payoutsDesc": "Manage your bank account and Stripe Connect account",
     "manageBankAccount": "Manage bank account",
     "manageStripeConnect": "Manage Stripe Connect"
+  },
+  "SessionDetails": {
+    "back": "Back",
+    "stepDetails": "Details",
+    "stepPayment": "Payment",
+    "stepConfirm": "Confirm",
+    "sessionDuration": "Session Duration",
+    "chooseBlockSubtitle": "Choose one of the available time blocks",
+    "chooseDurationSubtitle": "Choose how long you need the studio",
+    "halfDay": "Half Day",
+    "fullDay": "Full Day",
+    "hours": "{count} hours",
+    "availableStartTimes": "Available Start Times",
+    "leadTimeWarning": "This studio requires at least {hours} hours advance notice",
+    "addEquipment": "Add Equipment",
+    "addEquipmentSubtitle": "Enhance your session with professional equipment",
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration",
+    "total": "Total",
+    "continueToPayment": "Continue to Payment",
+    "studioPrice": "Studio ({hours}h × €{rate})"
   }
 }

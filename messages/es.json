@@ -1517,5 +1517,27 @@
     "payoutsDesc": "Gestiona tu cuenta bancaria y Stripe Connect",
     "manageBankAccount": "Gestionar cuenta bancaria",
     "manageStripeConnect": "Gestionar Stripe Connect"
+  },
+  "SessionDetails": {
+    "back": "Atrás",
+    "stepDetails": "Detalles",
+    "stepPayment": "Pago",
+    "stepConfirm": "Confirmar",
+    "sessionDuration": "Duración de la sesión",
+    "chooseBlockSubtitle": "Elige uno de los bloques de tiempo disponibles",
+    "chooseDurationSubtitle": "Elige cuánto tiempo necesitas el estudio",
+    "halfDay": "Medio día",
+    "fullDay": "Día completo",
+    "hours": "{count} horas",
+    "availableStartTimes": "Horarios de inicio disponibles",
+    "leadTimeWarning": "Este estudio requiere al menos {hours} horas de antelación",
+    "addEquipment": "Añadir equipo",
+    "addEquipmentSubtitle": "Mejora tu sesión con equipo profesional",
+    "date": "Fecha",
+    "time": "Hora",
+    "duration": "Duración",
+    "total": "Total",
+    "continueToPayment": "Continuar al pago",
+    "studioPrice": "Estudio ({hours}h × €{rate})"
   }
 }
