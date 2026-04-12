@@ -543,7 +543,11 @@
     "cardPrivacyTitle": "Privacy & Notificaties",
     "cardPrivacyDesc": "Beheer zichtbaarheid en notificatievoorkeuren",
     "cardSecurityTitle": "Beveiliging",
-    "cardSecurityDesc": "Beheer wachtwoorden, 2FA en ingelogde apparaten"
+    "cardSecurityDesc": "Beheer wachtwoorden, 2FA en ingelogde apparaten",
+    "accountDeletedToast": "Je verwijderingsverzoek is ingediend. Neem contact op met support.",
+    "accountDeleteFailed": "Er is iets misgegaan",
+    "cancelAction": "Annuleren",
+    "deleteConfirmPrompt": "Typ \"DELETE\" om te bevestigen"
   },
   "Privacy": {
     "breadcrumbSettings": "Instellingen",
@@ -1003,7 +1007,9 @@
     "reviews": "beoordelingen",
     "allRightsReserved": "Alle rechten voorbehouden.",
     "bookingPolicy": "Boekingsbeleid",
-    "helpCenter": "Helpcentrum"
+    "helpCenter": "Helpcentrum",
+    "cancelBooking": "Annuleren",
+    "extendSession": "Verleng sessie"
   },
   "Reschedule": {
     "title": "Sessie verzetten bij",
@@ -1113,7 +1119,10 @@
     "successProfileSaved": "Profiel opgeslagen",
     "errorProfileSaveFailed": "Profiel opslaan mislukt",
     "cropTitle": "Foto bijsnijden",
-    "cropConfirm": "Opslaan"
+    "cropConfirm": "Opslaan",
+    "accountDeleteConfirm": "Weet je zeker dat je je account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
+    "languageChangedToast": "Taal gewijzigd naar {language}",
+    "accountDeletedToast": "Uitgelogd. Neem contact op met support om je account permanent te verwijderen."
   },
   "ProjectWorkspace": {
     "metaTitle": "Project Workspace",

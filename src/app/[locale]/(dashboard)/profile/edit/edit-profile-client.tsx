@@ -197,18 +197,18 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
     const currentIdx = locales.indexOf(locale)
     const nextLocale = locales[(currentIdx + 1) % locales.length] as "nl" | "en" | "es"
     router.replace(pathname, { locale: nextLocale })
-    toast.success(`Taal gewijzigd naar ${labels[nextLocale]}`)
+    toast.success(t("languageChangedToast", { language: labels[nextLocale] }))
   }
 
   const handleDeleteAccount = async () => {
-    if (!confirm(t("accountDeleteConfirm") || "Weet je zeker dat je je account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.")) return
+    if (!confirm(t("accountDeleteConfirm"))) return
     try {
       const supabase = createClient()
       await supabase.auth.signOut()
       router.push("/")
-      toast.success("Account uitgelogd. Neem contact op met support om je account permanent te verwijderen.")
+      toast.success(t("accountDeletedToast"))
     } catch {
-      toast.error("Er ging iets mis")
+      toast.error(t("accountDeleteFailed") || "Something went wrong")
     }
   }
 

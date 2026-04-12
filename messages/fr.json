@@ -543,7 +543,11 @@
     "cardPrivacyTitle": "Confidentialité et notifications",
     "cardPrivacyDesc": "Gérez la visibilité et les préférences de notification",
     "cardSecurityTitle": "Sécurité",
-    "cardSecurityDesc": "Gérez les mots de passe, la 2FA et les appareils connectés"
+    "cardSecurityDesc": "Gérez les mots de passe, la 2FA et les appareils connectés",
+    "accountDeletedToast": "Votre demande de suppression a été soumise.",
+    "accountDeleteFailed": "Une erreur s'est produite",
+    "cancelAction": "Annuler",
+    "deleteConfirmPrompt": "Tapez \"DELETE\" pour confirmer"
   },
   "Privacy": {
     "breadcrumbSettings": "Paramètres",
@@ -1000,7 +1004,9 @@
     "reviews": "avis",
     "allRightsReserved": "Tous droits réservés.",
     "bookingPolicy": "Politique de réservation",
-    "helpCenter": "Centre d'aide"
+    "helpCenter": "Centre d'aide",
+    "cancelBooking": "Annuler",
+    "extendSession": "Prolonger la session"
   },
   "Reschedule": {
     "title": "Reprogrammer votre session à",
@@ -1110,7 +1116,10 @@
     "successProfileSaved": "Profil enregistré",
     "errorProfileSaveFailed": "Échec de l'enregistrement du profil",
     "cropTitle": "Recadrer la photo",
-    "cropConfirm": "Enregistrer"
+    "cropConfirm": "Enregistrer",
+    "accountDeleteConfirm": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
+    "languageChangedToast": "Langue changée en {language}",
+    "accountDeletedToast": "Déconnecté. Contactez le support pour supprimer définitivement votre compte."
   },
   "ProjectWorkspace": {
     "metaTitle": "Espace de projet",

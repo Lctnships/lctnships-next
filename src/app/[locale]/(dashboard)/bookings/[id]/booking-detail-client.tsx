@@ -287,7 +287,7 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
                     className="text-red-500 font-bold hover:text-red-700 transition-colors py-4 px-6 flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined text-sm">cancel</span>
-                    {t("cancelBooking") || "Annuleren"}
+                    {t("cancelBooking")}
                   </button>
                 </>
               )}
@@ -297,7 +297,7 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
                   className="w-full flex items-center justify-center gap-2 bg-[#0f49bd] text-white px-8 py-4 rounded-xl font-bold hover:opacity-90 transition-all"
                 >
                   <span className="material-symbols-outlined">add_circle</span>
-                  {t("extendSession") || " Verleng sessie"}
+                  {t("extendSession")}
                 </Link>
               )}
             </div>

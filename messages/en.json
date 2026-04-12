@@ -543,7 +543,11 @@
     "cardPrivacyTitle": "Privacy & Notifications",
     "cardPrivacyDesc": "Manage visibility and notification preferences",
     "cardSecurityTitle": "Security",
-    "cardSecurityDesc": "Manage passwords, 2FA and logged-in devices"
+    "cardSecurityDesc": "Manage passwords, 2FA and logged-in devices",
+    "accountDeletedToast": "Your deletion request has been submitted. Contact support.",
+    "accountDeleteFailed": "Something went wrong",
+    "cancelAction": "Cancel",
+    "deleteConfirmPrompt": "Type \"DELETE\" to confirm"
   },
   "Privacy": {
     "breadcrumbSettings": "Settings",
@@ -1003,7 +1007,9 @@
     "reviews": "reviews",
     "allRightsReserved": "All rights reserved.",
     "bookingPolicy": "Booking Policy",
-    "helpCenter": "Help Center"
+    "helpCenter": "Help Center",
+    "cancelBooking": "Cancel",
+    "extendSession": "Extend session"
   },
   "Reschedule": {
     "title": "Reschedule your session at",
@@ -1113,7 +1119,10 @@
     "successProfileSaved": "Profile saved",
     "errorProfileSaveFailed": "Failed to save profile",
     "cropTitle": "Crop photo",
-    "cropConfirm": "Save"
+    "cropConfirm": "Save",
+    "accountDeleteConfirm": "Are you sure you want to delete your account? This cannot be undone.",
+    "languageChangedToast": "Language changed to {language}",
+    "accountDeletedToast": "Signed out. Contact support to permanently delete your account."
   },
   "ProjectWorkspace": {
     "metaTitle": "Project Workspace",

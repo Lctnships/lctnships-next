@@ -543,7 +543,11 @@
     "cardPrivacyTitle": "Datenschutz & Benachrichtigungen",
     "cardPrivacyDesc": "Sichtbarkeit und Benachrichtigungseinstellungen verwalten",
     "cardSecurityTitle": "Sicherheit",
-    "cardSecurityDesc": "Passwörter, 2FA und angemeldete Geräte verwalten"
+    "cardSecurityDesc": "Passwörter, 2FA und angemeldete Geräte verwalten",
+    "accountDeletedToast": "Ihre Löschanfrage wurde eingereicht.",
+    "accountDeleteFailed": "Etwas ist schiefgelaufen",
+    "cancelAction": "Abbrechen",
+    "deleteConfirmPrompt": "Geben Sie \"DELETE\" ein zur Bestätigung"
   },
   "Privacy": {
     "breadcrumbSettings": "Einstellungen",
@@ -1000,7 +1004,9 @@
     "reviews": "Bewertungen",
     "allRightsReserved": "Alle Rechte vorbehalten.",
     "bookingPolicy": "Buchungsrichtlinie",
-    "helpCenter": "Hilfezentrum"
+    "helpCenter": "Hilfezentrum",
+    "cancelBooking": "Stornieren",
+    "extendSession": "Sitzung verlängern"
   },
   "Reschedule": {
     "title": "Ihre Sitzung umbuchen bei",
@@ -1110,7 +1116,10 @@
     "successProfileSaved": "Profil gespeichert",
     "errorProfileSaveFailed": "Profil konnte nicht gespeichert werden",
     "cropTitle": "Foto zuschneiden",
-    "cropConfirm": "Speichern"
+    "cropConfirm": "Speichern",
+    "accountDeleteConfirm": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Dies kann nicht rückgängig gemacht werden.",
+    "languageChangedToast": "Sprache geändert zu {language}",
+    "accountDeletedToast": "Abgemeldet. Kontaktieren Sie den Support, um Ihr Konto dauerhaft zu löschen."
   },
   "ProjectWorkspace": {
     "metaTitle": "Projekt-Arbeitsbereich",

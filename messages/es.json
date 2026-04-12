@@ -475,7 +475,11 @@
     "cardPrivacyTitle": "Privacidad y Notificaciones",
     "cardPrivacyDesc": "Gestiona la visibilidad y preferencias de notificaciones",
     "cardSecurityTitle": "Seguridad",
-    "cardSecurityDesc": "Gestiona contraseñas, 2FA y dispositivos conectados"
+    "cardSecurityDesc": "Gestiona contraseñas, 2FA y dispositivos conectados",
+    "accountDeletedToast": "Tu solicitud de eliminación ha sido enviada.",
+    "accountDeleteFailed": "Algo salió mal",
+    "cancelAction": "Cancelar",
+    "deleteConfirmPrompt": "Escribe \"DELETE\" para confirmar"
   },
   "Privacy": {
     "breadcrumbSettings": "Configuración",
@@ -995,7 +999,9 @@
     "reviews": "reseñas",
     "allRightsReserved": "Todos los derechos reservados.",
     "bookingPolicy": "Política de Reservas",
-    "helpCenter": "Centro de Ayuda"
+    "helpCenter": "Centro de Ayuda",
+    "cancelBooking": "Cancelar",
+    "extendSession": "Extender sesión"
   },
   "Reschedule": {
     "title": "Reprogramar tu sesión en",
@@ -1105,7 +1111,10 @@
     "successProfileSaved": "Perfil guardado",
     "errorProfileSaveFailed": "Error al guardar el perfil",
     "cropTitle": "Recortar foto",
-    "cropConfirm": "Guardar"
+    "cropConfirm": "Guardar",
+    "accountDeleteConfirm": "¿Seguro que quieres eliminar tu cuenta? No se puede deshacer.",
+    "languageChangedToast": "Idioma cambiado a {language}",
+    "accountDeletedToast": "Sesión cerrada. Contacta soporte para eliminar tu cuenta."
   },
   "ProjectWorkspace": {
     "metaTitle": "Espacio de Trabajo del Proyecto",
