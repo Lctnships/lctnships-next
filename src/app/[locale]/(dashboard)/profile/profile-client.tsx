@@ -16,11 +16,9 @@ interface Profile {
   user_type: string
   is_verified?: boolean
   created_at: string
-  response_rate?: number
-  response_time?: string
   equipment_preferences?: string[]
   is_accepting_projects?: boolean
-  portfolio?: { id: string; title: string; image: string }[]
+  portfolio?: { id: string; title: string; image: string; description?: string; project_type?: string }[]
 }
 
 interface Stats {
@@ -36,7 +34,27 @@ interface Studio {
   price_per_hour: number
   avg_rating?: number
   images?: string[]
-  studio_images?: { url: string }[]
+  studio_images?: { image_url: string }[]
+}
+
+interface Review {
+  id: string
+  rating: number
+  comment: string
+  created_at: string
+  reviewer_name: string
+  reviewer_avatar: string
+}
+
+interface BookingHistoryItem {
+  id: string
+  studio_title: string
+  studio_city: string
+  studio_image: string
+  date: string
+  total_hours: number
+  total_amount: number
+  status: string
 }
 
 interface ProfileClientProps {
@@ -44,11 +62,13 @@ interface ProfileClientProps {
   stats: Stats
   studios: Studio[]
   isOwnProfile: boolean
+  reviews?: Review[]
+  bookingHistory?: BookingHistoryItem[]
 }
 
 type TabType = "portfolio" | "reviews" | "history"
 
-export function ProfileClient({ profile, stats, studios, isOwnProfile }: ProfileClientProps) {
+export function ProfileClient({ profile, stats, studios, isOwnProfile, reviews = [], bookingHistory = [] }: ProfileClientProps) {
   const t = useTranslations("Profile")
   const [activeTab, setActiveTab] = useState<TabType>("portfolio")
 
@@ -56,7 +76,7 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
   const isHost = profile.user_type === "host" || profile.user_type === "both"
 
   const getStudioImage = (studio: Studio) => {
-    return studio.images?.[0] || studio.studio_images?.[0]?.url || ""
+    return studio.images?.[0] || studio.studio_images?.[0]?.image_url || ""
   }
 
   return (
@@ -151,25 +171,44 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
           </div>
 
           {/* Tab Content */}
-          {activeTab === "portfolio" && !isHost && profile.portfolio && (
-            <div className="columns-1 sm:columns-2 gap-6 space-y-6">
-              {profile.portfolio.map((item) => (
-                <div key={item.id} className="break-inside-avoid">
-                  <div className="group relative overflow-hidden rounded-xl bg-gray-100">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      width={600}
-                      height={400}
-                      className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                      <p className="text-white font-medium">{item.title}</p>
+          {activeTab === "portfolio" && !isHost && (
+            <>
+              {profile.portfolio && profile.portfolio.length > 0 ? (
+                <div className="columns-1 sm:columns-2 gap-6 space-y-6">
+                  {profile.portfolio.map((item) => (
+                    <div key={item.id} className="break-inside-avoid">
+                      <div className="group relative overflow-hidden rounded-xl bg-gray-100">
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          width={600}
+                          height={400}
+                          className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                          <p className="text-white font-medium">{item.title}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              ) : (
+                <div className="text-center py-8 md:py-12">
+                  <span className="material-symbols-outlined text-5xl md:text-6xl text-gray-300 mb-3 md:mb-4">photo_library</span>
+                  <h3 className="text-lg md:text-xl font-bold mb-2">{t("noPortfolio") || "Nog geen portfolio"}</h3>
+                  <p className="text-gray-500 mb-4">{t("noPortfolioDesc") || "Voeg foto's toe van je beste werk om hosts te overtuigen."}</p>
+                  {isOwnProfile && (
+                    <Link
+                      href="/profile/edit"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-full font-bold text-sm hover:bg-gray-800 transition-all"
+                    >
+                      <span className="material-symbols-outlined text-lg">add_photo_alternate</span>
+                      {t("addPortfolioItem") || "Portfolio toevoegen"}
+                    </Link>
+                  )}
+                </div>
+              )}
+            </>
           )}
 
           {activeTab === "portfolio" && isHost && (
@@ -210,19 +249,79 @@ export function ProfileClient({ profile, stats, studios, isOwnProfile }: Profile
           )}
 
           {activeTab === "reviews" && (
-            <div className="text-center py-8 md:py-12">
-              <span className="material-symbols-outlined text-5xl md:text-6xl text-gray-300 mb-3 md:mb-4">rate_review</span>
-              <h3 className="text-lg md:text-xl font-bold mb-2">{t("noReviews")}</h3>
-              <p className="text-gray-500">{t("noReviewsDesc")}</p>
-            </div>
+            reviews.length > 0 ? (
+              <div className="space-y-4">
+                {reviews.map((review) => (
+                  <div key={review.id} className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="size-10 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                        {review.reviewer_avatar ? (
+                          <Image src={review.reviewer_avatar} alt="" width={40} height={40} className="object-cover w-full h-full" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-gray-400">person</span>
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm">{review.reviewer_name}</p>
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <span key={i} className={`material-symbols-outlined text-sm ${i < review.rating ? "text-yellow-500" : "text-gray-200"}`} style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                          ))}
+                          <span className="text-xs text-gray-400 ml-1">{new Date(review.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                    {review.comment && <p className="text-sm text-gray-700">{review.comment}</p>}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 md:py-12">
+                <span className="material-symbols-outlined text-5xl md:text-6xl text-gray-300 mb-3 md:mb-4">rate_review</span>
+                <h3 className="text-lg md:text-xl font-bold mb-2">{t("noReviews")}</h3>
+                <p className="text-gray-500">{t("noReviewsDesc")}</p>
+              </div>
+            )
           )}
 
           {activeTab === "history" && (
-            <div className="text-center py-8 md:py-12">
-              <span className="material-symbols-outlined text-5xl md:text-6xl text-gray-300 mb-3 md:mb-4">history</span>
-              <h3 className="text-lg md:text-xl font-bold mb-2">{t("noBookingHistory")}</h3>
-              <p className="text-gray-500">{t("noBookingHistoryDesc")}</p>
-            </div>
+            bookingHistory.length > 0 ? (
+              <div className="space-y-3">
+                {bookingHistory.map((booking) => (
+                  <Link key={booking.id} href={`/bookings/${booking.id}`} className="block">
+                    <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all flex items-center gap-4">
+                      <div className="size-16 rounded-lg bg-gray-200 overflow-hidden flex-shrink-0 relative">
+                        {booking.studio_image ? (
+                          <Image src={booking.studio_image} alt="" fill sizes="64px" className="object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-gray-400">image</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-sm truncate">{booking.studio_title}</p>
+                        <p className="text-xs text-gray-500">{booking.studio_city} &bull; {new Date(booking.date).toLocaleDateString()}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">{booking.total_hours}h &bull; €{booking.total_amount}</p>
+                      </div>
+                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                        booking.status === "completed" ? "bg-green-100 text-green-700" :
+                        booking.status === "confirmed" ? "bg-blue-100 text-blue-700" :
+                        "bg-gray-100 text-gray-600"
+                      }`}>{booking.status}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 md:py-12">
+                <span className="material-symbols-outlined text-5xl md:text-6xl text-gray-300 mb-3 md:mb-4">history</span>
+                <h3 className="text-lg md:text-xl font-bold mb-2">{t("noBookingHistory")}</h3>
+                <p className="text-gray-500">{t("noBookingHistoryDesc")}</p>
+              </div>
+            )
           )}
         </div>
 

@@ -65,6 +65,46 @@ export default async function ProjectWorkspacePage({
 
   if (!project) return notFound()
 
+  // Fetch all project sub-data in parallel
+  const [
+    { data: notes },
+    { data: storyboards },
+    { data: shotlist },
+    { data: files },
+    { data: moodboard },
+    { data: locations },
+  ] = await Promise.all([
+    supabase
+      .from("project_notes")
+      .select("id, title, content, created_by, created_at")
+      .eq("project_id", id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("project_storyboards")
+      .select("id, title, description, image_url, order_index")
+      .eq("project_id", id)
+      .order("order_index"),
+    supabase
+      .from("project_shotlist")
+      .select("id, shot_description, is_completed, order_index")
+      .eq("project_id", id)
+      .order("order_index"),
+    supabase
+      .from("project_files")
+      .select("id, file_name, file_url, file_type, file_size, folder, created_at")
+      .eq("project_id", id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("project_moodboard_items")
+      .select("id, image_url, caption, order_index")
+      .eq("project_id", id)
+      .order("order_index"),
+    supabase
+      .from("project_locations")
+      .select("id, name, address, notes, is_studio, linked_studio_id")
+      .eq("project_id", id),
+  ])
+
   const bookingsData = (bookings || []).map((b) => ({
     id: b.id,
     studio_title: (b.studio as unknown as BookingStudioRelation)?.title || "Studio",
@@ -83,15 +123,48 @@ export default async function ProjectWorkspacePage({
     is_online: false,
   }))
 
+  // Map DB rows to client-component interfaces
+  const notesData = (notes || []).map((n) => ({
+    id: n.id,
+    title: n.title || "",
+    content: n.content || "",
+  }))
+
+  const storyboardData = (storyboards || []).map((s) => ({
+    id: s.id,
+    scene: `Scene ${(s.order_index || 0) + 1}`,
+    title: s.title || "",
+    description: s.description || "",
+    image_url: s.image_url || "",
+    location: "",
+  }))
+
+  const shotlistData = (shotlist || []).map((s) => ({
+    id: s.id,
+    code: `SH-${String((s.order_index || 0) + 1).padStart(3, "0")}`,
+    description: s.shot_description || "",
+    assignee: { name: "", avatar_url: "" },
+    status: s.is_completed ? "completed" : "pending",
+    session: "",
+  }))
+
+  const filesData = (files || []).map((f) => ({
+    id: f.id,
+    name: f.file_name || "",
+    type: f.file_type || "",
+    size: f.file_size ? `${Math.round(f.file_size / 1024)} KB` : "0 KB",
+    modified: f.created_at ? new Date(f.created_at).toLocaleDateString(dateLocale) : "",
+  }))
+
   return (
     <ProjectWorkspaceClient
       project={project}
       bookings={bookingsData}
       teamMembers={teamData}
-      notes={[]}
-      storyboardFrames={[]}
-      shotlist={[]}
-      files={[]}
+      notes={notesData}
+      storyboardFrames={storyboardData}
+      shotlist={shotlistData}
+      files={filesData}
     />
   )
 }
