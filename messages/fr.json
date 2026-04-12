@@ -26,7 +26,8 @@
     "studios": "Studios",
     "calendar": "Calendrier",
     "earnings": "Revenus",
-    "equipment": "Équipement"
+    "equipment": "Équipement",
+    "services": "Services"
   },
   "Footer": {
     "description": "La plateforme pour les créatifs pour trouver et réserver des espaces studio uniques.",
@@ -1498,5 +1499,28 @@
     "danceFloorsDesc": "Planchers suspendus, miroirs du sol au plafond",
     "readyToStart": "Prêt à commencer ?",
     "readyToStartDescription": "Rejoignez des milliers de propriétaires de studios qui gagnent déjà de l'argent avec leur espace créatif."
+  },
+  "HostSettings": {
+    "metaTitle": "Paramètres Hôte",
+    "title": "Paramètres",
+    "subtitle": "Gérez votre compte hôte",
+    "heading": "Paramètres Hôte",
+    "headingDescription": "Gérez votre compte, notifications, sécurité et paiements",
+    "navAccount": "Compte",
+    "navPrivacy": "Notifications",
+    "navSecurity": "Sécurité",
+    "navPayouts": "Paiements",
+    "cardNotificationsTitle": "Notifications",
+    "cardNotificationsDesc": "Configurez les notifications que vous recevez pour les réservations et messages",
+    "cardSecurityTitle": "Sécurité",
+    "cardSecurityDesc": "Authentification à deux facteurs, sessions et mot de passe",
+    "cardPayoutsTitle": "Paiements",
+    "cardPayoutsDesc": "Compte bancaire, Stripe Connect et méthodes de paiement",
+    "accountEmail": "Adresse e-mail",
+    "verified": "Vérifié",
+    "payoutsHeading": "Paramètres de Paiement",
+    "payoutsDesc": "Gérez votre compte bancaire et Stripe Connect",
+    "manageBankAccount": "Gérer le compte bancaire",
+    "manageStripeConnect": "Gérer Stripe Connect"
   }
 }

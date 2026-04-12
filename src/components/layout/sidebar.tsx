@@ -18,6 +18,7 @@ import {
   Building2,
   DollarSign,
   Package,
+  Briefcase,
 } from "lucide-react"
 import {
   Tooltip,
@@ -58,6 +59,7 @@ export function Sidebar() {
     { href: "/host/calendar" as const, label: t("calendar") || "Kalender", icon: Calendar },
     { href: "/host/earnings" as const, label: t("earnings") || "Inkomsten", icon: DollarSign },
     { href: "/host/equipment" as const, label: t("equipment") || "Apparatuur", icon: Package },
+    { href: "/host/services" as const, label: t("services") || "Diensten", icon: Briefcase },
     { href: "/host/messages" as const, label: t("messages"), icon: MessageSquare },
     { href: "/host/settings" as const, label: t("settings"), icon: Settings },
   ]

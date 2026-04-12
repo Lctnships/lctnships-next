@@ -26,7 +26,8 @@
     "studios": "Studios",
     "calendar": "Calendar",
     "earnings": "Earnings",
-    "equipment": "Equipment"
+    "equipment": "Equipment",
+    "services": "Services"
   },
   "Footer": {
     "description": "The platform for creatives to find and book unique studio spaces.",
@@ -1501,5 +1502,28 @@
     "danceFloorsDesc": "Sprung floors, floor-to-ceiling mirrors",
     "readyToStart": "Ready to start?",
     "readyToStartDescription": "Join thousands of studio owners already earning money with their creative space."
+  },
+  "HostSettings": {
+    "metaTitle": "Host Settings",
+    "title": "Settings",
+    "subtitle": "Manage your host account",
+    "heading": "Host Settings",
+    "headingDescription": "Manage your account, notifications, security and payouts",
+    "navAccount": "Account",
+    "navPrivacy": "Notifications",
+    "navSecurity": "Security",
+    "navPayouts": "Payouts",
+    "cardNotificationsTitle": "Notifications",
+    "cardNotificationsDesc": "Configure which notifications you receive about bookings and messages",
+    "cardSecurityTitle": "Security",
+    "cardSecurityDesc": "Two-factor authentication, sessions and password",
+    "cardPayoutsTitle": "Payouts",
+    "cardPayoutsDesc": "Bank account, Stripe Connect and payout methods",
+    "accountEmail": "Email address",
+    "verified": "Verified",
+    "payoutsHeading": "Payout Settings",
+    "payoutsDesc": "Manage your bank account and Stripe Connect account",
+    "manageBankAccount": "Manage bank account",
+    "manageStripeConnect": "Manage Stripe Connect"
   }
 }

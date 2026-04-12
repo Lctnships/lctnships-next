@@ -26,7 +26,8 @@
     "studios": "Studio's",
     "calendar": "Kalender",
     "earnings": "Inkomsten",
-    "equipment": "Apparatuur"
+    "equipment": "Apparatuur",
+    "services": "Diensten"
   },
   "Footer": {
     "description": "Het platform voor creatievelingen om unieke studioruimtes te vinden en te boeken.",
@@ -1501,5 +1502,28 @@
     "danceFloorsDesc": "Sprung floors, vloer-tot-plafond spiegels",
     "readyToStart": "Klaar om te beginnen?",
     "readyToStartDescription": "Sluit je aan bij duizenden studio eigenaren die al geld verdienen met hun creatieve ruimte."
+  },
+  "HostSettings": {
+    "metaTitle": "Host Instellingen",
+    "title": "Instellingen",
+    "subtitle": "Beheer je host account",
+    "heading": "Host Instellingen",
+    "headingDescription": "Beheer je account, notificaties, beveiliging en uitbetalingen",
+    "navAccount": "Account",
+    "navPrivacy": "Notificaties",
+    "navSecurity": "Beveiliging",
+    "navPayouts": "Uitbetalingen",
+    "cardNotificationsTitle": "Notificaties",
+    "cardNotificationsDesc": "Stel in welke meldingen je ontvangt over boekingen en berichten",
+    "cardSecurityTitle": "Beveiliging",
+    "cardSecurityDesc": "Tweefactorauthenticatie, sessies en wachtwoord",
+    "cardPayoutsTitle": "Uitbetalingen",
+    "cardPayoutsDesc": "Bankrekening, Stripe Connect en uitbetalingsmethoden",
+    "accountEmail": "E-mailadres",
+    "verified": "Geverifieerd",
+    "payoutsHeading": "Uitbetalingsinstellingen",
+    "payoutsDesc": "Beheer je bankrekening en Stripe Connect account",
+    "manageBankAccount": "Bankrekening beheren",
+    "manageStripeConnect": "Stripe Connect beheren"
   }
 }

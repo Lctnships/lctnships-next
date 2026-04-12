@@ -26,7 +26,8 @@
     "studios": "Estudios",
     "calendar": "Calendario",
     "earnings": "Ingresos",
-    "equipment": "Equipamiento"
+    "equipment": "Equipamiento",
+    "services": "Servicios"
   },
   "Footer": {
     "description": "La plataforma para creativos para encontrar y reservar espacios de estudio únicos.",
@@ -1493,5 +1494,28 @@
     "danceFloorsDesc": "Pisos sprung, espejos de piso a techo",
     "readyToStart": "¿Listo para comenzar?",
     "readyToStartDescription": "Únete a miles de propietarios de estudios que ya están ganando dinero con su espacio creativo."
+  },
+  "HostSettings": {
+    "metaTitle": "Configuración de Host",
+    "title": "Configuración",
+    "subtitle": "Gestiona tu cuenta de host",
+    "heading": "Configuración de Host",
+    "headingDescription": "Gestiona tu cuenta, notificaciones, seguridad y pagos",
+    "navAccount": "Cuenta",
+    "navPrivacy": "Notificaciones",
+    "navSecurity": "Seguridad",
+    "navPayouts": "Pagos",
+    "cardNotificationsTitle": "Notificaciones",
+    "cardNotificationsDesc": "Configura qué notificaciones recibes sobre reservas y mensajes",
+    "cardSecurityTitle": "Seguridad",
+    "cardSecurityDesc": "Autenticación de dos factores, sesiones y contraseña",
+    "cardPayoutsTitle": "Pagos",
+    "cardPayoutsDesc": "Cuenta bancaria, Stripe Connect y métodos de pago",
+    "accountEmail": "Correo electrónico",
+    "verified": "Verificado",
+    "payoutsHeading": "Configuración de Pagos",
+    "payoutsDesc": "Gestiona tu cuenta bancaria y Stripe Connect",
+    "manageBankAccount": "Gestionar cuenta bancaria",
+    "manageStripeConnect": "Gestionar Stripe Connect"
   }
 }

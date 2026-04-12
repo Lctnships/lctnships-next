@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 import { SecuritySettingsClient } from "@/app/[locale]/(dashboard)/settings/security/security-settings-client"
+// TODO: create independent host security client to fully decouple from renter dashboard.
+// For now this import is acceptable — the component accepts settingsHref to differentiate navigation.
 import { getTranslations } from "next-intl/server"
 
 export async function generateMetadata() {

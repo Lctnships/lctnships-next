@@ -26,7 +26,8 @@
     "studios": "Studios",
     "calendar": "Kalender",
     "earnings": "Einnahmen",
-    "equipment": "Ausstattung"
+    "equipment": "Ausstattung",
+    "services": "Dienstleistungen"
   },
   "Footer": {
     "description": "Die Plattform für Kreative, um einzigartige Studioräume zu finden und zu buchen.",
@@ -1498,5 +1499,28 @@
     "danceFloorsDesc": "Federnde Böden, raumhohe Spiegel",
     "readyToStart": "Bereit loszulegen?",
     "readyToStartDescription": "Schließen Sie sich Tausenden von Studiobetreibern an, die bereits mit ihrem kreativen Raum Geld verdienen."
+  },
+  "HostSettings": {
+    "metaTitle": "Host-Einstellungen",
+    "title": "Einstellungen",
+    "subtitle": "Verwalten Sie Ihr Host-Konto",
+    "heading": "Host-Einstellungen",
+    "headingDescription": "Konto, Benachrichtigungen, Sicherheit und Auszahlungen verwalten",
+    "navAccount": "Konto",
+    "navPrivacy": "Benachrichtigungen",
+    "navSecurity": "Sicherheit",
+    "navPayouts": "Auszahlungen",
+    "cardNotificationsTitle": "Benachrichtigungen",
+    "cardNotificationsDesc": "Konfigurieren Sie Benachrichtigungen für Buchungen und Nachrichten",
+    "cardSecurityTitle": "Sicherheit",
+    "cardSecurityDesc": "Zwei-Faktor-Authentifizierung, Sitzungen und Passwort",
+    "cardPayoutsTitle": "Auszahlungen",
+    "cardPayoutsDesc": "Bankkonto, Stripe Connect und Auszahlungsmethoden",
+    "accountEmail": "E-Mail-Adresse",
+    "verified": "Verifiziert",
+    "payoutsHeading": "Auszahlungseinstellungen",
+    "payoutsDesc": "Verwalten Sie Ihr Bankkonto und Stripe Connect",
+    "manageBankAccount": "Bankkonto verwalten",
+    "manageStripeConnect": "Stripe Connect verwalten"
   }
 }
