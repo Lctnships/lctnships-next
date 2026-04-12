@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createCreditPurchase } from "@/lib/stripe"
 import { getPackageById } from "@/lib/credits"
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { logger } from "@/lib/logger"
 
 export async function POST(request: NextRequest) {
@@ -27,8 +28,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Get user profile for email
-    const { data: profile } = await supabase
+    // Read profile via admin client — `email` is not in the authenticated
+    // column grant (migration 018), so user-scoped SELECT returns null silently.
+    const admin = createAdminClient()
+    const { data: profile } = await admin
       .from("users")
       .select("email, full_name")
       .eq("id", user.id)

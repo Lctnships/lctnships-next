@@ -1333,7 +1333,9 @@
     "meetingpackageConnected": "MeetingPackage conectado",
     "copy": "Copiar",
     "copied": "¡Copiado!",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "nextPayoutApprox": "~3 días",
+    "nextPayoutNone": "-"
   },
   "HostEquipment": {
     "pageTitle": "Añadir Equipo",

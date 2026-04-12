@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 import { CheckoutClient } from "./checkout-client"
 
@@ -22,8 +23,10 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
     redirect(`/login?redirect=/book/${studioId}/checkout`)
   }
 
-  // Get user profile
-  const { data: profile } = await supabase
+  // Profile read via admin client — sensitive columns (phone, email,
+  // stripe_customer_id) are blocked for the authenticated role by migration 018.
+  const admin = createAdminClient()
+  const { data: profile } = await admin
     .from("users")
     .select("*")
     .eq("id", user.id)

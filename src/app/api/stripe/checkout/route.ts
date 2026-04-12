@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
         id,
         title,
         host_id,
+        price_per_hour,
         hourly_rate
       `)
       .eq("id", studioId)
@@ -49,10 +50,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Server-side price recalculation to prevent client-side price manipulation.
-    // Compute in cents in a single step — never go through an intermediate euro
-    // rounding, which would be lossy and could make platform_fee differ from
-    // what the webhook records.
-    const hourlyRate = studio.hourly_rate || 0
+    // `price_per_hour` is the new canonical column; `hourly_rate` remains as
+    // legacy fallback for studios not yet migrated (see CLAUDE.md).
+    const hourlyRate = studio.price_per_hour ?? studio.hourly_rate ?? 0
     const amountInCents = Math.round(hourlyRate * hours * 100)
 
     // Verify client-supplied total is within acceptable tolerance (2% for rounding)

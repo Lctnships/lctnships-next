@@ -2,8 +2,11 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { EquipmentClient } from "./equipment-client"
 
-export const metadata = {
-  title: "Equipment",
+import { getTranslations } from "next-intl/server"
+
+export async function generateMetadata() {
+  const t = await getTranslations("HostEquipment")
+  return { title: t("pageTitle") }
 }
 
 export default async function EquipmentPage() {

@@ -1,0 +1,161 @@
+import { createClient } from "@supabase/supabase-js"
+import { readFileSync } from "fs"
+import { resolve } from "path"
+import { TEST_HOST, TEST_RENTER, TEST_STUDIO } from "./test-users"
+
+function loadEnvLocal() {
+  try {
+    const contents = readFileSync(resolve(process.cwd(), ".env.local"), "utf8")
+    for (const line of contents.split("\n")) {
+      const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/)
+      if (!match) continue
+      const key = match[1]
+      let value = match[2]
+      if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1)
+      if (!process.env[key]) process.env[key] = value
+    }
+  } catch {
+    // .env.local may not exist (e.g. CI uses real env)
+  }
+}
+loadEnvLocal()
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+if (!SUPABASE_URL || !SERVICE_ROLE) {
+  throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env.local")
+}
+
+const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
+  auth: { autoRefreshToken: false, persistSession: false },
+})
+
+async function ensureAuthUser(email: string, password: string, fullName: string) {
+  const { data: list, error: listErr } = await admin.auth.admin.listUsers({ page: 1, perPage: 200 })
+  if (listErr) throw listErr
+  const existing = list.users.find((u) => u.email === email)
+  if (existing) {
+    await admin.auth.admin.updateUserById(existing.id, { password, email_confirm: true })
+    return existing.id
+  }
+  const { data, error } = await admin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: { full_name: fullName },
+  })
+  if (error) throw error
+  return data.user!.id
+}
+
+async function upsertProfile(id: string, email: string, fullName: string, userType: "host" | "renter") {
+  const { error } = await admin
+    .from("users")
+    .upsert(
+      { id, email, full_name: fullName, user_type: userType, onboarding_complete: true },
+      { onConflict: "id" }
+    )
+  if (error) throw error
+}
+
+async function upsertStudio(hostId: string) {
+  const { data: existing } = await admin
+    .from("studios")
+    .select("id")
+    .eq("host_id", hostId)
+    .eq("title", TEST_STUDIO.title)
+    .maybeSingle()
+  if (existing) return existing.id
+
+  const { data, error } = await admin
+    .from("studios")
+    .insert({
+      host_id: hostId,
+      owner_id: hostId,
+      title: TEST_STUDIO.title,
+      description: "E2E studio",
+      type: TEST_STUDIO.studioType,
+      city: TEST_STUDIO.city,
+      country: TEST_STUDIO.country,
+      location: `${TEST_STUDIO.city}, ${TEST_STUDIO.country}`,
+      price_per_hour: TEST_STUDIO.pricePerHour,
+      hourly_rate: TEST_STUDIO.pricePerHour,
+      is_published: true,
+      status: "published",
+    })
+    .select("id")
+    .single()
+  if (error) throw error
+  return data.id
+}
+
+async function upsertBooking(studioId: string, hostId: string, renterId: string) {
+  const bookingNumber = "E2E-TEST-0001"
+  const { data: existing } = await admin
+    .from("bookings")
+    .select("id")
+    .eq("booking_number", bookingNumber)
+    .maybeSingle()
+
+  const start = new Date()
+  start.setDate(start.getDate() + 3)
+  start.setHours(10, 0, 0, 0)
+  const end = new Date(start)
+  end.setHours(14, 0, 0, 0)
+
+  const hours = 4
+  const totalPrice = hours * TEST_STUDIO.pricePerHour
+  const serviceFee = 0
+  const hostPayout = Math.round(totalPrice * 0.85)
+
+  const row = {
+    booking_number: bookingNumber,
+    studio_id: studioId,
+    renter_id: renterId,
+    user_id: renterId,
+    host_id: hostId,
+    start_datetime: start.toISOString(),
+    end_datetime: end.toISOString(),
+    start_time: start.toISOString(),
+    end_time: end.toISOString(),
+    total_hours: hours,
+    total_price: totalPrice,
+    service_fee: serviceFee,
+    total_amount: totalPrice,
+    host_payout: hostPayout,
+    status: "confirmed" as const,
+    payment_status: "paid" as const,
+  }
+
+  if (existing) {
+    const { error } = await admin.from("bookings").update(row).eq("id", existing.id)
+    if (error) throw error
+    return existing.id
+  }
+  const { data, error } = await admin.from("bookings").insert(row).select("id").single()
+  if (error) throw error
+  return data.id
+}
+
+export async function seed() {
+  const hostId = await ensureAuthUser(TEST_HOST.email, TEST_HOST.password, TEST_HOST.fullName)
+  const renterId = await ensureAuthUser(TEST_RENTER.email, TEST_RENTER.password, TEST_RENTER.fullName)
+  await upsertProfile(hostId, TEST_HOST.email, TEST_HOST.fullName, "host")
+  await upsertProfile(renterId, TEST_RENTER.email, TEST_RENTER.fullName, "renter")
+  const studioId = await upsertStudio(hostId)
+  const bookingId = await upsertBooking(studioId, hostId, renterId)
+  return { hostId, renterId, studioId, bookingId }
+}
+
+if (require.main === module) {
+  seed()
+    .then((r) => {
+      console.log("Seeded:", r)
+      process.exit(0)
+    })
+    .catch((err) => {
+      console.error("Seed failed:", err)
+      process.exit(1)
+    })
+}

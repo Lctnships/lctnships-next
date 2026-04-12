@@ -1268,6 +1268,8 @@
   },
   "HostCalendar": {
     "pageTitle": "Calendar Management",
+    "nextPayoutApprox": "~3 dagen",
+    "nextPayoutNone": "-",
     "scheduledProductions": "{count} geplande producties deze maand",
     "monthView": "Maand",
     "weekView": "Week",

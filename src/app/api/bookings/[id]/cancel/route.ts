@@ -6,6 +6,16 @@ import { logger } from "@/lib/logger"
 import BookingCancelledEmail from "@/emails/booking-cancelled"
 import HostCancellationEmail from "@/emails/host-cancellation"
 import { SITE_URL } from "@/lib/seo"
+import { bcp47 } from "@/lib/format-locale"
+
+const SUPPORTED_LOCALES = ["nl", "en", "es", "fr", "de"] as const
+
+function localeFromAcceptLanguage(header: string | null): string {
+  if (!header) return "en"
+  const first = header.split(",")[0]?.split(";")[0]?.trim().toLowerCase() ?? "en"
+  const base = first.split("-")[0]
+  return (SUPPORTED_LOCALES as readonly string[]).includes(base) ? base : "en"
+}
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -48,17 +58,33 @@ export async function POST(request: Request, { params }: RouteParams) {
     const body = await request.json().catch(() => ({}))
     const { reason, confirmed } = body as { reason?: string; confirmed?: boolean }
 
-    // Fetch booking with studio + both parties for emails/notifications
-    const { data: booking, error: fetchError } = await supabase
+    // Ownership check via user client (RLS-guarded).
+    const { data: ownershipRow, error: ownershipErr } = await supabase
+      .from("bookings")
+      .select("id, renter_id, host_id, status")
+      .eq("id", id)
+      .or(`renter_id.eq.${user.id},host_id.eq.${user.id}`)
+      .single()
+
+    if (ownershipErr || !ownershipRow) {
+      return NextResponse.json({ error: "Booking not found" }, { status: 404 })
+    }
+
+    // Full row (including sensitive columns like stripe_payment_id, payment_status,
+    // and joined user emails) via service client — column grants on bookings/users
+    // block these for the authenticated role.
+    const serviceClient = await createServiceClient()
+    const { data: booking, error: fetchError } = await serviceClient
       .from("bookings")
       .select(`
-        *,
+        id, renter_id, host_id, status, payment_status,
+        total_amount, stripe_payment_id,
+        start_datetime, end_datetime,
         studio:studios(title, address, cancellation_policy, images),
         renter:users!bookings_renter_id_fkey(id, email, full_name),
         host:users!bookings_host_id_fkey(id, email, full_name)
       `)
       .eq("id", id)
-      .or(`renter_id.eq.${user.id},host_id.eq.${user.id}`)
       .single()
 
     if (fetchError || !booking) {
@@ -100,7 +126,6 @@ export async function POST(request: Request, { params }: RouteParams) {
     //  2. The subsequent bookings UPDATE writes payment_status and
     //     requires_manual_payout_reversal — both excluded from the
     //     authenticated column grant (migration 011). Service client bypasses.
-    const serviceClient = await createServiceClient()
     let requiresManualPayoutReversal = false
     if (refundAmount > 0) {
       const { data: existingPayouts } = await serviceClient
@@ -228,15 +253,17 @@ export async function POST(request: Request, { params }: RouteParams) {
       p_link: `/bookings/${id}`,
     })
 
-    // Issue #3 — send emails to both parties
+    // Issue #3 — send emails to both parties (localized via Accept-Language)
+    const locale = localeFromAcceptLanguage(request.headers.get("accept-language"))
+    const bcp = bcp47(locale)
     const startDate = new Date(booking.start_datetime)
     const endDate = new Date(booking.end_datetime)
-    const dateTimeStr = `${startDate.toLocaleDateString("nl-NL", {
+    const dateTimeStr = `${startDate.toLocaleDateString(bcp, {
       weekday: "long",
       day: "numeric",
       month: "long",
       year: "numeric",
-    })} · ${startDate.toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })} – ${endDate.toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })}`
+    })} · ${startDate.toLocaleTimeString(bcp, { hour: "2-digit", minute: "2-digit" })} – ${endDate.toLocaleTimeString(bcp, { hour: "2-digit", minute: "2-digit" })}`
     const studioImage = Array.isArray(studioData?.images) && studioData.images.length > 0
       ? studioData.images[0]
       : undefined

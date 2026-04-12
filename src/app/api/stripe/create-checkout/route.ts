@@ -81,7 +81,7 @@ export async function POST(req: Request) {
       : { data: null as { stripe_account_id: string | null } | null }
 
     // Server-side price recalculation — never trust DB amount (renter could PATCH via Supabase REST)
-    const hourlyRate = booking.studio?.hourly_rate || booking.studio?.price_per_hour || 0
+    const hourlyRate = booking.studio?.price_per_hour ?? booking.studio?.hourly_rate ?? 0
     const recalculatedAmount = Math.round(booking.total_hours * hourlyRate * 100) // cents
     const platformFee = Math.round(recalculatedAmount * 0.15)
 

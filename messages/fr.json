@@ -1338,7 +1338,9 @@
     "meetingpackageConnected": "MeetingPackage connecté",
     "copy": "Copier",
     "copied": "Copié !",
-    "close": "Fermer"
+    "close": "Fermer",
+    "nextPayoutApprox": "~3 jours",
+    "nextPayoutNone": "-"
   },
   "HostEquipment": {
     "pageTitle": "Ajouter un équipement",

@@ -47,22 +47,33 @@ export async function POST(request: NextRequest) {
 
   // Idempotency guard. Stripe delivers events at-least-once; a transient 500
   // or network drop triggers a retry. Insert first with the event id as PK —
-  // if we already processed this event, the unique constraint fires and we
-  // bail out before any side effects run.
+  // if we already processed this event (status = 'done'), the unique
+  // constraint fires and we bail out before any side effects run. If a prior
+  // attempt crashed mid-handler (status = 'processing' or 'failed'), we allow
+  // reprocessing so Stripe's retry isn't silently absorbed.
   const { error: idempotencyError } = await supabase
     .from("processed_webhook_events")
-    .insert({ stripe_event_id: event.id, event_type: event.type })
+    .insert({ stripe_event_id: event.id, event_type: event.type, status: "processing" })
 
   if (idempotencyError) {
-    // 23505 = unique_violation = event already processed on a previous attempt
     if (idempotencyError.code === "23505") {
-      logger.info("Webhook event already processed, skipping", { eventId: event.id, eventType: event.type })
-      return NextResponse.json({ received: true, duplicate: true })
+      const { data: existing } = await supabase
+        .from("processed_webhook_events")
+        .select("status")
+        .eq("stripe_event_id", event.id)
+        .single()
+      if (existing?.status === "done") {
+        logger.info("Webhook event already done, skipping", { eventId: event.id, eventType: event.type })
+        return NextResponse.json({ received: true, duplicate: true })
+      }
+      logger.warn("Webhook event retrying after incomplete prior attempt", { eventId: event.id, prior: existing?.status })
+    } else {
+      logger.error("Failed to record webhook event for idempotency", idempotencyError)
+      return NextResponse.json({ error: "Failed to record event" }, { status: 500 })
     }
-    logger.error("Failed to record webhook event for idempotency", idempotencyError)
-    return NextResponse.json({ error: "Failed to record event" }, { status: 500 })
   }
 
+  try {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session
@@ -226,14 +237,16 @@ export async function POST(request: NextRequest) {
               description: `Session extension: +${extension.extra_hours} hours`,
             })
 
-            const { data: studio } = await supabase.from("studios").select("title").eq("id", extension.studio_id).single()
-            const { data: renter } = await supabase.from("users").select("full_name").eq("id", session.metadata?.user_id).single()
+            const renterId = session.metadata?.user_id
+            const { data: renter } = renterId
+              ? await supabase.from("users").select("full_name").eq("id", renterId).single()
+              : { data: null }
 
             await supabase.from("notifications").insert({
               user_id: extension.host_id,
               type: "booking_extension",
-              title: "Sessie verlengd",
-              message: `${renter?.full_name || 'Een huurder'} heeft de sessie verlengd met ${extension.extra_hours} uur`,
+              title: "Session extended",
+              message: `${renter?.full_name || "A renter"} extended the session by ${extension.extra_hours}h`,
               link: `/host/bookings/${extension.booking_id}`,
             })
 
@@ -349,5 +362,18 @@ export async function POST(request: NextRequest) {
       logger.info("Unhandled webhook event type", { type: event.type })
   }
 
+  await supabase
+    .from("processed_webhook_events")
+    .update({ status: "done", completed_at: new Date().toISOString() })
+    .eq("stripe_event_id", event.id)
+
   return NextResponse.json({ received: true })
+  } catch (handlerError) {
+    logger.error("Webhook handler failed after idempotency insert", { eventId: event.id, eventType: event.type, error: handlerError })
+    await supabase
+      .from("processed_webhook_events")
+      .update({ status: "failed" })
+      .eq("stripe_event_id", event.id)
+    return NextResponse.json({ error: "Handler failed — will retry" }, { status: 500 })
+  }
 }

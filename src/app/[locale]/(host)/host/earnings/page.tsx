@@ -17,8 +17,11 @@ interface EarningsStudioRelation {
   studio_images?: { image_url?: string }[]
 }
 
-export const metadata = {
-  title: "Earnings & Revenue",
+import { getTranslations } from "next-intl/server"
+
+export async function generateMetadata() {
+  const t = await getTranslations("HostEarnings")
+  return { title: t("pageTitle") }
 }
 
 export default async function EarningsPage() {
@@ -43,7 +46,7 @@ export default async function EarningsPage() {
         studio:studios (id, title, images, studio_images(image_url))
       `)
       .eq("host_id", user.id)
-      .eq("status", "completed")
+      .in("status", ["confirmed", "completed"])
       .eq("payment_status", "paid"),
     supabase
       .from("payouts")
