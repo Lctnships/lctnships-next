@@ -114,6 +114,7 @@ export type Database = {
           extension_premium_rate: number | null
           booking_mode: 'flexible' | 'fixed_blocks'
           booking_blocks: Array<{ duration_hours: number; price: number; sort_order: number }> | null
+          booking_lead_time_hours: number
           hourly_rate: number | null
           wix_calendar_url: string | null
           meetingpackage_calendar_url: string | null
@@ -149,6 +150,7 @@ export type Database = {
           extension_premium_rate?: number | null
           booking_mode?: 'flexible' | 'fixed_blocks'
           booking_blocks?: Array<{ duration_hours: number; price: number; sort_order: number }> | null
+          booking_lead_time_hours?: number
           hourly_rate?: number | null
           wix_calendar_url?: string | null
           meetingpackage_calendar_url?: string | null
@@ -184,6 +186,7 @@ export type Database = {
           extension_premium_rate?: number | null
           booking_mode?: 'flexible' | 'fixed_blocks'
           booking_blocks?: Array<{ duration_hours: number; price: number; sort_order: number }> | null
+          booking_lead_time_hours?: number
           hourly_rate?: number | null
           wix_calendar_url?: string | null
           meetingpackage_calendar_url?: string | null

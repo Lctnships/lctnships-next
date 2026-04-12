@@ -6,7 +6,20 @@ import { logger } from "@/lib/logger"
 
 type UserInsert = Database["public"]["Tables"]["users"]["Insert"]
 
-// GET /api/users/profile - Get current user's profile
+// Columns that exist on the users table today. Keep this in sync with the
+// database.types.ts Row type — the following were previously in this file
+// but DO NOT EXIST in the DB and caused the GET handler to 500:
+// professional_title, response_rate, response_time, equipment_preferences,
+// is_accepting_projects.
+const PROFILE_COLUMNS = `
+  id, full_name, email, avatar_url, bio, location, phone,
+  user_type, is_verified, created_at, updated_at, two_factor_enabled
+`
+
+// GET /api/users/profile - Get current user's profile.
+// Uses the admin client because phone, email and two_factor_enabled are
+// blocked from the authenticated role via column grants (migration 018).
+// User identity is verified first via getUser() on the user-scoped client.
 export async function GET(_request: Request) {
   try {
     const supabase = await createClient()
@@ -16,14 +29,10 @@ export async function GET(_request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { data: profile, error } = await supabase
+    const adminSupabase = createAdminClient()
+    const { data: profile, error } = await adminSupabase
       .from("users")
-      .select(`
-        id, full_name, email, avatar_url, bio, location, phone,
-        professional_title, user_type, is_verified, created_at,
-        response_rate, response_time, equipment_preferences,
-        is_accepting_projects, two_factor_enabled
-      `)
+      .select(PROFILE_COLUMNS)
       .eq("id", user.id)
       .single()
 
@@ -105,12 +114,7 @@ export async function PATCH(request: Request) {
     const { data: rows, error } = await adminSupabase
       .from("users")
       .upsert(upsertData, { onConflict: "id" })
-      .select(`
-        id, full_name, email, avatar_url, bio, location, phone,
-        professional_title, user_type, is_verified, created_at,
-        response_rate, response_time, equipment_preferences,
-        is_accepting_projects, two_factor_enabled, updated_at
-      `)
+      .select(PROFILE_COLUMNS)
 
     if (error) throw error
 

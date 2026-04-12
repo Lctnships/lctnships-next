@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 import { EditProfileClient } from "./edit-profile-client"
@@ -16,9 +17,12 @@ export default async function EditProfilePage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  const { data: profile } = await supabase
+  // Admin client for sensitive columns (phone, email) — migration 018 blocks
+  // authenticated from reading these. User identity verified above.
+  const admin = createAdminClient()
+  const { data: profile } = await admin
     .from("users")
-    .select("*")
+    .select("id, full_name, email, avatar_url, bio, location, phone, user_type, is_verified")
     .eq("id", user.id)
     .single()
 
