@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Link, useRouter } from "@/i18n/routing"
+import { useTranslations } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 
@@ -10,6 +11,7 @@ const daysOfWeek = ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"]
 
 function CalendarPageContent() {
   const router = useRouter()
+  const t = useTranslations("Onboarding")
   const searchParams = useSearchParams()
   const [availableDays, setAvailableDays] = useState(() => {
     if (typeof window === 'undefined') return [1, 2, 3, 4]
@@ -65,8 +67,8 @@ function CalendarPageContent() {
       localStorage.setItem("studio_draft", JSON.stringify(updatedDraft))
 
       if (!user) {
-        toast.info("Log in om je studio te publiceren", {
-          description: "Je voortgang wordt bewaard"
+        toast.info(t("loginToPublish"), {
+          description: t("progressSaved")
         })
         router.push("/login?redirect=/host/onboarding/calendar&publish=true")
         return
@@ -106,7 +108,7 @@ function CalendarPageContent() {
 
       if (error) {
         console.error("Error creating studio:", error)
-        toast.error("Studio aanmaken mislukt", { description: error.message })
+        toast.error(t("createFailed"), { description: error.message })
         setIsSubmitting(false)
         return
       }
@@ -114,11 +116,11 @@ function CalendarPageContent() {
       // Clear draft
       localStorage.removeItem("studio_draft")
 
-      toast.success("Studio ingediend ter beoordeling!")
+      toast.success(t("submitted"))
       router.push(`/host/onboarding/success?id=${data.id}`)
     } catch (error) {
       console.error("Error:", error)
-      toast.error("Er ging iets mis")
+      toast.error(t("somethingWrong"))
       setIsSubmitting(false)
     }
   }, [availableDays, minDuration, prepTime, bookingNotice, instantBook, router])
@@ -139,13 +141,13 @@ function CalendarPageContent() {
       <header className="max-w-5xl w-full mx-auto px-12 pt-16 pb-8">
         <div className="flex flex-col gap-2">
           <p className="text-primary font-bold text-sm tracking-widest uppercase">
-            Stap 5: Kalender
+            {t("step5Label")}
           </p>
           <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-            Stel je beschikbaarheid in
+            {t("step5Title")}
           </h2>
           <p className="text-gray-500 text-lg">
-            Stel je standaard openingstijden in om boekingen naadloos te beheren.
+            {t("step5Subtitle")}
           </p>
         </div>
       </header>

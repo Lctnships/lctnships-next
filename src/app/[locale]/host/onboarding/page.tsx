@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Link, useRouter } from "@/i18n/routing"
+import { useTranslations } from "next-intl"
 import { AddressAutocomplete, AddressData } from "@/components/ui/address-autocomplete"
 
 const emptyAddress: AddressData = {
@@ -13,17 +14,18 @@ const emptyAddress: AddressData = {
   formatted: "",
 }
 
-const studioTypes = [
-  { id: "photo", icon: "photo_camera", title: "Fotostudio" },
-  { id: "video", icon: "videocam", title: "Videostudio" },
-  { id: "podcast", icon: "mic", title: "Podcast Studio" },
-  { id: "music", icon: "music_note", title: "Muziekstudio" },
-  { id: "dance", icon: "directions_run", title: "Dansstudio" },
-  { id: "art", icon: "palette", title: "Galerie" },
-]
+const STUDIO_TYPE_META = [
+  { id: "photo", icon: "photo_camera", labelKey: "typePhoto" },
+  { id: "video", icon: "videocam", labelKey: "typeVideo" },
+  { id: "podcast", icon: "mic", labelKey: "typePodcast" },
+  { id: "music", icon: "music_note", labelKey: "typeMusic" },
+  { id: "dance", icon: "directions_run", labelKey: "typeDance" },
+  { id: "art", icon: "palette", labelKey: "typeArt" },
+] as const
 
 export default function OnboardingBasicsPage() {
   const router = useRouter()
+  const t = useTranslations("Onboarding")
   const [selectedType, setSelectedType] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null
     const draft = JSON.parse(localStorage.getItem("studio_draft") || "{}")
@@ -87,9 +89,9 @@ export default function OnboardingBasicsPage() {
       {/* Header Section */}
       <header className="max-w-4xl w-full mx-auto px-12 pt-16 pb-8">
         <div className="flex flex-col gap-2">
-          <p className="text-black font-bold text-sm tracking-widest uppercase">Stap 1: De Basis</p>
-          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">Vertel ons over je ruimte</h2>
-          <p className="text-gray-500 text-lg">Elke goede listing begint met een duidelijke identiteit. Laten we die van jou bepalen.</p>
+          <p className="text-black font-bold text-sm tracking-widest uppercase">{t("step1Label")}</p>
+          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">{t("step1Title")}</h2>
+          <p className="text-gray-500 text-lg">{t("step1Subtitle")}</p>
         </div>
       </header>
 
@@ -97,9 +99,9 @@ export default function OnboardingBasicsPage() {
       <section className="max-w-4xl w-full mx-auto px-12 pb-32 flex-1">
         {/* Studio Type Selection */}
         <div className="mb-12">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">Wat voor type studio is het?</h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-6">{t("studioTypeTitle")}</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {studioTypes.map((type) => (
+            {STUDIO_TYPE_META.map((type) => (
               <button
                 key={type.id}
                 onClick={() => setSelectedType(type.id)}
@@ -123,7 +125,7 @@ export default function OnboardingBasicsPage() {
                     selectedType === type.id ? "text-gray-900" : "text-gray-600"
                   }`}
                 >
-                  {type.title}
+                  {t(type.labelKey)}
                 </span>
               </button>
             ))}
@@ -133,39 +135,35 @@ export default function OnboardingBasicsPage() {
         {/* Input Fields */}
         <div className="grid grid-cols-1 gap-8 max-w-2xl">
           <div className="flex flex-col gap-2">
-            <label className="text-base font-bold text-gray-900 px-1">Studionaam</label>
+            <label className="text-base font-bold text-gray-900 px-1">{t("studioNameLabel")}</label>
             <input
               type="text"
               value={studioName}
               onChange={(e) => setStudioName(e.target.value)}
               className="w-full bg-white border-gray-200 rounded-xl h-14 px-5 text-gray-900 focus:ring-2 focus:ring-black focus:border-black transition-all shadow-sm placeholder:text-gray-400"
-              placeholder="bijv. Skyline Creative"
+              placeholder={t("studioNamePlaceholder")}
             />
-            <p className="text-xs text-gray-500 px-1 mt-1">
-              Kies een pakkende naam die het karakter van je ruimte weerspiegelt.
-            </p>
+            <p className="text-xs text-gray-500 px-1 mt-1">{t("studioNameHint")}</p>
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-base font-bold text-gray-900 px-1">Locatie</label>
+            <label className="text-base font-bold text-gray-900 px-1">{t("locationLabel")}</label>
             <AddressAutocomplete
               value={address}
               onChange={setAddress}
-              placeholder="Zoek je adres..."
+              placeholder={t("locationPlaceholder")}
             />
-            <p className="text-xs text-gray-500 px-1 mt-1">
-              Je exacte adres wordt pas getoond na een boeking.
-            </p>
+            <p className="text-xs text-gray-500 px-1 mt-1">{t("locationHint")}</p>
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-base font-bold text-gray-900 px-1">Beschrijving</label>
+            <label className="text-base font-bold text-gray-900 px-1">{t("descriptionLabel")}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
               className="w-full bg-white border-gray-200 rounded-xl p-5 text-gray-900 focus:ring-2 focus:ring-black focus:border-black transition-all shadow-sm placeholder:text-gray-400 resize-none"
-              placeholder="Beschrijf wat jouw studio bijzonder maakt..."
+              placeholder={t("descriptionPlaceholder")}
             />
           </div>
         </div>
@@ -179,10 +177,10 @@ export default function OnboardingBasicsPage() {
           </div>
           <div className="flex flex-col">
             <span className="text-[10px] font-black uppercase tracking-widest text-black mb-1">
-              Voorbeeld
+              {t("previewLabel")}
             </span>
             <h4 className="text-xl font-bold text-gray-900 mb-2">
-              {studioName || <span className="italic text-gray-400">De naam van je studio...</span>}
+              {studioName || <span className="italic text-gray-400">{t("previewNamePlaceholder")}</span>}
             </h4>
             {address.city && (
               <div className="flex items-center gap-1 text-gray-500 text-sm mb-2">
@@ -190,10 +188,7 @@ export default function OnboardingBasicsPage() {
                 <span>{address.city}</span>
               </div>
             )}
-            <p className="text-gray-500 text-sm leading-relaxed max-w-md">
-              Je studio wordt zichtbaar voor duizenden creators zodra je deze 5 stappen hebt voltooid.
-              Je kunt deze gegevens later altijd wijzigen.
-            </p>
+            <p className="text-gray-500 text-sm leading-relaxed max-w-md">{t("previewVisibility")}</p>
           </div>
         </div>
       </section>
@@ -207,13 +202,13 @@ export default function OnboardingBasicsPage() {
               className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-gray-500 hover:text-gray-900 transition-colors"
             >
               <span className="material-symbols-outlined">arrow_back</span>
-              Annuleren
+              {t("cancel")}
             </Link>
             <Link
               href="/host/dashboard"
               className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium text-gray-400 hover:text-gray-600 transition-colors"
             >
-              Later invullen
+              {t("fillLater")}
               <span className="material-symbols-outlined text-base">skip_next</span>
             </Link>
           </div>
@@ -222,7 +217,7 @@ export default function OnboardingBasicsPage() {
             disabled={!selectedType || !studioName}
             className="bg-black hover:bg-black/90 text-white px-10 py-4 rounded-full font-bold shadow-lg shadow-primary/25 transition-all flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Verder naar Media
+            {t("continueToMedia")}
             <span className="material-symbols-outlined text-xl">arrow_forward</span>
           </button>
         </div>

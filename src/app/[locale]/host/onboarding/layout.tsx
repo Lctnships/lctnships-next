@@ -2,15 +2,16 @@
 
 import { useMemo } from "react"
 import { Link, usePathname } from "@/i18n/routing"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 
-const steps = [
-  { id: "basics", icon: "info", title: "Basics", href: "/host/onboarding" },
-  { id: "media", icon: "image", title: "Media", href: "/host/onboarding/media" },
-  { id: "equipment", icon: "inventory_2", title: "Equipment", href: "/host/onboarding/equipment" },
-  { id: "pricing", icon: "payments", title: "Pricing", href: "/host/onboarding/pricing" },
-  { id: "calendar", icon: "calendar_today", title: "Calendar", href: "/host/onboarding/calendar" },
-]
+const STEP_META = [
+  { id: "basics", icon: "info", labelKey: "layoutStep1", href: "/host/onboarding" },
+  { id: "media", icon: "image", labelKey: "layoutStep2", href: "/host/onboarding/media" },
+  { id: "equipment", icon: "inventory_2", labelKey: "layoutStep3", href: "/host/onboarding/equipment" },
+  { id: "pricing", icon: "payments", labelKey: "layoutStep4", href: "/host/onboarding/pricing" },
+  { id: "calendar", icon: "calendar_today", labelKey: "layoutStep5", href: "/host/onboarding/calendar" },
+] as const
 
 function getCurrentStep(pathname: string) {
   if (pathname === "/host/onboarding") return "basics"
@@ -55,7 +56,7 @@ function getCompletedSteps(): Set<string> {
 }
 
 function getProgress(completedSteps: Set<string>) {
-  return Math.round((completedSteps.size / steps.length) * 100)
+  return Math.round((completedSteps.size / STEP_META.length) * 100)
 }
 
 export default function OnboardingLayout({
@@ -64,6 +65,7 @@ export default function OnboardingLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const t = useTranslations("Onboarding")
   const currentStep = getCurrentStep(pathname)
   // Re-compute completed steps whenever pathname changes (user navigates between steps)
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,7 +73,7 @@ export default function OnboardingLayout({
 
   const progress = getProgress(completedSteps)
 
-  const currentStepIndex = steps.findIndex((s) => s.id === currentStep)
+  const currentStepIndex = STEP_META.findIndex((s) => s.id === currentStep)
 
   // A step is accessible if:
   // 1. It's step 0 (always accessible)
@@ -79,11 +81,11 @@ export default function OnboardingLayout({
   // 3. The step itself is completed
   // 4. The previous step is completed (so you can go forward)
   const getIsAccessible = (stepId: string) => {
-    const stepIndex = steps.findIndex((s) => s.id === stepId)
+    const stepIndex = STEP_META.findIndex((s) => s.id === stepId)
     if (stepIndex === 0) return true
     if (stepIndex <= currentStepIndex) return true
     if (completedSteps.has(stepId)) return true
-    const prevStep = steps[stepIndex - 1]
+    const prevStep = STEP_META[stepIndex - 1]
     return completedSteps.has(prevStep.id)
   }
 
@@ -100,7 +102,7 @@ export default function OnboardingLayout({
         </div>
 
         <nav className="flex flex-col gap-2 flex-1">
-          {steps.map((step) => {
+          {STEP_META.map((step) => {
             const isActive = currentStep === step.id
             const isCompleted = completedSteps.has(step.id)
             const isAccessible = getIsAccessible(step.id)
@@ -120,7 +122,7 @@ export default function OnboardingLayout({
                 <span className={`material-symbols-outlined ${isActive ? "active-icon" : ""}`}>
                   {isCompleted && !isActive ? "check_circle" : step.icon}
                 </span>
-                <p className={`text-sm ${isActive ? "font-semibold" : "font-medium"}`}>{step.title}</p>
+                <p className={`text-sm ${isActive ? "font-semibold" : "font-medium"}`}>{t(step.labelKey)}</p>
                 {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-black"></div>}
               </Link>
             ) : (
@@ -129,7 +131,7 @@ export default function OnboardingLayout({
                 className="flex items-center gap-4 px-4 py-3 rounded-full text-gray-300 cursor-not-allowed"
               >
                 <span className="material-symbols-outlined">{step.icon}</span>
-                <p className="text-sm font-medium">{step.title}</p>
+                <p className="text-sm font-medium">{t(step.labelKey)}</p>
               </div>
             )
           })}

@@ -1,9 +1,12 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 
 export default function OnboardingPricingPage() {
+  const t = useTranslations("Onboarding")
   const router = useRouter()
   const [hourlyRate, setHourlyRate] = useState(() => {
     if (typeof window === 'undefined') return 45
@@ -43,11 +46,9 @@ export default function OnboardingPricingPage() {
       {/* Header Section */}
       <header className="max-w-5xl w-full mx-auto px-12 pt-16 pb-8">
         <div className="flex flex-col gap-2">
-          <p className="text-primary font-bold text-sm tracking-widest uppercase">Stap 4: Prijsstelling</p>
-          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">Stel je prijzen in</h2>
-          <p className="text-gray-500 text-lg">
-            Kies een concurrerend uurtarief om meer boekingen aan te trekken.
-          </p>
+          <p className="text-primary font-bold text-sm tracking-widest uppercase">{t("step4Label")}</p>
+          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">{t("step4Title")}</h2>
+          <p className="text-gray-500 text-lg">{t("step4Subtitle")}</p>
         </div>
       </header>
 

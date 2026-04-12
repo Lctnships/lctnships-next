@@ -1,10 +1,13 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useRef } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 import Image from "next/image"
 
 export default function OnboardingMediaPage() {
+  const t = useTranslations("Onboarding")
   const router = useRouter()
   const [images, setImages] = useState<string[]>([])
   const [isDragging, setIsDragging] = useState(false)
@@ -98,11 +101,9 @@ export default function OnboardingMediaPage() {
       {/* Header Section */}
       <header className="max-w-4xl w-full mx-auto px-12 pt-16 pb-8">
         <div className="flex flex-col gap-2">
-          <p className="text-primary font-bold text-sm tracking-widest uppercase">Stap 2: Media</p>
-          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">Laat je ruimte zien</h2>
-          <p className="text-gray-500 text-lg">
-            Help creators hun volgende productie te visualiseren met prachtige foto&apos;s.
-          </p>
+          <p className="text-primary font-bold text-sm tracking-widest uppercase">{t("step2Label")}</p>
+          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">{t("step2Title")}</h2>
+          <p className="text-gray-500 text-lg">{t("step2Subtitle")}</p>
         </div>
       </header>
 
@@ -128,20 +129,16 @@ export default function OnboardingMediaPage() {
                 <div className="size-20 bg-primary/10 rounded-full flex items-center justify-center mb-4 text-primary">
                   <span className="material-symbols-outlined text-4xl animate-spin">progress_activity</span>
                 </div>
-                <h4 className="text-xl font-bold mb-2">Uploaden...</h4>
-                <p className="text-gray-500 mb-6 max-w-xs">
-                  Je foto&apos;s worden geupload naar de server.
-                </p>
+                <h4 className="text-xl font-bold mb-2">{t("uploading")}</h4>
+                <p className="text-gray-500 mb-6 max-w-xs">{t("uploadingDesc")}</p>
               </>
             ) : (
               <>
                 <div className="size-20 bg-primary/10 rounded-full flex items-center justify-center mb-4 text-primary group-hover:scale-110 transition-transform">
                   <span className="material-symbols-outlined text-4xl">cloud_upload</span>
                 </div>
-                <h4 className="text-xl font-bold mb-2">Sleep foto&apos;s hierheen</h4>
-                <p className="text-gray-500 mb-6 max-w-xs">
-                  Upload minimaal 5 foto&apos;s om verschillende hoeken en lichtopstellingen te tonen.
-                </p>
+                <h4 className="text-xl font-bold mb-2">{t("dropPhotos")}</h4>
+                <p className="text-gray-500 mb-6 max-w-xs">{t("dropPhotosHint")}</p>
                 <span className="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
                   Bestanden Kiezen
                 </span>

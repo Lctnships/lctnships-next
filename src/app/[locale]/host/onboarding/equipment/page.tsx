@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Link, useRouter } from "@/i18n/routing"
+import { useTranslations } from "next-intl"
 
 const equipmentCategories = [
   {
@@ -52,6 +53,7 @@ const equipmentCategories = [
 ]
 
 export default function OnboardingEquipmentPage() {
+  const t = useTranslations("Onboarding")
   const router = useRouter()
   const [selectedEquipment, setSelectedEquipment] = useState<string[]>(() => {
     if (typeof window === 'undefined') return []
@@ -76,15 +78,9 @@ export default function OnboardingEquipmentPage() {
       {/* Header Section */}
       <header className="max-w-4xl w-full mx-auto px-12 pt-16 pb-8">
         <div className="flex flex-col gap-2">
-          <p className="text-primary font-bold text-sm tracking-widest uppercase">
-            Stap 3: Apparatuur
-          </p>
-          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-            Wat is inbegrepen?
-          </h2>
-          <p className="text-gray-500 text-lg">
-            Selecteer alle apparatuur en voorzieningen in je studio.
-          </p>
+          <p className="text-primary font-bold text-sm tracking-widest uppercase">{t("step3Label")}</p>
+          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">{t("step3Title")}</h2>
+          <p className="text-gray-500 text-lg">{t("step3Subtitle")}</p>
         </div>
       </header>
 
