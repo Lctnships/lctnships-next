@@ -44,15 +44,15 @@ export default async function HostPayoutsSettingsPage() {
               <div>
                 <h3 className="font-bold text-sm">Stripe Connect</h3>
                 <p className="text-xs text-gray-500">
-                  {stripeConnected ? "Account gekoppeld — klaar voor uitbetalingen" : "Koppel je account om uitbetalingen te ontvangen"}
+                  {stripeConnected ? t("stripeConnectedDesc") || "Account gekoppeld" : t("stripeNotConnectedDesc") || "Koppel je account"}
                 </p>
               </div>
             </div>
             {stripeConnected ? (
-              <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">Actief</span>
+              <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">{t("stripeActive") || "Actief"}</span>
             ) : (
               <Link href="/host/payouts" className="px-4 py-2 bg-black text-white rounded-full text-xs font-bold hover:bg-black/90 transition-colors">
-                Koppelen
+                {t("stripeConnect") || "Koppelen"}
               </Link>
             )}
           </div>
@@ -68,12 +68,12 @@ export default async function HostPayoutsSettingsPage() {
               <div>
                 <h3 className="font-bold text-sm">{t("manageBankAccount")}</h3>
                 <p className="text-xs text-gray-500">
-                  {hasBankAccount ? `${profile.bank_account_name}` : "Nog geen bankrekening toegevoegd"}
+                  {hasBankAccount ? `${profile.bank_account_name}` : t("noBankAccount") || "Nog geen bankrekening"}
                 </p>
               </div>
             </div>
             <Link href="/host/payouts" className="px-4 py-2 border border-gray-200 rounded-full text-xs font-bold hover:bg-gray-50 transition-colors">
-              {hasBankAccount ? "Wijzigen" : "Toevoegen"}
+              {hasBankAccount ? t("changeBankAccount") || "Wijzigen" : t("addBankAccount") || "Toevoegen"}
             </Link>
           </div>
         </div>

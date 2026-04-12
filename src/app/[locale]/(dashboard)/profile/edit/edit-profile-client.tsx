@@ -434,35 +434,14 @@ export function EditProfileClient({ profile }: EditProfileClientProps) {
           {activeTab === "security" && (
             <section className="bg-white rounded-2xl lg:rounded-3xl p-5 sm:p-6 lg:p-10 border border-gray-100 shadow-sm">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-5 lg:mb-8">{t("securityHeading")}</h1>
-              <div className="space-y-4 lg:space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 lg:p-6 bg-gray-50 rounded-xl lg:rounded-2xl">
-                  <div>
-                    <p className="font-bold text-sm lg:text-base">{t("securityPassword")}</p>
-                    <p className="text-xs lg:text-sm text-gray-500">{t("securityLastChanged")}</p>
-                  </div>
-                  <button className="px-4 lg:px-6 py-2 border border-gray-200 rounded-full text-xs lg:text-sm font-bold hover:bg-white transition-all shrink-0">
-                    {t("accountChange")}
-                  </button>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 lg:p-6 bg-gray-50 rounded-xl lg:rounded-2xl">
-                  <div>
-                    <p className="font-bold text-sm lg:text-base">{t("securityTwoFactor")}</p>
-                    <p className="text-xs lg:text-sm text-gray-500">{t("securityTwoFactorDesc")}</p>
-                  </div>
-                  <button className="px-4 lg:px-6 py-2 bg-black text-white rounded-full text-xs lg:text-sm font-bold hover:bg-gray-800 transition-all shrink-0">
-                    {t("securityEnable")}
-                  </button>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 lg:p-6 bg-gray-50 rounded-xl lg:rounded-2xl">
-                  <div>
-                    <p className="font-bold text-sm lg:text-base">{t("securityActiveSessions")}</p>
-                    <p className="text-xs lg:text-sm text-gray-500">{t("securityActiveSessionsDesc")}</p>
-                  </div>
-                  <button className="px-4 lg:px-6 py-2 border border-gray-200 rounded-full text-xs lg:text-sm font-bold hover:bg-white transition-all shrink-0">
-                    {t("securityManage")}
-                  </button>
-                </div>
-              </div>
+              <p className="text-gray-500 text-sm mb-6">{t("securityActiveSessionsDesc")}</p>
+              <Link
+                href="/settings/security"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-full font-bold text-sm hover:bg-gray-800 transition-all"
+              >
+                <span className="material-symbols-outlined text-lg">shield_lock</span>
+                {t("securityManage")}
+              </Link>
             </section>
           )}
         </div>

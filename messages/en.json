@@ -1524,7 +1524,14 @@
     "payoutsHeading": "Payout Settings",
     "payoutsDesc": "Manage your bank account and Stripe Connect account",
     "manageBankAccount": "Manage bank account",
-    "manageStripeConnect": "Manage Stripe Connect"
+    "manageStripeConnect": "Manage Stripe Connect",
+    "stripeConnectedDesc": "Account connected — ready for payouts",
+    "stripeNotConnectedDesc": "Connect your account to receive payouts",
+    "stripeActive": "Active",
+    "stripeConnect": "Connect",
+    "noBankAccount": "No bank account added yet",
+    "changeBankAccount": "Change",
+    "addBankAccount": "Add"
   },
   "SessionDetails": {
     "back": "Back",

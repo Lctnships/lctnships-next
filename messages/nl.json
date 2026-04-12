@@ -1524,7 +1524,14 @@
     "payoutsHeading": "Uitbetalingsinstellingen",
     "payoutsDesc": "Beheer je bankrekening en Stripe Connect account",
     "manageBankAccount": "Bankrekening beheren",
-    "manageStripeConnect": "Stripe Connect beheren"
+    "manageStripeConnect": "Stripe Connect beheren",
+    "stripeConnectedDesc": "Account gekoppeld — klaar voor uitbetalingen",
+    "stripeNotConnectedDesc": "Koppel je account om uitbetalingen te ontvangen",
+    "stripeActive": "Actief",
+    "stripeConnect": "Koppelen",
+    "noBankAccount": "Nog geen bankrekening toegevoegd",
+    "changeBankAccount": "Wijzigen",
+    "addBankAccount": "Toevoegen"
   },
   "SessionDetails": {
     "back": "Terug",

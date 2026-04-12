@@ -1521,7 +1521,14 @@
     "payoutsHeading": "Paramètres de Paiement",
     "payoutsDesc": "Gérez votre compte bancaire et Stripe Connect",
     "manageBankAccount": "Gérer le compte bancaire",
-    "manageStripeConnect": "Gérer Stripe Connect"
+    "manageStripeConnect": "Gérer Stripe Connect",
+    "stripeConnectedDesc": "Compte connecté — prêt pour les paiements",
+    "stripeNotConnectedDesc": "Connectez votre compte pour recevoir des paiements",
+    "stripeActive": "Actif",
+    "stripeConnect": "Connecter",
+    "noBankAccount": "Pas de compte bancaire",
+    "changeBankAccount": "Modifier",
+    "addBankAccount": "Ajouter"
   },
   "SessionDetails": {
     "back": "Retour",

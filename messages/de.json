@@ -1521,7 +1521,14 @@
     "payoutsHeading": "Auszahlungseinstellungen",
     "payoutsDesc": "Verwalten Sie Ihr Bankkonto und Stripe Connect",
     "manageBankAccount": "Bankkonto verwalten",
-    "manageStripeConnect": "Stripe Connect verwalten"
+    "manageStripeConnect": "Stripe Connect verwalten",
+    "stripeConnectedDesc": "Konto verbunden — bereit für Auszahlungen",
+    "stripeNotConnectedDesc": "Verbinden Sie Ihr Konto für Auszahlungen",
+    "stripeActive": "Aktiv",
+    "stripeConnect": "Verbinden",
+    "noBankAccount": "Kein Bankkonto hinzugefügt",
+    "changeBankAccount": "Ändern",
+    "addBankAccount": "Hinzufügen"
   },
   "SessionDetails": {
     "back": "Zurück",

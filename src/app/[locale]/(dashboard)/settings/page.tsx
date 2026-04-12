@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { Link } from "@/i18n/routing"
 import { SignOutButton } from "./sign-out-button"
+import { DeleteAccountButton } from "./delete-account-button"
 import { getTranslations } from "next-intl/server"
 
 export async function generateMetadata() {
@@ -82,18 +83,7 @@ export default async function SettingsPage() {
       <SignOutButton />
 
       {/* Danger Zone */}
-      <div className="border border-red-200 rounded-2xl p-6 bg-red-50/50">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="material-symbols-outlined text-red-500">warning</span>
-          <h3 className="text-lg font-bold text-red-700">{t("dangerZone")}</h3>
-        </div>
-        <p className="text-sm text-red-600 mb-4">
-          {t("dangerZoneDesc")}
-        </p>
-        <button className="px-6 py-2 border-2 border-red-300 text-red-600 rounded-full font-bold text-sm hover:bg-red-100 transition-colors">
-          {t("deleteAccount")}
-        </button>
-      </div>
+      <DeleteAccountButton />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { stripe } from "@/lib/stripe/config"
 import { getResend } from "@/lib/resend"
 import { NextResponse } from "next/server"
@@ -93,10 +93,17 @@ export async function POST(request: Request, { params }: RouteParams) {
       })
     }
 
-    // Issue #5 — detect prior payout
+    // Issue #5 — detect prior payout. Uses service client because:
+    //  1. The payouts SELECT policy only allows host_id = auth.uid(), but the
+    //     caller may be the renter (who doesn't match). Without service client,
+    //     the query returns [] and requiresManualPayoutReversal is never set.
+    //  2. The subsequent bookings UPDATE writes payment_status and
+    //     requires_manual_payout_reversal — both excluded from the
+    //     authenticated column grant (migration 011). Service client bypasses.
+    const serviceClient = await createServiceClient()
     let requiresManualPayoutReversal = false
     if (refundAmount > 0) {
-      const { data: existingPayouts } = await supabase
+      const { data: existingPayouts } = await serviceClient
         .from("payouts")
         .select("id, amount, status")
         .eq("booking_id", id)
@@ -179,8 +186,10 @@ export async function POST(request: Request, { params }: RouteParams) {
       }
     }
 
-    // Refund succeeded (or was not needed) — now update DB
-    const { data: updatedBooking, error: updateError } = await supabase
+    // Refund succeeded (or was not needed) — now update DB via service client.
+    // payment_status and requires_manual_payout_reversal are excluded from the
+    // authenticated column grant (migration 011), so we need elevated access.
+    const { data: updatedBooking, error: updateError } = await serviceClient
       .from("bookings")
       .update({
         status: "cancelled",
