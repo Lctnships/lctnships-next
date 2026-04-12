@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test"
 test.describe("Smoke tests", () => {
   test("homepage loads correctly", async ({ page }) => {
     await page.goto("/nl")
-    await expect(page).toHaveTitle(/lcntships/)
+    await expect(page).toHaveTitle(/lctnships/)
     await expect(page.locator("h1")).toBeVisible({ timeout: 10000 })
   })
 
@@ -16,12 +16,12 @@ test.describe("Smoke tests", () => {
 
   test("navigation works", async ({ page }) => {
     await page.goto("/nl")
-    await expect(page.getByRole("link", { name: "lcntships" }).first()).toBeVisible()
+    await expect(page.getByRole("link", { name: "lctnships" }).first()).toBeVisible()
   })
 
   test("explore page loads", async ({ page }) => {
     await page.goto("/nl/explore")
-    await expect(page).toHaveTitle(/lcntships/)
+    await expect(page).toHaveTitle(/lctnships/)
   })
 
   test("images load without errors", async ({ page }) => {
