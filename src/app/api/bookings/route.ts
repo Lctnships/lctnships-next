@@ -96,7 +96,7 @@ export async function POST(request: Request) {
     // column populated, but new code should write price_per_hour.
     const { data: studio, error: studioError } = await supabase
       .from("studios")
-      .select("host_id, is_instant_book, title, price_per_hour, hourly_rate, booking_mode, booking_blocks")
+      .select("host_id, is_instant_book, title, price_per_hour, hourly_rate, booking_mode, booking_blocks, booking_lead_time_hours")
       .eq("id", studio_id)
       .single()
 
@@ -104,8 +104,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Studio not found" }, { status: 404 })
     }
 
-    // Server-side price recalculation to prevent client-side price manipulation
+    // Lead time check — reject bookings where the renter hasn't given the host
+    // enough advance notice. A lead time of 24 means the session must start at
+    // least 24 hours from now. 0 disables the check.
     const startTime = new Date(start_datetime)
+    const leadTimeHours = studio.booking_lead_time_hours || 0
+    if (leadTimeHours > 0) {
+      const hoursUntilStart = (startTime.getTime() - Date.now()) / (1000 * 60 * 60)
+      if (hoursUntilStart < leadTimeHours) {
+        return NextResponse.json(
+          {
+            error: `Deze studio vereist minimaal ${leadTimeHours} uur voorbereidingstijd. Je kunt niet eerder boeken dan ${leadTimeHours} uur van tevoren.`,
+          },
+          { status: 400 },
+        )
+      }
+    }
+
+    // Server-side price recalculation to prevent client-side price manipulation
     const endTime = new Date(end_datetime)
     const durationMs = endTime.getTime() - startTime.getTime()
     const calculatedHours = Math.max(1, Math.round((durationMs / (1000 * 60 * 60)) * 100) / 100)

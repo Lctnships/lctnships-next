@@ -116,11 +116,24 @@ export async function POST(request: NextRequest) {
 
         if (bookingId && bookingId !== "" && !bookingId.startsWith("temp_")) {
           try {
-            // Update booking status
+            // Fetch the booking's studio to check is_instant_book. If the host
+            // has instant-book disabled, the booking stays "pending" after
+            // payment so the host can accept/decline from their dashboard.
+            // This was previously hardcoded to "confirmed" for all bookings,
+            // which meant request-mode studios had no approval step.
+            const { data: bookingForStatus } = await supabase
+              .from("bookings")
+              .select("studio:studios(is_instant_book)")
+              .eq("id", bookingId)
+              .single()
+
+            const isInstantBook = (bookingForStatus?.studio as { is_instant_book?: boolean } | null)?.is_instant_book ?? true
+            const newStatus = isInstantBook ? "confirmed" : "pending"
+
             await supabase
               .from("bookings")
               .update({
-                status: "confirmed",
+                status: newStatus,
                 payment_status: "paid",
                 paid_at: new Date().toISOString(),
                 stripe_payment_intent: session.payment_intent as string,
@@ -145,16 +158,19 @@ export async function POST(request: NextRequest) {
               .single()
 
             if (booking?.host_id) {
+              const studioTitle = (booking.studio as { title?: string } | null)?.title
               await supabase.from("notifications").insert({
                 user_id: booking.host_id,
-                type: "payment_received",
-                title: "Payment received",
-                message: `Payment received for ${(booking.studio as { title?: string } | null)?.title}`,
+                type: isInstantBook ? "payment_received" : "booking_request",
+                title: isInstantBook ? "Payment received" : "New booking request",
+                message: isInstantBook
+                  ? `Payment received for ${studioTitle}`
+                  : `New booking request for ${studioTitle} — please accept or decline`,
                 link: `/host/bookings/${bookingId}`,
               })
             }
 
-            logger.info("Booking confirmed with payment", { bookingId })
+            logger.info("Booking payment processed", { bookingId, status: newStatus })
           } catch (error) {
             logger.error("Failed to update booking", error)
           }

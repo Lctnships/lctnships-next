@@ -57,6 +57,7 @@ interface Studio {
   studio_images: StudioImage[]
   booking_mode?: 'flexible' | 'fixed_blocks'
   booking_blocks?: BookingBlock[]
+  booking_lead_time_hours?: number
   allow_extensions?: boolean
   max_extension_hours?: number | null
   extension_premium_rate?: number | null
@@ -87,6 +88,7 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
   const [bookingBlocks, setBookingBlocks] = useState<BookingBlock[]>(
     Array.isArray(studio.booking_blocks) ? studio.booking_blocks : []
   )
+  const [bookingLeadTimeHours, setBookingLeadTimeHours] = useState(studio.booking_lead_time_hours ?? 0)
   const [allowExtensions, setAllowExtensions] = useState(studio.allow_extensions ?? true)
   const [maxExtensionHours, setMaxExtensionHours] = useState(studio.max_extension_hours || 8)
   const [extensionPremiumRate, setExtensionPremiumRate] = useState<number | null>(studio.extension_premium_rate || null)
@@ -218,6 +220,7 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
         cancellation_policy: cancellationPolicy,
         booking_mode: bookingMode,
         booking_blocks: bookingMode === 'fixed_blocks' ? bookingBlocks : null,
+        booking_lead_time_hours: bookingLeadTimeHours,
         allow_extensions: allowExtensions,
         max_extension_hours: allowExtensions ? maxExtensionHours : null,
         extension_premium_rate: extensionPremiumRate,
@@ -502,6 +505,31 @@ export function StudioEditClient({ studio }: { studio: Studio }) {
                 isInstantBook ? "translate-x-5" : ""
               }`} />
             </button>
+          </div>
+          <div className="py-3 border-t">
+            <label className="text-sm font-medium text-gray-700 mb-1 block">Voorbereidingstijd</label>
+            <p className="text-sm text-muted-foreground mb-2">
+              Minimum aantal uren tussen het boeken en de start van de sessie. Voorkomt last-minute boekingen.
+            </p>
+            <div className="flex items-center gap-3">
+              <select
+                value={bookingLeadTimeHours}
+                onChange={(e) => setBookingLeadTimeHours(parseInt(e.target.value))}
+                className="border rounded-lg h-12 px-4 focus:ring-2 focus:ring-black focus:border-black bg-white"
+              >
+                <option value={0}>Geen minimum</option>
+                <option value={1}>1 uur</option>
+                <option value={2}>2 uur</option>
+                <option value={4}>4 uur</option>
+                <option value={6}>6 uur</option>
+                <option value={12}>12 uur</option>
+                <option value={24}>24 uur (1 dag)</option>
+                <option value={48}>48 uur (2 dagen)</option>
+                <option value={72}>72 uur (3 dagen)</option>
+                <option value={168}>1 week</option>
+              </select>
+              <span className="text-sm text-gray-500">voor aanvang sessie</span>
+            </div>
           </div>
         </div>
       </section>
