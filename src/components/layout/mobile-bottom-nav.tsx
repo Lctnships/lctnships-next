@@ -10,6 +10,7 @@ import {
   Menu,
   Heart,
   MessageSquare,
+  Briefcase,
 } from "lucide-react"
 import { Link, usePathname } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
@@ -20,6 +21,7 @@ const hostNavItems = [
   { href: "/host/bookings" as const, icon: Calendar, labelKey: "bookings" },
   { href: "/host/studios" as const, icon: Building2, labelKey: "studios" },
   { href: "/host/earnings" as const, icon: DollarSign, labelKey: "earnings" },
+  { href: "/host/services" as const, icon: Briefcase, labelKey: "services" },
   { href: "/host/settings" as const, icon: Menu, labelKey: "more" },
 ]
 
@@ -45,6 +47,7 @@ export function MobileBottomNav() {
       case "bookings": return t("bookings")
       case "studios": return t("studios") || "Studio's"
       case "earnings": return t("earnings") || "Inkomsten"
+      case "services": return t("services") || "Diensten"
       case "favorites": return t("favorites")
       case "messages": return t("messages")
       case "more": return "Meer"
@@ -60,7 +63,8 @@ export function MobileBottomNav() {
           pathname.startsWith("/host/settings") ||
           pathname.startsWith("/host/messages") ||
           pathname.startsWith("/host/equipment") ||
-          pathname.startsWith("/host/calendar")
+          pathname.startsWith("/host/calendar") ||
+          pathname.startsWith("/host/payouts")
         )
       }
     } else {
