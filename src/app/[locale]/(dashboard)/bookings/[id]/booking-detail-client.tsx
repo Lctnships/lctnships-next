@@ -5,6 +5,8 @@ import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
 import { useLocale } from "next-intl"
+import { RescheduleModal } from "../reschedule-modal"
+import { CancelBookingModal } from "@/components/booking/cancel-booking-modal"
 
 interface Booking {
   id: string
@@ -49,6 +51,8 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
   const dateLocale = locale === "nl" ? "nl-NL" : locale === "es" ? "es-ES" : "en-US"
   const [copiedCode, setCopiedCode] = useState(false)
   const [copiedWifi, setCopiedWifi] = useState(false)
+  const [showReschedule, setShowReschedule] = useState(false)
+  const [showCancel, setShowCancel] = useState(false)
 
   const coverImage = booking.studio.studio_images?.find((img) => img.is_cover) || booking.studio.studio_images?.[0]
 
@@ -270,10 +274,22 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
                 {t("messageHost")}
               </Link>
               {isUpcoming && (
-                <button className="text-gray-500 font-bold hover:text-red-500 transition-colors py-4 px-6 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sm">schedule</span>
-                  {t("rescheduleSession")}
-                </button>
+                <>
+                  <button
+                    onClick={() => setShowReschedule(true)}
+                    className="text-gray-500 font-bold hover:text-gray-700 transition-colors py-4 px-6 flex items-center gap-2"
+                  >
+                    <span className="material-symbols-outlined text-sm">schedule</span>
+                    {t("rescheduleSession")}
+                  </button>
+                  <button
+                    onClick={() => setShowCancel(true)}
+                    className="text-red-500 font-bold hover:text-red-700 transition-colors py-4 px-6 flex items-center gap-2"
+                  >
+                    <span className="material-symbols-outlined text-sm">cancel</span>
+                    {t("cancelBooking") || "Annuleren"}
+                  </button>
+                </>
               )}
               {isOngoing && (
                 <Link
@@ -324,15 +340,15 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
                   </p>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">{t("studioSession")} ({booking.total_hours} {t("hours")})</span>
-                    <span>${studioPrice.toFixed(2)}</span>
+                    <span>€{studioPrice.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">{t("premiumEquipmentPackage")}</span>
-                    <span>${gearPrice.toFixed(2)}</span>
+                    <span>€{gearPrice.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between pt-4 border-t border-[#e7ebf3] font-bold text-lg">
                     <span>{t("totalPaid")}</span>
-                    <span className="text-[#0f49bd]">${booking.total_amount.toFixed(2)}</span>
+                    <span className="text-[#0f49bd]">€{booking.total_amount.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -386,6 +402,21 @@ export function BookingDetailClient({ booking }: BookingDetailClientProps) {
           </p>
         </div>
       </footer>
+
+      {showReschedule && (
+        <RescheduleModal
+          booking={booking}
+          onClose={() => setShowReschedule(false)}
+        />
+      )}
+
+      {showCancel && (
+        <CancelBookingModal
+          bookingId={booking.id}
+          studioTitle={booking.studio.title}
+          onClose={() => setShowCancel(false)}
+        />
+      )}
     </div>
   )
 }
