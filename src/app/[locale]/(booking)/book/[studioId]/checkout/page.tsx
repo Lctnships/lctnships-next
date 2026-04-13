@@ -23,12 +23,14 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
     redirect(`/login?redirect=/book/${studioId}/checkout`)
   }
 
-  // Profile read via admin client — sensitive columns (phone, email,
-  // stripe_customer_id) are blocked for the authenticated role by migration 018.
+  // Profile read via admin client — `email` + `phone` are blocked for the
+  // authenticated role by migration 018. Narrow the select to only the fields
+  // CheckoutClient uses so the RSC payload doesn't leak bank_iban,
+  // stripe_customer_id, two_factor_enabled, etc. into page source.
   const admin = createAdminClient()
   const { data: profile } = await admin
     .from("users")
-    .select("*")
+    .select("id, full_name, email, phone")
     .eq("id", user.id)
     .single()
 

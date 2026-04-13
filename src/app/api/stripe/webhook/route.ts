@@ -48,25 +48,41 @@ export async function POST(request: NextRequest) {
   // Idempotency guard. Stripe delivers events at-least-once; a transient 500
   // or network drop triggers a retry. Insert first with the event id as PK —
   // if we already processed this event (status = 'done'), the unique
-  // constraint fires and we bail out before any side effects run. If a prior
-  // attempt crashed mid-handler (status = 'processing' or 'failed'), we allow
-  // reprocessing so Stripe's retry isn't silently absorbed.
+  // constraint fires and we bail out before any side effects run.
+  //
+  // For retries of failed/stalled events we perform an atomic CAS: a new
+  // handler can only claim the row if the prior attempt is 'failed' OR the
+  // prior 'processing' row is older than STALE_THRESHOLD. Two concurrent
+  // retries can't both pass this guard — exactly one will get a returned row
+  // from the UPDATE, the other gets [] and short-circuits.
+  const STALE_THRESHOLD_MS = 5 * 60 * 1000
+  const staleBefore = new Date(Date.now() - STALE_THRESHOLD_MS).toISOString()
+
   const { error: idempotencyError } = await supabase
     .from("processed_webhook_events")
     .insert({ stripe_event_id: event.id, event_type: event.type, status: "processing" })
 
   if (idempotencyError) {
     if (idempotencyError.code === "23505") {
-      const { data: existing } = await supabase
+      // Atomic claim: UPDATE ... WHERE stripe_event_id=? AND (status='failed'
+      // OR (status='processing' AND processed_at < staleBefore)) RETURNING id.
+      // Supabase REST expresses the AND clause via nested filters.
+      const { data: claimed, error: claimErr } = await supabase
         .from("processed_webhook_events")
-        .select("status")
+        .update({ status: "processing", processed_at: new Date().toISOString() })
         .eq("stripe_event_id", event.id)
-        .single()
-      if (existing?.status === "done") {
-        logger.info("Webhook event already done, skipping", { eventId: event.id, eventType: event.type })
+        .or(`status.eq.failed,and(status.eq.processing,processed_at.lt.${staleBefore})`)
+        .select("stripe_event_id")
+
+      if (claimErr) {
+        logger.error("Failed to atomically claim webhook event", claimErr)
+        return NextResponse.json({ error: "Failed to claim event" }, { status: 500 })
+      }
+      if (!claimed || claimed.length === 0) {
+        logger.info("Webhook event already done or actively processing, skipping", { eventId: event.id, eventType: event.type })
         return NextResponse.json({ received: true, duplicate: true })
       }
-      logger.warn("Webhook event retrying after incomplete prior attempt", { eventId: event.id, prior: existing?.status })
+      logger.warn("Webhook event reclaiming after failed/stalled prior attempt", { eventId: event.id })
     } else {
       logger.error("Failed to record webhook event for idempotency", idempotencyError)
       return NextResponse.json({ error: "Failed to record event" }, { status: 500 })
