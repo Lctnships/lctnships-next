@@ -148,6 +148,32 @@ async function upsertBooking(studioId: string, hostId: string, renterId: string)
   return data.id
 }
 
+async function upsertService(hostId: string, studioId: string | null) {
+  const name = studioId ? "E2E Studio Service (Lighting)" : "E2E Host-wide Service (Assistant)"
+  const { data: existing } = await admin
+    .from("services")
+    .select("id")
+    .eq("host_id", hostId)
+    .eq("name", name)
+    .maybeSingle()
+  if (existing) return existing.id
+  const { data, error } = await admin
+    .from("services")
+    .insert({
+      host_id: hostId,
+      studio_id: studioId,
+      name,
+      description: "Created by Playwright fixture",
+      price: studioId ? 50 : 75,
+      pricing_unit: studioId ? "flat" : "per_hour",
+      is_active: true,
+    })
+    .select("id")
+    .single()
+  if (error) throw error
+  return data.id
+}
+
 async function upsertProject(renterId: string) {
   const title = "E2E Test Project"
   const { data: existing } = await admin
@@ -235,7 +261,12 @@ export async function seed() {
   const bookingId = await upsertBooking(studioId, hostId, renterId)
   const projectId = await upsertProject(renterId)
   const conversationId = await upsertConversation(studioId, bookingId, hostId, renterId)
-  return { hostId, renterId, studioId, requestStudioId, bookingId, projectId, conversationId }
+  const studioServiceId = await upsertService(hostId, studioId)
+  const hostServiceId = await upsertService(hostId, null)
+  return {
+    hostId, renterId, studioId, requestStudioId, bookingId, projectId, conversationId,
+    studioServiceId, hostServiceId,
+  }
 }
 
 if (require.main === module) {

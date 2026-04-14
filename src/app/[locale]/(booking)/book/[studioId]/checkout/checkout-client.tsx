@@ -37,11 +37,20 @@ interface Profile {
   phone?: string
 }
 
+interface ServiceLite {
+  id: string
+  name: string
+  price: number
+  pricing_unit: "flat" | "per_hour" | "per_session"
+}
+
 interface CheckoutClientProps {
   studio: Studio
   profile: Profile | null
   equipment: Equipment[]
   equipmentSelections: Record<string, number>
+  services?: ServiceLite[]
+  serviceSelections?: Record<string, number>
   bookingDetails: {
     date: string
     startTime: string
@@ -64,6 +73,8 @@ export function CheckoutClient({
   profile,
   equipment,
   equipmentSelections,
+  services = [],
+  serviceSelections = {},
   bookingDetails,
 }: CheckoutClientProps) {
   const supabase = createClient()
@@ -93,11 +104,17 @@ export function CheckoutClient({
       const item = equipment.find(e => e.id === id)
       return sum + (item?.price_per_day || 0) * qty
     }, 0)
-    const subtotal = studioTotal + equipmentTotal
+    const servicesTotal = Object.entries(serviceSelections).reduce((sum, [id, qty]) => {
+      const svc = services.find((s) => s.id === id)
+      if (!svc) return sum
+      const multiplier = svc.pricing_unit === "per_hour" ? bookingDetails.duration : 1
+      return sum + svc.price * qty * multiplier
+    }, 0)
+    const subtotal = studioTotal + equipmentTotal + servicesTotal
     const total = subtotal
 
-    return { studioTotal, equipmentTotal, subtotal, total }
-  }, [studio.price_per_hour, studio.booking_mode, studio.booking_blocks, bookingDetails.duration, equipmentSelections, equipment])
+    return { studioTotal, equipmentTotal, servicesTotal, subtotal, total }
+  }, [studio.price_per_hour, studio.booking_mode, studio.booking_blocks, bookingDetails.duration, equipmentSelections, equipment, serviceSelections, services])
 
   const endTime = useMemo(() => {
     const [hours, minutes] = bookingDetails.startTime.split(":").map(Number)
@@ -142,6 +159,7 @@ export function CheckoutClient({
           notes: formData.specialRequests || null,
           production_type: formData.productionType || null,
           equipment_selections: equipmentSelections,
+          service_selections: serviceSelections,
         }),
       })
       const bookingJson = await bookingRes.json()

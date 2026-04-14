@@ -83,6 +83,24 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
       .filter(Boolean)
   }
 
+  // Service selections (svc_<id>=qty)
+  const serviceSelections: Record<string, number> = {}
+  Object.entries(searchParamsData).forEach(([key, value]) => {
+    if (key.startsWith("svc_") && value) {
+      serviceSelections[key.replace("svc_", "")] = parseInt(value, 10)
+    }
+  })
+  const serviceIds = Object.keys(serviceSelections)
+  let services: { id: string; name: string; price: number; pricing_unit: "flat" | "per_hour" | "per_session" }[] = []
+  if (serviceIds.length > 0) {
+    const { data } = await supabase
+      .from("services")
+      .select("id, name, price, pricing_unit")
+      .in("id", serviceIds)
+      .eq("is_active", true)
+    services = data || []
+  }
+
   const bookingDetails = {
     date: searchParamsData.date || new Date().toISOString().split("T")[0],
     startTime: searchParamsData.start || "10:00",
@@ -95,6 +113,8 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
       profile={profile}
       equipment={equipment}
       equipmentSelections={equipmentSelections}
+      services={services}
+      serviceSelections={serviceSelections}
       bookingDetails={bookingDetails}
     />
   )

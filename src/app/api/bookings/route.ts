@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { randomBytes } from "crypto"
 import { logger } from "@/lib/logger"
@@ -87,7 +87,18 @@ export async function POST(request: Request) {
       production_type,
       special_requests,
       equipment_selections,
-    } = body
+      service_selections,
+    } = body as {
+      studio_id: string
+      start_datetime: string
+      end_datetime: string
+      total_amount: number
+      notes?: string | null
+      production_type?: string | null
+      special_requests?: string | null
+      equipment_selections?: Record<string, number>
+      service_selections?: Record<string, number>
+    }
 
     // Get studio details for server-side price verification.
     // price_per_hour is the canonical column — all 12 prod studios have it set;
@@ -145,12 +156,43 @@ export async function POST(request: Request) {
     }
     calculatedSubtotal = Math.round(calculatedSubtotal * 100) / 100
 
-    // Renter pays the listing price (subtotal). Platform keeps 15%, host gets 85%.
-    // No separate service fee shown to the renter.
+    // Server-recalc equipment + services so renter can't tamper via the body.
+    let equipmentTotalCalc = 0
+    if (equipment_selections && Object.keys(equipment_selections).length > 0) {
+      const ids = Object.keys(equipment_selections)
+      const { data: rows } = await supabase
+        .from("equipment")
+        .select("id, price_per_day")
+        .in("id", ids)
+      const priceMap = new Map<string, number>()
+      for (const r of rows ?? []) priceMap.set(r.id, r.price_per_day ?? 0)
+      for (const [id, qty] of Object.entries(equipment_selections)) {
+        equipmentTotalCalc += (priceMap.get(id) ?? 0) * (qty as number)
+      }
+    }
+    let servicesTotalCalc = 0
+    if (service_selections && Object.keys(service_selections).length > 0) {
+      const ids = Object.keys(service_selections)
+      const { data: rows } = await supabase
+        .from("services")
+        .select("id, price, pricing_unit, host_id, studio_id, is_active")
+        .in("id", ids)
+      for (const s of rows ?? []) {
+        if (!s.is_active || s.host_id !== studio.host_id) continue
+        if (s.studio_id !== null && s.studio_id !== studio_id) continue
+        const qty = Math.max(1, Math.floor(service_selections[s.id] ?? 1))
+        const multiplier = s.pricing_unit === "per_hour" ? calculatedHours : 1
+        servicesTotalCalc += Number(s.price) * qty * multiplier
+      }
+    }
+    equipmentTotalCalc = Math.round(equipmentTotalCalc * 100) / 100
+    servicesTotalCalc = Math.round(servicesTotalCalc * 100) / 100
+
+    // Renter pays studio + equipment + services. Platform keeps 15%, host gets 85%.
     const PLATFORM_FEE_PERCENTAGE = 0.15
-    const calculatedTotal = calculatedSubtotal
-    const calculatedServiceFee = Math.round(calculatedSubtotal * PLATFORM_FEE_PERCENTAGE * 100) / 100
-    const calculatedHostPayout = Math.round(calculatedSubtotal * (1 - PLATFORM_FEE_PERCENTAGE) * 100) / 100
+    const calculatedTotal = Math.round((calculatedSubtotal + equipmentTotalCalc + servicesTotalCalc) * 100) / 100
+    const calculatedServiceFee = Math.round(calculatedTotal * PLATFORM_FEE_PERCENTAGE * 100) / 100
+    const calculatedHostPayout = Math.round(calculatedTotal * (1 - PLATFORM_FEE_PERCENTAGE) * 100) / 100
 
     // Verify client-supplied prices are within acceptable tolerance (2% for rounding)
     const tolerance = 0.02
@@ -241,6 +283,49 @@ export async function POST(request: Request) {
       })
 
       await supabase.from("booking_equipment").insert(equipmentItems)
+    }
+
+    // Add services. Server re-fetches prices/units to prevent client tampering;
+    // unit determines multiplier (per_hour × hours, per_session × 1, flat × 1).
+    if (service_selections && Object.keys(service_selections).length > 0) {
+      const serviceIds = Object.keys(service_selections)
+      const { data: svcRows, error: svcErr } = await supabase
+        .from("services")
+        .select("id, price, pricing_unit, host_id, studio_id, is_active")
+        .in("id", serviceIds)
+      if (svcErr) {
+        logger.error("Error fetching services for booking", svcErr)
+      }
+
+      const items = (svcRows ?? [])
+        .filter((s) => s.is_active && s.host_id === studio.host_id)
+        .filter((s) => s.studio_id === null || s.studio_id === studio_id)
+        .map((s) => {
+          const qty = Math.max(1, Math.floor(service_selections![s.id] ?? 1))
+          const multiplier =
+            s.pricing_unit === "per_hour" ? calculatedHours :
+            1
+          const pricePerUnit = Number(s.price)
+          const total = Math.round(pricePerUnit * qty * multiplier * 100) / 100
+          return {
+            booking_id: booking.id,
+            service_id: s.id,
+            quantity: qty,
+            price_per_unit: pricePerUnit,
+            pricing_unit: s.pricing_unit,
+            total_price: total,
+          }
+        })
+
+      if (items.length > 0) {
+        // booking_services has SELECT policies for renter/host but no INSERT
+        // policy for authenticated — server-controlled writes only.
+        const adminWrite = await createServiceClient()
+        const { error: insertErr } = await adminWrite.from("booking_services").insert(items)
+        if (insertErr) {
+          logger.error("Failed to insert booking_services", insertErr)
+        }
+      }
     }
 
     // Notify host. Instant-book: informational only (webhook will fire on

@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { getTranslations } from "next-intl/server"
-import { EmptyState } from "@/components/shared/empty-state"
-import { Briefcase } from "lucide-react"
+import { ServicesClient } from "./services-client"
 
 export async function generateMetadata() {
   const t = await getTranslations("Navigation")
@@ -15,20 +14,23 @@ export default async function HostServicesPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  return (
-    <div className="space-y-4 md:space-y-6">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold">Diensten</h1>
-        <p className="text-muted-foreground text-sm md:text-base mt-0.5">
-          Bied extra diensten aan bij je studio boekingen
-        </p>
-      </div>
+  const [{ data: services }, { data: studios }] = await Promise.all([
+    supabase
+      .from("services")
+      .select("*")
+      .eq("host_id", user.id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("studios")
+      .select("id, title")
+      .eq("host_id", user.id)
+      .order("title", { ascending: true }),
+  ])
 
-      <EmptyState
-        icon={Briefcase}
-        title="Binnenkort beschikbaar"
-        description="Bied extra diensten aan zoals fotografie assistenten, catering, lighting setup en meer. Deze feature wordt binnenkort uitgerold."
-      />
-    </div>
+  return (
+    <ServicesClient
+      initialServices={services ?? []}
+      studios={studios ?? []}
+    />
   )
 }

@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Link, useRouter } from "@/i18n/routing"
 import { useTranslations, useLocale } from "next-intl"
 import { formatDate as fmtDate } from "@/lib/format-locale"
+import { getAvailableDurations, snapToAvailable } from "@/lib/booking-duration"
 
 interface Equipment {
   id: string
@@ -25,35 +26,59 @@ interface Studio {
   title: string
   city?: string
   price_per_hour: number
+  minimum_hours?: number | null
+  maximum_hours?: number | null
   studio_images?: { image_url: string; is_cover: boolean }[]
   booking_mode?: 'flexible' | 'fixed_blocks'
   booking_blocks?: BookingBlock[]
   booking_lead_time_hours?: number
 }
 
+interface ServiceItem {
+  id: string
+  name: string
+  description?: string | null
+  price: number
+  pricing_unit: "flat" | "per_hour" | "per_session"
+  studio_id?: string | null
+}
+
 interface SessionDetailsClientProps {
   studio: Studio
   equipment: Equipment[]
+  services?: ServiceItem[]
   initialDate?: string
   initialTime?: string
   initialDuration?: number
   initialEquipment?: Record<string, number>
+  initialServices?: Record<string, number>
 }
-
-const DURATION_HOURS = [1, 2, 4, 8] as const
 
 const TIME_SLOTS = [
   "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"
 ]
 
-export function SessionDetailsClient({ studio, equipment, initialDate, initialTime, initialDuration, initialEquipment }: SessionDetailsClientProps) {
+export function SessionDetailsClient({
+  studio,
+  equipment,
+  services = [],
+  initialDate,
+  initialTime,
+  initialDuration,
+  initialEquipment,
+  initialServices,
+}: SessionDetailsClientProps) {
   const router = useRouter()
   const t = useTranslations("SessionDetails")
   const locale = useLocale()
-  const [selectedDuration, setSelectedDuration] = useState(initialDuration || 2)
+  const availableDurations = useMemo(() => getAvailableDurations(studio), [studio])
+  const [selectedDuration, setSelectedDuration] = useState(() =>
+    snapToAvailable(studio, initialDuration || availableDurations[0] || 2)
+  )
   const [selectedTime, setSelectedTime] = useState(initialTime || "10:00")
   const [selectedDate, _setSelectedDate] = useState(initialDate || new Date().toISOString().split("T")[0])
   const [selectedEquipment, setSelectedEquipment] = useState<Record<string, number>>(initialEquipment || {})
+  const [selectedServices, setSelectedServices] = useState<Record<string, number>>(initialServices || {})
 
   const coverImage = studio.studio_images?.find((img) => img.is_cover) || studio.studio_images?.[0]
   const leadTimeHours = studio.booking_lead_time_hours || 0
@@ -91,11 +116,20 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
       const item = equipment.find(e => e.id === id)
       return sum + (item?.price_per_day || 0) * qty
     }, 0)
-    const subtotal = studioTotal + equipmentTotal
+    const servicesTotal = Object.entries(selectedServices).reduce((sum, [id, qty]) => {
+      const svc = services.find((s) => s.id === id)
+      if (!svc) return sum
+      const multiplier =
+        svc.pricing_unit === "per_hour" ? selectedDuration :
+        svc.pricing_unit === "per_session" ? 1 :
+        1
+      return sum + svc.price * qty * multiplier
+    }, 0)
+    const subtotal = studioTotal + equipmentTotal + servicesTotal
     const total = subtotal
 
-    return { studioTotal, equipmentTotal, subtotal, total }
-  }, [studio.price_per_hour, studio.booking_mode, studio.booking_blocks, selectedDuration, selectedEquipment, equipment])
+    return { studioTotal, equipmentTotal, servicesTotal, subtotal, total }
+  }, [studio.price_per_hour, studio.booking_mode, studio.booking_blocks, selectedDuration, selectedEquipment, selectedServices, equipment, services])
 
   const handleContinue = () => {
     const params = new URLSearchParams({
@@ -106,6 +140,9 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
 
     Object.entries(selectedEquipment).forEach(([id, qty]) => {
       params.append(`eq_${id}`, qty.toString())
+    })
+    Object.entries(selectedServices).forEach(([id, qty]) => {
+      params.append(`svc_${id}`, qty.toString())
     })
 
     router.push(`/book/${studio.id}/checkout?${params.toString()}`)
@@ -185,7 +222,7 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
                 </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {DURATION_HOURS.map((hours) => {
+                  {availableDurations.map((hours) => {
                     const label = hours >= 8 ? t("fullDay") : hours === 4 ? t("halfDay") : t("hours", { count: hours })
                     const isSelected = selectedDuration === hours
                     return (
@@ -297,6 +334,74 @@ export function SessionDetailsClient({ studio, equipment, initialDate, initialTi
                 ))}
               </div>
             </div>
+
+            {/* Services Add-ons */}
+            {services.length > 0 && (
+              <div className="bg-white rounded-[2rem] p-8">
+                <h2 className="text-xl font-semibold mb-2">Diensten</h2>
+                <p className="text-gray-500 mb-6">Voeg extra diensten toe die de host aanbiedt.</p>
+
+                <div className="space-y-4">
+                  {services.map((svc) => {
+                    const qty = selectedServices[svc.id] || 0
+                    const unitLabel =
+                      svc.pricing_unit === "per_hour" ? "per uur" :
+                      svc.pricing_unit === "per_session" ? "per sessie" : "per dienst"
+                    return (
+                      <div
+                        key={svc.id}
+                        className="flex items-center justify-between p-4 rounded-2xl bg-gray-50"
+                      >
+                        <div className="flex items-center gap-4 min-w-0">
+                          <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center shrink-0">
+                            <span className="material-symbols-outlined text-gray-400 text-2xl">work</span>
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="font-semibold truncate">{svc.name}</h3>
+                            {svc.description && (
+                              <p className="text-sm text-gray-500 line-clamp-2">{svc.description}</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 shrink-0">
+                          <div className="text-right">
+                            <div className="font-semibold">€{svc.price}</div>
+                            <div className="text-xs text-gray-500">{unitLabel}</div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() =>
+                                setSelectedServices((prev) => {
+                                  const cur = prev[svc.id] || 0
+                                  if (cur <= 1) {
+                                    const { [svc.id]: __, ...rest } = prev
+                                    return rest
+                                  }
+                                  return { ...prev, [svc.id]: cur - 1 }
+                                })
+                              }
+                              className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center disabled:opacity-40"
+                              disabled={qty === 0}
+                            >
+                              <span className="material-symbols-outlined text-lg">remove</span>
+                            </button>
+                            <span className="w-6 text-center font-medium">{qty}</span>
+                            <button
+                              onClick={() =>
+                                setSelectedServices((prev) => ({ ...prev, [svc.id]: (prev[svc.id] || 0) + 1 }))
+                              }
+                              className="w-8 h-8 rounded-full bg-black text-white hover:bg-gray-800 flex items-center justify-center"
+                            >
+                              <span className="material-symbols-outlined text-lg">add</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Sidebar - Booking Summary */}

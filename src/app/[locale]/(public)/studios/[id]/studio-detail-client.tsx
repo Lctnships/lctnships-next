@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 import Image from "next/image"
 import { useTranslations, useLocale } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 import { useUser } from "@/hooks/use-user"
 import dynamic from "next/dynamic"
+import { getAvailableDurations, snapToAvailable, priceForDuration, type BookingBlock } from "@/lib/booking-duration"
 
 const StudioMap = dynamic(
   () => import("@/components/shared/studio-map").then((mod) => mod.StudioMap),
@@ -56,6 +57,9 @@ interface StudioData {
   price_per_hour: number
   price_per_day?: number
   minimum_hours?: number
+  maximum_hours?: number
+  booking_mode?: "flexible" | "fixed_blocks" | null
+  booking_blocks?: BookingBlock[] | null
   capacity?: number
   is_instant_book?: boolean
   is_superhost?: boolean
@@ -116,7 +120,22 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   const [activeTab, setActiveTab] = useState<TabType>("photos")
   const [showAllPhotos, setShowAllPhotos] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [bookingHours, setBookingHours] = useState(studio.minimum_hours || 2)
+  const availableDurations = useMemo(() => getAvailableDurations(studio), [studio])
+  const [bookingHours, setBookingHours] = useState(() =>
+    snapToAvailable(studio, studio.minimum_hours || availableDurations[0] || 2)
+  )
+  const stepDuration = (dir: -1 | 1) => {
+    const idx = availableDurations.indexOf(bookingHours)
+    if (idx === -1) {
+      setBookingHours(snapToAvailable(studio, bookingHours))
+      return
+    }
+    const next = availableDurations[idx + dir]
+    if (next !== undefined) setBookingHours(next)
+  }
+  const canStepDown = availableDurations.indexOf(bookingHours) > 0
+  const canStepUp = availableDurations.indexOf(bookingHours) >= 0 &&
+    availableDurations.indexOf(bookingHours) < availableDurations.length - 1
   const [startTime, setStartTime] = useState("09:00")
   const [crewSize, setCrewSize] = useState(1)
   const [showDatePicker, setShowDatePicker] = useState(false)
@@ -332,7 +351,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   const equipmentTotal = equipment
     .filter((item: StudioEquipmentItem) => !item.included && selectedEquipment.has(item.id))
     .reduce((sum: number, item: StudioEquipmentItem) => sum + (item.price || 0), 0)
-  const subtotal = bookingHours * pricePerHour + equipmentTotal
+  const subtotal = priceForDuration(studio, bookingHours) + equipmentTotal
   const total = subtotal
 
   // Generate time slots (6:00 - 22:00)
@@ -889,16 +908,17 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                   </div>
                   <div className="flex items-center justify-between">
                     <button
-                      onClick={() => setBookingHours(Math.max(minHours, bookingHours - 1))}
+                      onClick={() => stepDuration(-1)}
                       className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-40"
-                      disabled={bookingHours <= minHours}
+                      disabled={!canStepDown}
                     >
                       <span className="material-symbols-outlined">remove</span>
                     </button>
                     <span className="font-bold text-lg">{bookingHours} {t("hoursUnit")}</span>
                     <button
-                      onClick={() => setBookingHours(Math.min(12, bookingHours + 1))}
-                      className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"
+                      onClick={() => stepDuration(1)}
+                      disabled={!canStepUp}
+                      className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-40"
                     >
                       <span className="material-symbols-outlined">add</span>
                     </button>
@@ -1212,16 +1232,17 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                 </div>
                 <div className="flex items-center justify-between">
                   <button
-                    onClick={() => setBookingHours(Math.max(minHours, bookingHours - 1))}
+                    onClick={() => stepDuration(-1)}
                     className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-40"
-                    disabled={bookingHours <= minHours}
+                    disabled={!canStepDown}
                   >
                     <span className="material-symbols-outlined">remove</span>
                   </button>
                   <span className="font-bold text-lg">{bookingHours} {t("hoursUnit")}</span>
                   <button
-                    onClick={() => setBookingHours(Math.min(12, bookingHours + 1))}
-                    className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50"
+                    onClick={() => stepDuration(1)}
+                    disabled={!canStepUp}
+                    className="size-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-40"
                   >
                     <span className="material-symbols-outlined">add</span>
                   </button>
