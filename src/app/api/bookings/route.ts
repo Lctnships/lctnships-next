@@ -166,23 +166,37 @@ export async function POST(request: Request) {
     // Generate crypto-random booking number
     const bookingNumber = `BK-${randomBytes(4).toString('hex').toUpperCase().slice(0, 6)}`
 
-    // Create booking with server-calculated prices
+    // Branch by booking mode:
+    //  - instant-book: booking lands in pending + awaiting_payment; client
+    //    then opens a Stripe checkout session. Webhook confirms on payment.
+    //  - on-request: booking lands in pending_approval + payment_status=none
+    //    with a 48h soft-hold (request_expires_at). Host must approve first;
+    //    only then does the renter get a payment link.
+    const isInstant = !!studio.is_instant_book
+    const requestExpiresAt = isInstant
+      ? null
+      : new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
+
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .insert({
         booking_number: bookingNumber,
         studio_id,
         renter_id: user.id,
+        user_id: user.id,
         host_id: studio.host_id,
         start_datetime,
         end_datetime,
+        start_time: start_datetime,
+        end_time: end_datetime,
         total_hours: calculatedHours,
-        subtotal: calculatedSubtotal,
+        total_price: calculatedSubtotal,
         service_fee: calculatedServiceFee,
         total_amount: calculatedTotal,
         host_payout: calculatedHostPayout,
-        status: studio.is_instant_book ? "confirmed" : "pending",
-        payment_status: "pending",
+        status: isInstant ? "pending" : "pending_approval",
+        payment_status: isInstant ? "awaiting_payment" : "none",
+        request_expires_at: requestExpiresAt,
         notes,
         production_type,
         special_requests,
@@ -229,12 +243,15 @@ export async function POST(request: Request) {
       await supabase.from("booking_equipment").insert(equipmentItems)
     }
 
-    // Create notification for host
+    // Notify host. Instant-book: informational only (webhook will fire on
+    // payment). On-request: host has 48h to Accept/Reject.
     await supabase.rpc("create_notification", {
       p_user_id: studio.host_id,
-      p_type: "booking_request",
-      p_title: studio.is_instant_book ? "New Booking Confirmed" : "New Booking Request",
-      p_message: `You have a new booking for ${studio.title}`,
+      p_type: isInstant ? "booking_pending_payment" : "booking_request",
+      p_title: isInstant ? "New Booking (awaiting payment)" : "New Booking Request",
+      p_message: isInstant
+        ? `A new booking for ${studio.title} is awaiting renter payment.`
+        : `You have a new booking request for ${studio.title}. Please approve or reject within 48 hours.`,
       p_link: `/host/bookings/${booking.id}`,
     })
 

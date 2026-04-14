@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/extension-reminders",
       "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/booking-expiry",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

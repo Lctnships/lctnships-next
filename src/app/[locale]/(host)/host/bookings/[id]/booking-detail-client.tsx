@@ -27,7 +27,7 @@ interface Studio {
 interface Booking {
   id: string
   booking_number?: string
-  status: "pending" | "confirmed" | "completed" | "cancelled"
+  status: "pending" | "pending_approval" | "approved" | "rejected" | "expired" | "confirmed" | "completed" | "cancelled"
   payment_status?: string
   created_at: string
   start_datetime: string
@@ -76,12 +76,11 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
   const handleAccept = async () => {
     setIsProcessing(true)
     try {
-      const supabase = createClient()
-      await supabase
-        .from("bookings")
-        .update({ status: "confirmed" })
-        .eq("id", booking.id)
-
+      const res = await fetch(`/api/bookings/${booking.id}/approve`, { method: "POST" })
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: "Approve failed" }))
+        throw new Error(error)
+      }
       router.push("/host/bookings")
       router.refresh()
     } catch (error) {
@@ -94,24 +93,15 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
   const handleDecline = async () => {
     setIsProcessing(true)
     try {
-      const supabase = createClient()
-      await supabase
-        .from("bookings")
-        .update({
-          status: "cancelled",
-          cancellation_reason: declineReason,
-        })
-        .eq("id", booking.id)
-
-      // Send notification to the renter about the declined booking
-      await supabase.from("notifications").insert({
-        user_id: booking.renter?.id,
-        type: "booking_declined",
-        title: "Booking Declined",
-        message: `Your booking for ${booking.studio?.title} has been declined.`,
-        link: `/bookings/${booking.id}`,
+      const res = await fetch(`/api/bookings/${booking.id}/reject`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: declineReason || null }),
       })
-
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: "Reject failed" }))
+        throw new Error(error)
+      }
       router.push("/host/bookings")
       router.refresh()
     } catch (error) {
@@ -330,7 +320,7 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
           </div>
 
           {/* Actions */}
-          {booking.status === "pending" && (
+          {booking.status === "pending_approval" && (
             <div className="space-y-3">
               <button
                 onClick={handleAccept}

@@ -120,18 +120,18 @@ export function CheckoutClient({
     setError(null)
 
     try {
-      // Step 1: Create booking in Supabase
       const startDateTime = new Date(`${bookingDetails.date}T${bookingDetails.startTime}:00`)
       const endDateTime = new Date(`${bookingDetails.date}T${endTime}:00`)
-      const bookingNumber = generateBookingNumber()
 
-      const { data: booking, error: bookingError } = await supabase
-        .from("bookings")
-        .insert({
-          booking_number: bookingNumber,
+      // Step 1: create booking via the API route. The server branches on
+      // studio.is_instant_book and returns a booking with status 'pending'
+      // (instant-book, ready to pay) or 'pending_approval' (on-request,
+      // awaits host accept). It also runs the authoritative price recalc.
+      const bookingRes = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           studio_id: studio.id,
-          renter_id: profile?.id,
-          host_id: studio.host_id,
           start_datetime: startDateTime.toISOString(),
           end_datetime: endDateTime.toISOString(),
           total_hours: bookingDetails.duration,
@@ -139,16 +139,22 @@ export function CheckoutClient({
           service_fee: Math.round(calculations.subtotal * 0.15 * 100) / 100,
           total_amount: calculations.total,
           host_payout: Math.round(calculations.subtotal * 0.85 * 100) / 100,
-          status: "pending",
-          payment_status: "awaiting_payment",
           notes: formData.specialRequests || null,
-        })
-        .select()
-        .single()
+          production_type: formData.productionType || null,
+          equipment_selections: equipmentSelections,
+        }),
+      })
+      const bookingJson = await bookingRes.json()
+      if (!bookingRes.ok) throw new Error(bookingJson.error || "Boeking aanmaken mislukt")
+      const booking = bookingJson.booking
 
-      if (bookingError) throw bookingError
+      // Step 2a: on-request → show "request sent" confirmation, no payment
+      if (booking.status === "pending_approval") {
+        window.location.href = `/bookings/${booking.id}?requested=1`
+        return
+      }
 
-      // Step 2: Create Stripe Checkout session
+      // Step 2b: instant-book → kick off Stripe checkout
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -163,14 +169,8 @@ export function CheckoutClient({
           startTime: bookingDetails.startTime,
         }),
       })
-
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Betaalsessie kon niet worden aangemaakt")
-      }
-
-      // Step 3: Redirect to Stripe Checkout
+      if (!response.ok) throw new Error(data.error || "Betaalsessie kon niet worden aangemaakt")
       if (data.url) {
         window.location.href = data.url
       } else {
@@ -432,16 +432,23 @@ export function CheckoutClient({
                     <span className="material-symbols-outlined animate-spin">progress_activity</span>
                     Verwerken...
                   </>
-                ) : (
+                ) : studio.is_instant_book ? (
                   <>
                     <span className="material-symbols-outlined">lock</span>
                     Betaal €{calculations.total}
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined">send</span>
+                    Aanvraag versturen
                   </>
                 )}
               </button>
 
               <p className="text-xs text-gray-500 text-center mt-4">
-                Veilige betaling via Stripe
+                {studio.is_instant_book
+                  ? "Veilige betaling via Stripe"
+                  : "De host heeft 48 uur om je aanvraag te accepteren. Je betaalt pas na goedkeuring."}
               </p>
             </div>
           </div>

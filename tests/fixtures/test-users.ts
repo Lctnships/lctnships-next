@@ -17,3 +17,12 @@ export const TEST_STUDIO = {
   studioType: "photo" as const,
   pricePerHour: 50,
 } as const
+
+// Second studio used to exercise the on-request booking flow.
+export const TEST_STUDIO_REQUEST = {
+  title: "E2E Request Studio",
+  city: "Rotterdam",
+  country: "Netherlands",
+  studioType: "photo" as const,
+  pricePerHour: 40,
+} as const

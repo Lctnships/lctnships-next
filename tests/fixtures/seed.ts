@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
 import { readFileSync } from "fs"
 import { resolve } from "path"
-import { TEST_HOST, TEST_RENTER, TEST_STUDIO } from "./test-users"
+import { TEST_HOST, TEST_RENTER, TEST_STUDIO, TEST_STUDIO_REQUEST } from "./test-users"
 
 function loadEnvLocal() {
   try {
@@ -59,29 +59,39 @@ async function upsertProfile(id: string, email: string, fullName: string, userTy
   if (error) throw error
 }
 
-async function upsertStudio(hostId: string) {
+async function upsertStudio(
+  hostId: string,
+  config: { title: string; city: string; country: string; studioType: string; pricePerHour: number },
+  instantBook: boolean,
+) {
   const { data: existing } = await admin
     .from("studios")
-    .select("id")
+    .select("id, is_instant_book")
     .eq("host_id", hostId)
-    .eq("title", TEST_STUDIO.title)
+    .eq("title", config.title)
     .maybeSingle()
-  if (existing) return existing.id
+  if (existing) {
+    if (existing.is_instant_book !== instantBook) {
+      await admin.from("studios").update({ is_instant_book: instantBook }).eq("id", existing.id)
+    }
+    return existing.id
+  }
 
   const { data, error } = await admin
     .from("studios")
     .insert({
       host_id: hostId,
       owner_id: hostId,
-      title: TEST_STUDIO.title,
+      title: config.title,
       description: "E2E studio",
-      type: TEST_STUDIO.studioType,
-      city: TEST_STUDIO.city,
-      country: TEST_STUDIO.country,
-      location: `${TEST_STUDIO.city}, ${TEST_STUDIO.country}`,
-      price_per_hour: TEST_STUDIO.pricePerHour,
-      hourly_rate: TEST_STUDIO.pricePerHour,
+      type: config.studioType,
+      city: config.city,
+      country: config.country,
+      location: `${config.city}, ${config.country}`,
+      price_per_hour: config.pricePerHour,
+      hourly_rate: config.pricePerHour,
       is_published: true,
+      is_instant_book: instantBook,
       status: "published",
     })
     .select("id")
@@ -200,21 +210,17 @@ async function upsertConversation(studioId: string, bookingId: string, hostId: s
     }
   }
 
-  // Seed one message from host → renter so the renter sees an unread marker
+  // Reset conversation thread between runs: the renter-reply test spams new
+  // messages that push the seeded host greeting off-screen in the UI, breaking
+  // the "greeting is visible" assertions on subsequent runs.
+  await admin.from("messages").delete().eq("conversation_id", conversationId)
+
   const seededContent = "Welcome! Looking forward to your session."
-  const { data: existingMsg } = await admin
-    .from("messages")
-    .select("id")
-    .eq("conversation_id", conversationId)
-    .eq("content", seededContent)
-    .maybeSingle()
-  if (!existingMsg) {
-    await admin.from("messages").insert({
-      conversation_id: conversationId,
-      sender_id: hostId,
-      content: seededContent,
-    })
-  }
+  await admin.from("messages").insert({
+    conversation_id: conversationId,
+    sender_id: hostId,
+    content: seededContent,
+  })
 
   return conversationId
 }
@@ -224,11 +230,12 @@ export async function seed() {
   const renterId = await ensureAuthUser(TEST_RENTER.email, TEST_RENTER.password, TEST_RENTER.fullName)
   await upsertProfile(hostId, TEST_HOST.email, TEST_HOST.fullName, "host")
   await upsertProfile(renterId, TEST_RENTER.email, TEST_RENTER.fullName, "renter")
-  const studioId = await upsertStudio(hostId)
+  const studioId = await upsertStudio(hostId, TEST_STUDIO, true) // instant
+  const requestStudioId = await upsertStudio(hostId, TEST_STUDIO_REQUEST, false) // on-request
   const bookingId = await upsertBooking(studioId, hostId, renterId)
   const projectId = await upsertProject(renterId)
   const conversationId = await upsertConversation(studioId, bookingId, hostId, renterId)
-  return { hostId, renterId, studioId, bookingId, projectId, conversationId }
+  return { hostId, renterId, studioId, requestStudioId, bookingId, projectId, conversationId }
 }
 
 if (require.main === module) {

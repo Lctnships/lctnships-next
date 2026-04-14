@@ -154,16 +154,18 @@ export async function POST(request: NextRequest) {
               .eq("id", bookingId)
               .single()
 
-            const isInstantBook = (bookingForStatus?.studio as { is_instant_book?: boolean } | null)?.is_instant_book ?? true
-            const newStatus = isInstantBook ? "confirmed" : "pending"
-
+            // After successful payment every booking is 'confirmed' — on-request
+            // bookings were already approved by the host before reaching this
+            // point; instant-book bookings go straight from pending → confirmed.
+            void bookingForStatus
             await supabase
               .from("bookings")
               .update({
-                status: newStatus,
+                status: "confirmed",
                 payment_status: "paid",
                 paid_at: new Date().toISOString(),
                 stripe_payment_intent: session.payment_intent as string,
+                payment_deadline: null,
               })
               .eq("id", bookingId)
 
@@ -188,16 +190,14 @@ export async function POST(request: NextRequest) {
               const studioTitle = (booking.studio as { title?: string } | null)?.title
               await supabase.from("notifications").insert({
                 user_id: booking.host_id,
-                type: isInstantBook ? "payment_received" : "booking_request",
-                title: isInstantBook ? "Payment received" : "New booking request",
-                message: isInstantBook
-                  ? `Payment received for ${studioTitle}`
-                  : `New booking request for ${studioTitle} — please accept or decline`,
+                type: "payment_received",
+                title: "Payment received",
+                message: `Payment received for ${studioTitle}`,
                 link: `/host/bookings/${bookingId}`,
               })
             }
 
-            logger.info("Booking payment processed", { bookingId, status: newStatus })
+            logger.info("Booking payment processed", { bookingId, status: "confirmed" })
           } catch (error) {
             logger.error("Failed to update booking", error)
           }
