@@ -24,8 +24,8 @@ interface Booking {
   id: string
   date?: string
   booking_number?: string
-  start_date?: string
-  end_date?: string
+  start_datetime?: string
+  end_datetime?: string
   time?: string
   status: string
   total?: number
@@ -171,7 +171,7 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
   }, [preselectedStudioId, preselectedHostId])
 
   const filteredConversations = allConversations.filter((conv) =>
-    conv.otherUser.full_name.toLowerCase().includes(searchQuery.toLowerCase())
+    (conv.otherUser?.full_name ?? "").toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const formatTime = (dateString: string) => {
@@ -236,7 +236,7 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
 
   const getBookingDate = (booking?: Booking | null) => {
     if (!booking) return ""
-    return booking.date || booking.start_date || ""
+    return booking.date || booking.start_datetime || ""
   }
 
   return (

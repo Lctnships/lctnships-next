@@ -7,7 +7,7 @@ interface ConversationRelation {
   id: string
   updated_at: string
   studio: { id: string; title: string; images?: string[]; studio_images?: { image_url: string }[] } | null
-  booking: { id: string; booking_number?: string; start_date?: string; end_date?: string; status: string; total_price?: number } | null
+  booking: { id: string; booking_number?: string; start_datetime?: string; end_datetime?: string; status: string; total_price?: number } | null
 }
 
 interface MessageRecord {
@@ -44,7 +44,7 @@ export default async function MessagesPage({
         id,
         updated_at,
         studio:studios (id, title, images, studio_images(image_url)),
-        booking:bookings (id, booking_number, start_date, end_date, status, total_price)
+        booking:bookings (id, booking_number, start_datetime, end_datetime, status, total_price)
       )
     `)
     .eq("user_id", user.id)

@@ -138,6 +138,87 @@ async function upsertBooking(studioId: string, hostId: string, renterId: string)
   return data.id
 }
 
+async function upsertProject(renterId: string) {
+  const title = "E2E Test Project"
+  const { data: existing } = await admin
+    .from("projects")
+    .select("id")
+    .eq("owner_id", renterId)
+    .eq("title", title)
+    .maybeSingle()
+  if (existing) return existing.id
+  const { data, error } = await admin
+    .from("projects")
+    .insert({
+      owner_id: renterId,
+      title,
+      description: "Project created by Playwright fixture",
+      type: "photoshoot",
+      status: "active",
+    })
+    .select("id")
+    .single()
+  if (error) throw error
+  return data.id
+}
+
+async function upsertConversation(studioId: string, bookingId: string, hostId: string, renterId: string) {
+  // One conversation per (studio, booking) pair is the practical uniqueness.
+  const { data: existing } = await admin
+    .from("conversations")
+    .select("id")
+    .eq("studio_id", studioId)
+    .eq("booking_id", bookingId)
+    .maybeSingle()
+
+  let conversationId: string
+  if (existing) {
+    conversationId = existing.id
+  } else {
+    const { data, error } = await admin
+      .from("conversations")
+      .insert({ studio_id: studioId, booking_id: bookingId })
+      .select("id")
+      .single()
+    if (error) throw error
+    conversationId = data.id
+  }
+
+  // Participants (idempotent)
+  for (const userId of [hostId, renterId]) {
+    const { data: p } = await admin
+      .from("conversation_participants")
+      .select("id")
+      .eq("conversation_id", conversationId)
+      .eq("user_id", userId)
+      .maybeSingle()
+    if (!p) {
+      await admin.from("conversation_participants").insert({
+        conversation_id: conversationId,
+        user_id: userId,
+      })
+    }
+  }
+
+  // Seed one message from host → renter so the renter sees an unread marker
+  const seededContent = "Welcome! Looking forward to your session."
+  const { data: existingMsg } = await admin
+    .from("messages")
+    .select("id")
+    .eq("conversation_id", conversationId)
+    .eq("content", seededContent)
+    .maybeSingle()
+  if (!existingMsg) {
+    await admin.from("messages").insert({
+      conversation_id: conversationId,
+      sender_id: hostId,
+      content: seededContent,
+    })
+  }
+
+  return conversationId
+}
+
 export async function seed() {
   const hostId = await ensureAuthUser(TEST_HOST.email, TEST_HOST.password, TEST_HOST.fullName)
   const renterId = await ensureAuthUser(TEST_RENTER.email, TEST_RENTER.password, TEST_RENTER.fullName)
@@ -145,7 +226,9 @@ export async function seed() {
   await upsertProfile(renterId, TEST_RENTER.email, TEST_RENTER.fullName, "renter")
   const studioId = await upsertStudio(hostId)
   const bookingId = await upsertBooking(studioId, hostId, renterId)
-  return { hostId, renterId, studioId, bookingId }
+  const projectId = await upsertProject(renterId)
+  const conversationId = await upsertConversation(studioId, bookingId, hostId, renterId)
+  return { hostId, renterId, studioId, bookingId, projectId, conversationId }
 }
 
 if (require.main === module) {
