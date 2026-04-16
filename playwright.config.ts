@@ -34,5 +34,11 @@ export default defineConfig({
     command: "npm run dev -- --port 3002",
     url: "http://localhost:3002",
     reuseExistingServer: !process.env.CI,
+    env: {
+      // Enable 2FA enforcement during E2E so the two-factor.spec can verify
+      // the full challenge flow. Production keeps this off until opt-in.
+      MFA_ENFORCEMENT: "on",
+      NEXT_PUBLIC_MFA_ENFORCEMENT: "on",
+    },
   },
 })

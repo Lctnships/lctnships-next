@@ -70,10 +70,13 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // 2FA enforcement: if the user has a verified TOTP factor but their session
-  // is still aal1, force them through the challenge before reaching protected
-  // routes. The /login/2fa-verify page itself is exempt to avoid a loop.
-  if (isProtectedPath && user) {
+  // 2FA enforcement (LCN-150). Default OFF for the marketplace until we
+  // explicitly opt in — set MFA_ENFORCEMENT=on per environment to enable.
+  // The settings UI + enroll flow remains accessible regardless; only the
+  // login challenge gating is gated by this flag.
+  const mfaEnforcementOn = process.env.MFA_ENFORCEMENT === 'on'
+
+  if (isProtectedPath && user && mfaEnforcementOn) {
     const localePrefix = request.nextUrl.pathname.replace(strippedPath, '').replace(/\/$/, '')
     const isOnChallengePage = strippedPath.startsWith('/login/2fa-verify')
     if (!isOnChallengePage) {
@@ -95,12 +98,14 @@ export async function updateSession(request: NextRequest) {
 
   if (isAuthPath && !isChallengePath && user) {
     // If user still owes a 2FA challenge, do NOT redirect to dashboard.
-    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
-    if (aal && aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2') {
-      const url = request.nextUrl.clone()
-      const localePrefix = request.nextUrl.pathname.replace(strippedPath, '').replace(/\/$/, '')
-      url.pathname = `${localePrefix}/login/2fa-verify`
-      return NextResponse.redirect(url)
+    if (mfaEnforcementOn) {
+      const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+      if (aal && aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2') {
+        const url = request.nextUrl.clone()
+        const localePrefix = request.nextUrl.pathname.replace(strippedPath, '').replace(/\/$/, '')
+        url.pathname = `${localePrefix}/login/2fa-verify`
+        return NextResponse.redirect(url)
+      }
     }
     const url = request.nextUrl.clone()
     const localePrefix = request.nextUrl.pathname.replace(strippedPath, '').replace(/\/$/, '')
