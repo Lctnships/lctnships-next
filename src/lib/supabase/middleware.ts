@@ -70,11 +70,38 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Redirect logged in users away from auth pages
+  // 2FA enforcement: if the user has a verified TOTP factor but their session
+  // is still aal1, force them through the challenge before reaching protected
+  // routes. The /login/2fa-verify page itself is exempt to avoid a loop.
+  if (isProtectedPath && user) {
+    const localePrefix = request.nextUrl.pathname.replace(strippedPath, '').replace(/\/$/, '')
+    const isOnChallengePage = strippedPath.startsWith('/login/2fa-verify')
+    if (!isOnChallengePage) {
+      const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+      if (aal && aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2') {
+        const url = request.nextUrl.clone()
+        url.pathname = `${localePrefix}/login/2fa-verify`
+        url.searchParams.set('redirect', request.nextUrl.pathname)
+        return NextResponse.redirect(url)
+      }
+    }
+  }
+
+  // Redirect logged in users away from auth pages — but NOT away from
+  // /login/2fa-verify, which they need to be on after entering their password.
   const authPaths = ['/login', '/signup']
   const isAuthPath = authPaths.some(path => strippedPath.startsWith(path))
+  const isChallengePath = strippedPath.startsWith('/login/2fa-verify')
 
-  if (isAuthPath && user) {
+  if (isAuthPath && !isChallengePath && user) {
+    // If user still owes a 2FA challenge, do NOT redirect to dashboard.
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+    if (aal && aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2') {
+      const url = request.nextUrl.clone()
+      const localePrefix = request.nextUrl.pathname.replace(strippedPath, '').replace(/\/$/, '')
+      url.pathname = `${localePrefix}/login/2fa-verify`
+      return NextResponse.redirect(url)
+    }
     const url = request.nextUrl.clone()
     const localePrefix = request.nextUrl.pathname.replace(strippedPath, '').replace(/\/$/, '')
     url.pathname = `${localePrefix}/dashboard`
