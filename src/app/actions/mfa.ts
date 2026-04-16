@@ -21,85 +21,112 @@ export interface ActionResult<T = null> {
 }
 
 export async function enrollMfa(): Promise<ActionResult<EnrollResult>> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { ok: false, data: null, error: "Unauthorized" }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { ok: false, data: null, error: "Unauthorized" }
 
-  // Clean up any prior unverified factors for this user (Supabase keeps them).
-  const { data: factors } = await supabase.auth.mfa.listFactors()
-  if (factors?.totp) {
-    for (const f of factors.totp) {
-      if (f.status !== "verified") {
-        await supabase.auth.mfa.unenroll({ factorId: f.id }).catch(() => {})
+    // Clean up any prior unverified factors for this user (Supabase keeps them).
+    const { data: factors } = await supabase.auth.mfa.listFactors()
+    if (factors?.totp) {
+      for (const f of factors.totp) {
+        if (f.status !== "verified") {
+          await supabase.auth.mfa.unenroll({ factorId: f.id }).catch(() => {})
+        }
       }
     }
-  }
 
-  const { data, error } = await supabase.auth.mfa.enroll({
-    factorType: "totp",
-    issuer: "lctnships",
-    friendlyName: `lctnships-${Date.now()}`,
-  })
-  if (error || !data) {
-    logger.error("MFA enroll failed", error)
-    return { ok: false, data: null, error: error?.message ?? "Enroll failed" }
-  }
-  return {
-    ok: true,
-    data: {
-      factorId: data.id,
-      qrCode: data.totp.uri,
-      secret: data.totp.secret,
-    },
-    error: null,
+    const { data, error } = await supabase.auth.mfa.enroll({
+      factorType: "totp",
+      issuer: "lctnships",
+      friendlyName: `lctnships-${Date.now()}`,
+    })
+    if (error || !data) {
+      logger.error("MFA enroll failed", error)
+      return { ok: false, data: null, error: error?.message ?? "Enroll failed" }
+    }
+    return {
+      ok: true,
+      data: {
+        factorId: data.id,
+        qrCode: data.totp.uri,
+        secret: data.totp.secret,
+      },
+      error: null,
+    }
+  } catch (e) {
+    logger.error("enrollMfa crashed", e)
+    return { ok: false, data: null, error: e instanceof Error ? e.message : "Unexpected error" }
   }
 }
 
 export async function verifyEnrollment(factorId: string, code: string): Promise<ActionResult> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { ok: false, data: null, error: "Unauthorized" }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { ok: false, data: null, error: "Unauthorized" }
 
-  const { data: challenge, error: challengeErr } = await supabase.auth.mfa.challenge({ factorId })
-  if (challengeErr || !challenge) {
-    logger.error("MFA challenge failed during enroll", challengeErr)
-    return { ok: false, data: null, error: challengeErr?.message ?? "Challenge failed" }
+    const { data: challenge, error: challengeErr } = await supabase.auth.mfa.challenge({ factorId })
+    if (challengeErr || !challenge) {
+      logger.error("MFA challenge failed during enroll", challengeErr)
+      return { ok: false, data: null, error: challengeErr?.message ?? "Challenge failed" }
+    }
+
+    const { error: verifyErr } = await supabase.auth.mfa.verify({
+      factorId,
+      challengeId: challenge.id,
+      code,
+    })
+    if (verifyErr) {
+      logger.error("MFA verify failed", verifyErr)
+      return { ok: false, data: null, error: verifyErr.message }
+    }
+
+    // Mirror to users.two_factor_enabled for UI display. Service-client because
+    // this column is restricted by migration 011 column grants. Mirror failure
+    // is non-fatal — the factor is verified in Supabase Auth either way.
+    try {
+      const admin = await createServiceClient()
+      await admin.from("users").update({ two_factor_enabled: true }).eq("id", user.id)
+    } catch (mirrorErr) {
+      logger.error("MFA mirror update failed (non-fatal)", mirrorErr, { userId: user.id })
+    }
+
+    return { ok: true, data: null, error: null }
+  } catch (e) {
+    logger.error("verifyEnrollment crashed", e)
+    return { ok: false, data: null, error: e instanceof Error ? e.message : "Unexpected error" }
   }
-
-  const { error: verifyErr } = await supabase.auth.mfa.verify({
-    factorId,
-    challengeId: challenge.id,
-    code,
-  })
-  if (verifyErr) return { ok: false, data: null, error: verifyErr.message }
-
-  // Mirror to users.two_factor_enabled for UI display. Service-client because
-  // this column is restricted by migration 011 column grants.
-  const admin = await createServiceClient()
-  await admin.from("users").update({ two_factor_enabled: true }).eq("id", user.id)
-
-  return { ok: true, data: null, error: null }
 }
 
 export async function unenrollMfa(): Promise<ActionResult> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { ok: false, data: null, error: "Unauthorized" }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { ok: false, data: null, error: "Unauthorized" }
 
-  const { data: factors } = await supabase.auth.mfa.listFactors()
-  const totps = factors?.totp ?? []
-  for (const f of totps) {
-    const { error } = await supabase.auth.mfa.unenroll({ factorId: f.id })
-    if (error) {
-      logger.error("MFA unenroll failed", error, { factorId: f.id })
-      return { ok: false, data: null, error: error.message }
+    const { data: factors } = await supabase.auth.mfa.listFactors()
+    const totps = factors?.totp ?? []
+    for (const f of totps) {
+      const { error } = await supabase.auth.mfa.unenroll({ factorId: f.id })
+      if (error) {
+        logger.error("MFA unenroll failed", error, { factorId: f.id })
+        return { ok: false, data: null, error: error.message }
+      }
     }
+
+    try {
+      const admin = await createServiceClient()
+      await admin.from("users").update({ two_factor_enabled: false }).eq("id", user.id)
+    } catch (mirrorErr) {
+      logger.error("MFA mirror update failed (non-fatal)", mirrorErr, { userId: user.id })
+    }
+
+    return { ok: true, data: null, error: null }
+  } catch (e) {
+    logger.error("unenrollMfa crashed", e)
+    return { ok: false, data: null, error: e instanceof Error ? e.message : "Unexpected error" }
   }
-
-  const admin = await createServiceClient()
-  await admin.from("users").update({ two_factor_enabled: false }).eq("id", user.id)
-
-  return { ok: true, data: null, error: null }
 }
 
 export async function listFactors(): Promise<ActionResult<{ totp: { id: string; status: string }[] }>> {
