@@ -53,6 +53,17 @@ export function LoginForm() {
       return
     }
 
+    // After successful password login, check whether the user owes a 2FA
+    // challenge. If yes → route to /login/2fa-verify instead of dashboard.
+    // The middleware enforces this too, but doing it here gives a snappier UX
+    // and avoids a flicker through /dashboard.
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+    if (aal && aal.currentLevel === "aal1" && aal.nextLevel === "aal2") {
+      router.refresh()
+      router.push(`/login/2fa-verify?redirect=${encodeURIComponent(redirect)}` as "/login")
+      return
+    }
+
     toast.success(t("welcomeBackToast"))
     router.refresh()
     router.push(redirect)
