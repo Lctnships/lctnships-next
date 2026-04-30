@@ -40,7 +40,9 @@ export async function POST(request: Request) {
         country: "NL", // Default to Netherlands
         email: profile?.email || user.email,
         capabilities: {
+          card_payments: { requested: true },
           transfers: { requested: true },
+          ideal_payments: { requested: true },
         },
         business_type: "individual",
         business_profile: {
