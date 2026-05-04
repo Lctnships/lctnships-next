@@ -1,8 +1,21 @@
 # Architecture — Target State
 
-**Versie:** 2026-04-15
+**Versie:** 2026-04-16
 **Status:** target (huidig = monoliet, target = post-cutover; zie [MIGRATION-PLAN.md](./MIGRATION-PLAN.md))
 **Eigenaar:** MacAndrew Holdings B.V. (KVK 96734647)
+
+---
+
+## Twee aparte applicaties — twee aparte Supabase databases
+
+| App | Repo | Domain | Supabase | Doel |
+|---|---|---|---|---|
+| **lctnships-next** (deze repo) | `Lctnships/lctnships-next` | `lctnships.com` | `ytmkmiofoluespwysfxa` | Publieke marketplace — hosts listen studio's, renters boeken |
+| **lcntships-workspace** | `Lctnships/lcntships-workspace` | `workspace.lctnships.com` | `xiuplzawiionroxgwvsa` | Intern CRM — leads, sales-pipeline, email-campagnes, finance |
+
+**Belangrijk:** beide projecten hebben **eigen Supabase Auth, eigen users-tabel, eigen MFA-factors**. Een 2FA-factor op de marketplace geldt **niet** automatisch voor de workspace en omgekeerd. Geen cross-app SSO. Account-credentials kunnen wel toevallig hetzelfde zijn omdat dezelfde gebruiker (jij) op beide registreert met hetzelfde email — maar het zijn twee logische auth-sessies.
+
+Eerdere docs noemden "shared Supabase database" — dat klopte niet. Twee apps + twee DBs.
 
 ---
 
@@ -46,7 +59,8 @@ lctnships/                                    ← één Turborepo
 | Monorepo | Turborepo | npm workspaces, geen pnpm voor consistentie met huidige `package-lock.json` |
 | Framework | Next.js 16 (App Router) | huidige versie, niet downgraden naar 15 |
 | Language | TypeScript | `strict: false` zoals in huidige `tsconfig.json` |
-| Database | Supabase PostgreSQL | project `ytmkmiofoluespwysfxa`, region `eu-west-1` |
+| Database (marketplace) | Supabase PostgreSQL | project `ytmkmiofoluespwysfxa`, region `eu-west-1` |
+| Database (workspace CRM) | Supabase PostgreSQL | project `xiuplzawiionroxgwvsa` (apart project — eigen Auth, eigen tabellen) |
 | Auth | Supabase Auth | OAuth (Google) + email/password, JWT-cookies |
 | Storage | Supabase Storage | studio foto's, avatars |
 | Realtime | Supabase Realtime | berichten + booking-updates |
@@ -157,9 +171,23 @@ lctnships/                                    ← één Turborepo
 
 ---
 
+## 2FA / TOTP MFA
+
+Geïmplementeerd via Supabase Auth MFA (TOTP). Volledig geïntegreerd op `development` branch — niet (nog) op productie.
+
+**Feature flag:** `MFA_ENFORCEMENT` (server) + `NEXT_PUBLIC_MFA_ENFORCEMENT` (client).
+- `off` (default) — settings UI + enroll-flow blijven werken, maar login challenge wordt overgeslagen. Marketplace-users ervaren geen 2FA-prompt zelfs als ze een factor hebben.
+- `on` — middleware en login-form gaten gating actief, AAL2 vereist op alle protected routes.
+
+Setting per Vercel environment (Production / Preview / Development) onafhankelijk te configureren. De Playwright `webServer` zet de flag op `on` zodat E2E het volledige flow test.
+
+**Workspace** (`xiuplzawiionroxgwvsa`) heeft een eigen onafhankelijke MFA-implementatie met eigen factors — zie `lcntships-workspace` repo.
+
+---
+
 ## Cross-app Sessie Architectuur
 
-Cookies geset met `domain=.lctnships.com` zodat sessie meegaat tussen `lctnships.com`, `host.lctnships.com`, `app.lctnships.com`.
+Cookies geset met `domain=.lctnships.com` zodat sessie meegaat tussen `lctnships.com`, `host.lctnships.com`, `app.lctnships.com`. Dit is **alleen** binnen de marketplace-app — workspace heeft eigen cookies (`workspace.lctnships.com`).
 
 ```ts
 // packages/supabase/src/server.ts (target)

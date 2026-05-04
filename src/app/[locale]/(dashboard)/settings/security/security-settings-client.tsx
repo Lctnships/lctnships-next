@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { Link } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
+import { TwoFactorModal } from "@/components/security/two-factor-modal"
 
 interface Device {
   id: string
@@ -28,6 +29,7 @@ export function SecuritySettingsClient({
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(initialTwoFactor)
+  const [twoFactorModalOpen, setTwoFactorModalOpen] = useState(false)
   const [devices, setDevices] = useState(initialDevices)
   const t = useTranslations("Security")
   const ensuredRef = useRef(false)
@@ -126,17 +128,14 @@ export function SecuritySettingsClient({
     }
   }
 
+  // Note: 2FA changes go through the dedicated TwoFactorModal which calls
+  // the Supabase MFA enroll/verify/unenroll server actions. This save handler
+  // is kept for any future security settings (currently no-op but preserves
+  // the UX expectation of an explicit "save" if more fields are added).
   const handleSave = async () => {
     setIsSaving(true)
     try {
-      const res = await fetch("/api/users/settings", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          two_factor_enabled: twoFactorEnabled,
-        }),
-      })
-      if (!res.ok) throw new Error("Failed to save settings")
+      // Intentionally empty — 2FA mutations are handled by the modal.
       toast.success(t("saveSuccess") || "Security settings saved successfully")
     } catch {
       toast.error(t("saveError") || "Failed to save security settings")
@@ -241,15 +240,17 @@ export function SecuritySettingsClient({
             </p>
           </div>
           <div className="flex-shrink-0">
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={twoFactorEnabled}
-                onChange={(e) => setTwoFactorEnabled(e.target.checked)}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black" />
-            </label>
+            <button
+              type="button"
+              onClick={() => setTwoFactorModalOpen(true)}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                twoFactorEnabled
+                  ? "bg-white text-black border border-gray-200 hover:bg-gray-50"
+                  : "bg-black text-white hover:bg-black/90"
+              }`}
+            >
+              {twoFactorEnabled ? "Uitschakelen" : "Inschakelen"}
+            </button>
           </div>
         </div>
       </section>
@@ -314,6 +315,13 @@ export function SecuritySettingsClient({
           {isSaving ? (t("saving") || "Saving...") : t("saveButton")}
         </button>
       </div>
+
+      <TwoFactorModal
+        open={twoFactorModalOpen}
+        onClose={() => setTwoFactorModalOpen(false)}
+        initialMode={twoFactorEnabled ? "disable" : "enroll"}
+        onChange={(enabled) => setTwoFactorEnabled(enabled)}
+      />
     </div>
   )
 }

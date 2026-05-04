@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next"
 import { Plus_Jakarta_Sans, Newsreader } from "next/font/google"
-import Script from "next/script"
 import { SITE_URL, SITE_NAME } from "@/lib/seo"
 import "./globals.css"
 
@@ -79,18 +78,16 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Preload hint so browser starts downloading the CSS early */}
+        {/* Material Symbols loaded synchronously with display=block.
+            'block' (not 'swap') keeps icon glyphs hidden until the font is
+            available — otherwise users see literal text like "add", "settings"
+            during the swap window (the "flash of icon names" bug).
+            CSS payload is ~1KB; perf impact is negligible. */}
         <link
-          rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300,0..1,0&display=swap"
-          as="style"
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300,0..1,0&display=block"
         />
       </head>
-      {/* Inject Material Symbols stylesheet AFTER page is interactive (non-blocking).
-          This eliminates the render-blocking CSS that caused 8s FCP on mobile. */}
-      <Script id="material-symbols-loader" strategy="afterInteractive">
-        {`(function(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300,0..1,0&display=swap';document.head.appendChild(l)})();`}
-      </Script>
       <body className={`${plusJakarta.variable} ${newsreader.variable} font-sans antialiased selection:bg-sky-200/30`}>
         {children}
       </body>
