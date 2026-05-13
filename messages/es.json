@@ -612,7 +612,8 @@
     "viewBooking": "Ver Reserva",
     "getHelp": "Obtener Ayuda",
     "yesterday": "Ayer",
-    "creatingConversation": "Iniciando conversación..."
+    "creatingConversation": "Iniciando conversación...",
+    "sendError": "No se pudo enviar el mensaje. Inténtalo de nuevo."
   },
   "Projects": {
     "title": "Mis Proyectos",

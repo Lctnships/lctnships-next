@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
-import { useTranslations } from "next-intl"
-import { useLocale } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
+import { bcp47 } from "@/lib/format-locale"
 
 interface Attachment {
   type: "image" | "file"
@@ -72,7 +72,7 @@ interface MessagesClientProps {
 export function MessagesClient({ conversations, currentUserId, preselectedStudioId, preselectedHostId }: MessagesClientProps) {
   const t = useTranslations("Messages")
   const locale = useLocale()
-  const dateLocale = locale === "nl" ? "nl-NL" : locale === "es" ? "es-ES" : "en-US"
+  const dateLocale = bcp47(locale)
   const [allConversations, setAllConversations] = useState<Conversation[]>(conversations)
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(
     conversations[0] || null
@@ -80,6 +80,7 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
   const [searchQuery, setSearchQuery] = useState("")
   const [newMessage, setNewMessage] = useState("")
   const [isSending, setIsSending] = useState(false)
+  const [sendError, setSendError] = useState<string | null>(null)
   const [isCreatingConversation, setIsCreatingConversation] = useState(false)
   const [showMobileChat, setShowMobileChat] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -91,6 +92,57 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
   useEffect(() => {
     scrollToBottom()
   }, [selectedConversation?.messages])
+
+  // Realtime: subscribe to new messages in the selected conversation.
+  // Why: optimistic update only shows the sender's own message; without a
+  // subscription the other side's replies don't appear until page reload.
+  const selectedConversationId = selectedConversation?.id
+  useEffect(() => {
+    if (!selectedConversationId) return
+
+    const supabase = createClient()
+    const channel = supabase
+      .channel(`conv:${selectedConversationId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `conversation_id=eq.${selectedConversationId}`,
+        },
+        (payload) => {
+          const row = payload.new as {
+            id: string
+            content: string
+            created_at: string
+            sender_id: string
+            conversation_id: string
+          }
+          setSelectedConversation((prev) => {
+            if (!prev || prev.id !== row.conversation_id) return prev
+            if (prev.messages.some((m) => m.id === row.id)) return prev
+            return {
+              ...prev,
+              messages: [
+                ...prev.messages,
+                {
+                  id: row.id,
+                  content: row.content,
+                  created_at: row.created_at,
+                  sender_id: row.sender_id,
+                },
+              ],
+            }
+          })
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [selectedConversationId])
 
   // Handle preselected studio/host from query params (runs once on mount)
   const hasInitialized = useRef(false)
@@ -192,33 +244,60 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newMessage.trim() || !selectedConversation) return
+    const trimmed = newMessage.trim()
+    if (!trimmed || !selectedConversation) return
 
+    const conversationId = selectedConversation.id
+    const tempId = `temp-${Date.now()}`
+    const optimistic: Message = {
+      id: tempId,
+      content: trimmed,
+      created_at: new Date().toISOString(),
+      sender_id: currentUserId,
+    }
+
+    setSelectedConversation((prev) =>
+      prev && prev.id === conversationId
+        ? { ...prev, messages: [...prev.messages, optimistic] }
+        : prev
+    )
+    setNewMessage("")
     setIsSending(true)
+    setSendError(null)
+
     try {
-      const supabase = createClient()
-      await supabase.from("messages").insert({
-        conversation_id: selectedConversation.id,
-        sender_id: currentUserId,
-        content: newMessage.trim(),
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversation_id: conversationId, content: trimmed }),
       })
 
-      // Optimistically add message to UI
-      const newMsg: Message = {
-        id: `temp-${Date.now()}`,
-        content: newMessage.trim(),
-        created_at: new Date().toISOString(),
-        sender_id: currentUserId,
+      if (!res.ok) {
+        const { error } = (await res.json().catch(() => ({}))) as { error?: string }
+        throw new Error(error || `Request failed (${res.status})`)
       }
 
-      setSelectedConversation({
-        ...selectedConversation,
-        messages: [...selectedConversation.messages, newMsg],
-      })
+      const { message } = (await res.json()) as { message: { id: string; content: string; created_at: string; sender_id: string } }
 
-      setNewMessage("")
+      setSelectedConversation((prev) => {
+        if (!prev || prev.id !== conversationId) return prev
+        return {
+          ...prev,
+          messages: prev.messages.map((m) =>
+            m.id === tempId
+              ? { id: message.id, content: message.content, created_at: message.created_at, sender_id: message.sender_id }
+              : m
+          ),
+        }
+      })
     } catch (error) {
       console.error("Error sending message:", error)
+      setSelectedConversation((prev) => {
+        if (!prev || prev.id !== conversationId) return prev
+        return { ...prev, messages: prev.messages.filter((m) => m.id !== tempId) }
+      })
+      setNewMessage(trimmed)
+      setSendError(error instanceof Error ? error.message : t("sendError"))
     } finally {
       setIsSending(false)
     }
@@ -414,6 +493,11 @@ export function MessagesClient({ conversations, currentUserId, preselectedStudio
 
             {/* Message Input */}
             <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-100">
+              {sendError && (
+                <p role="alert" className="mb-2 text-sm text-red-600">
+                  {sendError}
+                </p>
+              )}
               <div className="flex items-center gap-3">
                 <button
                   type="button"

@@ -677,7 +677,8 @@
     "viewBooking": "Buchung anzeigen",
     "getHelp": "Hilfe erhalten",
     "yesterday": "Gestern",
-    "creatingConversation": "Gespräch wird gestartet..."
+    "creatingConversation": "Gespräch wird gestartet...",
+    "sendError": "Nachricht konnte nicht gesendet werden. Bitte erneut versuchen."
   },
   "Projects": {
     "title": "Meine Projekte",
