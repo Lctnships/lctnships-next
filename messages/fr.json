@@ -677,7 +677,8 @@
     "viewBooking": "Voir la réservation",
     "getHelp": "Obtenir de l'aide",
     "yesterday": "Hier",
-    "creatingConversation": "Démarrage de la conversation..."
+    "creatingConversation": "Démarrage de la conversation...",
+    "sendError": "Échec de l'envoi du message. Veuillez réessayer."
   },
   "Projects": {
     "title": "Mes projets",

@@ -680,7 +680,8 @@
     "viewBooking": "Boeking Bekijken",
     "getHelp": "Hulp Krijgen",
     "yesterday": "Gisteren",
-    "creatingConversation": "Gesprek starten..."
+    "creatingConversation": "Gesprek starten...",
+    "sendError": "Bericht kon niet worden verzonden. Probeer het opnieuw."
   },
   "Projects": {
     "title": "Mijn Projecten",

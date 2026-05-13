@@ -680,7 +680,8 @@
     "viewBooking": "View Booking",
     "getHelp": "Get Help",
     "yesterday": "Yesterday",
-    "creatingConversation": "Starting conversation..."
+    "creatingConversation": "Starting conversation...",
+    "sendError": "Failed to send message. Please try again."
   },
   "Projects": {
     "title": "My Projects",

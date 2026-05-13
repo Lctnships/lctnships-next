@@ -8,6 +8,7 @@ import { getUser, getProfile } from "@/lib/auth"
 import { buildAlternateLanguages, localizedPath } from "@/lib/seo"
 import { Toaster } from "@/components/ui/sonner"
 import { SetHtmlLang } from "@/components/providers/set-html-lang"
+import { PageTransition } from "@/components/providers/page-transition"
 
 type Props = {
   children: React.ReactNode
@@ -51,7 +52,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <NextIntlClientProvider messages={messages} locale={locale}>
       <SetHtmlLang locale={locale} />
       <UserProvider initialUser={user} initialProfile={profile}>
-        {children}
+        <PageTransition>{children}</PageTransition>
       </UserProvider>
       <Toaster position="bottom-right" />
     </NextIntlClientProvider>
