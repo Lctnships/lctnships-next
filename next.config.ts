@@ -8,9 +8,6 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
   : "placeholder.supabase.co"
 
 const nextConfig: NextConfig = {
-  turbopack: {
-    root: '/Users/rivaldomacandrew/lctnships-next',
-  },
   images: {
     remotePatterns: [
       {
