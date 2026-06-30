@@ -8,7 +8,7 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
   : "placeholder.supabase.co"
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ['jsdom', 'playwright', '@playwright/test', 'isomorphic-dompurify'],
+  serverExternalPackages: ['jsdom', 'playwright', '@playwright/test'],
   images: {
     remotePatterns: [
       {
