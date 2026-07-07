@@ -83,6 +83,55 @@ export function MessagesClient({ conversations, currentUserId }: MessagesClientP
     scrollToBottom()
   }, [selectedConversation?.messages])
 
+  // Receive new messages live via Supabase Realtime
+  useEffect(() => {
+    const conversationId = selectedConversation?.id
+    if (!conversationId) return
+
+    const supabase = createClient()
+    let channel: ReturnType<typeof supabase.channel> | null = null
+    let cancelled = false
+
+    const subscribe = async () => {
+      // Realtime enforces RLS per subscriber: join with the user's JWT,
+      // not the anon key, or events for this conversation never arrive.
+      const { data: { session } } = await supabase.auth.getSession()
+      if (cancelled) return
+      if (session) await supabase.realtime.setAuth(session.access_token)
+      if (cancelled) return
+
+      channel = supabase
+        .channel(`conv-${conversationId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: `conversation_id=eq.${conversationId}`,
+          },
+          (payload) => {
+            const msg = payload.new as Message & { conversation_id: string }
+            // Own messages are already added optimistically on send
+            if (msg.sender_id === currentUserId) return
+            setSelectedConversation((prev) =>
+              prev && prev.id === msg.conversation_id
+                ? { ...prev, messages: [...prev.messages, msg] }
+                : prev
+            )
+          }
+        )
+        .subscribe()
+    }
+
+    subscribe()
+
+    return () => {
+      cancelled = true
+      if (channel) supabase.removeChannel(channel)
+    }
+  }, [selectedConversation?.id, currentUserId])
+
   const filteredConversations = conversations.filter((conv) =>
     conv.otherUser.full_name.toLowerCase().includes(searchQuery.toLowerCase())
   )
@@ -110,11 +159,12 @@ export function MessagesClient({ conversations, currentUserId }: MessagesClientP
     setIsSending(true)
     try {
       const supabase = createClient()
-      await supabase.from("messages").insert({
+      const { error } = await supabase.from("messages").insert({
         conversation_id: selectedConversation.id,
         sender_id: currentUserId,
         content: newMessage.trim(),
       })
+      if (error) throw error
 
       // Optimistically add message to UI
       const newMsg: Message = {

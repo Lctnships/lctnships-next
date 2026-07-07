@@ -33,21 +33,26 @@ export function useUser() {
     getUser()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setUser(session?.user ?? null)
 
-        if (session?.user) {
-          const { data: profile } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", session.user.id)
-            .single()
-          setProfile(profile)
-        } else {
-          setProfile(null)
-        }
+        // Never await Supabase calls inside this callback: it runs while the
+        // auth client holds its navigator lock, and any query needing the
+        // session then deadlocks the whole client. Defer past the lock.
+        setTimeout(async () => {
+          if (session?.user) {
+            const { data: profile } = await supabase
+              .from("users")
+              .select("*")
+              .eq("id", session.user.id)
+              .single()
+            setProfile(profile)
+          } else {
+            setProfile(null)
+          }
 
-        setIsLoading(false)
+          setIsLoading(false)
+        }, 0)
       }
     )
 

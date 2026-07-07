@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 interface StudioDetailClientProps {
   studio: any
@@ -21,8 +22,31 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [isFavorite, setIsFavorite] = useState(false)
+  const [isContactingHost, setIsContactingHost] = useState(false)
+  const router = useRouter()
 
   const datePickerRef = useRef<HTMLDivElement>(null)
+
+  const handleContactHost = async () => {
+    if (!studio.host?.id || isContactingHost) return
+    setIsContactingHost(true)
+    try {
+      const res = await fetch("/api/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipient_id: studio.host.id, studio_id: studio.id }),
+      })
+      if (res.status === 401) {
+        router.push(`/login?redirect=/studios/${studio.id}`)
+        return
+      }
+      if (!res.ok) throw new Error("Failed to start conversation")
+      router.push("/messages")
+    } catch (error) {
+      console.error("Error contacting host:", error)
+      setIsContactingHost(false)
+    }
+  }
 
   // Get images from studio_images or images array
   const images = studio.studio_images?.map((img: any) => img.url) || studio.images || []
@@ -303,8 +327,12 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
                       )}
                     </div>
                   </div>
-                  <button className="px-6 py-3 border border-gray-200 rounded-full font-medium hover:bg-gray-50 transition-colors">
-                    Contact Host
+                  <button
+                    onClick={handleContactHost}
+                    disabled={isContactingHost}
+                    className="px-6 py-3 border border-gray-200 rounded-full font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  >
+                    {isContactingHost ? "Starting chat..." : "Contact Host"}
                   </button>
                 </div>
               )}
