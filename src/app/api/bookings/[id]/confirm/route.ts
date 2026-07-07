@@ -36,6 +36,25 @@ export async function POST(request: Request, { params }: RouteParams) {
       )
     }
 
+    // Guard: another booking may have been confirmed for this slot meanwhile
+    const { data: slotTaken, error: conflictError } = await supabase.rpc(
+      "booking_slot_taken",
+      {
+        p_studio_id: booking.studio_id,
+        p_start: booking.start_datetime,
+        p_end: booking.end_datetime,
+        p_exclude_booking: id,
+      }
+    )
+
+    if (conflictError) throw conflictError
+    if (slotTaken) {
+      return NextResponse.json(
+        { error: "Another confirmed booking already occupies this time slot" },
+        { status: 409 }
+      )
+    }
+
     // Update booking status
     const { data: updatedBooking, error: updateError } = await supabase
       .from("bookings")

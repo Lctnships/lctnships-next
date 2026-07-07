@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
+import { toast } from "sonner"
 
 interface Renter {
   id: string
@@ -82,19 +82,23 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
     })
   }
 
+  // Both actions go through the API so the renter gets notified and the
+  // confirm endpoint can reject slots that were taken in the meantime.
   const handleAccept = async () => {
     setIsProcessing(true)
     try {
-      const supabase = createClient()
-      await supabase
-        .from("bookings")
-        .update({ status: "confirmed" })
-        .eq("id", booking.id)
+      const res = await fetch(`/api/bookings/${booking.id}/confirm`, { method: "POST" })
+      const data = await res.json()
+      if (!res.ok) {
+        toast.error("Kon boeking niet bevestigen", { description: data.error })
+        return
+      }
 
       router.push("/host/bookings")
       router.refresh()
     } catch (error) {
       console.error("Error accepting booking:", error)
+      toast.error("Kon boeking niet bevestigen")
     } finally {
       setIsProcessing(false)
     }
@@ -103,19 +107,22 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
   const handleDecline = async () => {
     setIsProcessing(true)
     try {
-      const supabase = createClient()
-      await supabase
-        .from("bookings")
-        .update({
-          status: "cancelled",
-          cancellation_reason: declineReason,
-        })
-        .eq("id", booking.id)
+      const res = await fetch(`/api/bookings/${booking.id}/cancel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: declineReason }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        toast.error("Kon boeking niet weigeren", { description: data.error })
+        return
+      }
 
       router.push("/host/bookings")
       router.refresh()
     } catch (error) {
       console.error("Error declining booking:", error)
+      toast.error("Kon boeking niet weigeren")
     } finally {
       setIsProcessing(false)
       setShowDeclineModal(false)

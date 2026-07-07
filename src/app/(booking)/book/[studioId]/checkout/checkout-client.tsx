@@ -4,8 +4,7 @@ import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase/client"
-import { generateBookingNumber } from "@/lib/utils/generate-booking-number"
+import { toast } from "sonner"
 
 interface Equipment {
   id: string
@@ -60,7 +59,6 @@ export function CheckoutClient({
   bookingDetails,
 }: CheckoutClientProps) {
   const router = useRouter()
-  const supabase = createClient()
 
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || "",
@@ -110,35 +108,36 @@ export function CheckoutClient({
     try {
       const startDateTime = new Date(`${bookingDetails.date}T${bookingDetails.startTime}:00`)
       const endDateTime = new Date(`${bookingDetails.date}T${endTime}:00`)
-      const bookingNumber = generateBookingNumber()
 
-      const { data: booking, error } = await supabase
-        .from("bookings")
-        .insert({
-          booking_number: bookingNumber,
+      // The API recomputes prices, checks slot availability, notifies the
+      // host and creates the renter<->host conversation — never insert
+      // bookings directly from the client.
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           studio_id: studio.id,
-          renter_id: profile?.id,
-          host_id: studio.host_id,
           start_datetime: startDateTime.toISOString(),
           end_datetime: endDateTime.toISOString(),
-          total_hours: bookingDetails.duration,
-          subtotal: calculations.subtotal,
-          service_fee: calculations.serviceFee,
-          total_amount: calculations.total,
-          host_payout: calculations.subtotal - Math.round(calculations.subtotal * 0.15),
-          status: studio.instant_book ? "confirmed" : "pending",
-          payment_status: "pending",
           notes: formData.specialRequests || null,
-        } as any)
-        .select()
-        .single()
+          production_type: formData.productionType || null,
+          special_requests: formData.specialRequests || null,
+          equipment_selections: equipmentSelections,
+        }),
+      })
 
-      if (error) throw error
+      const data = await res.json()
+      if (!res.ok) {
+        toast.error("Booking failed", { description: data.error || "Please try again" })
+        setIsSubmitting(false)
+        return
+      }
 
       // Redirect to success page
-      router.push(`/book/${studio.id}/success?booking=${(booking as any).id}`)
+      router.push(`/book/${studio.id}/success?booking=${data.booking.id}`)
     } catch (error) {
       console.error("Booking error:", error)
+      toast.error("Booking failed", { description: "Please try again" })
       setIsSubmitting(false)
     }
   }

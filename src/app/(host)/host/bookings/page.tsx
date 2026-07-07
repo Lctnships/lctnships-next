@@ -1,12 +1,12 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EmptyState } from "@/components/shared/empty-state"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { UserAvatar } from "@/components/shared/user-avatar"
-import { Calendar, Check, X } from "lucide-react"
+import { Calendar } from "lucide-react"
+import { BookingListActions } from "./booking-list-actions"
 import { formatDateRange, formatTimeAgo } from "@/lib/utils/format-date"
 import { formatCurrency } from "@/lib/utils/format-currency"
 
@@ -137,16 +137,7 @@ function BookingRequestCard({ booking, showActions }: { booking: any; showAction
               <p className="text-sm text-muted-foreground">{booking.total_hours} uur</p>
             </div>
             {showActions ? (
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="text-red-600">
-                  <X className="h-4 w-4 mr-1" />
-                  Afwijzen
-                </Button>
-                <Button size="sm">
-                  <Check className="h-4 w-4 mr-1" />
-                  Accepteren
-                </Button>
-              </div>
+              <BookingListActions bookingId={booking.id} />
             ) : (
               <StatusBadge status={booking.status} />
             )}
