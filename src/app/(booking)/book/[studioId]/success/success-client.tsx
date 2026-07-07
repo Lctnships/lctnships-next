@@ -126,9 +126,13 @@ END:VCALENDAR`
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <span className="material-symbols-outlined text-green-600 text-4xl">check_circle</span>
           </div>
-          <h1 className="text-3xl font-bold mb-2">Booking Confirmed!</h1>
+          <h1 className="text-3xl font-bold mb-2">
+            {booking.status === "confirmed" ? "Booking Confirmed!" : "Request Sent!"}
+          </h1>
           <p className="text-gray-500">
-            Your studio session has been successfully booked. A confirmation email has been sent to your inbox.
+            {booking.status === "confirmed"
+              ? "Your studio session has been successfully booked. A confirmation email has been sent to your inbox."
+              : "Your booking request has been sent to the host. You'll get a notification once it's accepted — payment happens after that."}
           </p>
         </div>
 

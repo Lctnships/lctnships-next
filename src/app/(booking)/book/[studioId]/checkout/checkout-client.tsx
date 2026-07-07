@@ -133,7 +133,27 @@ export function CheckoutClient({
         return
       }
 
-      // Redirect to success page
+      if (studio.instant_book) {
+        // Instant book: pay right away via Stripe Checkout
+        const payRes = await fetch("/api/stripe/create-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ bookingId: data.booking.id }),
+        })
+        const payData = await payRes.json()
+        if (!payRes.ok || !payData.url) {
+          // Booking exists but payment couldn't start; pay later from My Bookings
+          toast.error("Payment could not be started", {
+            description: "Your booking is saved — you can pay from My Bookings",
+          })
+          router.push(`/book/${studio.id}/success?booking=${data.booking.id}`)
+          return
+        }
+        window.location.href = payData.url
+        return
+      }
+
+      // Request-to-book: no payment yet, host has to accept first
       router.push(`/book/${studio.id}/success?booking=${data.booking.id}`)
     } catch (error) {
       console.error("Booking error:", error)

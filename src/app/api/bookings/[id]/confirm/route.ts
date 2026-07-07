@@ -68,13 +68,13 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     if (updateError) throw updateError
 
-    // Notify renter
+    // Notify renter: accepted, now pay to finalize
     await supabase.rpc("create_notification", {
       p_user_id: booking.renter_id,
       p_type: "booking_confirmed",
-      p_title: "Booking Confirmed!",
-      p_message: `Your booking at ${(booking.studio as any)?.title} has been confirmed`,
-      p_link: `/bookings/${id}`,
+      p_title: "Booking Accepted — complete your payment",
+      p_message: `Your booking at ${(booking.studio as any)?.title} has been accepted. Pay now to secure your slot.`,
+      p_link: `/bookings`,
     })
 
     // TODO: Send confirmation email to renter

@@ -14,6 +14,7 @@ interface Booking {
   total_hours: number
   total_amount: number
   status: string
+  payment_status?: string
   has_review?: boolean
   review_rating?: number
   studio: {
@@ -348,6 +349,42 @@ export function BookingsClient({ bookings, favorites, totalHours }: BookingsClie
   )
 }
 
+function PayNowButton({ bookingId }: { bookingId: string }) {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handlePay = async () => {
+    setIsLoading(true)
+    try {
+      const res = await fetch("/api/stripe/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingId }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.url) {
+        console.error("Could not start payment:", data.error)
+        setIsLoading(false)
+        return
+      }
+      window.location.href = data.url
+    } catch (error) {
+      console.error("Could not start payment:", error)
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <button
+      onClick={handlePay}
+      disabled={isLoading}
+      className="px-5 py-2.5 rounded-full bg-[#2b6cee] text-white text-sm font-bold flex items-center gap-2 shadow-lg shadow-[#2b6cee]/20 hover:bg-[#2b6cee]/90 transition-colors disabled:opacity-50"
+    >
+      <span className="material-symbols-outlined text-lg">credit_card</span>
+      {isLoading ? "Loading..." : "Pay Now"}
+    </button>
+  )
+}
+
 interface BookingCardProps {
   booking: Booking
   isPast: boolean
@@ -445,6 +482,9 @@ function BookingCard({
                 </>
               ) : (
                 <>
+                  {booking.status === "confirmed" && booking.payment_status !== "paid" && (
+                    <PayNowButton bookingId={booking.id} />
+                  )}
                   <button
                     onClick={onReschedule}
                     className="px-5 py-2.5 rounded-full border border-[#e7ebf3] text-sm font-bold hover:bg-[#f6f6f8] transition-colors"
