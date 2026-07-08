@@ -23,10 +23,11 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     const supabase = await createClient()
 
-    // Get studio details
+    // Get studio details incl. availability config: which weekdays it's open,
+    // opening/closing hours, and how far ahead a booking must be made.
     const { data: studio, error: studioError } = await supabase
       .from("studios")
-      .select("id, title, price_per_hour, minimum_hours, maximum_hours")
+      .select("id, title, price_per_hour, minimum_hours, maximum_hours, available_days, check_in_time, check_out_time, booking_lead_time_hours")
       .eq("id", id)
       .single()
 
@@ -46,6 +47,24 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     if (bookingsError) throw bookingsError
 
+    // Host-blocked dates (holidays / own use) for this studio in range
+    const { data: blocked } = await supabase
+      .from("studio_blocked_dates")
+      .select("blocked_date")
+      .eq("studio_id", id)
+      .gte("blocked_date", startDate.split("T")[0])
+      .lte("blocked_date", endDate.split("T")[0])
+
+    const blockedSet = new Set((blocked ?? []).map((b) => b.blocked_date))
+
+    // available_days uses wizard indexing (0=Mon..6=Sun); JS getDay() is
+    // 0=Sun..6=Sat. Convert. Empty/null = open every day (no restriction set).
+    const availableDays: number[] = Array.isArray(studio.available_days) ? studio.available_days : []
+    const openHour = studio.check_in_time ? parseInt(String(studio.check_in_time).slice(0, 2), 10) : 8
+    const closeHour = studio.check_out_time ? parseInt(String(studio.check_out_time).slice(0, 2), 10) : 22
+    const leadMs = (studio.booking_lead_time_hours || 0) * 3600000
+    const earliestBookable = new Date(Date.now() + leadMs)
+
     // Generate available time slots
     const start = new Date(startDate)
     const end = new Date(endDate)
@@ -59,8 +78,13 @@ export async function GET(request: Request, { params }: RouteParams) {
       const dateStr = currentDate.toISOString().split("T")[0]
       const slots: Array<{ start: string; end: string; available: boolean }> = []
 
-      // Generate hourly slots from 8 AM to 10 PM
-      for (let hour = 8; hour < 22; hour++) {
+      // Whole-day blockers: host-blocked date, or a weekday the studio is closed.
+      const wizardDay = (currentDate.getDay() + 6) % 7 // 0=Mon..6=Sun
+      const dayClosed = availableDays.length > 0 && !availableDays.includes(wizardDay)
+      const dateBlocked = blockedSet.has(dateStr)
+
+      // Slots within the studio's opening hours only.
+      for (let hour = openHour; hour < closeHour; hour++) {
         const slotStart = new Date(currentDate)
         slotStart.setHours(hour, 0, 0, 0)
         const slotEnd = new Date(currentDate)
@@ -74,13 +98,13 @@ export async function GET(request: Request, { params }: RouteParams) {
           return slotStart < bookingEnd && slotEnd > bookingStart
         })
 
-        // Check if slot is in the past
-        const isPast = slotStart < new Date()
+        // Past, or inside the host's required booking lead time
+        const tooSoon = slotStart < earliestBookable
 
         slots.push({
           start: slotStart.toISOString(),
           end: slotEnd.toISOString(),
-          available: !isBooked && !isPast,
+          available: !isBooked && !tooSoon && !dayClosed && !dateBlocked,
         })
       }
 
