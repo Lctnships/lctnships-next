@@ -1,6 +1,7 @@
 import { cache } from "react"
 import { createClient } from "@/lib/supabase/server"
 import type { Tables } from "@/types/database.types"
+import { PUBLIC_USER_COLUMNS } from "@/lib/user-columns"
 
 /**
  * Per-request cached `auth.getUser()`.
@@ -28,7 +29,7 @@ export const getProfile = cache(async (): Promise<Profile | null> => {
   const supabase = await createClient()
   const { data } = await supabase
     .from("users")
-    .select("*")
+    .select(PUBLIC_USER_COLUMNS)
     .eq("id", user.id)
     .maybeSingle()
   return data as Profile | null

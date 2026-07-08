@@ -30,7 +30,7 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
         *,
         studio_images (*)
       ),
-      host:users!bookings_host_id_fkey (*)
+      host:users!bookings_host_id_fkey (id, full_name, avatar_url, bio, location, user_type, is_verified, created_at, updated_at)
     `)
     .eq("id", id)
     .eq("renter_id", user.id)

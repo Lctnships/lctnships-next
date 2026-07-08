@@ -40,7 +40,7 @@ export default async function StudioDetailPage({ params }: StudioDetailPageProps
       *,
       studio_images (*),
       studio_amenities (*),
-      host:users!studios_host_id_fkey (*)
+      host:users!studios_host_id_fkey (id, full_name, avatar_url, bio, location, user_type, is_verified, created_at, updated_at)
     `)
     .eq("id", id)
     .or("is_published.eq.true,status.eq.active")
@@ -54,7 +54,7 @@ export default async function StudioDetailPage({ params }: StudioDetailPageProps
     .from("reviews")
     .select(`
       *,
-      reviewer:users!reviews_reviewer_id_fkey (*)
+      reviewer:users!reviews_reviewer_id_fkey (id, full_name, avatar_url, is_verified, created_at)
     `)
     .eq("studio_id", id)
     .eq("review_type", "renter_to_studio")

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 import { ProfileClient } from "./profile-client"
+import { PUBLIC_USER_COLUMNS } from "@/lib/user-columns"
 
 export async function generateMetadata() {
   const t = await getTranslations("Profile")
@@ -19,7 +20,7 @@ export default async function ProfilePage() {
 
   const { data: profile } = await supabase
     .from("users")
-    .select("*")
+    .select(PUBLIC_USER_COLUMNS)
     .eq("id", user.id)
     .single()
 

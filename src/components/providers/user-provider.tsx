@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, useRef } from "react"
 import { User } from "@supabase/supabase-js"
 import { createClient, resetClient } from "@/lib/supabase/client"
 import { Tables } from "@/types/database.types"
+import { PUBLIC_USER_COLUMNS } from "@/lib/user-columns"
 
 type Profile = Tables<"users">
 
@@ -53,7 +54,7 @@ export function UserProvider({
         if (currentUser) {
           const { data } = await supabase
             .from("users")
-            .select("*")
+            .select(PUBLIC_USER_COLUMNS)
             .eq("id", currentUser.id)
             .maybeSingle()
           if (mountedRef.current) setProfile(data)
