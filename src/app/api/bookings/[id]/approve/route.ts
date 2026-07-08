@@ -40,6 +40,28 @@ export async function POST(_request: Request, { params }: RouteParams) {
     }
 
     const admin = await createServiceClient()
+
+    // Guard: another booking may have taken this slot while the request sat
+    // pending (competing requests are allowed; only one can be approved).
+    const { data: slotRow } = await admin
+      .from("bookings")
+      .select("studio_id, start_datetime, end_datetime")
+      .eq("id", id)
+      .single()
+    if (slotRow) {
+      const { data: taken } = await admin.rpc("booking_slot_taken", {
+        p_studio_id: slotRow.studio_id,
+        p_start: slotRow.start_datetime,
+        p_end: slotRow.end_datetime,
+        p_exclude_booking: id,
+      })
+      if (taken) {
+        return NextResponse.json(
+          { error: "Een andere boeking bezet dit tijdslot al" },
+          { status: 409 }
+        )
+      }
+    }
     const paymentDeadline = new Date(Date.now() + PAYMENT_DEADLINE_MS).toISOString()
 
     const { data: updated, error: updateErr } = await admin

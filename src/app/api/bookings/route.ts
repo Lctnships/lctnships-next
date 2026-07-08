@@ -132,6 +132,26 @@ export async function POST(request: Request) {
       }
     }
 
+    // Double-booking guard: reject if the slot is already held by another
+    // booking. Uses a SECURITY DEFINER RPC because RLS hides other renters'
+    // bookings from this user. The DB exclusion constraint is the race-free
+    // backstop; this gives a clean error instead of a 500.
+    const endTimeForCheck = new Date(end_datetime)
+    if (isNaN(startTime.getTime()) || isNaN(endTimeForCheck.getTime()) || startTime >= endTimeForCheck) {
+      return NextResponse.json({ error: "Ongeldige boekingstijden" }, { status: 400 })
+    }
+    const { data: slotTaken, error: slotErr } = await supabase.rpc("booking_slot_taken", {
+      p_studio_id: studio_id,
+      p_start: startTime.toISOString(),
+      p_end: endTimeForCheck.toISOString(),
+    })
+    if (slotErr) {
+      return NextResponse.json({ error: "Kon beschikbaarheid niet controleren" }, { status: 500 })
+    }
+    if (slotTaken) {
+      return NextResponse.json({ error: "Dit tijdslot is niet meer beschikbaar" }, { status: 409 })
+    }
+
     // Server-side price recalculation to prevent client-side price manipulation
     const endTime = new Date(end_datetime)
     const durationMs = endTime.getTime() - startTime.getTime()
