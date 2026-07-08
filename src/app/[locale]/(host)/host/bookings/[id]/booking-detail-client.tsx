@@ -139,8 +139,14 @@ export function BookingDetailClient({ booking, renterStats }: BookingDetailClien
                   : "bg-gray-100 text-gray-700"
               }`}
             >
-              {booking.status === "pending"
+              {booking.status === "pending" || booking.status === "pending_approval"
                 ? t("statusPending")
+                : booking.status === "approved"
+                ? "Approved"
+                : booking.status === "rejected"
+                ? "Rejected"
+                : booking.status === "expired"
+                ? "Expired"
                 : booking.status === "confirmed"
                 ? t("statusConfirmed")
                 : booking.status === "completed"

@@ -33,8 +33,8 @@ export default async function HostBookingsPage() {
     .eq("host_id", user.id)
     .order("created_at", { ascending: false })
 
-  const pendingBookings = bookings?.filter((b) => b.status === "pending") || []
-  const confirmedBookings = bookings?.filter((b) => b.status === "confirmed") || []
+  const pendingBookings = bookings?.filter((b) => b.status === "pending" || b.status === "pending_approval") || []
+  const confirmedBookings = bookings?.filter((b) => b.status === "confirmed" || b.status === "approved") || []
   const completedBookings = bookings?.filter((b) => b.status === "completed" || b.status === "cancelled") || []
 
   return (

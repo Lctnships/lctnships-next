@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
       const applicationFee = Math.round(amountInCents * (PLATFORM_FEE_PERCENT / 100))
 
       const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card", "ideal", "sepa_debit", "bancontact"],
+        payment_method_types: ["card", "ideal"],
         mode: "payment",
         customer_email: email,
         line_items: [
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
 
     // Fallback: no Connect account or charges not enabled — platform holds funds
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card", "ideal", "sepa_debit", "bancontact"],
+      payment_method_types: ["card", "ideal"],
       line_items: [
         {
           price_data: {

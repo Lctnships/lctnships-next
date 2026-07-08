@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
-type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed"
+type BookingStatus = "pending" | "pending_approval" | "approved" | "rejected" | "expired" | "confirmed" | "cancelled" | "completed"
 type PaymentStatus = "pending" | "paid" | "refunded"
 type ProjectStatus = "active" | "completed" | "archived"
 
@@ -13,6 +13,10 @@ interface StatusBadgeProps {
 const statusConfig = {
   booking: {
     pending: { label: "In afwachting", className: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100" },
+    pending_approval: { label: "Wacht op host", className: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100" },
+    approved: { label: "Goedgekeurd — wacht op betaling", className: "bg-blue-100 text-blue-800 hover:bg-blue-100" },
+    rejected: { label: "Afgewezen", className: "bg-red-100 text-red-800 hover:bg-red-100" },
+    expired: { label: "Verlopen", className: "bg-gray-100 text-gray-800 hover:bg-gray-100" },
     confirmed: { label: "Bevestigd", className: "bg-green-100 text-green-800 hover:bg-green-100" },
     cancelled: { label: "Geannuleerd", className: "bg-red-100 text-red-800 hover:bg-red-100" },
     completed: { label: "Voltooid", className: "bg-blue-100 text-blue-800 hover:bg-blue-100" },
