@@ -19,23 +19,28 @@ function parseICS(icsContent: string): { start: Date; end: Date; summary: string
       currentEvent = {}
     } else if (line === "END:VEVENT") {
       inEvent = false
-      if (currentEvent.start && currentEvent.end) {
-        events.push({
-          start: parseICSDate(currentEvent.start),
-          end: parseICSDate(currentEvent.end),
-          summary: currentEvent.summary || "External Event"
-        })
+      // A VEVENT needs at least a start; DTEND is optional (all-day / open-ended
+      // events omit it) — fall back to the start date.
+      if (currentEvent.start) {
+        const start = parseICSDate(currentEvent.start)
+        if (!isNaN(start.getTime())) {
+          events.push({
+            start,
+            end: currentEvent.end ? parseICSDate(currentEvent.end) : start,
+            summary: currentEvent.summary || "External Event"
+          })
+        }
       }
     } else if (inEvent) {
+      // Property lines may carry params before the value, e.g.
+      // "DTSTART;VALUE=DATE:20260722" or "DTSTART;TZID=Europe/Amsterdam:2026...".
+      // Take everything after the LAST colon as the value.
       if (line.startsWith("DTSTART")) {
-        const match = line.match(/DTSTART(?::|;VALUE=):?(.+)$/)
-        if (match) currentEvent.start = match[1]
+        currentEvent.start = line.slice(line.lastIndexOf(":") + 1).trim()
       } else if (line.startsWith("DTEND")) {
-        const match = line.match(/DTEND(?::|;VALUE=):?(.+)$/)
-        if (match) currentEvent.end = match[1]
+        currentEvent.end = line.slice(line.lastIndexOf(":") + 1).trim()
       } else if (line.startsWith("SUMMARY")) {
-        const match = line.match(/SUMMARY:(.+)$/)
-        if (match) currentEvent.summary = match[1]
+        currentEvent.summary = line.slice(line.indexOf(":") + 1).trim()
       }
     }
   }
