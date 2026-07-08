@@ -57,7 +57,7 @@ export function UserProvider({
             .select(PUBLIC_USER_COLUMNS)
             .eq("id", currentUser.id)
             .maybeSingle()
-          if (mountedRef.current) setProfile(data)
+          if (mountedRef.current) setProfile(data as Profile | null)
         } else {
           setProfile(null)
         }
