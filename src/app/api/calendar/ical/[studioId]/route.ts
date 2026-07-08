@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { NextRequest, NextResponse } from "next/server"
 
 function formatICSDate(date: Date): string {
@@ -52,8 +52,13 @@ export async function GET(
     }
   }
 
+  // Ownership is proven (session or token). Read the feed data with the
+  // service role: RLS hides bookings from anyone but renter/host, so a
+  // token-based (unauthenticated) request would otherwise get an empty feed.
+  const db = await createServiceClient()
+
   // Fetch studio info
-  const { data: studio } = await supabase
+  const { data: studio } = await db
     .from("studios")
     .select("id, title, location")
     .eq("id", studioId)
@@ -64,7 +69,7 @@ export async function GET(
   }
 
   // Fetch confirmed/completed bookings
-  const { data: bookings } = await supabase
+  const { data: bookings } = await db
     .from("bookings")
     .select("id, start_datetime, end_datetime, status, renter:users!bookings_renter_id_fkey(full_name)")
     .eq("studio_id", studioId)
@@ -72,7 +77,7 @@ export async function GET(
     .order("start_datetime")
 
   // Fetch blocked dates
-  const { data: blockedDates } = await supabase
+  const { data: blockedDates } = await db
     .from("studio_blocked_dates")
     .select("id, blocked_date, reason")
     .eq("studio_id", studioId)
