@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { logger } from "@/lib/logger"
 
@@ -123,8 +123,19 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create review
-    const { data: review, error: reviewError } = await supabase
+    // Create review + mark the booking completed with the service role.
+    // The reviews INSERT RLS policy requires the booking to already be
+    // 'completed', but a past-but-still-'confirmed' booking hasn't been
+    // flipped yet — a catch-22 for the user client. Ownership and the
+    // past/completed check are already enforced above, so use admin here.
+    const admin = await createServiceClient()
+
+    // Flip a past confirmed booking to completed first (idempotent).
+    if (booking.status !== "completed") {
+      await admin.from("bookings").update({ status: "completed" }).eq("id", booking_id)
+    }
+
+    const { data: review, error: reviewError } = await admin
       .from("reviews")
       .insert({
         booking_id,
@@ -140,14 +151,7 @@ export async function POST(request: Request) {
       .single()
 
     if (reviewError) throw reviewError
-
-    // The studio rating will be automatically updated by the database trigger
-
-    // Update booking to mark as reviewed
-    await supabase
-      .from("bookings")
-      .update({ status: "completed" })
-      .eq("id", booking_id)
+    // The studio rating is updated by a database trigger.
 
     // Notify host
     await supabase.rpc("create_notification", {
