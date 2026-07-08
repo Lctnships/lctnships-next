@@ -135,6 +135,10 @@ export async function POST(request: NextRequest) {
           transfer_data: {
             destination: studioOwnerStripeId,
           },
+          // Shows as "LCTNSHIPS" on the payer's bank statement instead of
+          // the Stripe account's legal name. iDEAL may still fall back to the
+          // account descriptor; the account-wide setting is the real fix.
+          statement_descriptor_suffix: "LCTNSHIPS",
         },
         metadata: {
           type: "booking_payment",
@@ -196,6 +200,10 @@ export async function POST(request: NextRequest) {
       ],
       mode: "payment",
       customer_email: email,
+      payment_intent_data: {
+        // "LCTNSHIPS" on the payer's statement instead of the legal name.
+        statement_descriptor: "LCTNSHIPS",
+      },
       success_url: successUrl,
       cancel_url: cancelUrl,
       metadata: {
