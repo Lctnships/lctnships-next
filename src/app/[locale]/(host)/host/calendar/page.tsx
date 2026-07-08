@@ -22,7 +22,7 @@ export default async function CalendarPage() {
   ] = await Promise.all([
     supabase
       .from("studios")
-      .select("id, title, location, images, wix_calendar_url, meetingpackage_calendar_url")
+      .select("id, title, location, images, wix_calendar_url, meetingpackage_calendar_url, ical_token")
       .eq("host_id", user.id)
       .order("created_at", { ascending: false }),
     supabase

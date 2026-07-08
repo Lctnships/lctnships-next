@@ -29,6 +29,7 @@ interface Studio {
   images?: string[]
   wix_calendar_url?: string | null
   meetingpackage_calendar_url?: string | null
+  ical_token?: string | null
 }
 
 interface PendingPayout {
@@ -76,8 +77,8 @@ export function CalendarClient({ bookings, studio, pendingPayout }: CalendarClie
   const [externalCalendarLoading, setExternalCalendarLoading] = useState(false)
   const [selectedExternalProvider, setSelectedExternalProvider] = useState<"wix" | "meetingpackage">("wix")
 
-  const icalUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/api/calendar/ical/${studio.id}`
+  const icalUrl = typeof window !== "undefined" && studio.ical_token
+    ? `${window.location.origin}/api/calendar/ical/${studio.id}?token=${studio.ical_token}`
     : ""
 
   const fetchBlockedDates = useCallback(async () => {
