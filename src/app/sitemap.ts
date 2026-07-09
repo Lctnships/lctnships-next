@@ -3,6 +3,10 @@ import { createClient } from "@supabase/supabase-js"
 import { SITE_URL } from "@/lib/seo"
 import { locales, defaultLocale } from "@/i18n/config"
 
+// Regenerate hourly so deleted/unpublished studios drop out of the sitemap.
+// A build-time static sitemap kept listing studio URLs that later 404'd.
+export const revalidate = 3600
+
 // Static public routes (relative paths, no locale prefix)
 const STATIC_PATHS = [
   "/",
