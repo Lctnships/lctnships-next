@@ -25,7 +25,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       canonical: localizedPath(locale, "/"),
       languages: buildAlternateLanguages("/"),
     },
-    openGraph: { locale },
+    openGraph: {
+      locale,
+      images: [{ url: "/Lctnships.png", alt: "lctnships" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: ["/Lctnships.png"],
+    },
   }
 }
 
