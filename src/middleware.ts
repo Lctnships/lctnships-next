@@ -116,6 +116,17 @@ if (typeof setInterval !== 'undefined') {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Canonicalize host: 301 www.lctnships.com -> lctnships.com so Google sees a
+  // single canonical domain instead of two 200-OK duplicates.
+  const host = request.headers.get('host')
+  if (host === 'www.lctnships.com') {
+    const url = request.nextUrl.clone()
+    url.host = 'lctnships.com'
+    url.protocol = 'https:'
+    url.port = ''
+    return NextResponse.redirect(url, 301)
+  }
+
   // Detect RSC/prefetch requests — these still need next-intl locale routing
   // but can skip the expensive supabase.auth.getUser() session refresh.
   const isRscRequest =

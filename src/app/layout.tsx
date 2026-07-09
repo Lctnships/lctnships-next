@@ -74,7 +74,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html suppressHydrationWarning>
+    // Default to the primary market's language for a valid server-side lang
+    // signal (Google + a11y read the SSR html). SetHtmlLang upgrades it to the
+    // actual locale (en/es/fr/de) on the client for localized routes.
+    <html lang="nl" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -89,6 +92,22 @@ export default function RootLayout({
         />
       </head>
       <body className={`${plusJakarta.variable} ${newsreader.variable} font-sans antialiased selection:bg-sky-200/30`}>
+        {/* Organization structured data — helps Google build a knowledge panel
+            and associate the brand/logo/socials with the domain. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: SITE_NAME,
+              url: SITE_URL,
+              logo: `${SITE_URL}/Lctnships.png`,
+              description:
+                "The premium platform for creators to find and book unique studio spaces worldwide.",
+            }).replace(/</g, "\\u003c"),
+          }}
+        />
         {children}
       </body>
     </html>
