@@ -88,6 +88,7 @@ export async function POST(request: Request) {
       special_requests,
       equipment_selections,
       service_selections,
+      project_id,
     } = body as {
       studio_id: string
       start_datetime: string
@@ -98,6 +99,7 @@ export async function POST(request: Request) {
       special_requests?: string | null
       equipment_selections?: Record<string, number>
       service_selections?: Record<string, number>
+      project_id?: string | null
     }
 
     // Get studio details for server-side price verification.
@@ -113,6 +115,23 @@ export async function POST(request: Request) {
 
     if (studioError || !studio) {
       return NextResponse.json({ error: "Studio not found" }, { status: 404 })
+    }
+
+    // Optional: link this booking to one of the renter's own projects, so a
+    // project can bundle multiple studios/sessions. Verify ownership — a
+    // renter may only attach bookings to projects they own.
+    let linkedProjectId: string | null = null
+    if (project_id) {
+      const { data: project } = await supabase
+        .from("projects")
+        .select("id")
+        .eq("id", project_id)
+        .eq("owner_id", user.id)
+        .maybeSingle()
+      if (!project) {
+        return NextResponse.json({ error: "Project not found" }, { status: 404 })
+      }
+      linkedProjectId = project.id
     }
 
     // Lead time check — reject bookings where the renter hasn't given the host
@@ -262,6 +281,7 @@ export async function POST(request: Request) {
         notes,
         production_type,
         special_requests,
+        project_id: linkedProjectId,
       })
       .select()
       .single()

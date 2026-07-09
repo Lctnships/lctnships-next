@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react"
 import { Link, useRouter } from "@/i18n/routing"
+import { useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { useTranslations, useLocale } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
@@ -149,6 +150,7 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
   const [selectedEquipment, setSelectedEquipment] = useState<Set<string>>(new Set())
 
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { user } = useUser()
   const datePickerRef = useRef<HTMLDivElement>(null)
   const dateLocale = locale === "nl" ? "nl-NL" : locale === "es" ? "es-ES" : "en-US"
@@ -318,6 +320,11 @@ export function StudioDetailClient({ studio, reviews, similarStudios }: StudioDe
     selectedEquipment.forEach((eqId) => {
       params.set(`eq_${eqId}`, "1")
     })
+
+    // Carry a project context through the booking flow so the resulting
+    // booking can be attached to that project (multiple studios per project).
+    const project = searchParams?.get("project")
+    if (project) params.set("project", project)
 
     router.push(`/book/${studio.id}/session?${params.toString()}`)
   }

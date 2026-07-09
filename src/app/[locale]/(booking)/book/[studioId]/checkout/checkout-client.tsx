@@ -56,6 +56,7 @@ interface CheckoutClientProps {
     startTime: string
     duration: number
   }
+  projectId?: string | null
 }
 
 const PRODUCTION_TYPES = [
@@ -76,6 +77,7 @@ export function CheckoutClient({
   services = [],
   serviceSelections = {},
   bookingDetails,
+  projectId = null,
 }: CheckoutClientProps) {
   const supabase = createClient()
 
@@ -160,6 +162,7 @@ export function CheckoutClient({
           production_type: formData.productionType || null,
           equipment_selections: equipmentSelections,
           service_selections: serviceSelections,
+          project_id: projectId,
         }),
       })
       const bookingJson = await bookingRes.json()

@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import Image from "next/image"
+import { Link } from "@/i18n/routing"
 
 interface Project {
   id: string
@@ -168,10 +169,15 @@ export function ProjectWorkspaceClient({
             <>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">{t("scheduledSessions")}</h2>
-                <button className="bg-black hover:bg-gray-800 text-white rounded-full px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-md transition-all">
+                {/* Books a studio in this project's context; the ?project= param
+                    rides through the flow and attaches the booking to it. */}
+                <Link
+                  href={`/studios?project=${project.id}`}
+                  className="bg-black hover:bg-gray-800 text-white rounded-full px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-md transition-all"
+                >
                   <span className="material-symbols-outlined text-lg">add</span>
                   {t("newSession")}
-                </button>
+                </Link>
               </div>
               <div className="grid gap-4">
                 {bookings.map((booking) => {

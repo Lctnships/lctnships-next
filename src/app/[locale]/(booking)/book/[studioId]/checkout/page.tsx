@@ -116,6 +116,7 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
       services={services}
       serviceSelections={serviceSelections}
       bookingDetails={bookingDetails}
+      projectId={searchParamsData.project || null}
     />
   )
 }

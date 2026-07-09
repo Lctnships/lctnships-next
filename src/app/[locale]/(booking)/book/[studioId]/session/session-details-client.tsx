@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react"
 import Image from "next/image"
 import { Link, useRouter } from "@/i18n/routing"
+import { useSearchParams } from "next/navigation"
 import { useTranslations, useLocale } from "next-intl"
 import { formatDate as fmtDate } from "@/lib/format-locale"
 import { getAvailableDurations, snapToAvailable } from "@/lib/booking-duration"
@@ -69,6 +70,7 @@ export function SessionDetailsClient({
   initialServices,
 }: SessionDetailsClientProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const t = useTranslations("SessionDetails")
   const locale = useLocale()
   const availableDurations = useMemo(() => getAvailableDurations(studio), [studio])
@@ -144,6 +146,9 @@ export function SessionDetailsClient({
     Object.entries(selectedServices).forEach(([id, qty]) => {
       params.append(`svc_${id}`, qty.toString())
     })
+
+    const project = searchParams?.get("project")
+    if (project) params.set("project", project)
 
     router.push(`/book/${studio.id}/checkout?${params.toString()}`)
   }

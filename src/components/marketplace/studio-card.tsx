@@ -19,10 +19,15 @@ interface Studio {
 
 interface StudioCardProps {
   studio: Studio
+  projectId?: string | null
 }
 
-export function StudioCard({ studio }: StudioCardProps) {
+export function StudioCard({ studio, projectId = null }: StudioCardProps) {
   const t = useTranslations("Studios")
+  // When booking within a project, keep the project context on the detail link.
+  const detailHref = projectId
+    ? `/studios/${studio.id}?project=${projectId}`
+    : `/studios/${studio.id}`
   const router = useRouter()
   const { user } = useUser()
   const [isFavorite, setIsFavorite] = useState(false)
@@ -73,7 +78,7 @@ export function StudioCard({ studio }: StudioCardProps) {
   }
 
   return (
-    <Link href={`/studios/${studio.id}`} className="group cursor-pointer block">
+    <Link href={detailHref} className="group cursor-pointer block">
       <div className="relative aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden mb-2.5 sm:mb-4 shadow-sm">
         {studio.images?.[0] ? (
           <Image

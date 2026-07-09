@@ -22,6 +22,7 @@ interface StudiosPageProps {
     type?: string
     city?: string
     date?: string
+    project?: string
   }>
 }
 
@@ -63,7 +64,7 @@ async function StudiosContent({ searchParams }: StudiosPageProps) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
       {studios.map((studio) => (
-        <StudioCard key={studio.id} studio={studio} />
+        <StudioCard key={studio.id} studio={studio} projectId={params.project || null} />
       ))}
     </div>
   )
