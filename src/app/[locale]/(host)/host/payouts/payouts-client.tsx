@@ -1,13 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Link, useRouter } from "@/i18n/routing"
-
-interface BankDetails {
-  accountHolderName: string
-  iban: string
-  bic: string
-}
+import { Link } from "@/i18n/routing"
 
 interface PayoutRecord {
   id: string
@@ -19,26 +13,20 @@ interface PayoutRecord {
 
 interface PayoutsClientProps {
   stripeConnected: boolean
-  bankDetails: BankDetails
   payoutHistory: PayoutRecord[]
 }
 
 export function PayoutsClient({
   stripeConnected: initialStripeConnected,
-  bankDetails: initialBankDetails,
   payoutHistory,
 }: PayoutsClientProps) {
-  const router = useRouter()
   const [stripeConnected, setStripeConnected] = useState(initialStripeConnected)
   const [_stripeStatus, setStripeStatus] = useState<{
     chargesEnabled?: boolean
     payoutsEnabled?: boolean
   }>({})
-  const [bankDetails, setBankDetails] = useState(initialBankDetails)
   const [isConnecting, setIsConnecting] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
 
   useEffect(() => {
     checkStripeStatus()
@@ -86,37 +74,6 @@ export function PayoutsClient({
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
       setIsConnecting(false)
-    }
-  }
-
-  const handleSave = async () => {
-    setIsSaving(true)
-    setError(null)
-    setSuccess(null)
-
-    try {
-      const response = await fetch("/api/users/bank-account", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          bank_account_name: bankDetails.accountHolderName,
-          bank_iban: bankDetails.iban,
-          bank_bic: bankDetails.bic,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to save bank details")
-      }
-
-      setSuccess("Bankgegevens succesvol opgeslagen!")
-      router.refresh()
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Er is een fout opgetreden")
-    } finally {
-      setIsSaving(false)
     }
   }
 
@@ -184,55 +141,27 @@ export function PayoutsClient({
           </div>
         </section>
 
-        {/* Bank Account Details Card */}
+        {/* Payout info — bank details / KVK / VAT are collected by Stripe */}
         <section className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-2 mb-6">
+          <div className="flex items-center gap-2 mb-4">
             <span className="material-symbols-outlined text-black">account_balance</span>
-            <h3 className="text-xl font-bold">Bankrekeninggegevens</h3>
+            <h3 className="text-xl font-bold">Bankgegevens & bedrijfsgegevens</h3>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold ml-1">Rekeninghouder</label>
-              <input
-                type="text"
-                value={bankDetails.accountHolderName}
-                onChange={(e) =>
-                  setBankDetails((prev) => ({ ...prev, accountHolderName: e.target.value }))
-                }
-                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black"
-                placeholder="bijv. Creative Spaces BV"
-              />
+          <p className="text-sm text-gray-600 leading-relaxed">
+            Je IBAN, KVK-nummer, BTW-nummer en identiteitsverificatie vul je in bij{" "}
+            <span className="font-bold">Stripe</span> tijdens de koppeling hierboven. Stripe bewaart
+            deze gegevens veilig en betaalt je automatisch uit na elke boeking. Zonder een
+            afgeronde Stripe-koppeling kunnen we geen uitbetalingen doen.
+          </p>
+          {!stripeConnected && (
+            <div className="mt-6 flex items-start gap-3 p-4 bg-black/5 rounded-xl">
+              <span className="material-symbols-outlined text-black text-xl">info</span>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                Nog niet gekoppeld — klik hierboven op &ldquo;Verbinden met Stripe&rdquo; om je
+                uitbetalingen in te stellen.
+              </p>
             </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold ml-1">BIC / SWIFT Code</label>
-              <input
-                type="text"
-                value={bankDetails.bic}
-                onChange={(e) => setBankDetails((prev) => ({ ...prev, bic: e.target.value }))}
-                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black"
-                placeholder="ABNANL2AXXX"
-              />
-            </div>
-            <div className="md:col-span-2 flex flex-col gap-2">
-              <label className="text-sm font-bold ml-1">IBAN</label>
-              <input
-                type="text"
-                value={bankDetails.iban}
-                onChange={(e) => setBankDetails((prev) => ({ ...prev, iban: e.target.value }))}
-                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black"
-                placeholder="NL00 ABNA 0000 0000 00"
-              />
-            </div>
-          </div>
-
-          <div className="mt-6 flex items-start gap-3 p-4 bg-black/5 rounded-xl">
-            <span className="material-symbols-outlined text-black text-xl">info</span>
-            <p className="text-xs text-gray-500 leading-relaxed">
-              Je bankgegevens worden versleuteld en veilig opgeslagen. We gebruiken deze gegevens alleen
-              om handmatige uitbetalingen te verwerken als Stripe-integratie niet beschikbaar is voor jouw regio.
-            </p>
-          </div>
+          )}
         </section>
 
         {/* Payout History Card */}
@@ -301,35 +230,6 @@ export function PayoutsClient({
             <p className="text-sm font-medium">{error}</p>
           </div>
         )}
-        {success && (
-          <div className="p-4 bg-green-50 border border-green-200 rounded-2xl flex items-center gap-3 text-green-600">
-            <span className="material-symbols-outlined">check_circle</span>
-            <p className="text-sm font-medium">{success}</p>
-          </div>
-        )}
-
-        {/* Save Action */}
-        <div className="flex items-center justify-between p-8 bg-gray-900 rounded-[2rem] shadow-xl text-white">
-          <div className="flex flex-col">
-            <p className="text-sm font-medium opacity-80">Klaar om af te ronden?</p>
-            <p className="text-xs opacity-60">Controleer je bankgegevens voordat je opslaat.</p>
-          </div>
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="bg-white text-gray-900 hover:bg-gray-100 font-black py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 disabled:opacity-50 flex items-center gap-2"
-          >
-            {isSaving ? (
-              <>
-                <span className="material-symbols-outlined animate-spin">progress_activity</span>
-                Opslaan...
-              </>
-            ) : (
-              "Uitbetalingsinstellingen Opslaan"
-            )}
-          </button>
-        </div>
-
         {/* Security Badges */}
         <div className="flex flex-col items-center gap-4 py-8">
           <div className="flex items-center gap-6">

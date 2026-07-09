@@ -19,7 +19,7 @@ export default async function PayoutsPage() {
   const admin = createAdminClient()
   const { data: profile } = await admin
     .from("users")
-    .select("stripe_account_id, bank_account_name, bank_iban, bank_bic")
+    .select("stripe_account_id")
     .eq("id", user.id)
     .single()
 
@@ -32,11 +32,6 @@ export default async function PayoutsPage() {
     .limit(10)
 
   const stripeConnected = !!profile?.stripe_account_id
-  const bankDetails = {
-    accountHolderName: profile?.bank_account_name || "",
-    iban: profile?.bank_iban || "",
-    bic: profile?.bank_bic || "",
-  }
 
   const payoutHistory = (payouts || []).map((p, index) => ({
     id: p.id,
@@ -53,7 +48,6 @@ export default async function PayoutsPage() {
   return (
     <PayoutsClient
       stripeConnected={stripeConnected}
-      bankDetails={bankDetails}
       payoutHistory={payoutHistory}
     />
   )
